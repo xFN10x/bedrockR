@@ -8,7 +8,6 @@ public class RLogFilter implements Filter {
 
     @Override
     public boolean isLoggable(LogRecord arg0) {
-        //don't log CONFIG logs in file
 		if(arg0.getLevel() == Level.CONFIG) return false;
 		return true;
     }

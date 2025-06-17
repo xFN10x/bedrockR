@@ -9,17 +9,10 @@ import javax.swing.*;
 import com.formdev.flatlaf.util.SwingUtils;
 
 public class RFrame extends JFrame {
+
+    public SpringLayout Lay = new SpringLayout();
     
     public RFrame(int CloseOperation,String WindowTitle,Dimension Size,boolean Resizeable) {
-
-        setLayout(new BorderLayout());
-
-        try {
-            UIManager.setLookAndFeel(new BedrockrDark());
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
         JPanel bottomBar = new JPanel();
         bottomBar.setBackground(Color.GREEN);
         bottomBar.setPreferredSize(new Dimension(Size.width, 40));
@@ -35,9 +28,13 @@ public class RFrame extends JFrame {
         bottomBar.setLayout(new SpringLayout());
         bottomBar.add(titleImg,SpringLayout.WEST);
 
-        if (!Resizeable)
-        add(bottomBar,BorderLayout.SOUTH);
+        
+        Lay.putConstraint(SpringLayout.SOUTH, bottomBar, -35,SpringLayout.SOUTH,this);
 
+        if (!Resizeable)
+        add(bottomBar,SpringLayout.SOUTH);
+
+        setLayout(Lay);
         setResizable(Resizeable);
         setPreferredSize(Size);
 

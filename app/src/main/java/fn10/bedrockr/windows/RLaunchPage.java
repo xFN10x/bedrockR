@@ -2,26 +2,13 @@ package fn10.bedrockr.windows;
 
 import javax.swing.*;
 
-import fn10.bedrockr.windows.laf.BedrockrDark;
+import fn10.bedrockr.windows.utils.Greetings;
+import fn10.bedrockr.windows.utils.RFonts;
 
 import java.awt.*;
 import java.util.Random;
-import java.util.random.RandomGenerator;
 
 public class RLaunchPage extends RFrame {
-
-    private static String[] GREETINGS = {
-        "Welcome back!",
-        "Welcome to BR, how may I serve you today?",
-        "Could I interest you in some text-based programming?",
-        "Yo.",
-        "Why does this not work now?",
-        "bugrockR",
-        "Waiting for custom biomes to be fi- Oh hi.",
-        "Alpha = true",
-        "CRITICAL ERROR! LEAVE NOWWWWW!!! (jk)",
-        "no"
-    };
 
     public RLaunchPage(Dimension Size) {
         super(
@@ -31,13 +18,17 @@ public class RLaunchPage extends RFrame {
              false);
 
         //Add things to the window.
-        var greeting = new JLabel();
+        var greetingtext = Greetings.GetGreeting();
+        var greeting = new JLabel(greetingtext.Text);
+        greeting.setFont(RFonts.RegMinecraftFont.deriveFont(2,greetingtext.Size));
+        greeting.setSize(Size.width, 100);
+        greeting.setHorizontalTextPosition(SwingConstants.LEFT);
+        
+        Lay.putConstraint(SpringLayout.WEST, greeting, 30, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.NORTH, greeting, 30, SpringLayout.NORTH, this);
+
+        add(greeting,SpringLayout.NORTH);
     }
 
-    public static String GetGreeting() {
-        var mx = GREETINGS.length;
-        var rnd = new Random();
-
-        return GREETINGS[rnd.nextInt(0, mx)];
-    }
+    
 }

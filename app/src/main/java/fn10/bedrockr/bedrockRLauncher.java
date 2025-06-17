@@ -14,6 +14,7 @@ import fn10.bedrockr.windows.laf.BedrockrDark;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.logging.*;
 
 public class bedrockRLauncher {
@@ -48,27 +49,18 @@ public class bedrockRLauncher {
         }
 
         //log stuff
-        LOG.info(RLaunchPage.GetGreeting());
         LOG.info("Logging to "+logloc);
-        LOG.info(
-                "bedrockR version: ${VERSION}, Java version: ${Runtime.version()}, JVM ${System.getProperty(\"java.vm.name\")}");
+        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION,Runtime.version(),System.getProperty("java.vm.name")));
 
         //setup theme
-        File font_file = new File(bedrockRLauncher.class.getResource("/branding/font.otf").getPath());
-        Font font = null;
-        try { //try setting font
-            font = Font.createFont(Font.TRUETYPE_FONT, font_file);
-        } catch (IOException | FontFormatException e) {
-            // TODO Auto-generated catch block
+        
+
+        //FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf" );
+        try {
+            BedrockrDark.setup();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if (font != null)
-        GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font); //reg font if not null
-
-        FlatLaf.registerCustomDefaultsSource("");
-        BedrockrDark.setup();
-
         //open app
         var launchPage = new RLaunchPage(LAUNCH_WINDOW_SIZE);
 
