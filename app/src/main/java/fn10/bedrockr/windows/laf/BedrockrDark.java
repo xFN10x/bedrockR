@@ -1,7 +1,6 @@
 package fn10.bedrockr.windows.laf;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.icons.FlatWindowCloseIcon;
 
 public class BedrockrDark
 	extends FlatDarkLaf

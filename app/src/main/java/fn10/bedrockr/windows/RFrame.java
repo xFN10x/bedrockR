@@ -1,18 +1,20 @@
 package fn10.bedrockr.windows;
 
-import fn10.bedrockr.windows.laf.BedrockrDark;
 import fn10.bedrockr.windows.utils.ImageUtilites;
 
 import java.awt.*;
 import javax.swing.*;
 
-import com.formdev.flatlaf.util.SwingUtils;
-
 public class RFrame extends JFrame {
 
     public SpringLayout Lay = new SpringLayout();
-    
+
     public RFrame(int CloseOperation,String WindowTitle,Dimension Size,boolean Resizeable) {
+        this(CloseOperation, WindowTitle, Size, Resizeable, !Resizeable);
+    }
+    
+    public RFrame(int CloseOperation,String WindowTitle,Dimension Size,boolean Resizeable, boolean BottomBar) {
+        super(WindowTitle+ " - bedrockR");
         JPanel bottomBar = new JPanel();
         bottomBar.setBackground(Color.GREEN);
         bottomBar.setPreferredSize(new Dimension(Size.width, 40));
@@ -31,7 +33,7 @@ public class RFrame extends JFrame {
         
         Lay.putConstraint(SpringLayout.SOUTH, bottomBar, -35,SpringLayout.SOUTH,this);
 
-        if (!Resizeable)
+        if (BottomBar)
         add(bottomBar,SpringLayout.SOUTH);
 
         setLayout(Lay);
