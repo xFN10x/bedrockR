@@ -3,8 +3,6 @@
  */
 package fn10.bedrockr;
 
-import com.formdev.flatlaf.FlatLaf;
-
 import fn10.bedrockr.util.logging.RLogFilter;
 import fn10.bedrockr.util.logging.RLogFormatter;
 import fn10.bedrockr.util.logging.RLogHandler;
@@ -12,7 +10,6 @@ import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.laf.BedrockrDark;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.logging.*;

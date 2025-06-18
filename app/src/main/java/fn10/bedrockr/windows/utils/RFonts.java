@@ -25,8 +25,6 @@ public class RFonts {
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
-        
-        bedrockRLauncher.LOG.info(String.valueOf(font.getSize()));
 
         GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font); // reg font if not null
         return font;
