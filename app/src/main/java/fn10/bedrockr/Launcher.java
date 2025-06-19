@@ -8,24 +8,28 @@ import fn10.bedrockr.util.logging.RLogFormatter;
 import fn10.bedrockr.util.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.laf.BedrockrDark;
+import fn10.bedrockr.windows.utils.RFileOperations;
 
 import java.awt.*;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.logging.*;
 
-public class bedrockRLauncher {
+import javax.swing.ImageIcon;
+
+public class Launcher {
 
     public static String VERSION = "a1.0";
+    public static ImageIcon ICON = new ImageIcon(Launcher.class.getResource("/branding/Icon.png"));
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");
 
     public static void main(String[] args) {
-        //set up logging
+        // set up logging
         String logloc = System.getProperty("java.io.tmpdir")
-                    + System.currentTimeMillis() + "\\bedrockR-log" + System.currentTimeMillis() + ".txt";
-        
+                + System.currentTimeMillis() + "\\bedrockR-log" + System.currentTimeMillis() + ".txt";
+
         for (var h : LOG.getHandlers()) {
             LOG.removeHandler(h);
         }
@@ -33,9 +37,9 @@ public class bedrockRLauncher {
         LOG.setLevel(Level.FINE);
         LOG.addHandler(new RLogHandler());
 
-        //try to add file handler
-        try { 
-            
+        // try to add file handler
+        try {
+
             Handler fileHandler = new FileHandler(logloc, 2000, 5);
             fileHandler.setFormatter(new RLogFormatter());
             LOG.addHandler(fileHandler);
@@ -45,20 +49,21 @@ public class bedrockRLauncher {
             e.printStackTrace();
         }
 
-        //log stuff
-        LOG.info("Logging to "+logloc);
-        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION,Runtime.version(),System.getProperty("java.vm.name")));
+        // log stuff
+        LOG.info("Logging to " + logloc);
+        LOG.info(RFileOperations.getBaseDirectory().getAbsolutePath());
+        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
+                System.getProperty("java.vm.name")));
 
-        //setup theme
-        
+        // setup theme
 
-        //FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf" );
+        // FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf" );
         try {
             BedrockrDark.setup();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //open app
+        // open app
         var launchPage = new RLaunchPage(LAUNCH_WINDOW_SIZE);
 
         launchPage.setVisible(true);

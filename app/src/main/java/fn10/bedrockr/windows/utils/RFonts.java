@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Converter;
 
-import fn10.bedrockr.bedrockRLauncher;
+import fn10.bedrockr.Launcher;
 
 public class RFonts {
 
@@ -17,7 +17,7 @@ public class RFonts {
 
 
     protected static Font SetupFont(@Nonnull String Path,int Size) {
-        File font_file = new File(bedrockRLauncher.class.getResource(Path).getPath());
+        File font_file = new File(Launcher.class.getResource(Path).getPath());
 
         Font font = null;
         try { // try setting font

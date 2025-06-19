@@ -47,7 +47,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'fn10.bedrockr.bedrockRLauncher'
+    mainClass = 'fn10.bedrockr.Launcher'
 }
 
 tasks.named('test') {
