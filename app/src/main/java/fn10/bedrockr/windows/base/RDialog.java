@@ -13,7 +13,7 @@ public class RDialog extends JDialog {
     //    this(Parent,CloseOperation, WindowTitle, Size);
     //}
     
-    public RDialog(JFrame Parent,int CloseOperation,String WindowTitle,Dimension Size) {
+    public RDialog(Frame Parent,int CloseOperation,String WindowTitle,Dimension Size) {
         super(Parent,WindowTitle+ " - bedrockR");
         JPanel bottomBar = new JPanel();
         bottomBar.setBackground(Color.GREEN);
