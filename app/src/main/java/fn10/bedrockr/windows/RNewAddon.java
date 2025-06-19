@@ -19,6 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.windows.base.RDialog;
+import fn10.bedrockr.windows.base.RLoadingScreen;
 import fn10.bedrockr.windows.utils.ImageUtilites;
 import fn10.bedrockr.windows.utils.RFonts;
 
@@ -132,7 +133,8 @@ public class RNewAddon extends RDialog implements ActionListener {
             }
         } else if (e.getActionCommand() == "create") {
 
-            
+            var loading = new RLoadingScreen((JFrame)getParent());
+            loading.setVisible(true);
 
         } else {
             Launcher.LOG.warning("No action event! "+getClass().getName());
