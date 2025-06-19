@@ -1,5 +1,6 @@
-package fn10.bedrockr.windows;
+package fn10.bedrockr.windows.base;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.windows.utils.ImageUtilites;
 
 import java.awt.*;
@@ -15,6 +16,9 @@ public class RFrame extends JFrame {
     
     public RFrame(int CloseOperation,String WindowTitle,Dimension Size,boolean Resizeable, boolean BottomBar) {
         super(WindowTitle+ " - bedrockR");
+
+        setIconImage(Launcher.ICON.getImage());
+
         JPanel bottomBar = new JPanel();
         bottomBar.setBackground(Color.GREEN);
         bottomBar.setPreferredSize(new Dimension(Size.width, 40));
