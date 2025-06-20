@@ -21,6 +21,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.base.RLoadingScreen;
 import fn10.bedrockr.windows.utils.ImageUtilites;
+import fn10.bedrockr.windows.utils.RFileOperations;
 import fn10.bedrockr.windows.utils.RFonts;
 
 public class RNewAddon extends RDialog implements ActionListener {
@@ -32,9 +33,12 @@ public class RNewAddon extends RDialog implements ActionListener {
             "1.21.80",
             "1.21.90"
     };
-    private JLabel AddonIcon;
-    private ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/addons/DefaultIcon.png"),
+    protected JLabel AddonIcon;
+    protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/addons/DefaultIcon.png"),
             250, 250);
+    protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
+    protected JTextField NameInput = new JTextField("New AddonR");
+    protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(PICKABLE_VERSIONS);
 
     public RNewAddon(JFrame Parent) {
         super(Parent,
@@ -49,18 +53,18 @@ public class RNewAddon extends RDialog implements ActionListener {
         AddonIcon.setBorder(BorderFactory.createLineBorder(getForeground(), 3));
 
         var NameInputText = new JLabel("Addon Name");
-        var NameInput = new JTextField("New AddonR");
+
         NameInput.setPreferredSize(new Dimension(150, 25));
 
         var DescInputText = new JLabel("Addon Description");
-        var DescInput = new JTextArea("My new addon, made in bedrockR");
+
         DescInput.setPreferredSize(new Dimension(150, 100));
         DescInput.setLineWrap(true);
         DescInput.setFont(RFonts.RegMinecraftFont.deriveFont(1, 10));
         DescInput.setWrapStyleWord(true);
 
         var MinimumEngineVersionSelectionText = new JLabel("Minimum Engine Version");
-        var MinimumEngineVersionSelection = new JComboBox<String>(PICKABLE_VERSIONS);
+
         MinimumEngineVersionSelection.setSize(new Dimension(150, 25));
 
         var PickIconButton = new JButton("Change Icon...");
@@ -70,26 +74,26 @@ public class RNewAddon extends RDialog implements ActionListener {
         var CreateButton = new JButton("Create Addon!");
         CreateButton.addActionListener(this);
         CreateButton.setActionCommand("create");
-        CreateButton.setPreferredSize(new Dimension(421,30));
+        CreateButton.setPreferredSize(new Dimension(421, 30));
 
         // constraints: icon
         Lay.putConstraint(SpringLayout.NORTH, AddonIcon, 10, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.WEST, AddonIcon, 10, SpringLayout.WEST, this);
-        
+
         // name input
         Lay.putConstraint(SpringLayout.SOUTH, NameInputText, -1, SpringLayout.NORTH, NameInput);
         Lay.putConstraint(SpringLayout.WEST, NameInputText, 13, SpringLayout.EAST, AddonIcon);
 
         Lay.putConstraint(SpringLayout.NORTH, NameInput, 25, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.WEST, NameInput, 13, SpringLayout.EAST, AddonIcon);
-        
+
         // desc input
         Lay.putConstraint(SpringLayout.SOUTH, DescInputText, -1, SpringLayout.NORTH, DescInput);
         Lay.putConstraint(SpringLayout.WEST, DescInputText, 13, SpringLayout.EAST, AddonIcon);
 
         Lay.putConstraint(SpringLayout.WEST, DescInput, 13, SpringLayout.EAST, AddonIcon);
         Lay.putConstraint(SpringLayout.NORTH, DescInput, 18, SpringLayout.SOUTH, NameInput);
-        
+
         // min engine input
         Lay.putConstraint(SpringLayout.SOUTH, MinimumEngineVersionSelectionText, -1, SpringLayout.NORTH,
                 MinimumEngineVersionSelection);
@@ -97,12 +101,12 @@ public class RNewAddon extends RDialog implements ActionListener {
 
         Lay.putConstraint(SpringLayout.WEST, MinimumEngineVersionSelection, 13, SpringLayout.EAST, AddonIcon);
         Lay.putConstraint(SpringLayout.NORTH, MinimumEngineVersionSelection, 18, SpringLayout.SOUTH, DescInput);
-        
+
         // pick icon button
         Lay.putConstraint(SpringLayout.WEST, PickIconButton, 13, SpringLayout.EAST, AddonIcon);
         Lay.putConstraint(SpringLayout.NORTH, PickIconButton, 14, SpringLayout.SOUTH, MinimumEngineVersionSelection);
 
-        //create button
+        // create button
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, CreateButton, 115, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, CreateButton, -6, SpringLayout.HORIZONTAL_CENTER, this);
 
@@ -133,11 +137,19 @@ public class RNewAddon extends RDialog implements ActionListener {
             }
         } else if (e.getActionCommand() == "create") {
 
-            var loading = new RLoadingScreen((JFrame)getParent());
-            loading.setVisible(true);
+            var name = NameInput.getText();
+            Launcher.LOG.info("Making new addon: " + name);
+
+            try {
+                var loading = new RLoadingScreen((JFrame) getParent());
+
+                RFileOperations.createWorkspace(loading, name);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
         } else {
-            Launcher.LOG.warning("No action event! "+getClass().getName());
+            Launcher.LOG.warning("No action event! " + getClass().getName());
         }
     }
 
