@@ -31,7 +31,7 @@ public class RDialog extends JDialog {
        // bottomBar.add(titleImg,SpringLayout.WEST);
 
         
-        Lay.putConstraint(SpringLayout.SOUTH, bottomBar, -35,SpringLayout.SOUTH,this);
+        Lay.putConstraint(SpringLayout.SOUTH, bottomBar, -40,SpringLayout.SOUTH,this);
 
         //if (BottomBar)
         //add(bottomBar,SpringLayout.SOUTH);

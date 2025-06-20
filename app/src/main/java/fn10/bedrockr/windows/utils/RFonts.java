@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Converter;
-
 import fn10.bedrockr.Launcher;
 
 public class RFonts {
