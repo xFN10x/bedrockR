@@ -1,8 +1,12 @@
 package fn10.bedrockr.windows;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -11,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -19,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.base.RLoadingScreen;
 import fn10.bedrockr.windows.utils.ImageUtilites;
@@ -34,9 +40,12 @@ public class RNewAddon extends RDialog implements ActionListener {
             "1.21.80",
             "1.21.90"
     };
-    protected JLabel AddonIcon;
     protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/addons/DefaultIcon.png"),
             250, 250);
+    protected JFileChooser file = new JFileChooser();
+    protected String imageExtension = "png";
+
+    protected JLabel AddonIcon = new JLabel(ChosenIcon);
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
     protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(PICKABLE_VERSIONS);
@@ -47,7 +56,6 @@ public class RNewAddon extends RDialog implements ActionListener {
                 "New Addon",
                 new Dimension(459, 350));
 
-        AddonIcon = new JLabel(ChosenIcon);
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
         AddonIcon.setVerticalAlignment(SwingConstants.CENTER);
@@ -122,17 +130,27 @@ public class RNewAddon extends RDialog implements ActionListener {
         add(CreateButton);
     }
 
+    private static void showError(Component parent, String msg, String title, Exception ex) {
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw));
+        JOptionPane.showMessageDialog(parent,
+                msg + "\n" + sw.toString(),
+                title, JOptionPane.ERROR_MESSAGE);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "changeIcon") {
             try {
-                var file = new JFileChooser();
                 file.setDialogTitle("Choose Addon Icon");
                 file.setFileFilter(
-                        new FileNameExtensionFilter("Image Files (*.png,*.jpg/jpeg)", "png", "jpg", "jpeg", "tga"));
+                        new FileNameExtensionFilter("Image Files (*.png,*.jpg)", "png", "jpg"));
                 file.showOpenDialog(this);
                 ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file.getSelectedFile())), 250, 250);
                 AddonIcon.setIcon(ChosenIcon);
+                Launcher.LOG.info(file.getSelectedFile().getName());
+                imageExtension = file.getSelectedFile().getName().split(".")[1];
+                Launcher.LOG.info("Icon extension will be: " + imageExtension);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -148,9 +166,17 @@ public class RNewAddon extends RDialog implements ActionListener {
                     loading.setVisible(true);
                 });
 
-                RFileOperations.createWorkspace(loading, name, MinimumEngineVersionSelection.getSelectedItem().toString());
+                RFileOperations.createWorkspace(loading,
+
+                        new WPFile(NameInput.getText(),
+                                MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
+                                imageExtension),
+
+                        (ImageIcon) AddonIcon.getIcon());
             } catch (Exception ex) {
                 ex.printStackTrace();
+                showError(this, "Failed to make new addon.", "Grrrr", ex);
+                return;
             }
 
         } else {

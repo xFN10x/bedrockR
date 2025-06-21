@@ -1,6 +1,9 @@
 package fn10.bedrockr.windows.utils;
 
 import java.awt.Component;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,6 +11,8 @@ import java.io.StringWriter;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import fn10.bedrockr.addons.source.SourceWPFile;
@@ -54,10 +59,11 @@ public class RFileOperations {
             e.printStackTrace();
             return null;
         }
-        
+
     }
 
-    public static boolean createWorkspace(RLoadingScreen loading, String workspaceName, String minimumVersion)
+    public static boolean createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
+            WPFile wpf, ImageIcon imgIcon)
             throws DirectoryNotEmptyException, IOException {
 
         String[] wsFolders = {
@@ -67,7 +73,7 @@ public class RFileOperations {
 
         File base = getBaseDirectory(loading);
 
-        File wsFolder = new File(base.getAbsolutePath() + "/workspace/" + workspaceName + "/");
+        File wsFolder = new File(base.getAbsolutePath() + "/workspace/" + wpf.WorkspaceName + "/");
 
         if (wsFolder.exists()) { // throw if folder is already here
             var e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
@@ -91,16 +97,25 @@ public class RFileOperations {
 
                 loading.changeText("Creating workspace...");
 
-                var srcWPF = new SourceWPFile(new WPFile(workspaceName, minimumVersion));
-                srcWPF.buildJSONFile(loading, workspaceName);
+                var srcWPF = new SourceWPFile(wpf);
+                srcWPF.buildJSONFile(loading, wpf.WorkspaceName);
+
+                var srcIcon = new File(wsFolder.getAbsolutePath() + "/icon." + wpf.IconExtension);
+                trying = srcIcon;
+
+                // make buffered image
+                var image = imgIcon.getImage();
+                BufferedImage BI = new BufferedImage(image.getWidth(null),
+                        image.getHeight(null),
+                        BufferedImage.TYPE_INT_ARGB);
+                BI.getGraphics().drawImage(BI, 0, 0, null);
+
+                ImageIO.write(BI, wpf.IconExtension, srcIcon);
 
                 return true;
 
             } catch (Exception e) { // handle exception
-                JOptionPane.showMessageDialog(loading,
-                        "Failed to make Directory " + wsFolder.getAbsolutePath() + ". \n"
-                                + e.getStackTrace().toString(),
-                        "Failed to make workspace.", JOptionPane.ERROR_MESSAGE);
+                showError(loading, "IO Error, with path " + wsFolder.getAbsolutePath(), "IO Error", e);
                 throw e;
             }
         }
