@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
@@ -143,7 +144,11 @@ public class RNewAddon extends RDialog implements ActionListener {
             try {
                 var loading = new RLoadingScreen((JFrame) getParent());
 
-                RFileOperations.createWorkspace(loading, name);
+                SwingUtilities.invokeLater(() -> {
+                    loading.setVisible(true);
+                });
+
+                RFileOperations.createWorkspace(loading, name, MinimumEngineVersionSelection.getSelectedItem().toString());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

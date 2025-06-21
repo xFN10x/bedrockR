@@ -51,7 +51,7 @@ public class Launcher {
 
         // log stuff
         LOG.info("Logging to " + logloc);
-        LOG.info(RFileOperations.getBaseDirectory().getAbsolutePath());
+        LOG.info(RFileOperations.getBaseDirectory(null).getAbsolutePath());
         LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
                 System.getProperty("java.vm.name")));
 

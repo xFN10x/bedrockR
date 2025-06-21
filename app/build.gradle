@@ -27,7 +27,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
-
+    
+    //gson
+    implementation 'com.google.code.gson:gson:2.13.1'
     //flatlaf
     def flatlafVersion = '3.4'
     implementation( "com.formdev:flatlaf:${flatlafVersion}" )
