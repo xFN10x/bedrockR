@@ -5,8 +5,6 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
-
 import fn10.bedrockr.windows.utils.ImageUtilites;
 import fn10.bedrockr.windows.utils.RFonts;
 
@@ -14,14 +12,14 @@ import java.awt.*;
 
 public class RLoadingScreen extends RDialog {
 
-    protected JProgressBar MAINBAR;
-    protected JLabel MAIN_TEXT;
+    protected JProgressBar MainBar = new JProgressBar();
+    protected JLabel MainText = new JLabel("Loading...");;
 
     public Integer Steps = null;
 
     public void changeText(String text) {
         SwingUtilities.invokeLater(() -> {
-            MAIN_TEXT.setText(text);
+            MainText.setText(text);
         });
     }
 
@@ -29,7 +27,7 @@ public class RLoadingScreen extends RDialog {
 
         changeText(TextChange);
         SwingUtilities.invokeLater(() -> {
-            MAINBAR.setValue(MAINBAR.getValue() + increase);
+            MainBar.setValue(MainBar.getValue() + increase);
         });
     }
 
@@ -45,7 +43,7 @@ public class RLoadingScreen extends RDialog {
         changeText(TextChange);
 
         SwingUtilities.invokeLater(() -> {
-            MAINBAR.setValue(MAINBAR.getValue() + 100 / Steps);
+            MainBar.setValue(MainBar.getValue() + 100 / Steps);
         });
     }
 
@@ -63,7 +61,7 @@ public class RLoadingScreen extends RDialog {
                 .ResizeImageByURL(getClass().getResource("/branding/BrandingFullWShadow.png"), titleImgW, titleImageH));
         Branding.setPreferredSize(new Dimension(titleImgW, titleImageH));
 
-        var MainBar = new JProgressBar();
+        
         MainBar.setPreferredSize(new Dimension(600, 20));
         // MainBar.setBackground(getForeground());
         MainBar.setOrientation(JProgressBar.HORIZONTAL);
@@ -75,7 +73,7 @@ public class RLoadingScreen extends RDialog {
         // MainBar.setStringPainted(true);
         // MainBar.setString("Loading...");
 
-        var MainText = new JLabel("Loading...");
+        
         MainText.setFont(RFonts.RegMinecraftFont.deriveFont(2, 18));
         MainText.setForeground(Color.WHITE);
 
@@ -96,6 +94,5 @@ public class RLoadingScreen extends RDialog {
         add(MainBar);
 
         add(BG); // always add last!
-        MAINBAR = MainBar;
     }
 }
