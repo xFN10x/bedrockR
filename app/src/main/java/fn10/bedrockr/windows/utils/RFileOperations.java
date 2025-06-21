@@ -1,12 +1,17 @@
 package fn10.bedrockr.windows.utils;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 
 import javax.swing.JOptionPane;
 
+import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.windows.base.RLoadingScreen;
 
 public class RFileOperations {
@@ -15,57 +20,83 @@ public class RFileOperations {
     private static String BASE_PATH = USER_DIR + "/.bedrockR/";
     private static File BaseDirectory = new File(BASE_PATH);
 
-    public static File getBaseDirectory() {
+    public static File getBaseDirectory(Component doingThis) {
         try {
             if (!BaseDirectory.exists()) {
                 return Files.createDirectories(BaseDirectory.toPath()).toFile();
             } else
                 return BaseDirectory;
         } catch (Exception e) {
+            showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
             e.printStackTrace();
         }
         return BaseDirectory;
     }
 
-    public static File getFileFromWorkspace(String WorkspaceName, String ToCreate) {
+    private static void showError(Component parent, String msg, String title, Exception ex) {
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw));
+        JOptionPane.showMessageDialog(parent,
+                msg + "\n" + sw.toString(),
+                title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate) {
         try {
-            var proposed = BaseDirectory + "workspace/" + WorkspaceName + ToCreate;
+            var proposed = BaseDirectory + "/workspace/" + WorkspaceName + ToCreate;
             var proposedFile = new File(proposed);
             if (proposedFile.exists()) {
                 return proposedFile;
             } else
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
+            showError(windowDoingThis, "IO Error", "Failed to get WP File", e);
             e.printStackTrace();
+            return null;
         }
-        return BaseDirectory;
+        
     }
 
-    public static boolean createWorkspace(RLoadingScreen loading, String workspaceName)
+    public static boolean createWorkspace(RLoadingScreen loading, String workspaceName, String minimumVersion)
             throws DirectoryNotEmptyException, IOException {
 
-        File base = getBaseDirectory();
+        String[] wsFolders = {
+                "/elements/",
+                "/resources/"
+        };
 
-        loading.setModal(true);
+        File base = getBaseDirectory(loading);
 
-        File wsFolder = new File(base.getAbsolutePath() + "/" + workspaceName + "/");
-
-
+        File wsFolder = new File(base.getAbsolutePath() + "/workspace/" + workspaceName + "/");
 
         if (wsFolder.exists()) { // throw if folder is already here
             var e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
-            JOptionPane.showMessageDialog(loading,
-                    "Folder " + wsFolder.getAbsolutePath() + " already exists. \n" + e.getStackTrace().toString(),
-                    "Failed to make workspace.", JOptionPane.ERROR_MESSAGE);
+            showError(loading, "Failed to make folder; Folder" + wsFolder.getAbsolutePath() + " already exists.",
+                    "Failure!", e);
             throw e;
         } else {
-            try { //try
+            File trying;
+            try { // try
+
+                trying = wsFolder;
+
+                loading.changeText("Making directories...");
 
                 Files.createDirectories(wsFolder.toPath());
 
+                for (String string : wsFolders) {
+                    trying = new File(wsFolder.getAbsolutePath() + "/" + string);
+                    Files.createDirectories(trying.toPath());
+                }
+
+                loading.changeText("Creating workspace...");
+
+                var srcWPF = new SourceWPFile(new WPFile(workspaceName, minimumVersion));
+                srcWPF.buildJSONFile(loading, workspaceName);
+
                 return true;
 
-            } catch (Exception e) { //handle exception
+            } catch (Exception e) { // handle exception
                 JOptionPane.showMessageDialog(loading,
                         "Failed to make Directory " + wsFolder.getAbsolutePath() + ". \n"
                                 + e.getStackTrace().toString(),

@@ -5,7 +5,6 @@ import javax.swing.*;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.ColorFunctions;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.utils.Greetings;
 import fn10.bedrockr.windows.utils.RFonts;
@@ -17,7 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
     public RLaunchPage(Dimension Size) {
@@ -87,8 +85,8 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     }
 
     @Override
-    public void itemStateChanged(ItemEvent arg0) {
-        System.out.println("test");
+    public void itemStateChanged(ItemEvent e) {
+        throw new UnsupportedOperationException("Unimplemented method 'itemStateChanged'");
     }
 
 }
