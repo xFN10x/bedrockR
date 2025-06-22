@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -21,17 +22,20 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
+import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.base.RLoadingScreen;
-import fn10.bedrockr.windows.utils.ImageUtilites;
-import fn10.bedrockr.windows.utils.RFileOperations;
-import fn10.bedrockr.windows.utils.RFonts;
+import fn10.bedrockr.windows.componets.RAddon;
 
-public class RNewAddon extends RDialog implements ActionListener {
+public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
     protected final static String[] PICKABLE_VERSIONS = {
             "1.21.50",
@@ -49,6 +53,7 @@ public class RNewAddon extends RDialog implements ActionListener {
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
     protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(PICKABLE_VERSIONS);
+    protected JButton CreateButton = new JButton("Create Addon!");
 
     public RNewAddon(JFrame Parent) {
         super(Parent,
@@ -64,6 +69,7 @@ public class RNewAddon extends RDialog implements ActionListener {
         var NameInputText = new JLabel("Addon Name");
 
         NameInput.setPreferredSize(new Dimension(150, 25));
+        NameInput.getDocument().addDocumentListener(this);
 
         var DescInputText = new JLabel("Addon Description");
 
@@ -80,10 +86,11 @@ public class RNewAddon extends RDialog implements ActionListener {
         PickIconButton.addActionListener(this);
         PickIconButton.setActionCommand("changeIcon");
 
-        var CreateButton = new JButton("Create Addon!");
         CreateButton.addActionListener(this);
         CreateButton.setActionCommand("create");
         CreateButton.setPreferredSize(new Dimension(421, 30));
+
+        
 
         // constraints: icon
         Lay.putConstraint(SpringLayout.NORTH, AddonIcon, 10, SpringLayout.NORTH, this);
@@ -128,6 +135,10 @@ public class RNewAddon extends RDialog implements ActionListener {
         add(MinimumEngineVersionSelection);
         add(PickIconButton);
         add(CreateButton);
+
+        
+
+        checkForError();
     }
 
     private static void showError(Component parent, String msg, String title, Exception ex) {
@@ -149,7 +160,7 @@ public class RNewAddon extends RDialog implements ActionListener {
                 ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file.getSelectedFile())), 250, 250);
                 AddonIcon.setIcon(ChosenIcon);
                 Launcher.LOG.info(file.getSelectedFile().getName());
-                imageExtension = file.getSelectedFile().getName().split(".")[1];
+                imageExtension = file.getSelectedFile().getName().split("\\.")[1];
                 Launcher.LOG.info("Icon extension will be: " + imageExtension);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -181,7 +192,47 @@ public class RNewAddon extends RDialog implements ActionListener {
 
         } else {
             Launcher.LOG.warning("No action event! " + getClass().getName());
+            throw new UnsupportedOperationException("Action event not handled.");
         }
+    }
+
+    private void checkForError() {
+        var text = NameInput.getText();
+        File proposedDir = new File(RFileOperations.getBaseDirectory(this) + "/workspace/" + NameInput.getText());
+
+        Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" + NameInput.getText());
+
+        SwingUtilities.invokeLater(() -> {
+            if (text == "") {
+                CreateButton.setToolTipText("You can't name your addon nothing... ");
+                CreateButton.setEnabled(false);
+            } else if (proposedDir.exists()) {
+                CreateButton.setToolTipText("Addon already exists.");
+                CreateButton.setEnabled(false);
+            } else if (!RFileOperations.validFolderName(text)) {
+                CreateButton.setToolTipText(
+                        "STOP! You are violating the folder naming convensions! Pay the fine, or change your addon name...");
+                CreateButton.setEnabled(false);
+            } else {
+                CreateButton.setToolTipText("You're all good!");
+                CreateButton.setEnabled(true);
+            }
+        });
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        checkForError();
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        checkForError();
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        checkForError();
     }
 
 }

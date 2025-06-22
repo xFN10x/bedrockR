@@ -3,12 +3,12 @@
  */
 package fn10.bedrockr;
 
-import fn10.bedrockr.util.logging.RLogFilter;
-import fn10.bedrockr.util.logging.RLogFormatter;
-import fn10.bedrockr.util.logging.RLogHandler;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.logging.RLogFilter;
+import fn10.bedrockr.utils.logging.RLogFormatter;
+import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.laf.BedrockrDark;
-import fn10.bedrockr.windows.utils.RFileOperations;
 
 import java.awt.*;
 import java.io.IOException;

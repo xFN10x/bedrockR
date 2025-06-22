@@ -1,4 +1,4 @@
-package fn10.bedrockr.windows.utils;
+package fn10.bedrockr.utils;
 
 import java.awt.*;
 import java.net.URL;

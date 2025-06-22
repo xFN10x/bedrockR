@@ -1,4 +1,4 @@
-package fn10.bedrockr.util.logging;
+package fn10.bedrockr.utils.logging;
 
 import java.util.logging.Filter;
 import java.util.logging.Level;

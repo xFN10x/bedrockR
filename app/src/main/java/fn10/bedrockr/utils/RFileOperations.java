@@ -1,4 +1,4 @@
-package fn10.bedrockr.windows.utils;
+package fn10.bedrockr.utils;
 
 import java.awt.Component;
 import java.awt.Image;
@@ -21,9 +21,32 @@ import fn10.bedrockr.windows.base.RLoadingScreen;
 
 public class RFileOperations {
 
-    private static String USER_DIR = System.getProperty("user.home");
-    private static String BASE_PATH = USER_DIR + "/.bedrockR/";
-    private static File BaseDirectory = new File(BASE_PATH);
+    private static final String USER_DIR = System.getProperty("user.home");
+    private static final String BASE_PATH = USER_DIR + "/.bedrockR/";
+    private static final File BaseDirectory = new File(BASE_PATH);
+    private static final String[] ILLEGAL_CHARACTERS = {
+            "<",
+            ">",
+            ":",
+            "\"",
+            "/",
+            "\\",
+            "|",
+            "?"
+    };
+
+    public static boolean validFolderName(String proposed) {
+        var bool = true;
+
+        if (proposed.length() >= 200)
+            bool = false;
+        for (String string : ILLEGAL_CHARACTERS) {
+            if (proposed.contains(string))
+                bool = false;
+        }
+
+        return bool;
+    }
 
     public static File getBaseDirectory(Component doingThis) {
         try {
@@ -47,10 +70,14 @@ public class RFileOperations {
     }
 
     public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate) {
+        return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
+    }
+
+    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate, Boolean strict) {
         try {
             var proposed = BaseDirectory + "/workspace/" + WorkspaceName + ToCreate;
             var proposedFile = new File(proposed);
-            if (proposedFile.exists()) {
+            if (proposedFile.exists() || strict) {
                 return proposedFile;
             } else
                 return Files.createFile(proposedFile.toPath()).toFile();
@@ -108,7 +135,7 @@ public class RFileOperations {
                 BufferedImage BI = new BufferedImage(image.getWidth(null),
                         image.getHeight(null),
                         BufferedImage.TYPE_INT_ARGB);
-                BI.getGraphics().drawImage(BI, 0, 0, null);
+                BI.getGraphics().drawImage(image, 0, 0, null);
 
                 ImageIO.write(BI, wpf.IconExtension, srcIcon);
 

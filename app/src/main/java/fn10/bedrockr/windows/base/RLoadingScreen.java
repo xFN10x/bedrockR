@@ -5,8 +5,10 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import fn10.bedrockr.windows.utils.ImageUtilites;
-import fn10.bedrockr.windows.utils.RFonts;
+import javax.swing.border.LineBorder;
+
+import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.utils.RFonts;
 
 import java.awt.*;
 
@@ -63,10 +65,10 @@ public class RLoadingScreen extends RDialog {
 
         
         MainBar.setPreferredSize(new Dimension(600, 20));
-        // MainBar.setBackground(getForeground());
+        MainBar.setBackground(getForeground());
         MainBar.setOrientation(JProgressBar.HORIZONTAL);
         // MainBar.setForeground(new Color(36, 252, 3));
-        // MainBar.setBorder(new LineBorder(getForeground(),3));
+        MainBar.setBorder(new LineBorder(getForeground(),3));
 
         MainBar.setValue(0);
         MainBar.setIndeterminate(true);

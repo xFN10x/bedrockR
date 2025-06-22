@@ -1,4 +1,4 @@
-package fn10.bedrockr.util.logging;
+package fn10.bedrockr.utils.logging;
 
 import java.util.Date;
 import java.util.logging.Formatter;
