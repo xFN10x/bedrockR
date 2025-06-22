@@ -69,6 +69,7 @@ public class Manifest {
         //even INNER class
         private class GeneratedWithR {
             
+            @SuppressWarnings("unused")
             public String[] bedrockR;
         }
 

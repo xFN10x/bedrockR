@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 import java.util.logging.*;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 public class Launcher {
 
@@ -64,8 +65,8 @@ public class Launcher {
             e.printStackTrace();
         }
         // open app
-        var launchPage = new RLaunchPage(LAUNCH_WINDOW_SIZE);
-
-        launchPage.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            new RLaunchPage(LAUNCH_WINDOW_SIZE);
+        });
     }
 }

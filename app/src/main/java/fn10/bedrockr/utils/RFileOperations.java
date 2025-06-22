@@ -1,9 +1,7 @@
 package fn10.bedrockr.utils;
 
 import java.awt.Component;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,10 +11,13 @@ import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
+import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.base.RLoadingScreen;
 
 public class RFileOperations {
@@ -46,6 +47,14 @@ public class RFileOperations {
         }
 
         return bool;
+    }
+
+    public static void openWorkspace(JFrame doingThis, SourceWPFile WPF) {
+        var workspaceView = new RWorkspace(WPF);
+        SwingUtilities.invokeLater(() -> {
+            workspaceView.setVisible(true);
+            doingThis.dispose();
+        });
     }
 
     public static File getBaseDirectory(Component doingThis) {
