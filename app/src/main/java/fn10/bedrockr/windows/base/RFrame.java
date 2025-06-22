@@ -48,6 +48,6 @@ public class RFrame extends JFrame {
         setDefaultCloseOperation(CloseOperation);
 
         pack();
-
+        setLocation(ImageUtilites.getScreenCenter(this));
     }
 }

@@ -1,66 +1,169 @@
 package fn10.bedrockr.windows.componets;
 
 import java.awt.Color;
-import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.io.IOException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
+import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class RAddon extends JPanel {
+public class RAddon extends JPanel implements MouseListener {
 
     private final static Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
-    private BoxLayout Lay = new BoxLayout((Container) this, BoxLayout.Y_AXIS);
+    private SpringLayout Lay = new SpringLayout();
+    protected JLabel Icon = new JLabel();
+    protected JSeparator Div = new JSeparator();
+    protected JLabel Name;
+    protected JLabel Version;
+    protected JLabel LoadText;
+    protected SourceWPFile WPFile;
+    protected WPFile WPF;
+    protected JFrame ancestor;
 
-    public RAddon(String WPName) throws IOException { //TODO: to tired to add try catch rn
-        super();
+    public RAddon(String WPName,JFrame Ancestor) {
+        this.ancestor = Ancestor;
 
-        //dirty line of code coming up... "varibles? never hear of 'er"
-        SourceWPFile WPFile =
-            new SourceWPFile(Files.readString(RFileOperations
-            .getFileFromWorkspace(this, WPName, "/workspace.RWP",true)
-            .toPath()));
-        WPFile WPF = (WPFile)WPFile.getSerilized();
+        BufferedImage BI;
+        try {
+            // dirty line of code coming up... "varibles? never hear of 'er"
+            WPFile = new SourceWPFile(Files.readString(RFileOperations
+                    .getFileFromWorkspace(this, WPName, "/workspace.RWP", true)
+                    .toPath()));
+            WPF = (WPFile) WPFile.getSerilized();
+            var iconFile = RFileOperations.getFileFromWorkspace(this, WPName, "/icon." + WPF.IconExtension, true);
+            iconFile.setReadable(true);
+            BI = ImageIO.read(iconFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorShower.showError(this, "Failed to load addon icon!", "IO Errororrorororo", e);
+            return;
+        }
 
         setLayout(Lay);
-        setPreferredSize(new Dimension(50, 50));
+        setPreferredSize(new Dimension(90, 90));
         setBackground(BGC);
-        setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16), Color.WHITE, 1, 16));
+        setBorder(new FlatLineBorder(new Insets(2, 2, 2, 2), Color.WHITE, 1, 16));
 
-        var iconFile = RFileOperations.getFileFromWorkspace(this,WPName,"/icon."+WPF.IconExtension,true);
-        iconFile.setReadable(true);
-        Launcher.LOG.info(iconFile.getAbsolutePath());
+        var resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
-        var Icon = new JLabel(new ImageIcon(ImageIO.read(iconFile)));
+        BufferedImage BI2 = new BufferedImage(resizedImage.getWidth(null), // back to bufferedimage
+                resizedImage.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB);
+        BI2.getGraphics().drawImage(resizedImage, 0, 0, null);
+
+        Icon.setIcon(
+                new ImageIcon(ImageUtilites.makeRoundedCorner(BI2, 16)));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
+        Icon.setAlignmentY(CENTER_ALIGNMENT);
+        Icon.setPreferredSize(new Dimension(100, 100));
+        // Icon.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0), Color.GRAY, 1,
+        // 16));
 
-        var Name = new JLabel(WPName);
-        Icon.setAlignmentX(CENTER_ALIGNMENT);
+        Name = new RoundedLabel(WPName, 16);
+        Name.setAlignmentX(CENTER_ALIGNMENT);
+        Name.setPreferredSize(new Dimension(90, 40));
+        Name.setBackground(Color.DARK_GRAY);
+        Name.setForeground(Color.white);
+        Name.setHorizontalAlignment(SwingConstants.CENTER);
+        Name.setVerticalAlignment(SwingConstants.BOTTOM);
 
-        var Div = new JSeparator();
-        Div.setSize(new Dimension(getWidth(), 3));
-        Div.setAlignmentX(CENTER_ALIGNMENT);
 
-        add(Icon);
+
+        Div.setPreferredSize(new Dimension(80, 3));
+        Div.setForeground(Color.white);
+
+        Version = new JLabel(WPF.MinimumEngineVersion) {
+            @Override
+            public void paintComponent(Graphics g) {
+                Graphics2D gx = (Graphics2D) g;
+                gx.rotate(-1.5708, getX() + getWidth() / 2, getY() + getHeight() / 2);
+                super.paintComponent(g);
+            }
+        };
+        Version.setPreferredSize(new Dimension(150,150));
+
+        LoadText = new JLabel("Load this?");
+
+        // Div.setAlignmentX(CENTER_ALIGNMENT);
+
+        // icon contraint
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Icon, 6, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER, this);
+        // others
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Div, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Div, 20, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Name, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.SOUTH, Name, 1, SpringLayout.SOUTH, this);
+
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, LoadText, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.SOUTH, LoadText, 18, SpringLayout.SOUTH, this);
         
-        add(Div);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Version, 21, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Version, -14, SpringLayout.VERTICAL_CENTER, this);
 
         add(Name);
+        add(Div);
+        add(Version);
+        add(LoadText);
+
+        add(Icon);// have last
+
+        addMouseListener(this);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent arg0) {
+        RFileOperations.openWorkspace(ancestor, WPFile);
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {
+        SwingUtilities.invokeLater(() -> {
+            setSize(new Dimension(110, 110));
+        });
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {
+        SwingUtilities.invokeLater(() -> {
+            setSize(new Dimension(90, 90));
+        });
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+
+    @Override
+    public void mousePressed(MouseEvent arg0) {
+        return; //dont need this
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {
+        return; //dont need this
     }
 
 }

@@ -44,6 +44,7 @@ public class RDialog extends JDialog {
         
         pack();
         setModal(true); //the only thing changed
+        setLocation(ImageUtilites.getScreenCenter(this));
     
     }
 }

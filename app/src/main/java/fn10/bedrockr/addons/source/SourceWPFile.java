@@ -33,7 +33,7 @@ public class SourceWPFile implements ElementSource {
     }
 
     @Override
-    public Object getFromJSON(String jsonString) { //TODO: find a way to make this static!
+    public Object getFromJSON(String jsonString) { 
         return gson.fromJson(jsonString, serilizedClass);
     }
 

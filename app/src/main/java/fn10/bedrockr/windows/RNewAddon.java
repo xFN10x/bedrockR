@@ -33,7 +33,6 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.base.RLoadingScreen;
-import fn10.bedrockr.windows.componets.RAddon;
 
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
