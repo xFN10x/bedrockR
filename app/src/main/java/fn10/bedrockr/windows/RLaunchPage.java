@@ -1,13 +1,16 @@
 package fn10.bedrockr.windows;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 
+import fn10.bedrockr.utils.Greetings;
+import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RFrame;
-import fn10.bedrockr.windows.utils.Greetings;
-import fn10.bedrockr.windows.utils.RFonts;
+import fn10.bedrockr.windows.componets.RAddon;
 
 import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
@@ -39,10 +42,20 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 "Welcome back to bedrockR! Below are your current addons. Have none? Create a new one.");
         othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
 
-        var projectspart = new JScrollPane();
-        projectspart.setPreferredSize(new Dimension(540, 200));
-        projectspart.setBackground(ColorFunctions.darken(new Color(30, 30, 30), 0.01f));
-        projectspart.putClientProperty(FlatClientProperties.STYLE, "arc: 28");
+        var gride = new GridLayout(2, 5, 10, 10);
+
+        var BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
+
+        var outerprojectpart = new JPanel();
+        outerprojectpart.setPreferredSize(new Dimension(540, 200));
+        outerprojectpart.setBackground(BGC);
+        // outerprojectpart.putClientProperty(FlatClientProperties.STYLE, "arc: 40");
+        outerprojectpart.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16), Color.WHITE, 1, 16));
+
+        var projectspart = new JPanel();
+        projectspart.setPreferredSize(new Dimension(520, 180));
+        projectspart.setBackground(BGC);
+        projectspart.setLayout(gride);
 
         var menuBar = new JMenuBar();
         var addonsMenu = new JMenu("Addons");
@@ -54,6 +67,15 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
 
         menuBar.add(addonsMenu);
 
+        // TODO: remove this
+
+        try {
+            projectspart.add(new RAddon("test")); //TODO: im so tired
+        } catch (Exception e) {
+            e.printStackTrace(); //die
+        }
+
+        gride.layoutContainer(projectspart);
         // seperater
         Lay.putConstraint(SpringLayout.NORTH, seperater, 10, SpringLayout.SOUTH, greeting);
         // greeting
@@ -63,13 +85,17 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         Lay.putConstraint(SpringLayout.NORTH, othergreeting, 10, SpringLayout.SOUTH, seperater);
         Lay.putConstraint(SpringLayout.WEST, othergreeting, 30, SpringLayout.WEST, this);
         // projects part
-        Lay.putConstraint(SpringLayout.SOUTH, projectspart, -100, SpringLayout.SOUTH, this);
-        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, projectspart, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, projectspart, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, projectspart, -7, SpringLayout.HORIZONTAL_CENTER, this);
+        // outer projects part
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, outerprojectpart, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, outerprojectpart, -7, SpringLayout.HORIZONTAL_CENTER, this);
 
         setJMenuBar(menuBar);
         add(greeting);
         add(othergreeting);
         add(projectspart);
+        add(outerprojectpart);
         add(seperater);
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
     }

@@ -1,9 +1,9 @@
 package fn10.bedrockr.windows.base;
 
-import fn10.bedrockr.windows.utils.ImageUtilites;
-
 import java.awt.*;
 import javax.swing.*;
+
+import fn10.bedrockr.utils.ImageUtilites;
 
 public class RDialog extends JDialog {
 

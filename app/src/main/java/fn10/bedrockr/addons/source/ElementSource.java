@@ -16,7 +16,7 @@ public interface ElementSource {
 
     String getJSONString();
 
-    Object getClassFromJSON(String jsonString);
+    Object getFromJSON(String jsonString);
 
     File buildJSONFile(Component doingThis,String workspace);
 

@@ -7,15 +7,19 @@ import java.io.FileWriter;
 import javax.annotation.Nullable;
 
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
-import fn10.bedrockr.windows.utils.RFileOperations;
+import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceWPFile implements ElementSource {
     private final String Location = "/workspace.RWP";
-    private Class<SourceWPFile> serilizedClass;
+    private Class<WPFile> serilizedClass = WPFile.class;
     private WPFile serilized;
 
     public SourceWPFile(WPFile obj) {
         this.serilized = obj;
+    }
+
+    public SourceWPFile(String jsonString) {
+        this.serilized = (WPFile)getFromJSON(jsonString);
     }
 
     @Override
@@ -29,7 +33,7 @@ public class SourceWPFile implements ElementSource {
     }
 
     @Override
-    public Object getClassFromJSON(String jsonString) {
+    public Object getFromJSON(String jsonString) { //TODO: find a way to make this static!
         return gson.fromJson(jsonString, serilizedClass);
     }
 

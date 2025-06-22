@@ -1,7 +1,7 @@
 package fn10.bedrockr.windows.base;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.windows.utils.ImageUtilites;
+import fn10.bedrockr.utils.ImageUtilites;
 
 import java.awt.*;
 import javax.swing.*;
