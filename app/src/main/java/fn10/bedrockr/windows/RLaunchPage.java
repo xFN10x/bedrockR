@@ -5,7 +5,7 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 
 import fn10.bedrockr.utils.Greetings;
-import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RAddon;
@@ -67,7 +67,9 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         menuBar.add(addonsMenu);
 
 
-            projectspart.add(new RAddon("test",this));
+        for (var folder : RFileOperations.getWorkspaces(this)) {
+            projectspart.add(new RAddon(folder, this));
+        }
 
         gride.layoutContainer(projectspart);
         // seperater

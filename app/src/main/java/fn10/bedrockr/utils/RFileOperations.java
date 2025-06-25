@@ -1,13 +1,16 @@
 package fn10.bedrockr.utils;
 
 import java.awt.Component;
+import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -15,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.windows.RWorkspace;
@@ -47,6 +51,23 @@ public class RFileOperations {
         }
 
         return bool;
+    }
+
+    public static String[] getWorkspaces(Component doingThis) {
+        var folder = new File(getBaseDirectory(doingThis).getAbsolutePath() + "/workspace/").toPath();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
+            var list = new List();
+            for (Path path : stream) {
+                if (Files.isDirectory(path)) {
+                    Launcher.LOG.info(path.getFileName().toString());
+                    list.add(path.getFileName().toString());
+                }
+            }
+            return list.getItems();
+        } catch (IOException e) {
+            showError(doingThis, "IO Error", BASE_PATH, e);
+            return new String[] {""};
+        }
     }
 
     public static void openWorkspace(JFrame doingThis, SourceWPFile WPF) {
@@ -82,7 +103,8 @@ public class RFileOperations {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
     }
 
-    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate, Boolean strict) {
+    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
+            Boolean strict) {
         try {
             var proposed = BaseDirectory + "/workspace/" + WorkspaceName + ToCreate;
             var proposedFile = new File(proposed);

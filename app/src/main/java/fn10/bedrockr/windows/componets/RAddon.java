@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
@@ -47,19 +48,34 @@ public class RAddon extends JPanel implements MouseListener {
         this.ancestor = Ancestor;
 
         BufferedImage BI;
+        var step = 0;
         try {
             // dirty line of code coming up... "varibles? never hear of 'er"
             WPFile = new SourceWPFile(Files.readString(RFileOperations
                     .getFileFromWorkspace(this, WPName, "/workspace.RWP", true)
                     .toPath()));
             WPF = (WPFile) WPFile.getSerilized();
+            step = 1;
             var iconFile = RFileOperations.getFileFromWorkspace(this, WPName, "/icon." + WPF.IconExtension, true);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorShower.showError(this, "Failed to load addon icon!", "IO Errororrorororo", e);
-            return;
+            if (step == 0) {
+                return;
+            } else if (step == 1) {
+            WPF = (WPFile) WPFile.getSerilized();
+            try {
+                BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
+            } catch (Exception e2) {
+                e2.printStackTrace();
+                BI = null;
+                return;
+            }
+            } else {
+                BI = null;
+                return;
+            }
         }
 
         setLayout(Lay);
@@ -75,7 +91,7 @@ public class RAddon extends JPanel implements MouseListener {
         BI2.getGraphics().drawImage(resizedImage, 0, 0, null);
 
         Icon.setIcon(
-                new ImageIcon(ImageUtilites.makeRoundedCorner(BI2, 16)));
+                new ImageIcon(ImageUtilites.makeRoundedCorner(BI2, 14)));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         Icon.setPreferredSize(new Dimension(100, 100));
