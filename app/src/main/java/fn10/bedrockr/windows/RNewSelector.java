@@ -1,21 +1,14 @@
 package fn10.bedrockr.windows;
 
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.List;
-import java.lang.reflect.Array;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
-import javax.swing.*;
 
-import fn10.bedrockr.addons.source.ElementDetails;
-import fn10.bedrockr.addons.source.ElementSource;
 import fn10.bedrockr.addons.source.SourceWPFile;
-import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.SpringUtilities;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
@@ -46,7 +39,11 @@ public class RNewSelector extends RFrame {
             try {
                 ElementDetails details = (ElementDetails)class1.getMethod("getDetails").invoke(this);
 
-                MainPane.add(new RElement(details));
+                MainPane.add(new RElement(details, () -> {
+                    for (Component c : MainPane.getComponents()) {
+                        ((RElement)c).unselect();
+                    }
+                }));
             } catch (Exception e) {
                 e.printStackTrace();
                 continue;

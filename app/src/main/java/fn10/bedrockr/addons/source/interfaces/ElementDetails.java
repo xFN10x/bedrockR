@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.source;
+package fn10.bedrockr.addons.source.interfaces;
 
 import javax.swing.ImageIcon;
 

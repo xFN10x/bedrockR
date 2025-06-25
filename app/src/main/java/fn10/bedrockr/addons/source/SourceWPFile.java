@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 
+import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.RFileOperations;
 
