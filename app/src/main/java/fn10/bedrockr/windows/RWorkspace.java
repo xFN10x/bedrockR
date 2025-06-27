@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -13,14 +14,18 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
+
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.windows.base.RFrame;
+import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class RWorkspace extends RFrame implements ActionListener {
+public class RWorkspace extends RFrame implements ActionListener,ElementCreationListener {
 
     protected Container CP = getContentPane();
 
@@ -77,7 +82,7 @@ public class RWorkspace extends RFrame implements ActionListener {
 
         pack();
 
-        Launcher.LOG.info(VerticleSep.getSize().toString());
+        setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
     }
 
     private void update() { 
@@ -90,9 +95,27 @@ public class RWorkspace extends RFrame implements ActionListener {
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getActionCommand() == "add") {
             SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewSelector();
+                var addFrame = new RNewSelector(this);
                 addFrame.setVisible(true);
             });
         }
+    }
+
+    @Override
+    public void onElementCreate() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onElementCreate'");
+    }
+
+    @Override
+    public void onElementDraft() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onElementDraft'");
+    }
+
+    @Override
+    public void onElementCancel() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onElementCancel'");
     }
 }

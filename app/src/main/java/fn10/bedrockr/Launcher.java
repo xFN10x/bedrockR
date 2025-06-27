@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 public class Launcher {
 
     public static String VERSION = "a1.0";
-    public static ImageIcon ICON = new ImageIcon(Launcher.class.getResource("/branding/Icon.png"));
+    public static ImageIcon ICON = new ImageIcon(Launcher.class.getResource("/ui/Icon.png"));
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");

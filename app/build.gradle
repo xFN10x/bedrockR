@@ -31,13 +31,13 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.13.1'
     //flatlaf
-    def flatlafVersion = '3.4'
+    def flatlafVersion = '3.6'
     implementation( "com.formdev:flatlaf:${flatlafVersion}" )
-    implementation( "com.formdev:flatlaf:${flatlafVersion}:linux-x86_64@so" )
-    implementation( "com.formdev:flatlaf:${flatlafVersion}:macos-arm64@dylib" )
-    implementation( "com.formdev:flatlaf:${flatlafVersion}:macos-x86_64@dylib" )
-    implementation( "com.formdev:flatlaf:${flatlafVersion}:windows-x86_64@dll" )
-    implementation( "com.formdev:flatlaf:${flatlafVersion}:windows-arm64@dll" )
+    //implementation( "com.formdev:flatlaf:${flatlafVersion}" )
+    //implementation( "com.formdev:flatlaf:${flatlafVersion}:linux-x86_64@so" )
+    //implementation( "com.formdev:flatlaf:${flatlafVersion}:macos-arm64@dylib" )
+    //implementation( "com.formdev:flatlaf:${flatlafVersion}:macos-x86_64@dylib" )
+    //implementation( "com.formdev:flatlaf:${flatlafVersion}:windows-x86_64@dll" )
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

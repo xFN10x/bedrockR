@@ -21,7 +21,7 @@ public class RDialog extends JDialog {
 
         int titleImgW = 187;
         int titleImageH = 40;
-        ImageIcon titleImgIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/branding/BrandingFullWShadow.png"), titleImgW, titleImageH); // Full Icon
+        ImageIcon titleImgIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH); // Full Icon
         JLabel titleImg = new JLabel(titleImgIcon);
         titleImg.setSize(new Dimension(titleImgW,titleImageH));
         titleImg.setHorizontalAlignment(SwingConstants.LEFT);
