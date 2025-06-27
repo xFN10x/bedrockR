@@ -10,8 +10,8 @@ import fn10.bedrockr.Launcher;
 
 public class RFonts {
 
-    public static Font RegMinecraftFont = SetupFont("/branding/font.otf",14);
-    public static Font BoldMinecraftFont = SetupFont("/branding/font.otf",14);
+    public static Font RegMinecraftFont = SetupFont("/ui/font.otf",14);
+    public static Font BoldMinecraftFont = SetupFont("/ui/font.otf",14);
 
 
     protected static Font SetupFont(@Nonnull String Path,int Size) {

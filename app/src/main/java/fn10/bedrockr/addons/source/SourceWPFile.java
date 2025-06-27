@@ -1,16 +1,21 @@
 package fn10.bedrockr.addons.source;
 
 import java.awt.Component;
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileWriter;
 
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.windows.RElementCreationScreen;
+import fn10.bedrockr.windows.base.RFrame;
+import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceWPFile implements ElementSource {
     private final String Location = "/workspace.RWP";
@@ -19,7 +24,9 @@ public class SourceWPFile implements ElementSource {
 
     public SourceWPFile(WPFile obj) {
         this.serilized = obj;
-
+    }
+    public SourceWPFile() {
+        this.serilized = null;
     }
 
     public static ElementDetails getDetails() {
@@ -66,6 +73,14 @@ public class SourceWPFile implements ElementSource {
     @Override
     public Object getSerilized() {
         return this.serilized;
+    }
+
+    @Override
+    public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
+        var frame = new RElementCreationScreen(Parent,"Workspace File", parent);
+
+
+        return frame;
     }
 
 }

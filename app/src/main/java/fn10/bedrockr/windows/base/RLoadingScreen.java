@@ -57,10 +57,10 @@ public class RLoadingScreen extends RDialog {
         int titleImgW = 374;
         int titleImageH = 74;
 
-        var BG = new JLabel(ImageUtilites.ResizeImageByURL(getClass().getResource("/branding/BG.png"), 600, 600));
+        var BG = new JLabel(ImageUtilites.ResizeImageByURL(getClass().getResource("/ui/BG.png"), 600, 600));
 
         var Branding = new JLabel(ImageUtilites
-                .ResizeImageByURL(getClass().getResource("/branding/BrandingFullWShadow.png"), titleImgW, titleImageH));
+                .ResizeImageByURL(getClass().getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH));
         Branding.setPreferredSize(new Dimension(titleImgW, titleImageH));
 
         
