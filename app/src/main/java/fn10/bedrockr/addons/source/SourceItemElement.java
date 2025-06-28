@@ -65,10 +65,11 @@ public class SourceItemElement implements ElementSource {
 
     @Override
     public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
-        var frame = new RElementCreationScreen(Parent,"Item", parent);
+        var frame = new RElementCreationScreen(Parent, "Item", parent);
 
-        frame.addField(new RElementValue(String.class, "Name", "Name", false, "The name of the item. e.g. \"Diamond\", \"Coal\""));;
-
+        frame.addField(new RElementValue(String.class, "Name", "Name", false,
+                "The name of the item. e.g. \"Diamond\", \"Coal\""));
+        ;
 
         return frame;
     }

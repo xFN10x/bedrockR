@@ -3,6 +3,7 @@ package fn10.bedrockr.utils;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.annotation.Nonnull;
 
@@ -15,13 +16,21 @@ public class RFonts {
 
 
     protected static Font SetupFont(@Nonnull String Path,int Size) {
-        File font_file = new File(Launcher.class.getResource(Path).getPath());
+        InputStream font_file;
+        try {
+            font_file = RFonts.class.getResourceAsStream(Path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorShower.showError(null, "Failed to open font file", "Font Error", e);
+            return null;
+        }
 
         Font font = null;
         try { // try setting font
             font = Font.createFont(Font.TRUETYPE_FONT, font_file).deriveFont(1,Size);
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
+            ErrorShower.showError(null, "Failed to open font file", "Font Error", e);
         }
 
         GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font); // reg font if not null

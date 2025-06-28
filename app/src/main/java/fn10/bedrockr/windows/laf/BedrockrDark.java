@@ -5,7 +5,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 public class BedrockrDark
 	extends FlatDarkLaf
 {
-	public static final String NAME = "bedrockrDark";
+	public static final String NAME = "BedrockrDark";
 
 	public static boolean setup() {
 		return setup( new BedrockrDark() );

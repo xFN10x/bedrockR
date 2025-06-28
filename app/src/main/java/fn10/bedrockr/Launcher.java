@@ -3,6 +3,7 @@
  */
 package fn10.bedrockr;
 
+import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
@@ -16,7 +17,12 @@ import java.text.MessageFormat;
 import java.util.logging.*;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import com.formdev.flatlaf.FlatLaf;
 
 public class Launcher {
 
@@ -58,15 +64,20 @@ public class Launcher {
 
         // setup theme
 
-        // FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf" );
+        FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf" );
+        
         try {
-            BedrockrDark.setup();
+            LOG.info(String.valueOf(BedrockrDark.setup()));
         } catch (Exception e) {
             e.printStackTrace();
+            ErrorShower.showError(new JFrame(), "failed to load theme " + e.getCause().toString(), "FlatLaf Error", e);
         }
+        LOG.info(UIManager.getLookAndFeel().toString());
+        
         // open app
         SwingUtilities.invokeLater(() -> {
-            new RLaunchPage(LAUNCH_WINDOW_SIZE);
+        var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
+            launch.setVisible(true);
         });
     }
 }
