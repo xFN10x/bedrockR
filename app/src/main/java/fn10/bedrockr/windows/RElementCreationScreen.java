@@ -1,5 +1,6 @@
 package fn10.bedrockr.windows;
 
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -18,8 +19,8 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public class RElementCreationScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
-    private JPanel Pane;
-    private GridLayout PaneLay = new GridLayout(0,2);
+    private JPanel Pane = new JPanel();
+    private FlowLayout PaneLay = new FlowLayout(1,8,6);
 
     public RElementCreationScreen(Frame Parent, String elementName, ElementCreationListener listenier) {
         super(
@@ -55,7 +56,7 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
         Lay.putConstraint(SpringLayout.EAST, Sep, -5, SpringLayout.EAST, getContentPane());
 
         Lay.putConstraint(SpringLayout.SOUTH, Pane, -5, SpringLayout.NORTH, Sep);
-        Lay.putConstraint(SpringLayout.NORTH, Pane, -5, SpringLayout.NORTH, getContentPane());
+        Lay.putConstraint(SpringLayout.NORTH, Pane, 5, SpringLayout.NORTH, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, Pane, 5, SpringLayout.WEST, getContentPane());
         Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.EAST, getContentPane());
 

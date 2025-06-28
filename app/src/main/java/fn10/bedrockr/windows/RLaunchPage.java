@@ -95,7 +95,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         add(seperater);
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
 
-        setVisible(true);
+        //setVisible(true);
         
     }
 
