@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.Type;
@@ -18,7 +20,7 @@ public class RElementValue extends JPanel {
     private Component Input;
     private JCheckBox EnableDis = new JCheckBox();
 
-    private final static Dimension Size = new Dimension(335, 40);
+    private final static Dimension Size = new Dimension(350, 40);
     private String Target = "";
 
     public RElementValue(@Nonnull Type InputType, String TargetField, String DisplayName, Boolean Optional,
@@ -26,15 +28,13 @@ public class RElementValue extends JPanel {
         super();
 
         this.Target = TargetField;
-        
+
         setMaximumSize(Size);
         setPreferredSize(Size);
         setBorder(new LineBorder(Color.DARK_GRAY));
         setLayout(Lay);
 
-        Help.setSize(6, 6);
-        Help.putClientProperty("JButton.buttonType", "help" );
-        //Help.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.white, 1, 32));
+        Help.putClientProperty("JButton.buttonType", "help");
 
         Launcher.LOG.info(InputType.getTypeName());
         if (InputType.equals(Boolean.class)) {
@@ -52,11 +52,22 @@ public class RElementValue extends JPanel {
             }
 
         });
+        Help.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+            
+        });
 
         Name.setText(DisplayName);
 
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.WEST, Name, 13, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.WEST, Name, 6, SpringLayout.EAST, Help);
+
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.WEST, Help, 0, SpringLayout.WEST, this);
 
         Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
         Lay.putConstraint(SpringLayout.NORTH, Input, 3, SpringLayout.NORTH, this);
@@ -68,15 +79,14 @@ public class RElementValue extends JPanel {
 
         if (!Optional) {
             EnableDis.setEnabled(false);
-        }    
+        }
 
         Launcher.LOG.info(Input.toString());
-        add(Help);
+
         add(Name);
         add(Input);
         add(EnableDis);
+        add(Help);
 
-        
-            
     }
 }

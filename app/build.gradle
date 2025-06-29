@@ -5,11 +5,14 @@
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/8.8/userguide/building_java_projects.html in the Gradle documentation.
  */
 
+ 
 
 
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'java'
+    id("com.gradleup.shadow") version "9.0.0-beta17"
 }
 
 repositories {
@@ -27,6 +30,7 @@ sourceSets {
 }
 
 
+
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation libs.junit.jupiter
@@ -40,6 +44,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.13.1'
     //flat laf
     implementation 'com.formdev:flatlaf:3.6'
+
+    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.0.0-beta17")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -58,3 +64,12 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+def version = 'a1.0'
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveBaseName = 'bedrockR'
+  archiveVersion = version
+  destinationDirectory = 
+}
+
