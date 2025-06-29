@@ -70,6 +70,6 @@ def version = 'a1.0'
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   archiveBaseName = 'bedrockR'
   archiveVersion = version
-  destinationDirectory = 
+  destinationDirectory = layout.buildDirectory.dir('')
 }
 
