@@ -29,7 +29,7 @@ jobs:
         distribution: 'microsoft'
 
 
-       name: Change wrapper permissions
+    - name: Change wrapper permissions
       run: chmod +x ./gradlew
     # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
     # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
