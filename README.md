@@ -36,7 +36,7 @@ Building a JAR can be done with one command.
     gradlew (cmd prompt)
   ```
 - Then, run the last command,
-  ```
+  ```powershell
   ./gradlew shadowJar (powershell)
     gradlew shadowJar (cmd prompt)
   ```
