@@ -10,6 +10,8 @@ Minecraft bedrock Addons are experimental, and very hard to create compared to J
 
 This app was made with Visual Studio Code, and it is fully setup to be used with it.
 
+bedrockR is made with Java 21, and it is tested, and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
+
 ### Debugging/Contributing
 
 It is reccomened to use Visual Studio code to make edits. Here are the extension I reccomend:
@@ -22,8 +24,23 @@ It is reccomened to use Visual Studio code to make edits. Here are the extension
 
 If you can, use this for building when convenient.
 
+
 ### Building
 
+Building a JAR can be done with one command.
+
+(Make sure you are cd'ed into the source code directory)
+- First, run
+  ```powershell
+    ./gradlew (powershell)
+    gradlew (cmd prompt)
+  ```
+- Then, run the last command,
+  ```
+  ./gradlew shadowJar (powershell)
+    gradlew shadowJar (cmd prompt)
+  ```
+- Now you should be able to find the JAR in `app/build/builtJars`
 
 
 
