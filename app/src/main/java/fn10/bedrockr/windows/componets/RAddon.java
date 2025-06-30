@@ -14,13 +14,16 @@ import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
@@ -44,7 +47,7 @@ public class RAddon extends JPanel implements MouseListener {
     protected WPFile WPF;
     protected JFrame ancestor;
 
-    public RAddon(String WPName,JFrame Ancestor) {
+    public RAddon(String WPName, JFrame Ancestor) {
         this.ancestor = Ancestor;
 
         BufferedImage BI;
@@ -64,14 +67,26 @@ public class RAddon extends JPanel implements MouseListener {
             if (step == 0) {
                 return;
             } else if (step == 1) {
-            WPF = (WPFile) WPFile.getSerilized();
-            try {
-                BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
-            } catch (Exception e2) {
-                e2.printStackTrace();
-                BI = null;
-                return;
-            }
+                WPF = (WPFile) WPFile.getSerilized();
+                try {
+                    BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
+                    var op = JOptionPane.showConfirmDialog(this, "Woah! The addon " + WPName
+                            + ", is missing an icon. Would you like to add one?  (this message will go away ;) )",
+                            "Addon Error", JOptionPane.YES_NO_OPTION);
+                    if (op == JOptionPane.YES_OPTION) {
+                        var bic = new JFileChooser();
+                        bic.setFileFilter(
+                                new FileNameExtensionFilter("Addon's Support Image Files", WPF.IconExtension));
+                        if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                            BI = ImageIO.read(bic.getSelectedFile());
+                            ImageIO.write(BI, WPF.IconExtension, RFileOperations.getFileFromWorkspace(this, WPName, "/icon."+WPF.IconExtension));
+                        }
+                    }
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                    BI = null;
+                    return;
+                }
             } else {
                 BI = null;
                 return;
@@ -106,8 +121,6 @@ public class RAddon extends JPanel implements MouseListener {
         Name.setHorizontalAlignment(SwingConstants.CENTER);
         Name.setVerticalAlignment(SwingConstants.BOTTOM);
 
-
-
         Div.setPreferredSize(new Dimension(80, 3));
         Div.setForeground(Color.white);
 
@@ -119,7 +132,7 @@ public class RAddon extends JPanel implements MouseListener {
                 super.paintComponent(g);
             }
         };
-        Version.setPreferredSize(new Dimension(150,150));
+        Version.setPreferredSize(new Dimension(150, 150));
 
         LoadText = new JLabel("Load this?");
 
@@ -136,7 +149,7 @@ public class RAddon extends JPanel implements MouseListener {
 
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, LoadText, 0, SpringLayout.HORIZONTAL_CENTER, this);
         Lay.putConstraint(SpringLayout.SOUTH, LoadText, 18, SpringLayout.SOUTH, this);
-        
+
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Version, 21, SpringLayout.HORIZONTAL_CENTER, this);
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Version, -14, SpringLayout.VERTICAL_CENTER, this);
 
@@ -153,7 +166,7 @@ public class RAddon extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent arg0) {
         RFileOperations.openWorkspace(ancestor, WPFile);
-        
+
     }
 
     @Override
@@ -174,12 +187,12 @@ public class RAddon extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent arg0) {
-        return; //dont need this
+        return; // dont need this
     }
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
-        return; //dont need this
+        return; // dont need this
     }
 
 }

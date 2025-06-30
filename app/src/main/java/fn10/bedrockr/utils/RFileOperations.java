@@ -40,6 +40,8 @@ public class RFileOperations {
             "?"
     };
 
+    public static final String WPFFILENAME = "workspace.WPF";
+
     public static boolean validFolderName(String proposed) {
         var bool = true;
 
@@ -66,7 +68,7 @@ public class RFileOperations {
             return list.getItems();
         } catch (IOException e) {
             showError(doingThis, "IO Error", BASE_PATH, e);
-            return new String[] {""};
+            return new String[] { "" };
         }
     }
 
@@ -76,6 +78,20 @@ public class RFileOperations {
             workspaceView.setVisible(true);
             doingThis.dispose();
         });
+    }
+
+    public static File getBaseDirectory(Component doingThis, String Folder) {
+        var file = new File(BASE_PATH + Folder);
+        try {
+            if (!file.exists()) {
+                return Files.createDirectories(file.toPath()).toFile();
+            } else
+                return file;
+        } catch (Exception e) {
+            showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
+            e.printStackTrace();
+        }
+        return BaseDirectory;
     }
 
     public static File getBaseDirectory(Component doingThis) {
@@ -140,7 +156,7 @@ public class RFileOperations {
             throw e;
         } else {
             File trying;
-            try { // try
+            try { // try making dirs
 
                 trying = wsFolder;
 
@@ -172,7 +188,7 @@ public class RFileOperations {
 
                 return true;
 
-            } catch (Exception e) { // handle exception
+            } catch (Exception e) { // handle exception (idk why i put there here, i think its cause this code used to be longer?)
                 showError(loading, "IO Error, with path " + wsFolder.getAbsolutePath(), "IO Error", e);
                 throw e;
             }
