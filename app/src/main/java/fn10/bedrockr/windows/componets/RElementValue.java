@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.lang.reflect.Type;
 import javax.swing.border.LineBorder;
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 
 public class RElementValue extends JPanel {
 
@@ -22,12 +23,20 @@ public class RElementValue extends JPanel {
 
     private final static Dimension Size = new Dimension(350, 40);
     private String Target = "";
+    private FieldFilter Filter;
+    private Class InputType;
 
-    public RElementValue(@Nonnull Type InputType, String TargetField, String DisplayName, Boolean Optional,
+    public boolean Required = false;
+
+    public RElementValue(@Nonnull Class InputType, FieldFilter Filter, String TargetField, String DisplayName,
+            Boolean Optional,
             @Nullable String HelpString) {
         super();
 
         this.Target = TargetField;
+        this.Required = !Optional;
+        this.Filter = Filter;
+        this.InputType = InputType;
 
         setMaximumSize(Size);
         setPreferredSize(Size);
@@ -56,37 +65,65 @@ public class RElementValue extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
             }
-            
+
         });
 
         Name.setText(DisplayName);
 
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.WEST, Name, 6, SpringLayout.EAST, Help);
+        Lay.putConstraint(SpringLayout.WEST, Name, 0, SpringLayout.WEST, this);
 
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.WEST, Help, 0, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
 
         Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
         Lay.putConstraint(SpringLayout.NORTH, Input, 3, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.SOUTH, Input, -3, SpringLayout.SOUTH, this);
         Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableDis);
 
-        Lay.putConstraint(SpringLayout.EAST, EnableDis, -3, SpringLayout.EAST, this);
+        Lay.putConstraint(SpringLayout.EAST, EnableDis, -3, SpringLayout.WEST, Help);
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableDis, 0, SpringLayout.VERTICAL_CENTER, this);
 
-        if (!Optional) {
+        if (!Optional)
             EnableDis.setEnabled(false);
-        }
 
-        Launcher.LOG.info(Input.toString());
+        if (HelpString == null)
+            Help.setVisible(false);
+
 
         add(Name);
         add(Input);
         add(EnableDis);
         add(Help);
 
+    }
+
+    public boolean valid() {
+        Launcher.LOG.info(InputType.getName());
+        if (InputType.equals(Boolean.class)) {
+            return true;
+        } else {
+            try {
+                String text = ((JTextField) Input).getText();
+                if (InputType.equals(Integer.class)) {
+                    Integer.parseInt(text);
+                } else if (InputType.equals(Double.class)) {
+                    Double.parseDouble(text);
+                } else if (InputType.equals(Float.class)) {
+                    Float.parseFloat(text);
+                } else if (InputType.equals(Long.class)) {
+                    Long.parseLong(text);
+                } else if (InputType.equals(String.class)) {
+                    return Filter.getValid(text);
+                } else {
+                    return true;
+                }
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
     }
 }

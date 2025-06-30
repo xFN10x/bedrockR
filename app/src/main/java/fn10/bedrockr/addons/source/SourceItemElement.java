@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 
+import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.ItemFile;
@@ -67,7 +68,7 @@ public class SourceItemElement implements ElementSource {
     public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
         var frame = new RElementCreationScreen(Parent, "Item", parent);
 
-        frame.addField(new RElementValue(String.class, "Name", "Name", false,
+        frame.addField(new RElementValue(String.class, new RegularStringFilter(), "Name", "Name", false,
                 "The name of the item. e.g. \"Diamond\", \"Coal\""));
         ;
 

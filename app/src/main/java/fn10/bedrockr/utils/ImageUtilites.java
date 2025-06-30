@@ -27,7 +27,7 @@ public class ImageUtilites {
 
     public static Point getScreenCenter(Component target) {
         var size = Toolkit.getDefaultToolkit().getScreenSize();
-        Launcher.LOG.info(new Point(((int)(size.getWidth() * 0.5)), ((int) (size.getHeight() * 0.5))).toString());
+        //Launcher.LOG.info(new Point(((int)(size.getWidth() * 0.5)), ((int) (size.getHeight() * 0.5))).toString());
         return new Point(((int)((size.getWidth() - target.getWidth()) * 0.5)), ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
     }
 

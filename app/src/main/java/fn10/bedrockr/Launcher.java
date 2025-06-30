@@ -20,8 +20,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import com.formdev.flatlaf.FlatLaf;
 
 public class Launcher {
@@ -34,11 +32,12 @@ public class Launcher {
 
     public static void main(String[] args) {
         // set up logging
-        String logloc = System.getProperty("java.io.tmpdir")
-                + System.currentTimeMillis() + "\\bedrockR-log" + System.currentTimeMillis() + ".txt";
+        String logloc = RFileOperations.getBaseDirectory(null, "\\logs").getAbsolutePath() + "\\bedrockR-log-"
+                + System.currentTimeMillis()+ ".log";
 
         for (var h : LOG.getHandlers()) {
             LOG.removeHandler(h);
+            h.close();
         }
         LOG.setUseParentHandlers(false);
         LOG.setLevel(Level.FINE);
@@ -47,14 +46,22 @@ public class Launcher {
         // try to add file handler
         try {
 
-            Handler fileHandler = new FileHandler(logloc, 2000, 5);
+            Handler fileHandler = new FileHandler(logloc, 2000, 1, true);
             fileHandler.setFormatter(new RLogFormatter());
-            LOG.addHandler(fileHandler);
-
             fileHandler.setFilter(new RLogFilter());
+            LOG.addHandler(fileHandler);
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                for (var h : LOG.getHandlers()) {
+                    //LOG.removeHandler(h);
+                    h.close();
+                }
+            }
+        });
 
         // log stuff
         LOG.info("Logging to " + logloc);
@@ -64,8 +71,8 @@ public class Launcher {
 
         // setup theme
 
-        FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf" );
-        
+        FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
+
         try {
             LOG.info(String.valueOf(BedrockrDark.setup()));
         } catch (Exception e) {
@@ -73,10 +80,10 @@ public class Launcher {
             ErrorShower.showError(new JFrame(), "failed to load theme " + e.getCause().toString(), "FlatLaf Error", e);
         }
         LOG.info(UIManager.getLookAndFeel().toString());
-        
+
         // open app
         SwingUtilities.invokeLater(() -> {
-        var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
+            var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
             launch.setVisible(true);
         });
     }

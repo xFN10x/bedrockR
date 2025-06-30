@@ -1,17 +1,23 @@
 package fn10.bedrockr.windows;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.cert.Extension;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
@@ -20,7 +26,10 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
     private JPanel Pane = new JPanel();
-    private FlowLayout PaneLay = new FlowLayout(1,8,6);
+    private FlowLayout PaneLay = new FlowLayout(1, 8, 6);
+
+    public List<RElementValue> Fields = new ArrayList<RElementValue>();
+    public List<RElementValue> RequiredFields = new ArrayList<RElementValue>();
 
     public RElementCreationScreen(Frame Parent, String elementName, ElementCreationListener listenier) {
         super(
@@ -32,12 +41,15 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
         this.Listener = Listener;
 
         var CreateButton = new JButton("Create!");
+        CreateButton.setActionCommand("create");
         CreateButton.addActionListener(this);
 
         var DraftButton = new JButton("Save as draft");
+        DraftButton.setActionCommand("draft");
         DraftButton.addActionListener(this);
 
         var CancelButton = new JButton("Cancel");
+        CancelButton.setActionCommand("cancel");
         CancelButton.addActionListener(this);
 
         var Sep = new JSeparator(JSeparator.HORIZONTAL);
@@ -72,18 +84,46 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
 
     public void addField(RElementValue Field) {
         Pane.add(Field);
+        Fields.add(Field);
+        if (Field.Required)
+            RequiredFields.add(Field);
+    }
+
+    public List<RElementValue> checkForErrors() {
+        List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
+        for (RElementValue rElementValue : Fields) {
+            if (!rElementValue.valid())
+                IncorrectFields.add(rElementValue);
+        }
+        Launcher.LOG.info(String.valueOf(IncorrectFields.size()));
+        if (IncorrectFields.size() != 0) {
+            return IncorrectFields;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         var action = e.getActionCommand();
-        if (action == "create") {
+        if (action.equals("create")) {
+            if (checkForErrors() == null) {
 
+            } else {
+                JOptionPane.showMessageDialog(this, "<html>There were error while creating this element: <br><ul>" +
+                        "<li>Bananas are yellow</li>" +
+                        "<li>Oranges are orange</li>" +
+                        "<li>Strewberries are red</li>" +
+                        "</ul><html>", "Element Creation Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else if (action == "draft") {
 
         } else if (action == "cancel") {
 
         } else {
+            var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");
+            ErrorShower.showError((Component)this, "woah mate, button dont fit, dont fit, button, it dont fit, wont fit", "I did an oppsie", ex);
+
             throw new IllegalAccessError();
         }
     }

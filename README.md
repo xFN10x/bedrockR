@@ -1,6 +1,6 @@
 # ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/app/src/main/resources/ui/BrandingFullWShadow.png)
 
-A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook. 
+A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 ## Why?
 
@@ -24,26 +24,24 @@ It is reccomened to use Visual Studio code to make edits. Here are the extension
 
 If you can, use this for building when convenient.
 
-
 ### Building
 
 Building a JAR can be done with one command.
 
 (Make sure you are cd'ed into the source code directory)
+
 - First, run
+
   ```powershell
     ./gradlew (powershell)
     gradlew (cmd prompt)
   ```
+
 - Then, run the last command,
+
   ```powershell
   ./gradlew shadowJar (powershell)
     gradlew shadowJar (cmd prompt)
   ```
+
 - Now you should be able to find the JAR in `app/build/builtJars`
-
-
-
-
-
-

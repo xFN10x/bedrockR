@@ -18,7 +18,7 @@ import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceWPFile implements ElementSource {
-    private final String Location = "/workspace.RWP";
+    private final String Location = "/" + RFileOperations.WPFFILENAME;
     private Class<WPFile> serilizedClass = WPFile.class;
     private WPFile serilized;
 
