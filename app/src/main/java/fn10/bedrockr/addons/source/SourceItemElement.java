@@ -23,7 +23,7 @@ public class SourceItemElement implements ElementSource {
     private ItemFile serilized;
 
     public static ElementDetails getDetails() {
-        return new ElementDetails("Item ", "A basic item. Can be made as food, \nblock placer, or entity spawner.",
+        return new ElementDetails("Item ", "<html>A basic item. Can be made as food, <br>block placer, or entity spawner.</html>",
                 new ImageIcon(ElementSource.class.getResource("/addons/element/Item.png")));
     }
 
