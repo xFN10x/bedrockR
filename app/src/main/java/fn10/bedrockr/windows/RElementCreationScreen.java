@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 
+import com.google.gson.Gson;
+
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -28,10 +30,12 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
     private JPanel Pane = new JPanel();
     private FlowLayout PaneLay = new FlowLayout(1, 8, 6);
 
+    public Class<?> SourceClass;
     public List<RElementValue> Fields = new ArrayList<RElementValue>();
     public List<RElementValue> RequiredFields = new ArrayList<RElementValue>();
 
-    public RElementCreationScreen(Frame Parent, String elementName, ElementCreationListener listenier) {
+    public RElementCreationScreen(Frame Parent, String elementName, Class<?> sourceElementClass,
+            ElementCreationListener listenier) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,
@@ -39,6 +43,7 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
                 ElementSource.defaultSize);
 
         this.Listener = Listener;
+        this.SourceClass = sourceElementClass;
 
         var CreateButton = new JButton("Create!");
         CreateButton.setActionCommand("create");
@@ -108,13 +113,25 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
         var action = e.getActionCommand();
         if (action.equals("create")) {
             if (checkForErrors() == null) {
+                try {
+                    var workingClass = SourceClass.getConstructor().newInstance();
+                    for (RElementValue rElementValue : Fields) {
+                        SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
+                    }
+                    JOptionPane.showMessageDialog(this, "sigmaaaaa wezzy\n" + new Gson().toJson(workingClass), "Element Creation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
             } else {
-                JOptionPane.showMessageDialog(this, "<html>There were error while creating this element: <br><ul>" +
-                        "<li>Bananas are yellow</li>" +
-                        "<li>Oranges are orange</li>" +
-                        "<li>Strewberries are red</li>" +
-                        "</ul><html>", "Element Creation Error", JOptionPane.ERROR_MESSAGE);
+                var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
+                for (RElementValue EV : Fields) {
+                    builder.append("<li>" + EV.getTarget() + ": " + EV.Problem + "</li>");
+                }
+
+                JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } else if (action == "draft") {
 
@@ -122,7 +139,8 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
 
         } else {
             var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");
-            ErrorShower.showError((Component)this, "woah mate, button dont fit, dont fit, button, it dont fit, wont fit", "I did an oppsie", ex);
+            ErrorShower.showError((Component) this,
+                    "woah mate, button dont fit, dont fit, button, it dont fit, wont fit", "I did an oppsie", ex);
 
             throw new IllegalAccessError();
         }

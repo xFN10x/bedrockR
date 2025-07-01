@@ -8,10 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.lang.reflect.Type;
 import javax.swing.border.LineBorder;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
+import fn10.bedrockr.utils.ErrorShower;
 
 public class RElementValue extends JPanel {
 
@@ -27,6 +27,7 @@ public class RElementValue extends JPanel {
     private Class InputType;
 
     public boolean Required = false;
+    public String Problem = "No problem here!";
 
     public RElementValue(@Nonnull Class InputType, FieldFilter Filter, String TargetField, String DisplayName,
             Boolean Optional,
@@ -92,7 +93,6 @@ public class RElementValue extends JPanel {
         if (HelpString == null)
             Help.setVisible(false);
 
-
         add(Name);
         add(Input);
         add(EnableDis);
@@ -100,28 +100,74 @@ public class RElementValue extends JPanel {
 
     }
 
+    public String getTarget() {
+        return Target;
+    }
+
+    public Object getValue() {
+        if (valid()) {
+            if (InputType.equals(Boolean.class)) {
+                var casted = ((JComboBox<String>) Input);
+                return (casted.getSelectedIndex() == 0);
+            } else {
+                var process = Problem;
+                try {
+                    String text = ((JTextField) Input).getText();
+                    if (InputType.equals(Integer.class)) {
+                        return Integer.parseInt(text);
+                    } else if (InputType.equals(Double.class)) {
+                        return Double.parseDouble(text);
+                    } else if (InputType.equals(Float.class)) {
+                        return Float.parseFloat(text);
+                    } else if (InputType.equals(Long.class)) {
+                        return Long.parseLong(text);
+                    } else if (InputType.equals(String.class)) {
+                        if (!Filter.getValid(text))
+                            Problem = "String is not valid.";
+                        return text;
+                    } else {
+                        return null;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    ErrorShower.showError(this, "There was a problem getting a field.", "Error", ex);
+                    return null;
+                }
+            }
+        } else 
+        return null;
+    }
+
     public boolean valid() {
         Launcher.LOG.info(InputType.getName());
         if (InputType.equals(Boolean.class)) {
             return true;
         } else {
+            var process = Problem;
             try {
                 String text = ((JTextField) Input).getText();
                 if (InputType.equals(Integer.class)) {
+                    process = "Failed to turn into Integer";
                     Integer.parseInt(text);
                 } else if (InputType.equals(Double.class)) {
+                    process = "Failed to turn into Double";
                     Double.parseDouble(text);
                 } else if (InputType.equals(Float.class)) {
+                    process = "Failed to turn into Integer";
                     Float.parseFloat(text);
                 } else if (InputType.equals(Long.class)) {
+                    process = "Failed to turn into Long";
                     Long.parseLong(text);
                 } else if (InputType.equals(String.class)) {
+                    if (!Filter.getValid(text))
+                        Problem = "String is not valid.";
                     return Filter.getValid(text);
                 } else {
                     return true;
                 }
                 return true;
             } catch (Exception e) {
+                Problem = process;
                 return false;
             }
         }

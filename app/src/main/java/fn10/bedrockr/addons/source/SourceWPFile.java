@@ -77,7 +77,7 @@ public class SourceWPFile implements ElementSource {
 
     @Override
     public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
-        var frame = new RElementCreationScreen(Parent,"Workspace File", parent);
+        var frame = new RElementCreationScreen(Parent,"Workspace File",getSerilizedClass(), parent);
 
 
         return frame;
