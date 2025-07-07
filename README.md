@@ -1,5 +1,8 @@
 # ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/app/src/main/resources/ui/BrandingFullWShadow.png)
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xFN10x/bedrockR/gradle.yml)
+![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR)
+
 A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 ## Why?

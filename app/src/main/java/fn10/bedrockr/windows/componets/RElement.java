@@ -23,8 +23,10 @@ import fn10.bedrockr.utils.RFonts;
 
 public class RElement extends JPanel implements MouseListener {
 
-    private JLabel Icon = new JLabel();
-    private SpringLayout Lay = new SpringLayout();
+    protected JLabel Icon = new JLabel();
+    protected SpringLayout Lay = new SpringLayout();
+    protected JLabel Name = new JLabel();
+    protected JLabel Desc = new JLabel();
 
     private Runnable func;
     private boolean selected;
@@ -53,10 +55,10 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
 
-        var Name = new JLabel(details.Name);
+        Name.setText(details.Name);
         Name.setFont(RFonts.RegMinecraftFont.deriveFont(20));
 
-        var Desc = new JLabel(details.Description);
+        Desc.setText(details.Description);
 
         Lay.putConstraint(SpringLayout.WEST, Icon, 5, SpringLayout.WEST, this);
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER, this);

@@ -14,12 +14,10 @@ import javax.swing.SpringLayout;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
-import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.SpringUtilities;
 import fn10.bedrockr.windows.base.RDialog;
-import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
@@ -56,7 +54,7 @@ public class RNewSelector extends RDialog implements ActionListener {
                 }));
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError(this, "error", "very bad error message", e);
+                ErrorShower.showError((Frame)getParent(), "error", "very bad error message", e);
                 continue;
             }
         }
@@ -85,7 +83,7 @@ public class RNewSelector extends RDialog implements ActionListener {
         if (e.getActionCommand() == "create") {
             Class<? extends ElementSource> Creating = null;
 
-            for (Component component : MainPane.getComponents()) {
+            for (Component component : MainPane.getComponents()) { // for loop to check what is selected, then breaking
                 if (((RElement) component).getSelected()) {
                     Launcher.LOG.info("Making new " + ((RElement) component).getElement());
                     Creating = ((RElement) component).getElement();
@@ -107,10 +105,10 @@ public class RNewSelector extends RDialog implements ActionListener {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 if (ex.getCause() != null) {
-                    ErrorShower.showError(this, "Failed to create component. " + ex.getCause().getMessage() + "\n\n",
+                    ErrorShower.showError((Frame)getParent(), "Failed to create component. " + ex.getCause().getMessage() + "\n\n",
                             "Erorrrrrrrrrr", ex);
                 } else {
-                    ErrorShower.showError(this, "Failed to create component. ",
+                    ErrorShower.showError((Frame)getParent(), "Failed to create component. ",
                             "Erorrrrrrrrrr", ex);
                 }
                 return;

@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source.interfaces;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
@@ -18,23 +17,36 @@ public interface ElementSource {
 
     final Dimension defaultSize = new Dimension(800, 450);
 
-    final Integer Type = 0; // 0 for BP, 1 for RP
+    // final Integer Type = 0; // 0 for BP, 1 for RP
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Element", "A cool new element, \nwhich SOME dumbass forgot to change.",
                 new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
     }
 
-
     abstract String getJSONString();
 
     abstract Object getFromJSON(String jsonString);
 
-    abstract File buildJSONFile(Component doingThis, String workspace);
+    abstract File buildJSONFile(Frame doingThis, String workspace);
 
-    abstract Class getSerilizedClass();
+    abstract Class<?> getSerilizedClass();
 
     abstract Object getSerilized();
 
     abstract RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent);
+
+    /**
+     * You should use this instad of toString()
+     * 
+     * @return The name, description, and the JSON of the element file.
+     */
+    default String ToString() {
+        try {
+            ElementDetails details = ((ElementDetails) this.getClass().getMethod("getDetails").invoke(null));
+            return details.Name + ", " + details.Description + "\n" + getJSONString();
+        } catch (Exception e) {
+            return "error";
+        }
+    }
 }

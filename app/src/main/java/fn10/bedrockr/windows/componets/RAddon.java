@@ -3,13 +3,13 @@ package fn10.bedrockr.windows.componets;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
@@ -30,7 +30,6 @@ import com.formdev.flatlaf.util.ColorFunctions;
 
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
-import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -55,11 +54,11 @@ public class RAddon extends JPanel implements MouseListener {
         try {
             // dirty line of code coming up... "varibles? never hear of 'er"
             WPFile = new SourceWPFile(Files.readString(RFileOperations
-                    .getFileFromWorkspace(this, WPName, "/workspace.RWP", true)
+                    .getFileFromWorkspace((Frame)getParent(), WPName, "/workspace.RWP", true)
                     .toPath()));
             WPF = (WPFile) WPFile.getSerilized();
             step = 1;
-            var iconFile = RFileOperations.getFileFromWorkspace(this, WPName, "/icon." + WPF.IconExtension, true);
+            var iconFile = RFileOperations.getFileFromWorkspace((Frame)getParent(), WPName, "/icon." + WPF.IconExtension, true);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
         } catch (Exception e) {
@@ -79,7 +78,7 @@ public class RAddon extends JPanel implements MouseListener {
                                 new FileNameExtensionFilter("Addon's Support Image Files", WPF.IconExtension));
                         if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             BI = ImageIO.read(bic.getSelectedFile());
-                            ImageIO.write(BI, WPF.IconExtension, RFileOperations.getFileFromWorkspace(this, WPName, "/icon."+WPF.IconExtension));
+                            ImageIO.write(BI, WPF.IconExtension, RFileOperations.getFileFromWorkspace((Frame)getParent(), WPName, "/icon."+WPF.IconExtension));
                         }
                     }
                 } catch (Exception e2) {

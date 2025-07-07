@@ -1,25 +1,25 @@
 package fn10.bedrockr.utils;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.base.RLoadingScreen;
@@ -39,8 +39,22 @@ public class RFileOperations {
             "|",
             "?"
     };
+    private static final Map<String,Class<? extends ElementSource>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
+    static {
+        ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
+    }
 
     public static final String WPFFILENAME = "workspace.WPF";
+
+    public static Class<? extends ElementSource> getElementClassFromFileExtension(Frame doingThis,String fileExtension) {
+        try {
+            return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
+            return null;
+        }
+    }
 
     public static boolean validFolderName(String proposed) {
         var bool = true;
@@ -55,7 +69,7 @@ public class RFileOperations {
         return bool;
     }
 
-    public static String[] getWorkspaces(Component doingThis) {
+    public static String[] getWorkspaces(Frame doingThis) {
         var folder = new File(getBaseDirectory(doingThis).getAbsolutePath() + "/workspace/").toPath();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
             var list = new List();
@@ -67,12 +81,12 @@ public class RFileOperations {
             }
             return list.getItems();
         } catch (IOException e) {
-            showError(doingThis, "IO Error", BASE_PATH, e);
+            ErrorShower.showError(doingThis, "IO Error", BASE_PATH, e);
             return new String[] { "" };
         }
     }
 
-    public static void openWorkspace(JFrame doingThis, SourceWPFile WPF) {
+    public static void openWorkspace(Frame doingThis, SourceWPFile WPF) {
         var workspaceView = new RWorkspace(WPF);
         SwingUtilities.invokeLater(() -> {
             workspaceView.setVisible(true);
@@ -80,7 +94,7 @@ public class RFileOperations {
         });
     }
 
-    public static File getBaseDirectory(Component doingThis, String Folder) {
+    public static File getBaseDirectory(Frame doingThis, String Folder) {
         var file = new File(BASE_PATH + Folder);
         try {
             if (!file.exists()) {
@@ -88,38 +102,40 @@ public class RFileOperations {
             } else
                 return file;
         } catch (Exception e) {
-            showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
+            ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
             e.printStackTrace();
         }
         return BaseDirectory;
     }
 
-    public static File getBaseDirectory(Component doingThis) {
+    public static File getBaseDirectory(Frame doingThis) {
         try {
             if (!BaseDirectory.exists()) {
                 return Files.createDirectories(BaseDirectory.toPath()).toFile();
             } else
                 return BaseDirectory;
         } catch (Exception e) {
-            showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
+            ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
             e.printStackTrace();
         }
         return BaseDirectory;
     }
 
-    private static void showError(Component parent, String msg, String title, Exception ex) {
-        StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
-        JOptionPane.showMessageDialog(parent,
-                msg + "\n" + sw.toString(),
-                title, JOptionPane.ERROR_MESSAGE);
-    }
+    // @Deprecated
+    // private static void showError(Component parent, String msg, String title,
+    // Exception ex) {
+    // StringWriter sw = new StringWriter();
+    // ex.printStackTrace(new PrintWriter(sw));
+    // JOptionPane.showMessageDialog(parent,
+    // msg + "\n" + sw.toString(),
+    // title, JOptionPane.ERROR_MESSAGE);
+    // }
 
-    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate) {
+    public static File getFileFromWorkspace(Frame windowDoingThis, String WorkspaceName, String ToCreate) {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
     }
 
-    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
+    public static File getFileFromWorkspace(Frame windowDoingThis, String WorkspaceName, String ToCreate,
             Boolean strict) {
         try {
             var proposed = BaseDirectory + "/workspace/" + WorkspaceName + ToCreate;
@@ -129,11 +145,15 @@ public class RFileOperations {
             } else
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
-            showError(windowDoingThis, "IO Error", "Failed to get WP File", e);
+            ErrorShower.showError(windowDoingThis, "IO Error", "Failed to get WP File", e);
             e.printStackTrace();
             return null;
         }
 
+    }
+
+    public static File getWorkspace(Frame windowDoingThis, String WorkspaceName) {
+        return getFileFromWorkspace(windowDoingThis, WorkspaceName, "/", true);
     }
 
     public static boolean createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
@@ -145,13 +165,14 @@ public class RFileOperations {
                 "/resources/"
         };
 
-        File base = getBaseDirectory(loading);
+        File base = getBaseDirectory((Frame) loading.getParent());
 
         File wsFolder = new File(base.getAbsolutePath() + "/workspace/" + wpf.WorkspaceName + "/");
 
         if (wsFolder.exists()) { // throw if folder is already here
             var e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
-            showError(loading, "Failed to make folder; Folder" + wsFolder.getAbsolutePath() + " already exists.",
+            ErrorShower.showError((Frame) loading.getParent(),
+                    "Failed to make folder; Folder" + wsFolder.getAbsolutePath() + " already exists.",
                     "Failure!", e);
             throw e;
         } else {
@@ -172,7 +193,7 @@ public class RFileOperations {
                 loading.changeText("Creating workspace...");
 
                 var srcWPF = new SourceWPFile(wpf);
-                srcWPF.buildJSONFile(loading, wpf.WorkspaceName);
+                srcWPF.buildJSONFile((Frame) loading.getParent(), wpf.WorkspaceName);
 
                 var srcIcon = new File(wsFolder.getAbsolutePath() + "/icon." + wpf.IconExtension);
                 trying = srcIcon;
@@ -188,8 +209,10 @@ public class RFileOperations {
 
                 return true;
 
-            } catch (Exception e) { // handle exception (idk why i put there here, i think its cause this code used to be longer?)
-                showError(loading, "IO Error, with path " + wsFolder.getAbsolutePath(), "IO Error", e);
+            } catch (Exception e) { // handle exception (idk why i put there here, i think its cause this code used
+                                    // to be longer?)
+                ErrorShower.showError((Frame) loading.getParent(), "IO Error, with path " + wsFolder.getAbsolutePath(),
+                        "IO Error", e);
                 throw e;
             }
         }
