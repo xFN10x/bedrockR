@@ -17,9 +17,7 @@ import java.text.MessageFormat;
 import java.util.logging.*;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import com.formdev.flatlaf.FlatLaf;
 
 public class Launcher {
@@ -33,7 +31,7 @@ public class Launcher {
     public static void main(String[] args) {
         // set up logging
         String logloc = RFileOperations.getBaseDirectory(null, "\\logs").getAbsolutePath() + "\\bedrockR-log-"
-                + System.currentTimeMillis()+ ".log";
+                + System.currentTimeMillis() + ".log";
 
         for (var h : LOG.getHandlers()) {
             LOG.removeHandler(h);
@@ -57,7 +55,7 @@ public class Launcher {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 for (var h : LOG.getHandlers()) {
-                    //LOG.removeHandler(h);
+                    // LOG.removeHandler(h);
                     h.close();
                 }
             }
@@ -77,9 +75,9 @@ public class Launcher {
             LOG.info(String.valueOf(BedrockrDark.setup()));
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorShower.showError(new JFrame(), "failed to load theme " + e.getCause().toString(), "FlatLaf Error", e);
+            ErrorShower.showError(null, "failed to load theme " + e.getCause().toString(), "FlatLaf Error", e);
         }
-        LOG.info(UIManager.getLookAndFeel().toString());
+        // LOG.info(UIManager.getLookAndFeel().toString());
 
         // open app
         SwingUtilities.invokeLater(() -> {

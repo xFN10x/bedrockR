@@ -7,8 +7,6 @@ import java.net.URL;
 
 import javax.swing.*;
 
-import fn10.bedrockr.Launcher;
-
 public class ImageUtilites {
 
     public static ImageIcon ResizeIcon(ImageIcon OG, int width, int height) {

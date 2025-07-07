@@ -1,20 +1,16 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Component;
 import java.awt.Frame;
 import java.io.File;
 import java.io.FileWriter;
 
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementCreationScreen;
-import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceWPFile implements ElementSource {
@@ -28,15 +24,16 @@ public class SourceWPFile implements ElementSource {
     public SourceWPFile() {
         this.serilized = null;
     }
+    public SourceWPFile(String jsonString) {
+        this.serilized = (WPFile) getFromJSON(jsonString);
+    }
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Workspace File", "dont use this cause it will break",
                 new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
     }
 
-    public SourceWPFile(String jsonString) {
-        this.serilized = (WPFile) getFromJSON(jsonString);
-    }
+    
 
     @Override
     public String getJSONString() {
@@ -44,7 +41,7 @@ public class SourceWPFile implements ElementSource {
     }
 
     @Override
-    public Class getSerilizedClass() {
+    public Class<?> getSerilizedClass() {
         return this.serilizedClass;
     }
 
@@ -55,7 +52,7 @@ public class SourceWPFile implements ElementSource {
 
     @Override
     @Nullable
-    public File buildJSONFile(Component doingThis, String workspace) {
+    public File buildJSONFile(Frame doingThis, String workspace) {
         var string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(doingThis, workspace, Location);
         file.setWritable(true);
@@ -77,10 +74,7 @@ public class SourceWPFile implements ElementSource {
 
     @Override
     public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
-        var frame = new RElementCreationScreen(Parent,"Workspace File",getSerilizedClass(), parent);
-
-
-        return frame;
+        return null;
     }
 
 }

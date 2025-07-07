@@ -1,7 +1,6 @@
 package fn10.bedrockr.windows.componets;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,6 +11,7 @@ import javax.swing.border.LineBorder;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 
 public class RElementValue extends JPanel {
 
@@ -24,14 +24,15 @@ public class RElementValue extends JPanel {
     private final static Dimension Size = new Dimension(350, 40);
     private String Target = "";
     private FieldFilter Filter;
-    private Class InputType;
+    private Class<?> InputType;
 
     public boolean Required = false;
     public String Problem = "No problem here!";
 
-    public RElementValue(@Nonnull Class InputType, FieldFilter Filter, String TargetField, String DisplayName,
+    public RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
             Boolean Optional,
-            @Nullable String HelpString) {
+            //@Nullable String HelpString,
+            Class<?> SourceFileClass) {
         super();
 
         this.Target = TargetField;
@@ -58,7 +59,7 @@ public class RElementValue extends JPanel {
 
             @Override
             public void itemStateChanged(ItemEvent e) {
-                EnableDis.setEnabled(e.getStateChange() == e.SELECTED ? true : false);
+                EnableDis.setEnabled(e.getStateChange() == ItemEvent.SELECTED ? true : false);
             }
 
         });
@@ -66,7 +67,16 @@ public class RElementValue extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    JOptionPane.showMessageDialog(getParent(),
+                            SourceFileClass.getDeclaredField(Target).getAnnotation(HelpMessage.class).message(),
+                            "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(getParent(),
+                            "Failed to get help message! Tell the dev! Field: " + Target + " Class: "+ SourceFileClass.getName(),
+                            "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
+                }
             }
 
         });
@@ -90,8 +100,6 @@ public class RElementValue extends JPanel {
         if (!Optional)
             EnableDis.setEnabled(false);
 
-        if (HelpString == null)
-            Help.setVisible(false);
 
         add(Name);
         add(Input);
@@ -107,10 +115,10 @@ public class RElementValue extends JPanel {
     public Object getValue() {
         if (valid()) {
             if (InputType.equals(Boolean.class)) {
+                @SuppressWarnings("unchecked")
                 var casted = ((JComboBox<String>) Input);
                 return (casted.getSelectedIndex() == 0);
             } else {
-                var process = Problem;
                 try {
                     String text = ((JTextField) Input).getText();
                     if (InputType.equals(Integer.class)) {
@@ -130,12 +138,12 @@ public class RElementValue extends JPanel {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    ErrorShower.showError(this, "There was a problem getting a field.", "Error", ex);
+                    ErrorShower.showError((Frame)getParent(), "There was a problem getting a field.", "Error", ex);
                     return null;
                 }
             }
-        } else 
-        return null;
+        } else
+            return null;
     }
 
     public boolean valid() {

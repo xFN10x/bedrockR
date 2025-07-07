@@ -1,13 +1,10 @@
 package fn10.bedrockr.windows;
 
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -16,7 +13,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -28,6 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
+import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
@@ -140,13 +137,13 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         checkForError();
     }
 
-    private static void showError(Component parent, String msg, String title, Exception ex) {
-        StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
-        JOptionPane.showMessageDialog(parent,
-                msg + "\n" + sw.toString(),
-                title, JOptionPane.ERROR_MESSAGE);
-    }
+   // private static void showError(Component parent, String msg, String title, Exception ex) {
+    //    StringWriter sw = new StringWriter();
+    //    ex.printStackTrace(new PrintWriter(sw));
+    //    JOptionPane.showMessageDialog(parent,
+    //            msg + "\n" + sw.toString(),
+    //            title, JOptionPane.ERROR_MESSAGE);
+    //}
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -185,7 +182,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                         (ImageIcon) AddonIcon.getIcon());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                showError(this, "Failed to make new addon.", "Grrrr", ex);
+                ErrorShower.showError((Frame)getParent(), "Failed to make new addon.", "Grrrr", ex);
                 return;
             }
 
@@ -197,9 +194,9 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
     private void checkForError() {
         var text = NameInput.getText();
-        File proposedDir = new File(RFileOperations.getBaseDirectory(this) + "/workspace/" + NameInput.getText());
+        File proposedDir = new File(RFileOperations.getBaseDirectory((Frame)getParent()) + "/workspace/" + NameInput.getText());
 
-        Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" + NameInput.getText());
+        //Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" + NameInput.getText());
 
         SwingUtilities.invokeLater(() -> {
             if (text == "") {

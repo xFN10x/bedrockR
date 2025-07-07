@@ -46,6 +46,8 @@ dependencies {
     implementation 'com.formdev:flatlaf:3.6'
 
     implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.0.0-beta17")
+
+    implementation 'commons-io:commons-io:2.19.0'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
