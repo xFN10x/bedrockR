@@ -17,7 +17,8 @@ public class RFrame extends JFrame {
     public RFrame(int CloseOperation, String WindowTitle, Dimension Size, boolean Resizeable, boolean BottomBar) {
         super(WindowTitle + " - bedrockR");
 
-        setIconImage(Launcher.ICON.getImage());
+        setIconImage(Launcher.ICON);
+        //setIconImages(Launcher.ICONS);
 
         JPanel bottomBar = new JPanel();
         bottomBar.setBackground(Color.GREEN);

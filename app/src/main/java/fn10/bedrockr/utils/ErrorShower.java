@@ -12,7 +12,7 @@ public class ErrorShower {
         StringWriter sw = new StringWriter();
         ex.printStackTrace(new PrintWriter(sw));
 
-        var trun = sw.toString().substring(0, 200);
+        var trun = sw.toString().substring(0, 1000);
 
         var message = msg+"\n"+ (trun.length() >= 1000 ? trun + "\n(And way more lines to go...)": trun);
 

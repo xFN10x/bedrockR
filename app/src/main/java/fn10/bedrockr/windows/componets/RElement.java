@@ -7,11 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.print.attribute.standard.MediaSize.NA;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
@@ -29,7 +26,7 @@ public class RElement extends JPanel implements MouseListener {
     protected JLabel Desc = new JLabel();
 
     private Runnable func;
-    private boolean selected;
+    protected boolean selected;
     private Class<? extends ElementSource> clasz;
     private ElementDetails details;
 
@@ -91,7 +88,7 @@ public class RElement extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        func.run();
+        if (func != null) func.run();
         selected = true;
         this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.green, 3, 16));
     }
