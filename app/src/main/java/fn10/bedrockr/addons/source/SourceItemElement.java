@@ -12,11 +12,10 @@ import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.ItemFile;
-import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RElementCreationScreen;
+import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
@@ -83,8 +82,8 @@ public class SourceItemElement implements ElementSource {
 
     @SuppressWarnings("null")
     @Override
-    public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
-        var frame = new RElementCreationScreen(Parent, "Item", this, getSerilizedClass(), parent);
+    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
+        var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent);
 
         for (Field field : getSerilizedClass().getFields()) { // try to get fields
             try { // then add them

@@ -26,7 +26,7 @@ public class ItemFile implements ElementFile {
     public String Category;
 
     @UneditableByCreation
-    public Boolean isDraft;
+    public Boolean isDraft = Boolean.FALSE;
 
     @Override
     public Class<? extends ElementSource> getSourceClass() {
@@ -36,6 +36,16 @@ public class ItemFile implements ElementFile {
     @Override
     public String getElementName() {
         return ElementName;
+    }
+
+    @Override
+    public void setDraft(Boolean draft) {
+       this.isDraft = draft;
+    }
+
+    @Override
+    public Boolean getDraft() {
+        return isDraft == null ? Boolean.FALSE : isDraft;
     }
 
 }

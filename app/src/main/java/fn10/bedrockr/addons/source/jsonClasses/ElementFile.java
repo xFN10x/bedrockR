@@ -9,4 +9,8 @@ public interface ElementFile { //mostly for making functions better to read
 
     String getElementName();
 
+    void setDraft(Boolean draft);
+
+    Boolean getDraft();
+
 }

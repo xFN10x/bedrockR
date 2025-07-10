@@ -27,13 +27,21 @@ public class RElement extends JPanel implements MouseListener {
 
     private Runnable func;
     protected boolean selected;
+    protected Color outlineColour = Color.green;
     private Class<? extends ElementSource> clasz;
     private ElementDetails details;
 
     public RElement(Class<? extends ElementSource> clazz, Runnable selectedFunction)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        this(clazz, selectedFunction, Color.green);
+    }
+
+    public RElement(Class<? extends ElementSource> clazz, Runnable selectedFunction, Color borderColour)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         super();
 
+        this.outlineColour = borderColour;
         this.func = selectedFunction;
         this.clasz = clazz;
 
@@ -81,24 +89,25 @@ public class RElement extends JPanel implements MouseListener {
         this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.white, 1, 16));
         this.selected = false;
     }
-    
+
     public Class<? extends ElementSource> getElement() {
         return clasz;
     }
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        if (func != null) func.run();
+        if (func != null)
+            func.run();
         selected = true;
-        this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.green, 3, 16));
+        this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), outlineColour, 3, 16));
     }
 
     @Override
     public void mouseEntered(MouseEvent arg0) {
         if (!selected) {
-            this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.green, 1, 16));
+            this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), outlineColour, 1, 16));
         } else
-            this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.green, 4, 16));
+            this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), outlineColour, 4, 16));
     }
 
     @Override
@@ -106,7 +115,7 @@ public class RElement extends JPanel implements MouseListener {
         if (!selected) {
             unselect();
         } else {
-            this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.green, 3, 16));
+            this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), outlineColour, 3, 16));
         }
     }
 

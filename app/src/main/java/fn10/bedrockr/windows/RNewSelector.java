@@ -96,7 +96,7 @@ public class RNewSelector extends RDialog implements ActionListener {
             try {
                 ElementSource instance = Creating.getDeclaredConstructor().newInstance();
 
-                RElementCreationScreen screen = (RElementCreationScreen) Creating
+                RElementEditingScreen screen = (RElementEditingScreen) Creating
                         .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class)
                         .invoke(instance, this.Parent, this.Parent);
                 screen.setVisible(true);
