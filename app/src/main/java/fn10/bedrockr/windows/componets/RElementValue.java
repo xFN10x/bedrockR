@@ -7,9 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.border.LineBorder;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.jsonClasses.ElementFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 
@@ -31,8 +35,17 @@ public class RElementValue extends JPanel {
 
     public RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
             Boolean Optional,
-            //@Nullable String HelpString,
-            Class<?> SourceFileClass) {
+            Class<?> SourceFileClass) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException, SecurityException {
+        this(InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass,
+                ((ElementFile) SourceFileClass.getConstructor().newInstance()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
+            Boolean Optional,
+            Class<?> SourceFileClass,
+            ElementFile TargetFile) {
         super();
 
         this.Target = TargetField;
@@ -51,8 +64,36 @@ public class RElementValue extends JPanel {
         if (InputType.equals(Boolean.class)) {
             String[] vals = { "true", "false" };
             Input = new JComboBox<String>(vals);
+            try {
+                var field = SourceFileClass.getField(TargetField);
+                ((JComboBox<String>) Input).setSelectedIndex((boolean) field.get(TargetFile)
+                        ? 0 // convert bool to index
+                        : 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorShower.showError(((Frame) getParent()), "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                        DisplayName, e);
+            }
+        } else if (InputType.equals(String.class)) {
+            Input = new JTextField();
+            try {
+                var field = SourceFileClass.getField(TargetField);
+                ((JTextField) Input).setText(((String) field.get(TargetFile))); //set text to string
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorShower.showError(((Frame) getParent()), "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                        DisplayName, e);
+            }
         } else {
             Input = new JTextField();
+            try {
+                var field = SourceFileClass.getField(TargetField);
+                ((JTextField) Input).setText(field.get(TargetFile).toString()); //set text to string
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorShower.showError(((Frame) getParent()), "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                        DisplayName, e);
+            }
         }
 
         EnableDis.addItemListener(new ItemListener() {
@@ -74,7 +115,8 @@ public class RElementValue extends JPanel {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(getParent(),
-                            "Failed to get help message! Tell the dev! Field: " + Target + " Class: "+ SourceFileClass.getName(),
+                            "Failed to get help message! Tell the dev! Field: " + Target + " Class: "
+                                    + SourceFileClass.getName(),
                             "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -99,7 +141,6 @@ public class RElementValue extends JPanel {
 
         if (!Optional)
             EnableDis.setEnabled(false);
-
 
         add(Name);
         add(Input);
@@ -138,7 +179,7 @@ public class RElementValue extends JPanel {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    ErrorShower.showError((Frame)getParent(), "There was a problem getting a field.", "Error", ex);
+                    ErrorShower.showError((Frame) getParent(), "There was a problem getting a field.", "Error", ex);
                     return null;
                 }
             }

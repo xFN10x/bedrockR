@@ -14,16 +14,33 @@ import fn10.bedrockr.windows.laf.BedrockrDark;
 import java.awt.*;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.logging.*;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.FlatLaf;
 
 public class Launcher {
 
     public static String VERSION = "a1.0";
-    public static ImageIcon ICON = new ImageIcon(Launcher.class.getResource("/ui/Icon.png"));
+    public static Image ICON;
+    // ImageIcon(Launcher.class.getResource("/ui/Icon.png"));
+    public static java.util.List<Image> ICONS = new ArrayList<Image>();
+    static {
+        try {
+            ICON = ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_huge.png"));
+            // ICONS = new Image[] {
+            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_16.png")));
+            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_32.png")));
+            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_64.png")));
+            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_128.png")));
+            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_256.png")));
+            // };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");

@@ -62,7 +62,8 @@ public class SourceItemElement implements ElementSource {
     @Nullable
     public File buildJSONFile(Frame doingThis, String workspace) {
         var string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace, Location + serilized.ElementName + ".itemref");
+        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
+                Location + serilized.ElementName + ".itemref");
         file.setWritable(true);
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -85,8 +86,8 @@ public class SourceItemElement implements ElementSource {
     public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
         var frame = new RElementCreationScreen(Parent, "Item", this, getSerilizedClass(), parent);
 
-        for (Field field : getSerilizedClass().getFields()) { //try to get fields
-            try { //then add them
+        for (Field field : getSerilizedClass().getFields()) { // try to get fields
+            try { // then add them
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                     frame.addField(new RElementValue(field.getType(),
@@ -105,11 +106,12 @@ public class SourceItemElement implements ElementSource {
                             field.getName(), // target
                             details.displayName(), // display name
                             details.Optional(),
-                            getSerilizedClass()));
+                            getSerilizedClass(),
+                            this.serilized == null ? new ItemFile(): this.serilized)); //if this is blank, make new file
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError(Parent, "Failed to create a field for "+field.getName(), "Field Error", e);
+                ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
             }
         }
 
