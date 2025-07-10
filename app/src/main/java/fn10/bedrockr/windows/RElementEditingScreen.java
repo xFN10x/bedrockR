@@ -14,12 +14,13 @@ import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.jsonClasses.ElementFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class RElementCreationScreen extends RDialog implements ActionListener {
+public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
     private JPanel Pane = new JPanel();
@@ -33,13 +34,13 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
     public List<RElementValue> RequiredFields = new ArrayList<RElementValue>();
     public List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
 
-    public RElementCreationScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
+    public RElementEditingScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,
-                "New " + elementName,
+                "Editing " + elementName,
                 ElementSource.defaultSize);
 
         this.Listener = listenier;
@@ -110,24 +111,30 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
         }
     }
 
+    private void create(boolean isDraft) {
+        try { // handle if there is no constructor
+            var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
+            for (RElementValue rElementValue : Fields) { // add the fields
+                SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
+            }
+
+            workingClass.setDraft(isDraft);
+
+            Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass)); // create
+            this.dispose();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            ErrorShower.showError((Frame) getParent(), "Failed to create ElementSource",
+                    "Source Creation Error", ex);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         var action = e.getActionCommand();
         if (action.equals("create")) {
             if (checkForErrors() == null) {
-                try { // handle if there is no constructor
-                    var workingClass = SourceClass.getConstructor().newInstance();
-                    for (RElementValue rElementValue : Fields) {
-                        SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
-                    }
-
-                    Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass));
-                    this.dispose();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    ErrorShower.showError((Frame) getParent(), "Failed to create ElementSource",
-                            "Source Creation Error", ex);
-                }
+                create(false);
             } else { // show errored things
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
                 for (RElementValue EV : IncorrectFields) {
@@ -138,7 +145,7 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
                         JOptionPane.ERROR_MESSAGE);
             }
         } else if (action == "draft") {
-            this.dispose();
+            create(true);
         } else if (action == "cancel") {
             this.dispose();
         } else {

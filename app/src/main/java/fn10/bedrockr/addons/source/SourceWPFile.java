@@ -10,7 +10,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RElementCreationScreen;
+import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceWPFile implements ElementSource {
@@ -73,7 +73,7 @@ public class SourceWPFile implements ElementSource {
     }
 
     @Override
-    public RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
+    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
         return null;
     }
 

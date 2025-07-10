@@ -8,18 +8,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.jsonClasses.ElementFile;
+import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.windows.RElementCreationScreen;
+import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
@@ -32,18 +29,26 @@ public class RElementFile extends RElement implements ActionListener {
     public RElementFile(RWorkspace Workspace, ElementFile File, String FilePath)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        super(File.getSourceClass(), null);
+        super(File.getSourceClass(), null, (File.getDraft() ? Color.gray : Color.green));
         this.file = File;
         this.filePath = FilePath;
         this.wksp = Workspace;
+        var clr = (File.getDraft() ? Color.gray : Color.green);
 
         Name.setText(File.getElementName());
+        if (clr != Color.green) {
+            Name.setText(File.getElementName()+ " (DRAFT)");
+            Name.setForeground(clr.brighter());
+            Desc.setForeground(clr.brighter());
+            this.setBackground(clr.darker().darker());
+        }
 
         var popup = new JPopupMenu(File.getElementName());
 
         var editItem = new JMenuItem("Edit Element...");
         var removeItem = new JMenuItem("Remove Element");
         var draftItem = new JMenuItem("Draft Element...");
+        draftItem.setEnabled(!file.getDraft());
         var buildItem = new JMenuItem("Build Element...");
 
         editItem.addActionListener(this);
@@ -53,7 +58,7 @@ public class RElementFile extends RElement implements ActionListener {
         removeItem.setActionCommand("remove");
 
         draftItem.addActionListener(this);
-        draftItem.setActionCommand("draft");
+        draftItem.setActionCommand(file.getDraft() ? "undraft" : "draft");
 
         buildItem.addActionListener(this);
         buildItem.setActionCommand("build");
@@ -71,7 +76,7 @@ public class RElementFile extends RElement implements ActionListener {
         try {
             var srczz = file.getSourceClass();
             var newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
-            ((RElementCreationScreen) srczz.getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class)
+            ((RElementEditingScreen) srczz.getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class)
                     .invoke(newsrc, wksp, wksp)).setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,6 +104,27 @@ public class RElementFile extends RElement implements ActionListener {
             var file = new File(filePath);
             file.delete();
             wksp.refreshElements();
+        } else if (ac.equals("draft")) {
+            try {
+                file.setDraft(true);
+                var src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
+                src.buildJSONFile(wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                wksp.refreshElements();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
+            }
+            ;
+        } else if (ac.equals("undraft")) {
+            try {
+                file.setDraft(false);
+                var src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
+                src.buildJSONFile(wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                wksp.refreshElements();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
+            }
         }
     }
 

@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import fn10.bedrockr.windows.RElementCreationScreen;
+import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public interface ElementSource {
@@ -34,7 +34,7 @@ public interface ElementSource {
 
     abstract Object getSerilized();
 
-    abstract RElementCreationScreen getBuilderWindow(Frame Parent, ElementCreationListener parent);
+    abstract RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent);
 
     /**
      * You should use this instad of toString()
