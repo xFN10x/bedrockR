@@ -15,6 +15,7 @@ import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.ElementFile;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 
 public class RElementValue extends JPanel {
@@ -71,27 +72,30 @@ public class RElementValue extends JPanel {
                         : 1);
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError(((Frame) getParent()), "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                ErrorShower.showError(((Frame) getParent()),
+                        "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
             }
         } else if (InputType.equals(String.class)) {
             Input = new JTextField();
             try {
                 var field = SourceFileClass.getField(TargetField);
-                ((JTextField) Input).setText(((String) field.get(TargetFile))); //set text to string
+                ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError(((Frame) getParent()), "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                ErrorShower.showError(((Frame) getParent()),
+                        "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
             }
         } else {
             Input = new JTextField();
             try {
                 var field = SourceFileClass.getField(TargetField);
-                ((JTextField) Input).setText(field.get(TargetFile).toString()); //set text to string
+                ((JTextField) Input).setText(field.get(TargetFile).toString()); // set text to string
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError(((Frame) getParent()), "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                ErrorShower.showError(((Frame) getParent()),
+                        "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
             }
         }
@@ -141,6 +145,16 @@ public class RElementValue extends JPanel {
 
         if (!Optional)
             EnableDis.setEnabled(false);
+        try {
+            var tg = SourceFileClass.getField(TargetField);
+            if (tg.getAnnotation(RAnnotation.CantEditAfter.class) != null) {
+                if (tg.get(TargetFile) != null) {
+                    Input.setEnabled(false);
+                }
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
 
         add(Name);
         add(Input);

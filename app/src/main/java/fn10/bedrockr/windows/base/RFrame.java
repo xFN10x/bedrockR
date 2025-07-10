@@ -24,7 +24,7 @@ public class RFrame extends JFrame {
         bottomBar.setBackground(Color.GREEN);
         bottomBar.setPreferredSize(new Dimension(Size.width, 40));
 
-        int titleImgW = 187;
+        int titleImgW = 168;
         int titleImageH = 40;
         ImageIcon titleImgIcon = ImageUtilites
                 .ResizeImageByURL(getClass().getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH); // Full
