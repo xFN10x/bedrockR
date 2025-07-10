@@ -121,16 +121,12 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
                         SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
                     }
 
-                    var test = SourceElementClass.getConstructor(SourceClass).newInstance(workingClass);
-                    JOptionPane.showMessageDialog(this,
-                            test.ToString(),
-                            "Element Creation Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    Listener.onElementCreate(test);
-
+                    Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass));
+                    this.dispose();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    ErrorShower.showError((Frame)getParent(), "Failed to create ElementSource", "Source Creation Error", ex);
+                    ErrorShower.showError((Frame) getParent(), "Failed to create ElementSource",
+                            "Source Creation Error", ex);
                 }
             } else { // show errored things
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
@@ -142,9 +138,9 @@ public class RElementCreationScreen extends RDialog implements ActionListener {
                         JOptionPane.ERROR_MESSAGE);
             }
         } else if (action == "draft") {
-
+            this.dispose();
         } else if (action == "cancel") {
-
+            this.dispose();
         } else {
             var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");
             ErrorShower.showError((Frame) getParent(),

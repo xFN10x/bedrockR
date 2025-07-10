@@ -35,4 +35,10 @@ public class RAnnotation {
 
     }
 
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface CantEditAfter {
+        
+    }
+
 }

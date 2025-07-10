@@ -121,10 +121,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         pack();
 
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
-        update();
+        refreshElements();
     }
 
-    private void update() {
+    public void refreshElements() {
         SwingUtilities.invokeLater(() -> {
             ElementView.removeAll();
             for (File file : RFileOperations
@@ -139,7 +139,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                 ext);
                         ElementSource newsrc = clazz.getConstructor(String.class)
                                 .newInstance(Files.readString(file.toPath()));
-                        ElementView.add(new RElementFile(this,(ElementFile) newsrc.getSerilized()));
+                        ElementView.add(new RElementFile(this,(ElementFile) newsrc.getSerilized(),file.getPath()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,6 +147,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     return;
                 }
             }
+            ElementView.updateUI();
         });
     }
 
@@ -175,6 +176,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     @Override
     public void onElementCreate(ElementSource element) {
         element.buildJSONFile(this, (((WPFile) SWPF.getSerilized()).WorkspaceName));
-        update();
+        refreshElements();
     }
 }
