@@ -26,13 +26,13 @@ public interface ElementSource {
 
     abstract String getJSONString();
 
-    abstract Object getFromJSON(String jsonString);
+    abstract ElementFile getFromJSON(String jsonString);
 
     abstract File buildJSONFile(Frame doingThis, String workspace);
 
     abstract Class<?> getSerilizedClass();
 
-    abstract Object getSerilized();
+    abstract ElementFile getSerilized();
 
     abstract RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent);
 

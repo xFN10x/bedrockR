@@ -13,7 +13,7 @@ import javax.swing.JPopupMenu;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
-import fn10.bedrockr.addons.source.jsonClasses.ElementFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.windows.RElementEditingScreen;
@@ -33,6 +33,7 @@ public class RElementFile extends RElement implements ActionListener {
         this.file = File;
         this.filePath = FilePath;
         this.wksp = Workspace;
+        this.setName("RElementFile");
         var clr = (File.getDraft() ? Color.gray : Color.green);
 
         Name.setText(File.getElementName());
@@ -82,6 +83,13 @@ public class RElementFile extends RElement implements ActionListener {
             e.printStackTrace();
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
         }
+    }
+/**
+ * Get the {@code ElementFile} that this was built with.
+ * @return The corrisponding {@code ElementFile}
+ */
+    public ElementFile getFile() {
+        return file;
     }
 
     @Override

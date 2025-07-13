@@ -1,6 +1,8 @@
-package fn10.bedrockr.addons.source.jsonClasses;
+package fn10.bedrockr.addons.source.interfaces;
 
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import java.io.IOException;
+
+import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 
 public interface ElementFile { //mostly for making functions better to read
 
@@ -12,5 +14,7 @@ public interface ElementFile { //mostly for making functions better to read
     void setDraft(Boolean draft);
 
     Boolean getDraft();
+
+    void build(String rootPath, WPFile workspaceFile) throws IOException;
 
 }
