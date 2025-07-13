@@ -22,7 +22,7 @@ public class Manifest {
             this.text = text;
         }
 
-        /*
+        /**
          * (non-Javadoc)
          * 
          * @see java.lang.Enum#toString()
@@ -33,43 +33,55 @@ public class Manifest {
         }
     }
 
-    protected class Header {
+    public static  class Header {
 
-        public boolean allow_random_seed; // only for word templates!
-        public Vector<VersionVector> base_game_version; // only for word templates!
+        /**
+         * only for word templates!
+         */
+        
+        public transient boolean allow_random_seed; // only for word templates!
+        /**
+         * only for word templates!
+         */
+        public transient Vector<Integer> base_game_version; // only for word templates!
         public String description;
-        public boolean lock_template_options; // only for word templates!
-        public Vector<VersionVector> min_engine_version;
+        /**
+         * only for word templates!
+         */
+        public transient boolean lock_template_options; 
+        public Vector<Integer> min_engine_version;
         public String name;
         public String pack_scope;
         public String uuid;
-        public Vector<VersionVector> version;
+        public Vector<Integer> version;
     }
 
-    protected class Module {
+    public static class Module {
         public String description;
         public String type;
         public String uuid;
-        public Vector<VersionVector> version;
+        public Vector<Integer> version;
+        /**
+         * add this only if this is a <code>"script"</code>
+         * and if it is, only accepted value is <code>"javascript"</code>
+         */
         public String language; // only if type is "script", if it is, only value is "javascript"
     }
-    protected class Dependence {
+    public static class Dependence {
         public String uuid;
-        public Vector<VersionVector> version;
+        public Vector<Integer> version;
         public String module_name;
     }
-    protected class Capability { //i dont think this will be used at all.
+    public static class Capability { //i dont think this will be used at all.
         //WARNING: IM GUESSING ON WHAT THE TYPES ARE! HELP
         public boolean chemistry;
         public boolean editorExtension;
         public boolean experimental_custom_ui;
         public boolean raytraced;
     }
-    protected class Metadata {
+    public static class Metadata {
         //even INNER class
-        private class GeneratedWithR {
-            
-            @SuppressWarnings("unused")
+        public class GeneratedWithR {
             public String[] bedrockR;
         }
 

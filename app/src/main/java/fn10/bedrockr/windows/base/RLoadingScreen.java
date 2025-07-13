@@ -52,7 +52,7 @@ public class RLoadingScreen extends RDialog {
     public RLoadingScreen(Frame Parent) {
         super(Parent, DO_NOTHING_ON_CLOSE, "Loading", new Dimension(600, 150));
 
-        // setUndecorated(true);
+        //setUndecorated(true);
 
         int titleImgW = 374;
         int titleImageH = 74;
