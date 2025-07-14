@@ -12,8 +12,10 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'java'
+    id 'org.panteleyev.jpackageplugin' version '1.7.3'
     id("com.gradleup.shadow") version "9.0.0-beta17"
 }
+
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -68,6 +70,31 @@ tasks.named('test') {
 }
 
 def version = 'a1.0'
+def winver = '0.1.0'
+
+tasks.jpackage {
+    dependsOn("build", "shadowJar")
+
+    input = layout.buildDirectory.dir("builtJars")
+    destination = layout.buildDirectory.dir("builtDist")
+    appVersion = winver
+
+    appName = "bedrockR"
+    vendor = "_FN10_"
+    
+
+    mainJar = 'bedrockR-'+version+'-all.jar'
+     mainClass = "fn10.bedrockr.Launcher"
+
+    windows {
+        type = org.panteleyev.jpackage.ImageType.MSI
+        winConsole = true
+        winMenu = true
+        winShortcutPrompt = true
+        winPerUserInstall = true
+        winDirChooser = true
+    }
+}
 
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   archiveBaseName = 'bedrockR'
