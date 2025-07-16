@@ -84,7 +84,7 @@ tasks.jpackage {
     
 
     mainJar = 'bedrockR-'+version+'-all.jar'
-     mainClass = "fn10.bedrockr.Launcher"
+    mainClass = "fn10.bedrockr.Launcher"
 
     windows {
         type = org.panteleyev.jpackage.ImageType.MSI
@@ -93,6 +93,12 @@ tasks.jpackage {
         winShortcutPrompt = true
         winPerUserInstall = true
         winDirChooser = true
+    }
+
+    linux {
+        type = org.panteleyev.jpackage.ImageType.DEB
+        linuxPackageName = "bedrock"
+        linuxShortcut = true
     }
 }
 
