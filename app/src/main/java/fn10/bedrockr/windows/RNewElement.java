@@ -21,7 +21,7 @@ import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class RNewSelector extends RDialog implements ActionListener {
+public class RNewElement extends RDialog implements ActionListener {
 
     private JPanel MainPane = new JPanel();
     private JScrollPane MainScrollPane = new JScrollPane(MainPane);
@@ -35,7 +35,7 @@ public class RNewSelector extends RDialog implements ActionListener {
             SourceItemElement.class
     };
 
-    public RNewSelector(Frame Parent) {
+    public RNewElement(Frame Parent) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,

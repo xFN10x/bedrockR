@@ -20,6 +20,9 @@ import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
+/**
+ * An RDialog that provides the basic parts to make a source element builder window. Fields, and field generation is up to the source element.
+ */
 public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
@@ -96,10 +99,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             RequiredFields.add(Field);
     }
 
-    public List<RElementValue> checkForErrors() {
+    public List<RElementValue> checkForErrors(boolean strict) {
         List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
         for (RElementValue rElementValue : Fields) {
-            if (!rElementValue.valid())
+            if (!rElementValue.valid(strict))
                 IncorrectFields.add(rElementValue);
         }
         // Launcher.LOG.info(String.valueOf(IncorrectFields.size()));
@@ -115,7 +118,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (RElementValue rElementValue : Fields) { // add the fields
-                SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
+                try {
+                    SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
+                } catch (Exception e) {
+                    continue;
+                }
+
             }
 
             workingClass.setDraft(isDraft);
@@ -132,8 +140,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         var action = e.getActionCommand();
-        if (action.equals("create")) {
-            if (checkForErrors() == null) {
+        if (action.equals("create")) { // create, check for errors, get user to solve them, ready for build
+            if (checkForErrors(true) == null) {
                 create(false);
             } else { // show errored things
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
@@ -144,9 +152,22 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
                         JOptionPane.ERROR_MESSAGE);
             }
-        } else if (action == "draft") {
-            create(true);
-        } else if (action == "cancel") {
+        } else if (action.equals("draft")) { // drafting, check if nessesary fields are entered
+            if (checkForErrors(false) == null) {
+                create(false);
+            } else { // show errored things
+                // pov: you thought something was going to complicated, but you didnt need to
+                // search anything up VVVVVVV
+                var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
+                for (RElementValue EV : IncorrectFields) {
+                    builder.append("<li>" + EV.getTarget() + ": " + EV.Problem + "</li>");
+                }
+
+                JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (action.equals("cancel")) {
+            Listener.onElementCancel();
             this.dispose();
         } else {
             var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");

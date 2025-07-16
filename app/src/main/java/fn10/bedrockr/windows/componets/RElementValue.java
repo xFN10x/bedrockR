@@ -7,13 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.border.LineBorder;
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -30,6 +29,7 @@ public class RElementValue extends JPanel {
     private String Target = "";
     private FieldFilter Filter;
     private Class<?> InputType;
+    private Class<?> SourceFileClass;
 
     public boolean Required = false;
     public String Problem = "No problem here!";
@@ -39,19 +39,28 @@ public class RElementValue extends JPanel {
             Class<?> SourceFileClass) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         this(InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass,
-                ((ElementFile) SourceFileClass.getConstructor().newInstance()));
+                ((ElementFile) SourceFileClass.getConstructor().newInstance()), true);
     }
 
-    @SuppressWarnings("unchecked")
     public RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
             ElementFile TargetFile) {
+        this(InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
+            Boolean Optional,
+            Class<?> SourceFileClass,
+            ElementFile TargetFile,
+            boolean FromEmpty) {
         super();
 
         this.Target = TargetField;
         this.Required = !Optional;
         this.Filter = Filter;
+        this.SourceFileClass = SourceFileClass;
         this.InputType = InputType;
 
         setMaximumSize(Size);
@@ -61,38 +70,84 @@ public class RElementValue extends JPanel {
 
         Help.putClientProperty("JButton.buttonType", "help");
 
-        Launcher.LOG.info(InputType.getTypeName());
-        if (InputType.equals(Boolean.class)) {
+        // do corrisponding actions depending on the type
+        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) { // if bool, its dropdown
             String[] vals = { "true", "false" };
             Input = new JComboBox<String>(vals);
             try {
                 var field = SourceFileClass.getField(TargetField);
-                ((JComboBox<String>) Input).setSelectedIndex((boolean) field.get(TargetFile)
-                        ? 0 // convert bool to index
-                        : 1);
+                if (!FromEmpty)
+                    ((JComboBox<String>) Input).setSelectedIndex((boolean) field.get(TargetFile)
+                            ? 0 // convert bool to index
+                            : 1);
             } catch (Exception e) {
+
                 e.printStackTrace();
+                if (TargetFile.getDraft())
+                    return;
                 ErrorShower.showError(((Frame) getParent()),
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
             }
-        } else if (InputType.equals(String.class)) {
-            Input = new JTextField();
-            try {
-                var field = SourceFileClass.getField(TargetField);
-                ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string
+        } else if (InputType.equals(String.class)) { // if string, do this
+            // if normal do this
+            Field field;
+            try { // try to get field
+                field = SourceFileClass.getField(TargetField);
             } catch (Exception e) {
+                if (TargetFile.getDraft())
+                    return;
                 e.printStackTrace();
                 ErrorShower.showError(((Frame) getParent()),
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
+                return;
             }
-        } else {
+            var anno = field.getAnnotation(RAnnotation.StringDropdownField.class);
+            Input = new JTextField();
+            if (anno == null) { // normal string
+                Input = new JTextField();
+                try {
+                    if (!FromEmpty)
+                        ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string in field,
+                                                                                        // if it is editing
+                } catch (Exception e) {
+                    if (TargetFile.getDraft())
+                        return;
+                    e.printStackTrace();
+                    ErrorShower.showError(((Frame) getParent()),
+                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                            DisplayName, e);
+                }
+            } else { // dropdown string, an editable combobox
+                Input = new JComboBox<String>(anno.value());
+                try {
+                    Input.setName("dd");
+                    ((JComboBox<String>) Input).setEditable(true);
+                    if (!FromEmpty)
+                        ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
+                    else {
+                        ((JComboBox<String>) Input).setSelectedItem("(Select a value)");
+                    }
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                    if (TargetFile.getDraft())
+                        return;
+                    ErrorShower.showError(((Frame) getParent()),
+                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                            DisplayName, e);
+                }
+            }
+        } else { // really unsafe
             Input = new JTextField();
             try {
                 var field = SourceFileClass.getField(TargetField);
-                ((JTextField) Input).setText(field.get(TargetFile).toString()); // set text to string
+                if (!FromEmpty)
+                    ((JTextField) Input).setText(field.get(TargetFile).toString()); // set text to string if not editng
             } catch (Exception e) {
+                if (TargetFile.getDraft())
+                    return;
                 e.printStackTrace();
                 ErrorShower.showError(((Frame) getParent()),
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -167,10 +222,10 @@ public class RElementValue extends JPanel {
         return Target;
     }
 
+    @SuppressWarnings("unchecked")
     public Object getValue() {
-        if (valid()) {
+        if (valid(true)) {
             if (InputType.equals(Boolean.class)) {
-                @SuppressWarnings("unchecked")
                 var casted = ((JComboBox<String>) Input);
                 return (casted.getSelectedIndex() == 0);
             } else {
@@ -185,6 +240,8 @@ public class RElementValue extends JPanel {
                     } else if (InputType.equals(Long.class)) {
                         return Long.parseLong(text);
                     } else if (InputType.equals(String.class)) {
+                        if (Input.getName() == "dd")
+                            return ((JComboBox<String>) Input).getSelectedItem();
                         if (!Filter.getValid(text))
                             Problem = "String is not valid.";
                         return text;
@@ -201,13 +258,22 @@ public class RElementValue extends JPanel {
             return null;
     }
 
-    public boolean valid() {
-        Launcher.LOG.info(InputType.getName());
-        if (InputType.equals(Boolean.class)) {
+    @SuppressWarnings("unchecked")
+    public boolean valid(boolean strict) {
+        //Launcher.LOG.info(InputType.getName());
+        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             return true;
         } else {
             var process = Problem;
             try {
+                if (Input.getName() == "dd") {
+                    Problem = "String is not valid.";
+                    if (!Filter.getValid(((String) ((JComboBox<String>) Input).getSelectedItem()))) {
+                        Problem = "String is not valid.";
+                        return false;
+                    }
+                    return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
+                }
                 String text = ((JTextField) Input).getText();
                 if (InputType.equals(Integer.class)) {
                     process = "Failed to turn into Integer";
@@ -222,6 +288,7 @@ public class RElementValue extends JPanel {
                     process = "Failed to turn into Long";
                     Long.parseLong(text);
                 } else if (InputType.equals(String.class)) {
+
                     if (!Filter.getValid(text))
                         Problem = "String is not valid.";
                     return Filter.getValid(text);
@@ -231,8 +298,20 @@ public class RElementValue extends JPanel {
                 return true;
             } catch (Exception e) {
                 Problem = process;
-                return false;
+                if (strict)
+                    return false;
+                else {
+                    Field field;
+                    try {
+                        field = SourceFileClass.getField(Target);
+                    } catch (Exception e1) {
+                        return false;
+                    }
+                    if (field.getAnnotation(RAnnotation.VeryImportant.class) != null)
+                        return false;
+                }
             }
         }
+        return false;
     }
 }

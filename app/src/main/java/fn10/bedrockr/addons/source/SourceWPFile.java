@@ -15,26 +15,27 @@ import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceWPFile implements ElementSource {
-    private final String Location = "/" + RFileOperations.WPFFILENAME;
+    private final String Location =File.separator + RFileOperations.WPFFILENAME;
     private Class<WPFile> serilizedClass = WPFile.class;
     private WPFile serilized;
 
     public SourceWPFile(WPFile obj) {
         this.serilized = obj;
     }
+
     public SourceWPFile() {
         this.serilized = null;
     }
+
     public SourceWPFile(String jsonString) {
         this.serilized = (WPFile) getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Workspace File", "dont use this cause it will break",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
+                new ImageIcon(ElementSource.class.getResource("/addons"
+                        + "/element" +"/Element.png")));
     }
-
-    
 
     @Override
     public String getJSONString() {
