@@ -10,7 +10,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
@@ -21,18 +20,15 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.text.html.parser.Element;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.google.gson.Gson;
-
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.jsonClasses.SettingsFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
@@ -110,23 +106,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         // rebuild button
         Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
-        // views
-        // Lay.putConstraint(SpringLayout.EAST, ElementView, -30, SpringLayout.EAST,
-        // CP);
-        /// Lay.putConstraint(SpringLayout.WEST, ElementView, 100, SpringLayout.WEST,
-        // CP);
-        // Lay.putConstraint(SpringLayout.NORTH, ElementView, 10, SpringLayout.SOUTH,
-        // Tabs);
-        // Lay.putConstraint(SpringLayout.SOUTH, ElementView, -10, SpringLayout.SOUTH,
-        // CP);
-        // Lay.putConstraint(SpringLayout.EAST, ResourceView, -30, SpringLayout.EAST,
-        // CP);
-        // Lay.putConstraint(SpringLayout.WEST, ResourceView, 100, SpringLayout.WEST,
-        // CP);
-        // Lay.putConstraint(SpringLayout.NORTH, ResourceView, 10, SpringLayout.SOUTH,
-        // Tabs);
-        // Lay.putConstraint(SpringLayout.SOUTH, ResourceView, -10, SpringLayout.SOUTH,
-        // CP);
 
         ElementView.setLayout(gride);
         ResourceView.setLayout(gride);
@@ -150,8 +129,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void buildElements(boolean rebuild) {
         // make loading screen
         var progress = new RLoadingScreen(this);
-        var builddir = RFileOperations.getBaseDirectory(this).getPath() + "/build/"
-                + SWPF.getSerilized().getElementName() + "/";
+        var builddir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
+                + "BP" + File.separator +
+                SWPF.getSerilized().getElementName() + File.separator;
         SwingUtilities.invokeLater(() -> {
             progress.setVisible(true);
         });
@@ -159,9 +139,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         // make a thread so the ui can update
         new Thread(() -> {
             try {
-                progress.changeText("Removing old files...");
-                FileUtils.deleteDirectory(new File(builddir));
-
+                if (rebuild) {
+                    progress.changeText("Removing old files...");
+                    FileUtils.deleteDirectory(new File(builddir));
+                }
                 refreshElements();
                 var ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
@@ -173,7 +154,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     }
                 });
                 progress.Steps = ToBuild.size() + 1;
-
+                // buildBP
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
                 SWPF.getSerilized().build(builddir,
@@ -190,7 +171,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     progress.increaseProgressBySteps("Done!"); // next
                 }
 
-                
+                //do mc sync 
+                SettingsFile settings = SettingsFile.getSettings(this);
+                if (((WPFile)SWPF.getSerilized()).MinecraftSync) {
+                    progress.increaseProgressBySteps("Syncing..."); // next
+                    RFileOperations.mcSync(this);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ErrorShower.showError(this, "Failed to build element.", "Building Error", e);
@@ -204,9 +191,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         SwingUtilities.invokeLater(() -> {
             ElementView.removeAll();
             for (File file : RFileOperations
-                    .getFileFromWorkspace(this, ((WPFile) SWPF.getSerilized()).WorkspaceName, "/elements/")
+                    .getFileFromWorkspace(this, ((WPFile) SWPF.getSerilized()).WorkspaceName, File.separator+"elements"+File.separator)
                     .listFiles()) { // get all elements in workspace
-                Launcher.LOG.info(file.getName());
+                // Launcher.LOG.info(file.getName());
                 var ext = FilenameUtils.getExtension(file.getName());
                 try {
                     if (ext.contains("ref")) { // if it is a file, do
@@ -232,7 +219,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var ac = arg0.getActionCommand();
         if (ac.equals("add")) {
             SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewSelector(this);
+                var addFrame = new RNewElement(this);
                 addFrame.setVisible(true);
             });
         } else if (ac.equals("build")) {
@@ -245,15 +232,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     @Override
-    public void onElementDraft() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onElementDraft'");
+    public void onElementDraft(ElementSource element) {
+        element.buildJSONFile(this, (((WPFile) SWPF.getSerilized()).WorkspaceName));
+        refreshElements();
     }
 
     @Override
     public void onElementCancel() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onElementCancel'");
+        return;
     }
 
     @Override

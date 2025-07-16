@@ -12,6 +12,8 @@ import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.laf.BedrockrDark;
 
 import java.awt.*;
+import java.io.Console;
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -25,20 +27,32 @@ public class Launcher {
 
     public static String VERSION = "a1.0";
     public static Image ICON;
-    // ImageIcon(Launcher.class.getResource("/ui/Icon.png"));
+
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
     static {
+        System.out.println("pathsep is " + File.separator);
         try {
-            ICON = ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_huge.png"));
+            ICON = ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_huge.png"));
             // ICONS = new Image[] {
-            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_16.png")));
-            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_32.png")));
-            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_64.png")));
-            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_128.png")));
-            ICONS.add(ImageIO.read(Launcher.class.getResourceAsStream("/ui/Icon_256.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_16.png")));
+                    ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_27.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_32.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_64.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_128.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_256.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui" + "/Icon_huge.png")));
             // };
         } catch (Exception e) {
             e.printStackTrace();
+            ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
         }
     }
 
@@ -47,7 +61,8 @@ public class Launcher {
 
     public static void main(String[] args) {
         // set up logging
-        String logloc = RFileOperations.getBaseDirectory(null, "\\logs").getAbsolutePath() + "\\bedrockR-log-"
+        String logloc = RFileOperations.getBaseDirectory(null, File.separator + "logs").getAbsolutePath()
+                + File.separator + "bedrockR-log-"
                 + System.currentTimeMillis() + ".log";
 
         for (var h : LOG.getHandlers()) {
@@ -80,16 +95,18 @@ public class Launcher {
 
         // log stuff
         LOG.info("Logging to " + logloc);
-        LOG.info(RFileOperations.getBaseDirectory(null).getAbsolutePath());
+        LOG.info("Base Path: " + RFileOperations.getBaseDirectory(null).getAbsolutePath());
+        LOG.info("Launch Args: " + String.join(",", args));
         LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
                 System.getProperty("java.vm.name")));
+        // LOG.info(System.getenv("LOCALAPPDATA"));
 
         // setup theme
 
         FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
 
         try {
-            LOG.info(String.valueOf(BedrockrDark.setup()));
+            String.valueOf(BedrockrDark.setup());
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(null, "failed to load theme " + e.getCause().toString(), "FlatLaf Error", e);

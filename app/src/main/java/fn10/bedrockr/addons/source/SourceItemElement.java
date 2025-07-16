@@ -21,7 +21,7 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceItemElement implements ElementSource {
-    private final String Location = "/elements/";
+    private final String Location =File.separator+"elements"+File.separator;
     private Class<ItemFile> serilizedClass = ItemFile.class;
     private ItemFile serilized;
 
@@ -40,7 +40,7 @@ public class SourceItemElement implements ElementSource {
     public static ElementDetails getDetails() {
         return new ElementDetails("Item ",
                 "<html>A basic item. Can be made as food, <br>block placer, or entity spawner.</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Item.png")));
+                new ImageIcon(ElementSource.class.getResource("/addons"+"/element"+"/Item.png")));
     }
 
     @Override
@@ -90,24 +90,40 @@ public class SourceItemElement implements ElementSource {
             try { // then add them
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
-                    frame.addField(new RElementValue(field.getType(),
-                            details.Filter() != null ? details.Filter().getConstructor().newInstance()// if no filter,
-                                                                                                      // dont add one
-                                    : field.getType() == String.class ? new RegularStringFilter() : null, // if its a
-                                                                                                          // string
-                                                                                                          // however,
-                                                                                                          // add a basic
-                                                                                                          // filter
+                    if (this.serilized != null) // create field with a file already there
+                        frame.addField(new RElementValue(field.getType(),
+                                details.Filter() != null ? details.Filter().getConstructor().newInstance()// if no
+                                                                                                          // filter,
+                                                                                                          // dont add
+                                                                                                          // one
+                                        : field.getType() == String.class ? new RegularStringFilter() : null, // if its
+                                                                                                              // a
+                                                                                                              // string
+                                                                                                              // however,
+                                                                                                              // add a
+                                                                                                              // basic
+                                                                                                              // filter
 
-                            // thanks vs
-                            // code
-                            // formatting,
-                            // very cool
-                            field.getName(), // target
-                            details.displayName(), // display name
-                            details.Optional(),
-                            getSerilizedClass(),
-                            this.serilized == null ? new ItemFile(): this.serilized)); //if this is blank, make new file
+                                // thanks vs
+                                // code
+                                // formatting,
+                                // very cool
+                                field.getName(), // target
+                                details.displayName(), // display name
+                                details.Optional(),
+                                getSerilizedClass(),
+                                this.serilized));
+                    else //create file without anything there ---------------------------------------------------------------------
+                        frame.addField(new RElementValue(field.getType(),
+                                details.Filter() != null ? details.Filter().getConstructor().newInstance()// if no
+                                                                                                          // filter,
+                                                                                                          // dont add
+                                                                                                          // one
+                                        : field.getType() == String.class ? new RegularStringFilter() : null, // if its
+                                field.getName(),
+                                details.displayName(),
+                                details.Optional(),
+                                getSerilizedClass()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

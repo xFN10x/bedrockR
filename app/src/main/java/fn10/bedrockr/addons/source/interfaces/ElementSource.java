@@ -21,7 +21,7 @@ public interface ElementSource {
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Element", "A cool new element, \nwhich SOME dumbass forgot to change.",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
+                new ImageIcon(ElementSource.class.getResource("/addons"+"/element"+"/Element.png")));
     }
 
     abstract String getJSONString();

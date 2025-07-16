@@ -66,7 +66,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
 
         menuBar.add(addonsMenu);
 
-
+        if (RFileOperations.getWorkspaces(this) != null)
         for (var folder : RFileOperations.getWorkspaces(this)) {
             projectspart.add(new RAddon(folder, this));
         }

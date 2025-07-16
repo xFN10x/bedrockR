@@ -12,25 +12,17 @@ public class ErrorShower {
         StringWriter sw = new StringWriter();
         ex.printStackTrace(new PrintWriter(sw));
 
-        var trun = sw.toString().substring(0, 1000);
+        String trun;
+        if (sw.toString().length() >= 1000)
+            trun = sw.toString().substring(0, 1000);
+        else
+            trun = sw.toString();
 
-        var message = msg+"\n"+ (trun.length() >= 1000 ? trun + "\n(And way more lines to go...)": trun);
+        var message = msg + "\n" + (trun.length() >= 1000 ? trun + "\n(And way more lines to go...)" : trun);
 
         JOptionPane.showMessageDialog(parent,
                 message,
-                title, JOptionPane.ERROR_MESSAGE); 
+                title, JOptionPane.ERROR_MESSAGE);
 
-        // var frame = new RDialog(parent, JFrame.DISPOSE_ON_CLOSE, "There was an
-        // Execption Thrown; "+title, new Dimension(500, 300));
-
-        // var icon = new JLabel(new
-        // ImageIcon(ErrorShower.class.getResource("/ui/Error.png")));
-
-        // frame.add(icon);
-
-        // SwingUtilities.invokeLater(() -> {
-        // frame.setModal(true);
-        // frame.setVisible(true);
-        // });
     }
 }

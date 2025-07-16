@@ -7,6 +7,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFonts;
 
@@ -20,13 +21,17 @@ public class RLoadingScreen extends RDialog {
     public Integer Steps = null;
 
     public void changeText(String text) {
-        SwingUtilities.invokeLater(() -> {
-            MainText.setText(text);
-        });
+        try {
+            SwingUtilities.invokeLater(() -> {
+                MainText.setText(text);
+            });
+        } catch (Exception e) {
+            Launcher.LOG.warning("Failed to change progress message.");
+        }
     }
 
-    public void increaseProgress(int increase,@Nullable String TextChange) {
-
+    public void increaseProgress(int increase, @Nullable String TextChange) {
+        MainBar.setIndeterminate(false);
         changeText(TextChange);
         SwingUtilities.invokeLater(() -> {
             MainBar.setValue(MainBar.getValue() + increase);
@@ -41,7 +46,7 @@ public class RLoadingScreen extends RDialog {
     public void increaseProgressBySteps(@Nullable String TextChange) throws IllegalAccessException {
         if (Steps == null)
             throw new IllegalArgumentException("Total steps not set yet.");
-
+        MainBar.setIndeterminate(false);
         changeText(TextChange);
 
         SwingUtilities.invokeLater(() -> {
@@ -52,7 +57,7 @@ public class RLoadingScreen extends RDialog {
     public RLoadingScreen(Frame Parent) {
         super(Parent, DO_NOTHING_ON_CLOSE, "Loading", new Dimension(600, 150));
 
-        //setUndecorated(true);
+        // setUndecorated(true);
 
         int titleImgW = 374;
         int titleImageH = 74;
@@ -63,19 +68,17 @@ public class RLoadingScreen extends RDialog {
                 .ResizeImageByURL(getClass().getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH));
         Branding.setPreferredSize(new Dimension(titleImgW, titleImageH));
 
-        
         MainBar.setPreferredSize(new Dimension(600, 20));
         MainBar.setBackground(getForeground());
         MainBar.setOrientation(JProgressBar.HORIZONTAL);
         // MainBar.setForeground(new Color(36, 252, 3));
-        MainBar.setBorder(new LineBorder(getForeground(),3));
+        MainBar.setBorder(new LineBorder(getForeground(), 3));
 
         MainBar.setValue(0);
         MainBar.setIndeterminate(true);
         // MainBar.setStringPainted(true);
         // MainBar.setString("Loading...");
 
-        
         MainText.setFont(RFonts.RegMinecraftFont.deriveFont(2, 18));
         MainText.setForeground(Color.WHITE);
 

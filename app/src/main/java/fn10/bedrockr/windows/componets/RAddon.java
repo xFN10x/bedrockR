@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
@@ -54,11 +55,12 @@ public class RAddon extends JPanel implements MouseListener {
         try {
             // dirty line of code coming up... "varibles? never hear of 'er"
             WPFile = new SourceWPFile(Files.readString(RFileOperations
-                    .getFileFromWorkspace((Frame)getParent(), WPName, "/workspace.RWP", true)
+                    .getFileFromWorkspace((Frame) getParent(), WPName, File.separator + RFileOperations.WPFFILENAME, true)
                     .toPath()));
             WPF = (WPFile) WPFile.getSerilized();
             step = 1;
-            var iconFile = RFileOperations.getFileFromWorkspace((Frame)getParent(), WPName, "/icon." + WPF.IconExtension, true);
+            var iconFile = RFileOperations.getFileFromWorkspace((Frame) getParent(), WPName,
+                    File.separator+"icon." + WPF.IconExtension, true);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
         } catch (Exception e) {
@@ -78,7 +80,8 @@ public class RAddon extends JPanel implements MouseListener {
                                 new FileNameExtensionFilter("Addon's Support Image Files", WPF.IconExtension));
                         if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             BI = ImageIO.read(bic.getSelectedFile());
-                            ImageIO.write(BI, WPF.IconExtension, RFileOperations.getFileFromWorkspace((Frame)getParent(), WPName, "/icon."+WPF.IconExtension));
+                            ImageIO.write(BI, WPF.IconExtension, RFileOperations
+                                    .getFileFromWorkspace((Frame) getParent(), WPName, File.separator+"icon." + WPF.IconExtension));
                         }
                     }
                 } catch (Exception e2) {
@@ -164,8 +167,8 @@ public class RAddon extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        RFileOperations.openWorkspace(ancestor, WPFile);
-
+        if (arg0.getButton() == MouseEvent.BUTTON1)
+            RFileOperations.openWorkspace(ancestor, WPFile);
     }
 
     @Override

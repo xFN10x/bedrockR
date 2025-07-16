@@ -3,15 +3,9 @@ package fn10.bedrockr.addons.source.jsonClasses;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
-
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
@@ -41,11 +35,12 @@ public class WPFile implements ElementFile {
     @HelpMessage(message = "You should never be able to see this")
     public boolean MinecraftSync;
 
-    public WPFile(String WPName, String MEV, String DES, String IE) {
+    public WPFile(String WPName, String MEV, String DES, String IE,String PREFIX) {
         this.WorkspaceName = WPName;
         this.MinimumEngineVersion = MEV;
         this.Description = DES;
         this.IconExtension = IE;
+        this.Prefix = PREFIX;
     }
 
     @Override
@@ -99,7 +94,7 @@ public class WPFile implements ElementFile {
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var json = gson.toJson(manifest);
 
-        var path = new File(rootPath + "/manifest.json").toPath();
+        var path = new File(rootPath +File.separator+"manifest.json").toPath();
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
 
@@ -107,9 +102,9 @@ public class WPFile implements ElementFile {
 
         // add image
         var img = Files.readAllBytes(
-                RFileOperations.getFileFromWorkspace(null, this.WorkspaceName, "/icon." + this.IconExtension, true)
+                RFileOperations.getFileFromWorkspace(null, this.WorkspaceName,File.separator+"icon." + this.IconExtension, true)
                         .toPath());
-        var imgpath = new File(rootPath + "/pack_icon.png").toPath();
+        var imgpath = new File(rootPath +File.separator+"pack_icon.png").toPath();
         Files.write(imgpath, img, StandardOpenOption.CREATE);
 
         // add dirs

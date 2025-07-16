@@ -23,6 +23,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
+import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
@@ -38,9 +40,10 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             "1.21.60",
             "1.21.70",
             "1.21.80",
-            "1.21.90"
+            "1.21.90",
+            "1.21.100"
     };
-    protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/addons/DefaultIcon.png"),
+    protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/addons"+"/DefaultIcon.png"),
             250, 250);
     protected JFileChooser file = new JFileChooser();
     protected String imageExtension = "png";
@@ -48,6 +51,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     protected JLabel AddonIcon = new JLabel(ChosenIcon);
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
+    protected JTextField ModPrefixInput = new JTextField("my_mod");
     protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(PICKABLE_VERSIONS);
     protected JButton CreateButton = new JButton("Create Addon!");
 
@@ -66,6 +70,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
         NameInput.setPreferredSize(new Dimension(150, 25));
         NameInput.getDocument().addDocumentListener(this);
+
+        var ModPrefixText = new JLabel("Addon Prefix");
+
+        ModPrefixInput.setPreferredSize(new Dimension(150, 25));
+        ModPrefixInput.getDocument().addDocumentListener(this);
 
         var DescInputText = new JLabel("Addon Description");
 
@@ -86,8 +95,6 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         CreateButton.setActionCommand("create");
         CreateButton.setPreferredSize(new Dimension(421, 30));
 
-        
-
         // constraints: icon
         Lay.putConstraint(SpringLayout.NORTH, AddonIcon, 10, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.WEST, AddonIcon, 10, SpringLayout.WEST, this);
@@ -99,12 +106,19 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         Lay.putConstraint(SpringLayout.NORTH, NameInput, 25, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.WEST, NameInput, 13, SpringLayout.EAST, AddonIcon);
 
+        // prefix input
+        Lay.putConstraint(SpringLayout.SOUTH, ModPrefixText, -1, SpringLayout.NORTH, ModPrefixInput);
+        Lay.putConstraint(SpringLayout.WEST, ModPrefixText, 13, SpringLayout.EAST, AddonIcon);
+
+        Lay.putConstraint(SpringLayout.WEST, ModPrefixInput, 13, SpringLayout.EAST, AddonIcon);
+        Lay.putConstraint(SpringLayout.NORTH, ModPrefixInput, 18, SpringLayout.SOUTH, NameInput);
+
         // desc input
         Lay.putConstraint(SpringLayout.SOUTH, DescInputText, -1, SpringLayout.NORTH, DescInput);
         Lay.putConstraint(SpringLayout.WEST, DescInputText, 13, SpringLayout.EAST, AddonIcon);
 
         Lay.putConstraint(SpringLayout.WEST, DescInput, 13, SpringLayout.EAST, AddonIcon);
-        Lay.putConstraint(SpringLayout.NORTH, DescInput, 18, SpringLayout.SOUTH, NameInput);
+        Lay.putConstraint(SpringLayout.NORTH, DescInput, 18, SpringLayout.SOUTH, ModPrefixInput);
 
         // min engine input
         Lay.putConstraint(SpringLayout.SOUTH, MinimumEngineVersionSelectionText, -1, SpringLayout.NORTH,
@@ -132,18 +146,20 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         add(PickIconButton);
         add(CreateButton);
 
-        
+        add(ModPrefixInput);
+        add(ModPrefixText);
 
         checkForError();
     }
 
-   // private static void showError(Component parent, String msg, String title, Exception ex) {
-    //    StringWriter sw = new StringWriter();
-    //    ex.printStackTrace(new PrintWriter(sw));
-    //    JOptionPane.showMessageDialog(parent,
-    //            msg + "\n" + sw.toString(),
-    //            title, JOptionPane.ERROR_MESSAGE);
-    //}
+    // private static void showError(Component parent, String msg, String title,
+    // Exception ex) {
+    // StringWriter sw = new StringWriter();
+    // ex.printStackTrace(new PrintWriter(sw));
+    // JOptionPane.showMessageDialog(parent,
+    // msg + "\n" + sw.toString(),
+    // title, JOptionPane.ERROR_MESSAGE);
+    // }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -155,7 +171,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 file.showOpenDialog(this);
                 ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file.getSelectedFile())), 250, 250);
                 AddonIcon.setIcon(ChosenIcon);
-                Launcher.LOG.info(file.getSelectedFile().getName());
+                //Launcher.LOG.info(file.getSelectedFile().getName());
                 imageExtension = file.getSelectedFile().getName().split("\\.")[1];
                 Launcher.LOG.info("Icon extension will be: " + imageExtension);
             } catch (Exception ex) {
@@ -166,25 +182,42 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             var name = NameInput.getText();
             Launcher.LOG.info("Making new addon: " + name);
 
+            // try {
+            var loading = new RLoadingScreen((JFrame) getParent());
+
+            // new Thread(() -> {
+            // try {
+            // SwingUtilities.invokeLater(() -> {
             try {
-                var loading = new RLoadingScreen((JFrame) getParent());
-
-                SwingUtilities.invokeLater(() -> {
-                    loading.setVisible(true);
-                });
-
-                RFileOperations.createWorkspace(loading,
+                var workspace = RFileOperations.createWorkspace(loading,
 
                         new WPFile(NameInput.getText(),
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
-                                imageExtension),
+                                imageExtension, ModPrefixInput.getText()),
 
                         (ImageIcon) AddonIcon.getIcon());
+
+                if (workspace != null) {
+                    RFileOperations.openWorkspace(((Frame) this.getParent()), workspace);
+                    loading.dispose();
+                    this.dispose();
+                } else {
+                    throw new Exception();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                ErrorShower.showError((Frame)getParent(), "Failed to make new addon.", "Grrrr", ex);
-                return;
+                ErrorShower.showError(((Frame)getParent()), "Failed to make new addon.", "Grrrr", ex);
             }
+            // });
+
+            // } catch (Exception ex) {
+            // ex.printStackTrace();
+            // ErrorShower.showError((Frame) getParent(), "Failed to make new addon.",
+            // "Grrrr", ex);
+            // return;
+            // }
+            // }).start();
+            // }
 
         } else {
             Launcher.LOG.warning("No action event! " + getClass().getName());
@@ -194,9 +227,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
     private void checkForError() {
         var text = NameInput.getText();
-        File proposedDir = new File(RFileOperations.getBaseDirectory((Frame)getParent()) + "/workspace/" + NameInput.getText());
+        File proposedDir = new File(
+                RFileOperations.getBaseDirectory((Frame) getParent()) + File.separator+"workspace"+File.separator + NameInput.getText());
 
-        //Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" + NameInput.getText());
+        // Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" +
+        // NameInput.getText());
 
         SwingUtilities.invokeLater(() -> {
             if (text == "") {
@@ -205,9 +240,13 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             } else if (proposedDir.exists()) {
                 CreateButton.setToolTipText("Addon already exists.");
                 CreateButton.setEnabled(false);
-            } else if (!RFileOperations.validFolderName(text)) {
+            } else if (!new FileNameLikeStringFilter().getValid(text)) {
                 CreateButton.setToolTipText(
                         "STOP! You are violating the folder naming convensions! Pay the fine, or change your addon name...");
+                CreateButton.setEnabled(false);
+            } else if (!new IDStringFilter().getValid(ModPrefixInput.getText())) {
+                CreateButton.setToolTipText(
+                        "STOP! You are violating the folder naming convensions! Pay the fine, or change your addon prefix...");
                 CreateButton.setEnabled(false);
             } else {
                 CreateButton.setToolTipText("You're all good!");

@@ -4,26 +4,24 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
-import fn10.bedrockr.addons.source.FieldFilters;
-import fn10.bedrockr.addons.source.SourceItemElement;
+
+import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.items.ItemComponents;
-import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
-import fn10.bedrockr.utils.RAnnotation.FieldDetails;
-import fn10.bedrockr.utils.RAnnotation.HelpMessage;
-import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
+import fn10.bedrockr.utils.RAnnotation.*;
 
 public class ItemFile implements ElementFile {
 
     @HelpMessage(message = "The Name Of The Element")
     @CantEditAfter
+    @VeryImportant
     @FieldDetails(Optional = false, displayName = "ElementName", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public String ElementName;
 
@@ -35,12 +33,43 @@ public class ItemFile implements ElementFile {
     @FieldDetails(Optional = false, displayName = "Item Idenifier", Filter = FieldFilters.IDStringFilter.class)
     public String ID;
 
-    @HelpMessage(message = "Is this item hidden in commands?")
-    @FieldDetails(Optional = false, displayName = "Item Idenifier", Filter = FieldFilters.IDStringFilter.class)
+    @HelpMessage(message = "Specfiys if this item hidden in commands.")
+    @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
     public boolean Hidden;
 
-    @UneditableByCreation
+    @HelpMessage(message = "The Creative Tab is this item on.")
+    @FieldDetails(Optional = false, displayName = "Creative Category", Filter = FieldFilters.IDStringFilter.class)
+    @StringDropdownField({ "construction", "equipment", "items", "nature" })
     public String Category;
+
+    @HelpMessage(message = "The group that this item is put into. These groups ")
+    @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    //avalible groups 1.21.70
+    @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
+            "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
+            "itemGroup.name.boots", "itemGroup.name.bundles", "itemGroup.name.buttons", "itemGroup.name.candles",
+            "itemGroup.name.chalkboard", "itemGroup.name.chest", "itemGroup.name.chestboat",
+            "itemGroup.name.chestplate", "itemGroup.name.compounds", "itemGroup.name.concrete",
+            "itemGroup.name.concretePowder", "itemGroup.name.cookedFood", "itemGroup.name.copper",
+            "itemGroup.name.coral", "itemGroup.name.coral_decorations", "itemGroup.name.crop", "itemGroup.name.door",
+            "itemGroup.name.dye", "itemGroup.name.enchantedBook", "itemGroup.name.fence", "itemGroup.name.fenceGate",
+            "itemGroup.name.firework", "itemGroup.name.fireworkStars", "itemGroup.name.flower", "itemGroup.name.glass",
+            "itemGroup.name.glassPane", "itemGroup.name.glazedTerracotta", "itemGroup.name.goatHorn",
+            "itemGroup.name.grass", "itemGroup.name.hanging_sign", "itemGroup.name.helmet", "itemGroup.name.hoe",
+            "itemGroup.name.horseArmor", "itemGroup.name.leaves", "itemGroup.name.leggings",
+            "itemGroup.name.lingeringPotion", "itemGroup.name.log", "itemGroup.name.minecart",
+            "itemGroup.name.miscFood", "itemGroup.name.mobEgg", "itemGroup.name.monsterStoneEgg",
+            "itemGroup.name.mushroom", "itemGroup.name.netherWartBlock", "itemGroup.name.ominousBottle",
+            "itemGroup.name.ore", "itemGroup.name.permission", "itemGroup.name.pickaxe", "itemGroup.name.planks",
+            "itemGroup.name.potion", "itemGroup.name.potterySherds", "itemGroup.name.pressurePlate",
+            "itemGroup.name.products", "itemGroup.name.rail", "itemGroup.name.rawFood", "itemGroup.name.record",
+            "itemGroup.name.sandstone", "itemGroup.name.sapling", "itemGroup.name.sculk", "itemGroup.name.seed",
+            "itemGroup.name.shovel", "itemGroup.name.shulkerBox", "itemGroup.name.sign", "itemGroup.name.skull",
+            "itemGroup.name.slab", "itemGroup.name.smithing_templates", "itemGroup.name.splashPotion",
+            "itemGroup.name.stainedClay", "itemGroup.name.stairs", "itemGroup.name.stone", "itemGroup.name.stoneBrick",
+            "itemGroup.name.sword", "itemGroup.name.trapdoor", "itemGroup.name.walls", "itemGroup.name.wood",
+            "itemGroup.name.wool", "itemGroup.name.woolCarpet" })
+    public String Group;
 
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;
@@ -69,10 +98,12 @@ public class ItemFile implements ElementFile {
     public void build(String rootPath, WPFile workspaceFile) throws IOException {
         // make item
         var item = new Item();
-        item.format_version = "1.21.30";
+        item.format_version = "1.21.60";
         // catacory
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
+        cata.category = Category;
+        cata.group = Group;
 
         // description
         var desc = new Item.InnerItem.Description();
@@ -82,13 +113,14 @@ public class ItemFile implements ElementFile {
         // inner item
         var inner = new Item.InnerItem();
         inner.description = desc;
+        inner.components = new HashMap<String, Object>(); // TODO: this
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var json = gson.toJson(item);
 
-        var path = new File(rootPath + "/items/" + ID + ".json").toPath();
+        var path = new File(rootPath +File.separator+"items"+File.separator + ID + ".json").toPath();
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);

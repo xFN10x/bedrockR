@@ -9,7 +9,7 @@ public interface ElementCreationListener {
      */
     void onElementCreate(ElementSource element);
 
-    void onElementDraft();
+    void onElementDraft(ElementSource element);
 
     void onElementCancel();
 
