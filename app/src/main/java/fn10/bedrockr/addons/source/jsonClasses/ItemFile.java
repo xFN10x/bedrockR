@@ -15,6 +15,7 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.items.ItemComponents;
 import fn10.bedrockr.utils.RAnnotation.*;
 
 public class ItemFile implements ElementFile {
@@ -22,7 +23,7 @@ public class ItemFile implements ElementFile {
     @HelpMessage(message = "The Name Of The Element")
     @CantEditAfter
     @VeryImportant
-    @FieldDetails(Optional = false, displayName = "ElementName", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public String ElementName;
 
     @HelpMessage(message = "The name of the item. e.g. \"Diamond\", \"Coal\"...")
@@ -38,14 +39,14 @@ public class ItemFile implements ElementFile {
     public boolean Hidden;
 
     @HelpMessage(message = "The Creative Tab is this item on.")
-    @FieldDetails(Optional = false, displayName = "Creative Category", Filter = FieldFilters.IDStringFilter.class)
-    @StringDropdownField({ "construction", "equipment", "items", "nature" })
+    @FieldDetails(Optional = true, displayName = "Item Category", Filter = FieldFilters.CommonFilter1.class)
+    @StringDropdownField({ "(none)", "construction", "equipment", "items", "nature" })
     public String Category;
 
     @HelpMessage(message = "The group that this item is put into. These groups ")
-    @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.FileNameLikeStringFilter.class)
-    //avalible groups 1.21.70
-    @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
+    @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
+    // avalible groups 1.21.70
+    @StringDropdownField({ "(none)", "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
             "itemGroup.name.boots", "itemGroup.name.bundles", "itemGroup.name.buttons", "itemGroup.name.candles",
             "itemGroup.name.chalkboard", "itemGroup.name.chest", "itemGroup.name.chestboat",
@@ -70,6 +71,12 @@ public class ItemFile implements ElementFile {
             "itemGroup.name.sword", "itemGroup.name.trapdoor", "itemGroup.name.walls", "itemGroup.name.wood",
             "itemGroup.name.wool", "itemGroup.name.woolCarpet" })
     public String Group;
+
+    @SpecialField
+    @MapFieldSelectables(ItemComponents.class)
+    @HelpMessage(message = "Main parts of an item. Components are basicly the options for an item. Like duribility, if its a weapon, etc.")
+    @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    public HashMap<String, Object> Components;
 
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;
@@ -102,8 +109,10 @@ public class ItemFile implements ElementFile {
         // catacory
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
-        cata.category = Category;
-        cata.group = Group;
+        if (!Category.equals("(none)"))
+            cata.category = Category;
+        if (!Group.equals("(none)"))
+            cata.group = Group;
 
         // description
         var desc = new Item.InnerItem.Description();
@@ -113,14 +122,14 @@ public class ItemFile implements ElementFile {
         // inner item
         var inner = new Item.InnerItem();
         inner.description = desc;
-        inner.components = new HashMap<String, Object>(); // TODO: this
+        inner.components = Components;
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var json = gson.toJson(item);
 
-        var path = new File(rootPath +File.separator+"items"+File.separator + ID + ".json").toPath();
+        var path = new File(rootPath + File.separator + "items" + File.separator + ID + ".json").toPath();
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);

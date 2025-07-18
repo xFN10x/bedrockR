@@ -24,11 +24,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.jsonClasses.SettingsFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
@@ -172,7 +170,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 }
 
                 //do mc sync 
-                SettingsFile settings = SettingsFile.getSettings(this);
                 if (((WPFile)SWPF.getSerilized()).MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
                     RFileOperations.mcSync(this);

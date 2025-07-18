@@ -4,11 +4,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Array;
-
 import javax.annotation.Nullable;
 
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
+import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 
 public class RAnnotation {
 
@@ -32,6 +31,12 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    public @interface MapFieldSelectables {
+       Class<? extends RMapElementProvider> value();
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface UneditableByCreation {
     }
 
@@ -43,6 +48,11 @@ public class RAnnotation {
      @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface VeryImportant {
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface SpecialField {
     }
 
     @Target({ ElementType.FIELD })
