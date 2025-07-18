@@ -38,23 +38,5 @@ public class SharedJSONClasses {
             }
             return vec;
         }
-
-        // spam /
-        // public VersionVector(String fromThis) {
-        // java.util.List<String> array = Arrays.asList(fromThis.split("\\."));
-        //
-        // // expand if not big enough
-        /// // if (array.size() < 3) {
-        // // while (array.size() <= 3) {
-        // array.addLast(fromThis);;
-        // // }
-        // }
-        ///////
-        // try {
-        /// this.a = Integer.valueOf(array.get(0));
-        // this.b = Integer.valueOf(array.get(1));
-        /// this.c = Integer.valueOf(array.get(2));
-        /// } catch (Exception e) {
-        // }
     }
 }

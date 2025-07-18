@@ -28,8 +28,6 @@ public class FieldFilters {
 
         @Override
         public Boolean getValid(String subject) {
-            // Launcher.LOG.info("message is \\\""+ subject.trim()+"\\\"\n"+
-            // String.valueOf(subject.trim().equals("")));
             if (FieldFilter.isEmptyString(subject)) {
                 return false;
             } else
@@ -42,10 +40,10 @@ public class FieldFilters {
 
         @Override
         public Boolean getValid(String subject) {
-            //check if there are any spaces, or uppercases
+            // check if there are any spaces, or uppercases
             if (subject.chars().anyMatch(Character::isUpperCase) || subject.chars().anyMatch(Character::isWhitespace))
                 return false;
-                //check if the id is valid
+            // check if the id is valid
             else if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
                 return false;
             else
@@ -58,17 +56,31 @@ public class FieldFilters {
 
         @Override
         public Boolean getValid(String subject) {
-            //check if there are any spaces, or uppercases
-            //if (subject.chars().anyMatch(Character::isUpperCase) || subject.chars().anyMatch(Character::isWhitespace))
-            //    return false;
-            //    //check if the id is valid
-            //else
+            // check if there are any spaces, or uppercases
             if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
                 return false;
             else
                 return true;
         }
 
+    }
+
+    /**
+     * This filter is a FileNameLikeStringFilter, but it allowed <code>(none)</code>
+     */
+    public static class CommonFilter1 implements FieldFilter {
+
+        @Override
+        public Boolean getValid(String subject) {
+            // check if there are any spaces, or uppercases
+            if (subject.equals("(none)")) // none is allowed
+                return true;
+
+            if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
+                return false;
+            else
+                return true;
+        }
     }
 
 }

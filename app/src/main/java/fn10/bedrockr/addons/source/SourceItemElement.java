@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
-
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -21,7 +20,7 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceItemElement implements ElementSource {
-    private final String Location =File.separator+"elements"+File.separator;
+    private final String Location = File.separator + "elements" + File.separator;
     private Class<ItemFile> serilizedClass = ItemFile.class;
     private ItemFile serilized;
 
@@ -40,7 +39,7 @@ public class SourceItemElement implements ElementSource {
     public static ElementDetails getDetails() {
         return new ElementDetails("Item ",
                 "<html>A basic item. Can be made as food, <br>block placer, or entity spawner.</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons"+"/element"+"/Item.png")));
+                new ImageIcon(ElementSource.class.getResource("/addons" + "/element" + "/Item.png")));
     }
 
     @Override
@@ -84,47 +83,41 @@ public class SourceItemElement implements ElementSource {
     @SuppressWarnings("null")
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
-        var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent);
+        var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent,
+                RElementEditingScreen.SPECIAL_AREA_STYLE);
 
         for (Field field : getSerilizedClass().getFields()) { // try to get fields
             try { // then add them
+                RElementValue rev = null;
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                     if (this.serilized != null) // create field with a file already there
-                        frame.addField(new RElementValue(field.getType(),
-                                details.Filter() != null ? details.Filter().getConstructor().newInstance()// if no
-                                                                                                          // filter,
-                                                                                                          // dont add
-                                                                                                          // one
-                                        : field.getType() == String.class ? new RegularStringFilter() : null, // if its
-                                                                                                              // a
-                                                                                                              // string
-                                                                                                              // however,
-                                                                                                              // add a
-                                                                                                              // basic
-                                                                                                              // filter
-
-                                // thanks vs
-                                // code
-                                // formatting,
-                                // very cool
+                        rev = new RElementValue(field.getType(),
+                                details.Filter() != null ? details.Filter().getConstructor().newInstance()
+                                        // if no filter, dont add one
+                                        : field.getType() == String.class ? new RegularStringFilter() : null,
+                                // if its a string however, add a basic filter
                                 field.getName(), // target
                                 details.displayName(), // display name
                                 details.Optional(),
                                 getSerilizedClass(),
-                                this.serilized));
-                    else //create file without anything there ---------------------------------------------------------------------
-                        frame.addField(new RElementValue(field.getType(),
-                                details.Filter() != null ? details.Filter().getConstructor().newInstance()// if no
-                                                                                                          // filter,
-                                                                                                          // dont add
-                                                                                                          // one
-                                        : field.getType() == String.class ? new RegularStringFilter() : null, // if its
-                                field.getName(),
-                                details.displayName(),
+                                this.serilized);
+                    else // create file without anything there
+                         // ---------------------------------------------------------------------
+                        rev = new RElementValue(field.getType(),
+                                details.Filter() != null ? details.Filter().getConstructor().newInstance()
+                                        : field.getType() == String.class ? new RegularStringFilter() : null,
+                                field.getName(), // target
+                                details.displayName(), // display name
                                 details.Optional(),
-                                getSerilizedClass()));
+                                getSerilizedClass(),
+                                this.serilized);
+                    if (field.getAnnotation(RAnnotation.SpecialField.class) != null)
+                        frame.setSpecialField(rev);
+                    else
+                        frame.addField(rev);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);

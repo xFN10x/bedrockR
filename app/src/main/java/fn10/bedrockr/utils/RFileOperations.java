@@ -278,7 +278,6 @@ public class RFileOperations {
         } finally {
             settings.buildFile(doingThis); // finally
         }
-        
     }
 
     public static SourceWPFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)

@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 import javax.swing.border.LineBorder;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
@@ -17,6 +18,11 @@ import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 
+/**
+ * The main Components for <code>RElementCreationScreen</code>.
+ * This class includes lots of useful tools for making a field for a user to
+ * edit, and to save certain <code>java.reflect.Field</code>s.
+ */
 public class RElementValue extends JPanel {
 
     private SpringLayout Lay = new SpringLayout();
@@ -30,6 +36,8 @@ public class RElementValue extends JPanel {
     private FieldFilter Filter;
     private Class<?> InputType;
     private Class<?> SourceFileClass;
+
+    protected JButton HashMapAdd = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
 
     public boolean Required = false;
     public String Problem = "No problem here!";
@@ -139,7 +147,25 @@ public class RElementValue extends JPanel {
                             DisplayName, e);
                 }
             }
-        } else { // really unsafe
+        } else if (InputType.equals(HashMap.class)) { // hashmap
+            Input = new JPanel();
+            ((JPanel) Input).setLayout(new BoxLayout(((Container) Input), BoxLayout.Y_AXIS));
+            ((JPanel) Input).setBorder(new LineBorder(Color.DARK_GRAY));
+            Input.setBackground(getBackground().brighter());
+
+            HashMapAdd.setAlignmentX(0.5f);
+            HashMapAdd.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    
+                }
+                
+            });
+            ((JPanel) Input).add(HashMapAdd);
+        }
+
+        else { // really unsafe
             Input = new JTextField();
             try {
                 var field = SourceFileClass.getField(TargetField);
@@ -155,14 +181,18 @@ public class RElementValue extends JPanel {
             }
         }
 
-        EnableDis.addItemListener(new ItemListener() {
+        if (Optional) // stop this from affecting non-optional things
+            EnableDis.addItemListener(new ItemListener() {
+                {
+                    Input.setEnabled(EnableDis.isSelected() ? true : false);
+                }
 
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                EnableDis.setEnabled(e.getStateChange() == ItemEvent.SELECTED ? true : false);
-            }
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED ? true : false);
+                }
 
-        });
+            });
         Help.addActionListener(new ActionListener() {
 
             @Override
@@ -184,19 +214,35 @@ public class RElementValue extends JPanel {
 
         Name.setText(DisplayName);
 
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
+        // put in center is not hashmap
+        if (InputType.equals(HashMap.class))
+            Lay.putConstraint(SpringLayout.NORTH, Name, 10, SpringLayout.NORTH, this);
+        else
+            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
+
         Lay.putConstraint(SpringLayout.WEST, Name, 0, SpringLayout.WEST, this);
 
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
+        // put in center is not hashmap
+        if (InputType.equals(HashMap.class))
+            Lay.putConstraint(SpringLayout.NORTH, Help, 10, SpringLayout.NORTH, this);
+        else
+            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
 
         Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
         Lay.putConstraint(SpringLayout.NORTH, Input, 3, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.SOUTH, Input, -3, SpringLayout.SOUTH, this);
-        Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableDis);
+        if (Optional)
+            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableDis);
+        else
+            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, Help);
 
         Lay.putConstraint(SpringLayout.EAST, EnableDis, -3, SpringLayout.WEST, Help);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableDis, 0, SpringLayout.VERTICAL_CENTER, this);
+        // put in center is not hashmap
+        if (InputType.equals(HashMap.class))
+            Lay.putConstraint(SpringLayout.NORTH, EnableDis, 10, SpringLayout.NORTH, this);
+        else
+            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableDis, 0, SpringLayout.VERTICAL_CENTER, this);
 
         if (!Optional)
             EnableDis.setEnabled(false);
@@ -213,7 +259,8 @@ public class RElementValue extends JPanel {
 
         add(Name);
         add(Input);
-        add(EnableDis);
+        if (Optional)
+            add(EnableDis);
         add(Help);
 
     }
@@ -230,6 +277,8 @@ public class RElementValue extends JPanel {
                 return (casted.getSelectedIndex() == 0);
             } else {
                 try {
+                    if (Input.getName().equals("dd"))
+                        return ((JComboBox<String>) Input).getSelectedItem();
                     String text = ((JTextField) Input).getText();
                     if (InputType.equals(Integer.class)) {
                         return Integer.parseInt(text);
@@ -240,8 +289,6 @@ public class RElementValue extends JPanel {
                     } else if (InputType.equals(Long.class)) {
                         return Long.parseLong(text);
                     } else if (InputType.equals(String.class)) {
-                        if (Input.getName() == "dd")
-                            return ((JComboBox<String>) Input).getSelectedItem();
                         if (!Filter.getValid(text))
                             Problem = "String is not valid.";
                         return text;
@@ -260,7 +307,7 @@ public class RElementValue extends JPanel {
 
     @SuppressWarnings("unchecked")
     public boolean valid(boolean strict) {
-        //Launcher.LOG.info(InputType.getName());
+        // Launcher.LOG.info(InputType.getName());
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             return true;
         } else {

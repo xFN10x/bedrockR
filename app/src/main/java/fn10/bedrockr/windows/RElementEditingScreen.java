@@ -1,5 +1,6 @@
 package fn10.bedrockr.windows;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -21,12 +22,15 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 /**
- * An RDialog that provides the basic parts to make a source element builder window. Fields, and field generation is up to the source element.
+ * An RDialog that provides the basic parts to make a source element builder
+ * window. Fields, and field generation is up to the source element.
  */
 public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
     private JPanel Pane = new JPanel();
+    private JPanel SpecialPane = null;
+    private SpringLayout SpecialPaneLay = new SpringLayout();
     private FlowLayout PaneLay = new FlowLayout(1, 8, 6);
 
     public Class<?> SourceClass;
@@ -37,9 +41,18 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     public List<RElementValue> RequiredFields = new ArrayList<RElementValue>();
     public List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
 
+    public static final Integer DEFAULT_STYLE = 0;
+    public static final Integer SPECIAL_AREA_STYLE = 1;
+
     public RElementEditingScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier) {
+        this(Parent, elementName, sourceElementClass, sourceClass, listenier, DEFAULT_STYLE);
+    }
+
+    public RElementEditingScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
+            Class<?> sourceClass,
+            ElementCreationListener listenier, Integer layout) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,
@@ -80,7 +93,21 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         Lay.putConstraint(SpringLayout.SOUTH, Pane, -5, SpringLayout.NORTH, Sep);
         Lay.putConstraint(SpringLayout.NORTH, Pane, 5, SpringLayout.NORTH, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, Pane, 5, SpringLayout.WEST, getContentPane());
-        Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.EAST, getContentPane());
+        if (layout == DEFAULT_STYLE)
+            Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.EAST, getContentPane());
+        if (layout == SPECIAL_AREA_STYLE) {
+            Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.HORIZONTAL_CENTER, getContentPane());
+            SpecialPane = new JPanel();
+            SpecialPane.setLayout(SpecialPaneLay);
+            SpecialPane.setBackground(Color.BLUE);
+
+            Lay.putConstraint(SpringLayout.SOUTH, SpecialPane, 0, SpringLayout.NORTH, Sep);
+            Lay.putConstraint(SpringLayout.NORTH, SpecialPane, 0, SpringLayout.NORTH, getContentPane());
+            Lay.putConstraint(SpringLayout.WEST, SpecialPane, 0, SpringLayout.EAST, Pane); // only one not copied
+            Lay.putConstraint(SpringLayout.EAST, SpecialPane, 0, SpringLayout.EAST, getContentPane());
+
+            add(SpecialPane);
+        }
 
         Pane.setLayout(PaneLay);
 
@@ -94,6 +121,21 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public void addField(RElementValue Field) {
         Pane.add(Field);
+        Fields.add(Field);
+        if (Field.Required)
+            RequiredFields.add(Field);
+    }
+
+    public void setSpecialField(RElementValue Field) throws IllegalAccessError {
+        if (SpecialPane == null)
+            throw new IllegalAccessError("This Element Creation Screen was not set to be the special layout.");
+        SpecialPane.add(Field);
+        //put field all over 
+        SpecialPaneLay.putConstraint(SpringLayout.SOUTH, Field, 0, SpringLayout.SOUTH, SpecialPane);
+        SpecialPaneLay.putConstraint(SpringLayout.NORTH, Field, 0, SpringLayout.NORTH, SpecialPane);
+        SpecialPaneLay.putConstraint(SpringLayout.WEST, Field, 0, SpringLayout.WEST, SpecialPane);
+        SpecialPaneLay.putConstraint(SpringLayout.EAST, Field, 0, SpringLayout.EAST, SpecialPane);
+
         Fields.add(Field);
         if (Field.Required)
             RequiredFields.add(Field);
