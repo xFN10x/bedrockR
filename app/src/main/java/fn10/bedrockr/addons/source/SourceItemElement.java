@@ -92,7 +92,7 @@ public class SourceItemElement implements ElementSource {
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                     if (this.serilized != null) // create field with a file already there
-                        rev = new RElementValue(field.getType(),
+                        rev = new RElementValue(Parent,field.getType(),
                                 details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                         // if no filter, dont add one
                                         : field.getType() == String.class ? new RegularStringFilter() : null,
@@ -104,7 +104,7 @@ public class SourceItemElement implements ElementSource {
                                 this.serilized);
                     else // create file without anything there
                          // ---------------------------------------------------------------------
-                        rev = new RElementValue(field.getType(),
+                        rev = new RElementValue(Parent,field.getType(),
                                 details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                         : field.getType() == String.class ? new RegularStringFilter() : null,
                                 field.getName(), // target

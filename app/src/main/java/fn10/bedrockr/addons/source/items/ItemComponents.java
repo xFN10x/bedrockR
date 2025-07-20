@@ -72,8 +72,8 @@ public class ItemComponents implements RMapElementProvider {
         AvailableComponents.put("minecraft:fuel", null); // minecraft, WHY DO YOU NEED OBJECTS FOR THESEEEEE
 
     }
-    @Override
-    public RMapElement[] getPickable() {
+
+    public static RMapElement[] getPickable() {
         return Components;
     }
 

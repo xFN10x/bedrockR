@@ -4,8 +4,6 @@ import java.util.Vector;
 
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses.VersionVector;
-
 //translated from https://learn.microsoft.com/en-us/minecraft/creator/reference/content/addonsreference/packmanifest?view=minecraft-bedrock-stable
 public class Manifest {
 

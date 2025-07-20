@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.annotation.Nullable;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -37,16 +38,37 @@ public class RElement extends JPanel implements MouseListener {
         this(clazz, selectedFunction, Color.green);
     }
 
-    public RElement(Class<? extends ElementSource> clazz, Runnable selectedFunction, Color borderColour)
+    public RElement(@Nullable Class<? extends ElementSource> clazz, Runnable selectedFunction, Color borderColour)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        this(clazz, selectedFunction, borderColour, true);
+    }
+
+    /**
+     * A ui-component with an icon, name and description. Can be easily changed to make it custom.
+     * @param clazz
+     * Used for unmodified versions of this, this can be <code>null</code> if you want to customize it. 
+     * @param selectedFunction
+     * Runs before making this selected. Used for managing how many you can select in a list for example.
+     * @param borderColour
+     * Default is <code>Color.green</code>
+     * @param icon
+     * Declares if this has an icon. 
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     */
+    protected RElement(@Nullable Class<? extends ElementSource> clazz, Runnable selectedFunction, Color borderColour,
+            boolean icon)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         super();
 
         this.outlineColour = borderColour;
         this.func = selectedFunction;
-        this.clasz = clazz;
+        if (clazz != null) {
+            this.clasz = clazz;
 
-        details = (ElementDetails) clazz.getMethod("getDetails").invoke(null);
-
+            details = (ElementDetails) clazz.getMethod("getDetails").invoke(null);
+        }
         setLayout(Lay);
 
         setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.white, 1, 16));
@@ -56,27 +78,42 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.gray, 1, 16));
         Icon.setPreferredSize(new Dimension(70, 70));
         Icon.setSize(new Dimension(70, 70));
-        Icon.setIcon(ImageUtilites.ResizeIcon(details.Icon, 64, 64));
+        if (clazz != null)
+            Icon.setIcon(ImageUtilites.ResizeIcon(details.Icon, 64, 64));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
-
-        Name.setText(details.Name);
+        if (clazz != null)
+            Name.setText(details.Name);
         Name.setFont(RFonts.RegMinecraftFont.deriveFont(20));
+        if (clazz != null)
+            Desc.setText(details.Description);
 
-        Desc.setText(details.Description);
+        if (icon) {
+            Lay.putConstraint(SpringLayout.WEST, Icon, 5, SpringLayout.WEST, this);
+            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER, this);
 
-        Lay.putConstraint(SpringLayout.WEST, Icon, 5, SpringLayout.WEST, this);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER, this);
+            Lay.putConstraint(SpringLayout.NORTH, Name, 5, SpringLayout.NORTH, this);
+            Lay.putConstraint(SpringLayout.WEST, Name, 5, SpringLayout.EAST, Icon);
 
-        Lay.putConstraint(SpringLayout.NORTH, Name, 5, SpringLayout.NORTH, this);
-        Lay.putConstraint(SpringLayout.WEST, Name, 5, SpringLayout.EAST, Icon);
+            Lay.putConstraint(SpringLayout.NORTH, Desc, 5, SpringLayout.SOUTH, Name);
+            Lay.putConstraint(SpringLayout.WEST, Desc, 5, SpringLayout.EAST, Icon);
 
-        Lay.putConstraint(SpringLayout.NORTH, Desc, 5, SpringLayout.SOUTH, Name);
-        Lay.putConstraint(SpringLayout.WEST, Desc, 5, SpringLayout.EAST, Icon);
+            add(Icon);
+            add(Name);
+            add(Desc);
 
-        add(Icon);
-        add(Name);
-        add(Desc);
+        } else {
+
+            Lay.putConstraint(SpringLayout.NORTH, Name, 5, SpringLayout.NORTH, this);
+            Lay.putConstraint(SpringLayout.WEST, Name, 5, SpringLayout.WEST, this);
+
+            Lay.putConstraint(SpringLayout.NORTH, Desc, 5, SpringLayout.SOUTH, Name);
+            Lay.putConstraint(SpringLayout.WEST, Desc, 5, SpringLayout.WEST, this);
+
+            add(Name);
+            add(Desc);
+
+        }
 
         addMouseListener(this);
     }

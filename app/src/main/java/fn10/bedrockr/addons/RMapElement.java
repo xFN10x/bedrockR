@@ -4,11 +4,11 @@ import java.lang.reflect.Type;
 
 public class RMapElement {
     public String ID;
-    public Type Type;
+    public Class<?> Type;
     public String DisplayName;
     public String HelpDescription;
 
-    public RMapElement(String ID, Type Type) {
+    public RMapElement(String ID, Class<?> Type) {
         this.Type = Type;
         this.ID = ID;
 

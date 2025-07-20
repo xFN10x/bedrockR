@@ -12,7 +12,6 @@ import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.laf.BedrockrDark;
 
 import java.awt.*;
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;

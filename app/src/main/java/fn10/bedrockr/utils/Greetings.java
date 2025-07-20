@@ -21,6 +21,9 @@ public class Greetings { // no, the class is not welcoming you, it is for those 
         new Greeting("Yo.",25),
         new Greeting("bugrockR",25),
         new Greeting("This isnt MCreator...",20),
+        new Greeting("Now in alpha!",24),
+        new Greeting("bedrocker",26),
+        new Greeting("Rock Bedrock!",25),
     };
 
     
