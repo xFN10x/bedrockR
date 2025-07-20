@@ -1,7 +1,5 @@
 package fn10.bedrockr.addons.source;
 
-import java.util.Locale;
-
 import fn10.bedrockr.utils.RFileOperations;
 
 public class FieldFilters {

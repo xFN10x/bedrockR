@@ -12,11 +12,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import javax.swing.border.LineBorder;
+
+import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
+import fn10.bedrockr.windows.RMapValueAddingSelector;
 
 /**
  * The main Components for <code>RElementCreationScreen</code>.
@@ -37,34 +40,42 @@ public class RElementValue extends JPanel {
     private Class<?> InputType;
     private Class<?> SourceFileClass;
 
+    public Frame parentFrame;
+
+    protected JPanel HashMapInnerPane = new JPanel();
     protected JButton HashMapAdd = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
 
     public boolean Required = false;
     public String Problem = "No problem here!";
 
-    public RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
+    public RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+            String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
-        this(InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass,
+        this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass,
                 ((ElementFile) SourceFileClass.getConstructor().newInstance()), true);
     }
 
-    public RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
+    public RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+            String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
             ElementFile TargetFile) {
-        this(InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false);
+        this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false);
     }
 
+
     @SuppressWarnings("unchecked")
-    protected RElementValue(@Nonnull Class<?> InputType, FieldFilter Filter, String TargetField, String DisplayName,
+    protected RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+            String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
             ElementFile TargetFile,
             boolean FromEmpty) {
         super();
 
+        this.parentFrame = parentFrame;
         this.Target = TargetField;
         this.Required = !Optional;
         this.Filter = Filter;
@@ -93,7 +104,7 @@ public class RElementValue extends JPanel {
                 e.printStackTrace();
                 if (TargetFile.getDraft())
                     return;
-                ErrorShower.showError(((Frame) getParent()),
+                ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
             }
@@ -106,7 +117,7 @@ public class RElementValue extends JPanel {
                 if (TargetFile.getDraft())
                     return;
                 e.printStackTrace();
-                ErrorShower.showError(((Frame) getParent()),
+                ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
                 return;
@@ -123,7 +134,7 @@ public class RElementValue extends JPanel {
                     if (TargetFile.getDraft())
                         return;
                     e.printStackTrace();
-                    ErrorShower.showError(((Frame) getParent()),
+                    ErrorShower.showError(parentFrame,
                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
                             DisplayName, e);
                 }
@@ -142,30 +153,70 @@ public class RElementValue extends JPanel {
                     e.printStackTrace();
                     if (TargetFile.getDraft())
                         return;
-                    ErrorShower.showError(((Frame) getParent()),
+                    ErrorShower.showError(parentFrame,
                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
                             DisplayName, e);
                 }
             }
-        } else if (InputType.equals(HashMap.class)) { // hashmap
-            Input = new JPanel();
-            ((JPanel) Input).setLayout(new BoxLayout(((Container) Input), BoxLayout.Y_AXIS));
-            ((JPanel) Input).setBorder(new LineBorder(Color.DARK_GRAY));
+            /*--------*/} else if (InputType.equals(HashMap.class)) { // hashmap stuf
+                                                                      // ---------------------------------------------------
+            Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            /*
+             * HashMapInnerScroll is the pane that is inside input, IT IS A JPANEL, NOT A
+             * JSCROLLPANE!!!!
+             */
+
+            // do things to the panels
+            HashMapInnerPane.setLayout(new BoxLayout(HashMapInnerPane, BoxLayout.Y_AXIS));
+            ((JScrollPane) Input).setBorder(new LineBorder(Color.DARK_GRAY));
             Input.setBackground(getBackground().brighter());
+            // get the RMapProvider
+            Field field;
+            try { // try to get field
+                field = SourceFileClass.getField(TargetField);
+            } catch (Exception e) {
+                if (TargetFile.getDraft())
+                    return;
+                e.printStackTrace();
+                ErrorShower.showError(parentFrame,
+                        "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                        DisplayName, e);
+                return;
+            }
+            // finally, get the annotation after getting the field
+            var anno = field.getAnnotation(RAnnotation.MapFieldSelectables.class);
 
-            HashMapAdd.setAlignmentX(0.5f);
-            HashMapAdd.addActionListener(new ActionListener() {
+            // add the button
+            HashMapAdd.addActionListener((e) -> {
+                try {
+                    var select = RMapValueAddingSelector.openSelector(parentFrame,
+                            ((RMapElement[]) anno.value().getMethod("getPickable").invoke(null)));
+                    if (select == null)
+                        return;
+                    var toAdd = new RElementMapValue(parentFrame, select);
+                    toAdd.setAlignmentX(0.5f);
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    
+                    HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
+                    HashMapInnerPane.add(toAdd);
+
+                    // finish, and why this wasent working before
+                    HashMapInnerPane.revalidate();
+                    HashMapInnerPane.repaint();
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                 }
-                
             });
-            ((JPanel) Input).add(HashMapAdd);
-        }
+            add(HashMapAdd);
 
-        else { // really unsafe
+            Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
+            Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
+        }
+        // END OF HASH MAP STUFF
+        // ------------------------------------------------------------------------------------------
+        else { // really unsafe, if its a type is doesnt know, do this
             Input = new JTextField();
             try {
                 var field = SourceFileClass.getField(TargetField);
@@ -175,13 +226,13 @@ public class RElementValue extends JPanel {
                 if (TargetFile.getDraft())
                     return;
                 e.printStackTrace();
-                ErrorShower.showError(((Frame) getParent()),
+                ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
             }
         }
 
-        if (Optional) // stop this from affecting non-optional things
+        if (Optional) // stop the enable check affecting non-optional things
             EnableDis.addItemListener(new ItemListener() {
                 {
                     Input.setEnabled(EnableDis.isSelected() ? true : false);
@@ -198,12 +249,12 @@ public class RElementValue extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    JOptionPane.showMessageDialog(getParent(),
+                    JOptionPane.showMessageDialog(parentFrame,
                             SourceFileClass.getDeclaredField(Target).getAnnotation(HelpMessage.class).message(),
                             "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(getParent(),
+                    JOptionPane.showMessageDialog(parentFrame,
                             "Failed to get help message! Tell the dev! Field: " + Target + " Class: "
                                     + SourceFileClass.getName(),
                             "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
@@ -297,7 +348,7 @@ public class RElementValue extends JPanel {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    ErrorShower.showError((Frame) getParent(), "There was a problem getting a field.", "Error", ex);
+                    ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
                     return null;
                 }
             }

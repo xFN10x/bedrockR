@@ -9,6 +9,8 @@ import java.awt.Dialog.ModalExclusionType;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -22,8 +24,9 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-
 import com.formdev.flatlaf.ui.FlatLineBorder;
+
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -54,7 +57,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     public RWorkspace(SourceWPFile WPF) {
         super(
-                EXIT_ON_CLOSE,
+                DO_NOTHING_ON_CLOSE,
                 ((WPFile) WPF.getSerilized()).WorkspaceName,
                 Toolkit.getDefaultToolkit().getScreenSize(),
                 true,
@@ -118,6 +121,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         // add(ElementView);
         // add(ResourceView);
 
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                var lp = new RLaunchPage(Launcher.LAUNCH_WINDOW_SIZE);
+                lp.setVisible(true);
+                dispose();
+            }
+        });
+
         pack();
 
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
@@ -169,8 +180,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     progress.increaseProgressBySteps("Done!"); // next
                 }
 
-                //do mc sync 
-                if (((WPFile)SWPF.getSerilized()).MinecraftSync) {
+                // do mc sync
+                if (((WPFile) SWPF.getSerilized()).MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
                     RFileOperations.mcSync(this);
                 }
@@ -188,7 +199,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         SwingUtilities.invokeLater(() -> {
             ElementView.removeAll();
             for (File file : RFileOperations
-                    .getFileFromWorkspace(this, ((WPFile) SWPF.getSerilized()).WorkspaceName, File.separator+"elements"+File.separator)
+                    .getFileFromWorkspace(this, ((WPFile) SWPF.getSerilized()).WorkspaceName,
+                            File.separator + "elements" + File.separator)
                     .listFiles()) { // get all elements in workspace
                 // Launcher.LOG.info(file.getName());
                 var ext = FilenameUtils.getExtension(file.getName());
