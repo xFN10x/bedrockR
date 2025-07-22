@@ -5,6 +5,7 @@ import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +20,11 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import fn10.bedrockr.addons.source.SourceItemElement;
+import fn10.bedrockr.addons.source.SourceResourceFile;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.SettingsFile;
@@ -32,6 +37,7 @@ public class RFileOperations {
     private static final String USER_DIR = System.getProperty("user.home");
     private static final String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static final File BaseDirectory = new File(BASE_PATH);
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static String COMMOJANG = null;
     static {
         var settings = SettingsFile.getSettings(null);
@@ -54,6 +60,7 @@ public class RFileOperations {
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
+    public static final String RESOURCE_FILE_NAME = "resources.json";
 
     public static Class<? extends ElementSource> getElementClassFromFileExtension(Frame doingThis,
             String fileExtension) {
@@ -104,6 +111,26 @@ public class RFileOperations {
         } catch (IOException e) {
             ErrorShower.showError(doingThis, "IO Error", BASE_PATH, e);
             return null;
+        }
+    }
+
+    public static SourceResourceFile getResources(Frame doingThis, String workspaceName) {
+
+        var file = getFileFromWorkspace(doingThis, workspaceName,
+                File.separator + "resources" + File.separator + RESOURCE_FILE_NAME, true);
+        if (file.exists())
+            try {
+                var source = new SourceResourceFile(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+                return source;
+            } catch (IOException e) {
+                e.printStackTrace();
+                ErrorShower.showError(doingThis, "Failed to get resource file.", e.getMessage(), e);
+                return null;
+            }
+        else { // make a blank resource file
+            var source = new SourceResourceFile("{}");
+            source.buildJSONFile(doingThis, workspaceName);
+            return source;
         }
     }
 
@@ -162,8 +189,8 @@ public class RFileOperations {
             } else
                 return file;
         } catch (Exception e) {
-            ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
             e.printStackTrace();
+            ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
         }
         return BaseDirectory;
     }

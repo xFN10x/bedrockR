@@ -163,6 +163,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 try {
                     SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
                     continue;
                 }
 

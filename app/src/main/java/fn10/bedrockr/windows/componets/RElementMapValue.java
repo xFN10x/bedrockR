@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.text.NumberFormat;
+import java.util.AbstractMap;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -18,6 +20,7 @@ import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
 
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFonts;
 
 public class RElementMapValue extends JPanel {
@@ -32,14 +35,21 @@ public class RElementMapValue extends JPanel {
     protected final JLabel IDNameLabel = new JLabel();
     protected Component InputField = null;
 
+    protected final RMapElement rMapElement;
+    protected final Frame Ancestor;
+
     protected final SpringLayout Lay = new SpringLayout();
 
     public RElementMapValue(Frame Ancestor, RMapElement RME) {
 
-        DisplayNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 16 - (RME.DisplayName.length() / 8)));
+        this.rMapElement = RME;
+        this.Ancestor = Ancestor;
+
+        DisplayNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 16 - (RME.DisplayName.length() / 10)));
         DisplayNameLabel.setText(RME.DisplayName);
 
         IDNameLabel.setText(RME.ID);
+        IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - (RME.DisplayName.length() / 10)));
 
         // set input field to whatever is nessesary
         if (RME.Type == String.class) { // string
@@ -96,6 +106,36 @@ public class RElementMapValue extends JPanel {
             add(IDNameLabel);
 
         validate();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map.Entry<String, Object> getKeyAndVal() {
+        Object val = null;
+        try {
+            if (rMapElement.Type == String.class) { // string
+                val = ((JTextField) InputField).getText();
+            } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class) { // int
+                val = ((JSpinner)InputField).getValue();
+            } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
+                val = Float.parseFloat(((JFormattedTextField)InputField).getText());
+            } else if (rMapElement.Type.isArray()) { // array
+                
+            } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
+                val = (((JComboBox<String>)InputField).getSelectedIndex() == 0 ? true : false);
+            } else { // else
+                if (rMapElement.Type == null) {
+                    InputField = new JLabel("Input type is null.");
+                } else {
+                    InputField = new JLabel("Unknown input type: " + rMapElement.Type.getName());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorShower.showError(Ancestor, "Failed to get value of Map Entry.", e.getMessage(), e);
+            return null;
+        }
+
+        return new AbstractMap.SimpleEntry<>(rMapElement.ID, val);
     }
 
 }

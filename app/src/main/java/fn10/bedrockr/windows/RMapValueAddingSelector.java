@@ -26,7 +26,7 @@ public class RMapValueAddingSelector extends RDialog {
 
     public final SpringLayout Lay = new SpringLayout();
 
-    private Integer choice = CANCEL_CHOICE;
+    protected Integer choice = CANCEL_CHOICE;
 
     protected RMapValueAddingSelector(Frame parent, RMapElement[] AvailableComponents) {
         super(

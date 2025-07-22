@@ -65,7 +65,6 @@ public class RElementValue extends JPanel {
         this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false);
     }
 
-
     @SuppressWarnings("unchecked")
     protected RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
@@ -196,6 +195,7 @@ public class RElementValue extends JPanel {
                         return;
                     var toAdd = new RElementMapValue(parentFrame, select);
                     toAdd.setAlignmentX(0.5f);
+                    toAdd.setName("E");
 
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                     HashMapInnerPane.add(toAdd);
@@ -322,24 +322,32 @@ public class RElementValue extends JPanel {
 
     @SuppressWarnings("unchecked")
     public Object getValue() {
+        //System.out.println(InputType.getName());
         if (valid(true)) {
-            if (InputType.equals(Boolean.class)) {
+            if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
                 var casted = ((JComboBox<String>) Input);
                 return (casted.getSelectedIndex() == 0);
+            } else if (InputType.equals(HashMap.class)) {
+                var mapToBuild = new HashMap<String, Object>();
+                for (Component comp : HashMapInnerPane.getComponents()) {
+                    if (comp.getName() == null) continue;
+                    if (comp.getName().equals("E")) {
+                        var mapElement = ((RElementMapValue) comp).getKeyAndVal();
+                        mapToBuild.put(mapElement.getKey(), mapElement.getValue());
+                    }
+                }
+                return mapToBuild;
             } else {
                 try {
-                    if (Input.getName().equals("dd"))
+                    if (Input.getName() != null)
+                    if (Input.getName().equals("dd")) // if its a drop down
                         return ((JComboBox<String>) Input).getSelectedItem();
                     String text = ((JTextField) Input).getText();
-                    if (InputType.equals(Integer.class)) {
+                    if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
                         return Integer.parseInt(text);
-                    } else if (InputType.equals(Double.class)) {
-                        return Double.parseDouble(text);
-                    } else if (InputType.equals(Float.class)) {
+                    } else if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
                         return Float.parseFloat(text);
-                    } else if (InputType.equals(Long.class)) {
-                        return Long.parseLong(text);
-                    } else if (InputType.equals(String.class)) {
+                    } else if (InputType.equals(String.class)) { // string
                         if (!Filter.getValid(text))
                             Problem = "String is not valid.";
                         return text;
@@ -361,10 +369,12 @@ public class RElementValue extends JPanel {
         // Launcher.LOG.info(InputType.getName());
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             return true;
+        } else if (InputType.equals(HashMap.class)) {
+            return true;
         } else {
             var process = Problem;
             try {
-                if (Input.getName() == "dd") {
+                if (Input.getName() == "dd") { // for a string drop down
                     Problem = "String is not valid.";
                     if (!Filter.getValid(((String) ((JComboBox<String>) Input).getSelectedItem()))) {
                         Problem = "String is not valid.";
@@ -372,28 +382,20 @@ public class RElementValue extends JPanel {
                     }
                     return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
                 }
-                String text = ((JTextField) Input).getText();
-                if (InputType.equals(Integer.class)) {
+                String text = ((JTextField) Input).getText(); // get the text if its not specilized
+                if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
                     process = "Failed to turn into Integer";
                     Integer.parseInt(text);
-                } else if (InputType.equals(Double.class)) {
-                    process = "Failed to turn into Double";
-                    Double.parseDouble(text);
-                } else if (InputType.equals(Float.class)) {
+                } else if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
                     process = "Failed to turn into Integer";
                     Float.parseFloat(text);
-                } else if (InputType.equals(Long.class)) {
-                    process = "Failed to turn into Long";
-                    Long.parseLong(text);
-                } else if (InputType.equals(String.class)) {
-
+                } else if (InputType.equals(String.class)) { // string
                     if (!Filter.getValid(text))
                         Problem = "String is not valid.";
                     return Filter.getValid(text);
                 } else {
-                    return true;
+                    return false;
                 }
-                return true;
             } catch (Exception e) {
                 Problem = process;
                 if (strict)

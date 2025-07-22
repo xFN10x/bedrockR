@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
-
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -78,6 +77,11 @@ public class ItemFile implements ElementFile {
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public HashMap<String, Object> Components;
 
+    @HelpMessage(message = "The texture for the item.")
+    @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
+    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
+    public File Texture;
+
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;
 
@@ -106,13 +110,15 @@ public class ItemFile implements ElementFile {
         // make item
         var item = new Item();
         item.format_version = "1.21.60";
-        // catacory
+        // catagory
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
-        if (!Category.equals("(none)"))
-            cata.category = Category;
-        if (!Group.equals("(none)"))
-            cata.group = Group;
+        if (Category != null) //make sure to have null checks like this, since its optional
+            if (!Category.equals("(none)"))
+                cata.category = Category;
+        if (Group != null)
+            if (!Group.equals("(none)"))
+                cata.group = Group;
 
         // description
         var desc = new Item.InnerItem.Description();
