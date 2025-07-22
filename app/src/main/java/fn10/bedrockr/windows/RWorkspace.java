@@ -17,7 +17,9 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
@@ -30,6 +32,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
@@ -43,14 +46,20 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     protected Container CP = getContentPane();
     public SourceWPFile SWPF;
 
-    // componates
+    // components
     private JSeparator VerticleSep = new JSeparator(JSeparator.VERTICAL);
 
     private JTabbedPane Tabs = new JTabbedPane();
-    private JPanel ElementView = new JPanel();
-    private JPanel ResourceView = new JPanel();
+
+    private JPanel ElementInnerPanelView = new JPanel();
+    private JPanel ResourceInnerPanelView = new JPanel();
+    private JScrollPane ElementView = new JScrollPane(ElementInnerPanelView,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    
 
     private JButton AddElement = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/NewElement.png")));
+    private JButton AddTextureResource = new JButton(
+            new ImageIcon(getClass().getResource("/addons/workspace/NewResource.png")));
     private JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
     private JButton ReBuildElements = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
@@ -72,7 +81,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Tabs.addTab("Settings", null);
         Tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        var viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 16);
+        var viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
         // Tabs.setBorder(viewsBorder);
         ElementView.setBorder(viewsBorder);
         ElementView.setVisible(false);
@@ -82,6 +91,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         AddElement.setActionCommand("add");
         AddElement.addActionListener(this);
 
+        AddTextureResource.setActionCommand("texture");
+        AddTextureResource.addActionListener(this);
+
         BuildElements.setActionCommand("build");
         BuildElements.addActionListener(this);
 
@@ -89,7 +101,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         ReBuildElements.addActionListener(this);
 
         // constraints
-        // tabedpane
+        // tabbedpane
         Lay.putConstraint(SpringLayout.EAST, Tabs, -30, SpringLayout.EAST, CP);
         Lay.putConstraint(SpringLayout.WEST, Tabs, 100, SpringLayout.WEST, CP);
         Lay.putConstraint(SpringLayout.NORTH, Tabs, 70, SpringLayout.NORTH, CP);
@@ -101,6 +113,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         // add button
         Lay.putConstraint(SpringLayout.NORTH, AddElement, 70, SpringLayout.NORTH, CP);
         Lay.putConstraint(SpringLayout.EAST, AddElement, -15, SpringLayout.WEST, VerticleSep);
+        // addtexture button
+        Lay.putConstraint(SpringLayout.NORTH, AddTextureResource, 10, SpringLayout.SOUTH, AddElement);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddTextureResource, 0, SpringLayout.HORIZONTAL_CENTER,
+                AddElement);
         // build button
         Lay.putConstraint(SpringLayout.SOUTH, BuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, BuildElements, 0, SpringLayout.EAST, Tabs);
@@ -108,18 +124,16 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
 
-        ElementView.setLayout(gride);
-        ResourceView.setLayout(gride);
+        ElementInnerPanelView.setLayout(gride);
+        ResourceInnerPanelView.setLayout(gride);
 
         add(Tabs);
         add(VerticleSep);
 
         add(AddElement);
+        add(AddTextureResource);
         add(BuildElements);
         add(ReBuildElements);
-
-        // add(ElementView);
-        // add(ResourceView);
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -155,7 +169,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 refreshElements();
                 var ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
-                    for (Component comp : ElementView.getComponents()) {
+                    for (Component comp : ElementInnerPanelView.getComponents()) {
                         if (!comp.getName().equals("RElementFile"))
                             continue;
                         var casted = ((RElementFile) comp);
@@ -197,7 +211,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     public void refreshElements() {
         SwingUtilities.invokeLater(() -> {
-            ElementView.removeAll();
+            ElementInnerPanelView.removeAll();
             for (File file : RFileOperations
                     .getFileFromWorkspace(this, ((WPFile) SWPF.getSerilized()).WorkspaceName,
                             File.separator + "elements" + File.separator)
@@ -211,7 +225,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                 ext);
                         ElementSource newsrc = clazz.getConstructor(String.class)
                                 .newInstance(Files.readString(file.toPath()));
-                        ElementView.add(new RElementFile(this, (ElementFile) newsrc.getSerilized(), file.getPath()));
+                        ElementInnerPanelView.add(new RElementFile(this, (ElementFile) newsrc.getSerilized(), file.getPath()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -219,7 +233,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     return;
                 }
             }
-            ElementView.updateUI();
+            ElementInnerPanelView.updateUI();
         });
     }
 
@@ -231,6 +245,32 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 var addFrame = new RNewElement(this);
                 addFrame.setVisible(true);
             });
+        } else if (ac.equals("texture")) {
+            String[] options = { "Cancel", "Item Texure" };
+            var choice = JOptionPane.showOptionDialog(
+                    this,
+                    "What kind of texture would you like you add?",
+                    "Add New Texture Resource",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+
+            switch (choice) {
+                case 0:
+
+                    break;
+
+                case 1:
+
+                    RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
+                            .importTexture(this, ResourceFile.ITEM_TEXTURE,
+                                    ((WPFile) SWPF.getSerilized()).WorkspaceName);
+
+                default:
+                    break;
+            }
         } else if (ac.equals("build")) {
             buildElements(false);
 

@@ -11,6 +11,11 @@ import com.google.gson.GsonBuilder;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
+/**
+ * the interface used for Source Classes of Elements. Element Sources are responceable for most things that an element does. Like building to source, and giving info to the UI.
+ * 
+ * @apiNote You should add the method, <code>public static ElementDetails getDetails()</code> if making a ElementSource that is meant to be added as a workspace element.
+ */
 public interface ElementSource {
     final GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.setPrettyPrinting().create();

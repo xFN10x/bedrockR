@@ -31,6 +31,12 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    public @interface ResourcePackResourceType {
+        int value();
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface MapFieldSelectables {
        Class<? extends RMapElementProvider> value();
     }

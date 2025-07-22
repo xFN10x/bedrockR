@@ -29,6 +29,8 @@ If you can, use this for building when convenient.
 
 ### Building
 
+#### JAR
+
 Building a JAR can be done with one command.
 
 (Make sure you are cd'ed into the source code directory)
@@ -48,3 +50,17 @@ Building a JAR can be done with one command.
   ```
 
 - Now you should be able to find the JAR in `app/build/builtJars`
+
+#### MSI/DEB
+
+This is probably what you want to do when building, as the following commands make an installer depending on what platform you are on.
+
+(Make sure you execute these in the project directory)
+
+- Run
+  
+  ```powershell
+    ./gradlew build jpackage (powershell/terminal)
+    gradlew build jpackage (cmd prompt)
+  ```
+Now check `app/build/builtDist`, and you should see your platform's distribution.

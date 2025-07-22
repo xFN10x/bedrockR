@@ -1,8 +1,11 @@
 package fn10.bedrockr.windows;
 
 import java.awt.*;
+import java.util.Map;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -10,10 +13,14 @@ import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.resources.TextureResource;
+import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
+import fn10.bedrockr.addons.source.jsonClasses.WPFile;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RMapElementViewer;
 
-public class RMapValueAddingSelector extends RDialog {
+public class RTextureAddingSelector extends RDialog {
 
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -28,12 +35,12 @@ public class RMapValueAddingSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    protected RMapValueAddingSelector(Frame parent, RMapElement[] AvailableComponents) {
+    protected RTextureAddingSelector(Frame parent, Integer TextureType, WPFile Workspace) {
         super(
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
-                "New Item",
-                new Dimension(330, 400));
+                "Texture Selection",
+                new Dimension(500, 400));
 
         addButton.addActionListener(e -> {
             choice = OK_CHOICE;
@@ -59,14 +66,16 @@ public class RMapValueAddingSelector extends RDialog {
         InnerPanel.setLayout(new BoxLayout(InnerPanel, BoxLayout.Y_AXIS));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        for (RMapElement rMapElement : AvailableComponents) {
-            try {
-                var toAdd = new RMapElementViewer(() -> unselectAll(), rMapElement);
-                toAdd.setAlignmentX(.5f);
-                toAdd.setName("RMEV");
-                InnerPanel.add(toAdd);
-                InnerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        Map<String, Integer> textureFiles = RFileOperations.getResources(parent,
+                Workspace.WorkspaceName).Serilized.Files;
 
+        for (Map.Entry<String,Integer> entry : textureFiles.entrySet()) {
+            try {
+                if (entry.getValue() == ResourceFile.ITEM_TEXTURE) {
+                    var ToAdd = new JButton();
+                    ToAdd.setIcon(new ImageIcon());
+                    InnerPanel.add(ToAdd);
+                }
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -92,21 +101,21 @@ public class RMapValueAddingSelector extends RDialog {
         }
     }
 
-    public RMapElement getSelected() {
+    public TextureResource getSelected() {
         for (Component comp : InnerPanel.getComponents()) {
             if (comp.getName() == null || !comp.getName().equals("RMEV"))
                 continue; // check to see what it is
 
-            RMapElementViewer casted = ((RMapElementViewer) comp);
+            RMapElementViewer casted = ((RMapElementViewer) comp); // TODO: change this
             if (casted.getSelected())
                 return casted.getMapElement();
         }
         return null;
     }
 
-    public static RMapElement openSelector(Frame parent, RMapElement[] AvailableComponents)
+    public static TextureResource openSelector(Frame parent, RMapElement[] AvailableComponents)
             throws InterruptedException {
-        var thiS = new RMapValueAddingSelector(parent, AvailableComponents);
+        var thiS = new RTextureAddingSelector(parent, AvailableComponents);
 
         thiS.setVisible(true);
 
@@ -116,5 +125,4 @@ public class RMapValueAddingSelector extends RDialog {
             return thiS.getSelected();
 
     }
-
 }

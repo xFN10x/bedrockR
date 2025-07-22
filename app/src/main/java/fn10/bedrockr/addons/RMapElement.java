@@ -1,7 +1,5 @@
 package fn10.bedrockr.addons;
 
-import java.lang.reflect.Type;
-
 public class RMapElement {
     public String ID;
     public Class<?> Type;
