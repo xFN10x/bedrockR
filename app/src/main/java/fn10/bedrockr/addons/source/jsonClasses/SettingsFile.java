@@ -21,6 +21,7 @@ public class SettingsFile {
 
     public String comMojangPath = "";
     public java.util.List<String> currentBPSynced = new ArrayList<String>();
+    public java.util.List<String> currentRPSynced = new ArrayList<String>();
     public java.util.List<String> ignored = new ArrayList<String>();
 
     public void buildFile(Frame doingThis) {

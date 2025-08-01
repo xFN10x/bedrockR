@@ -3,6 +3,7 @@ package fn10.bedrockr.windows;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Dialog.ModalExclusionType;
@@ -12,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
@@ -32,6 +36,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.jsonClasses.GlobalBuildingVaribles;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
@@ -53,13 +58,15 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     private JPanel ElementInnerPanelView = new JPanel();
     private JPanel ResourceInnerPanelView = new JPanel();
-    private JScrollPane ElementView = new JScrollPane(ElementInnerPanelView,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    private JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    
+    private JScrollPane ElementView = new JScrollPane(ElementInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
     private JButton AddElement = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/NewElement.png")));
     private JButton AddTextureResource = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/NewResource.png")));
+    private JButton LaunchMC = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/LaunchMC.png")));
     private JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
     private JButton ReBuildElements = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
@@ -100,6 +107,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         ReBuildElements.setActionCommand("rebuild");
         ReBuildElements.addActionListener(this);
 
+        LaunchMC.setActionCommand("launch");
+        LaunchMC.addActionListener(this);
+
         // constraints
         // tabbedpane
         Lay.putConstraint(SpringLayout.EAST, Tabs, -30, SpringLayout.EAST, CP);
@@ -117,9 +127,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Lay.putConstraint(SpringLayout.NORTH, AddTextureResource, 10, SpringLayout.SOUTH, AddElement);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddTextureResource, 0, SpringLayout.HORIZONTAL_CENTER,
                 AddElement);
+        // launch button
+        Lay.putConstraint(SpringLayout.SOUTH, LaunchMC, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, LaunchMC, -10, SpringLayout.EAST, CP);
         // build button
         Lay.putConstraint(SpringLayout.SOUTH, BuildElements, 0, SpringLayout.NORTH, Tabs);
-        Lay.putConstraint(SpringLayout.EAST, BuildElements, 0, SpringLayout.EAST, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, BuildElements, -10, SpringLayout.WEST, LaunchMC);
         // rebuild button
         Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
@@ -132,6 +145,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         add(AddElement);
         add(AddTextureResource);
+        add(LaunchMC);
         add(BuildElements);
         add(ReBuildElements);
 
@@ -155,6 +169,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var builddir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
                 + "BP" + File.separator +
                 SWPF.getSerilized().getElementName() + File.separator;
+        var resdir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
+                + "RP" + File.separator +
+                SWPF.getSerilized().getElementName() + File.separator;
         SwingUtilities.invokeLater(() -> {
             progress.setVisible(true);
         });
@@ -167,6 +184,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(builddir));
                 }
                 refreshElements();
+                var GlobalResVars = new GlobalBuildingVaribles();
                 var ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
                     for (Component comp : ElementInnerPanelView.getComponents()) {
@@ -181,7 +199,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
                 SWPF.getSerilized().build(builddir,
-                        ((WPFile) SWPF.getSerilized())); // build
+                        ((WPFile) SWPF.getSerilized()), resdir, GlobalResVars); // build
                 progress.increaseProgressBySteps("Done!"); // next
                 // build rest
                 for (RElementFile rElementFile : ToBuild) {
@@ -190,9 +208,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     // build a element, then incrament the counter
                     progress.changeText("Building " + rElementFile.getFile().getElementName()); // change text
                     rElementFile.getFile().build(builddir,
-                            ((WPFile) SWPF.getSerilized())); // build
+                            ((WPFile) SWPF.getSerilized()), resdir, GlobalResVars); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }
+                // build RP
+                // build global res vars
+                progress.changeText("Building resources... "); // change text
+                GlobalResVars.build(builddir,
+                        ((WPFile) SWPF.getSerilized()), resdir, GlobalResVars);
 
                 // do mc sync
                 if (((WPFile) SWPF.getSerilized()).MinecraftSync) {
@@ -225,7 +248,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                 ext);
                         ElementSource newsrc = clazz.getConstructor(String.class)
                                 .newInstance(Files.readString(file.toPath()));
-                        ElementInnerPanelView.add(new RElementFile(this, (ElementFile) newsrc.getSerilized(), file.getPath()));
+                        ElementInnerPanelView
+                                .add(new RElementFile(this, (ElementFile) newsrc.getSerilized(), file.getPath()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -242,7 +266,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var ac = arg0.getActionCommand();
         if (ac.equals("add")) {
             SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewElement(this);
+                var addFrame = new RNewElement(this, ((WPFile) SWPF.getSerilized()).WorkspaceName);
                 addFrame.setVisible(true);
             });
         } else if (ac.equals("texture")) {
@@ -276,6 +300,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         } else if (ac.equals("rebuild")) {
             buildElements(true);
+        } else if (ac.equals("launch")) {
+            try {
+                Desktop.getDesktop().browse(new URI("minecraft:///"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorShower.showError(this, "Failed to open Minecraft", e.getMessage(), e);
+            }
         }
 
     }

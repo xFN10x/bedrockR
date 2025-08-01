@@ -3,8 +3,6 @@ package fn10.bedrockr.windows;
 import java.awt.*;
 import java.util.Map;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,13 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.RMapElement;
-import fn10.bedrockr.addons.resources.TextureResource;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
-import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
-import fn10.bedrockr.windows.componets.RMapElementViewer;
 
 public class RTextureAddingSelector extends RDialog {
 
@@ -35,7 +29,7 @@ public class RTextureAddingSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    protected RTextureAddingSelector(Frame parent, Integer TextureType, WPFile Workspace) {
+    protected RTextureAddingSelector(Frame parent, Integer TextureType, String Workspace) {
         super(
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
@@ -63,17 +57,28 @@ public class RTextureAddingSelector extends RDialog {
         Lay.putConstraint(SpringLayout.SOUTH, selector, -5, SpringLayout.NORTH, addButton);
         Lay.putConstraint(SpringLayout.NORTH, selector, 5, SpringLayout.NORTH, getContentPane());
 
-        InnerPanel.setLayout(new BoxLayout(InnerPanel, BoxLayout.Y_AXIS));
+        InnerPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        Map<String, Integer> textureFiles = RFileOperations.getResources(parent,
-                Workspace.WorkspaceName).Serilized.Files;
+        ResourceFile res = RFileOperations.getResources(parent,
+                Workspace).Serilized;
+        Map<String, Integer> resTypes = res.ResourceTypes;
+        Map<String, String> resIDs = res.ResourceIDs;
 
-        for (Map.Entry<String,Integer> entry : textureFiles.entrySet()) {
+        for (Map.Entry<String, Integer> entry : resTypes.entrySet()) {
             try {
                 if (entry.getValue() == ResourceFile.ITEM_TEXTURE) {
                     var ToAdd = new JButton();
-                    ToAdd.setIcon(new ImageIcon());
+                    var size = new Dimension(48, 48);
+                    var normalIcon = new ImageIcon(res
+                            .getResourceFile(parent, Workspace, entry.getKey(), ResourceFile.ITEM_TEXTURE).getPath());
+                    var resizedIcon = new ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
+                            (int) size.getHeight(), Image.SCALE_AREA_AVERAGING));
+                    ToAdd.setMinimumSize(size);
+                    ToAdd.setPreferredSize(size);
+                    ToAdd.setIcon(resizedIcon);
+                    ToAdd.setName(resIDs.get(entry.getKey()));
+                    ToAdd.setToolTipText(entry.getKey() + " (" + resIDs.get(entry.getKey()) + ")");
                     InnerPanel.add(ToAdd);
                 }
             } catch (Exception e1) {
@@ -91,31 +96,40 @@ public class RTextureAddingSelector extends RDialog {
         setModal(true);
     }
 
-    protected void unselectAll() {
+    /**
+     * 
+     * @return A map entry, in of which, the key is the UUID, and the value is the image to be displayed.
+     */
+    public Map.Entry<String, ImageIcon> getSelected() {
         for (Component comp : InnerPanel.getComponents()) {
-            if (comp.getName() == null || !comp.getName().equals("RMEV"))
+            if (comp.getName() == null || comp.getName().equals("NO"))
                 continue; // check to see what it is
+            if (((JButton) comp).isSelected())
+                return new Map.Entry<String, ImageIcon>() {
 
-            RMapElementViewer casted = ((RMapElementViewer) comp);
-            casted.unselect();
-        }
-    }
+                    @Override
+                    public String getKey() {
+                        return comp.getName();
+                    }
 
-    public TextureResource getSelected() {
-        for (Component comp : InnerPanel.getComponents()) {
-            if (comp.getName() == null || !comp.getName().equals("RMEV"))
-                continue; // check to see what it is
+                    @Override
+                    public ImageIcon getValue() {
+                        return (ImageIcon) ((JButton) comp).getIcon();
+                    }
 
-            RMapElementViewer casted = ((RMapElementViewer) comp); // TODO: change this
-            if (casted.getSelected())
-                return casted.getMapElement();
+                    @Override
+                    public ImageIcon setValue(ImageIcon value) {
+                        return null;
+                    }
+
+                };
         }
         return null;
     }
 
-    public static TextureResource openSelector(Frame parent, RMapElement[] AvailableComponents)
+    public static Map.Entry<String, ImageIcon> openSelector(Frame parent, Integer TextureType, String Workspace)
             throws InterruptedException {
-        var thiS = new RTextureAddingSelector(parent, AvailableComponents);
+        var thiS = new RTextureAddingSelector(parent, TextureType, Workspace);
 
         thiS.setVisible(true);
 

@@ -28,6 +28,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
     private JButton CreateAsNormalButton = new JButton("Create!");
     private Frame Parent;
+    private String workspaceName;
 
     @SuppressWarnings("unchecked")
     public static final Class<? extends ElementSource>[] ELEMENTS = new Class[] {
@@ -35,7 +36,7 @@ public class RNewElement extends RDialog implements ActionListener {
             SourceItemElement.class
     };
 
-    public RNewElement(Frame Parent) {
+    public RNewElement(Frame Parent, String WorkspaceName ) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,
@@ -44,6 +45,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
         MainPane.setLayout(new SpringLayout());
         this.Parent = Parent;
+        this.workspaceName = WorkspaceName;
 
         for (Class<? extends ElementSource> class1 : ELEMENTS) {
             try {
@@ -97,8 +99,8 @@ public class RNewElement extends RDialog implements ActionListener {
                 ElementSource instance = Creating.getDeclaredConstructor().newInstance();
 
                 RElementEditingScreen screen = (RElementEditingScreen) Creating
-                        .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class)
-                        .invoke(instance, this.Parent, this.Parent);
+                        .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
+                        .invoke(instance, this.Parent, this.Parent,workspaceName);
                 screen.setVisible(true);
                 dispose();
 

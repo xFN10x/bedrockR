@@ -39,7 +39,7 @@ public interface ElementSource {
 
     abstract ElementFile getSerilized();
 
-    abstract RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent);
+    abstract RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent, String Workspace);
 
     /**
      * You should use this instad of toString()

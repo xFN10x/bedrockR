@@ -160,6 +160,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (RElementValue rElementValue : Fields) { // add the fields
+                if (!rElementValue.getOptionallyEnabled()) continue;
                 try {
                     SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
                 } catch (Exception e) {

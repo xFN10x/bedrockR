@@ -4,8 +4,6 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FileWriter;
 
-import org.apache.commons.io.FileUtils;
-
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
@@ -63,7 +61,7 @@ public class SourceResourceFile implements ElementSource {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2) {
+    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
         return null;
     }
 
