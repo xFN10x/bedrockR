@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,32 +22,53 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class ResourceFile implements ElementFile {
 
-    public Map<String, Integer> Files = new HashMap<String, Integer>();
+    public Map<String, Integer> ResourceTypes = new HashMap<String, Integer>();
+    public Map<String, String> ResourceIDs = new HashMap<String, String>();
 
     public static final int ITEM_TEXTURE = 0;
 
-    /**
-     * Get a resource 
-     * @param doingThis
-     * @param workspaceName
-     * @param file
-     * @param resourceType
-     * @return The file that was found.
-     * @throws FileNotFoundException If the resource isnt found.
-     * @throws IllegalAccessError If the requested doesnt match the resource type.
-     */
-    public File getResource(Frame doingThis, String workspaceName, String file, int resourceType)
+    public File getResourceFile(Frame doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
                 RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
                         + File.separator + workspaceName + File.separator + "resources" + File.separator
                         + file);
-        if (Files.get(file) != null) {
-            if (Files.get(file) != resourceType)
+        if (ResourceTypes.get(file) != null) {
+            if (ResourceTypes.get(file) != resourceType)
                 throw new IllegalAccessError(
                         "The resource, '" + file + "' is not the resource type '" + resourceType + "'");
             if (dest.exists())
                 return dest;
+            else
+                throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
+        } else
+            throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
+    }
+
+    /**
+     * Get a resource
+     * 
+     * @param doingThis
+     * @param workspaceName
+     * @param file
+     * @param resourceType
+     * @return A string, which is the (UU)ID of the resource.
+     * @throws FileNotFoundException If the resource isnt found.
+     * @throws IllegalAccessError    If the requested doesnt match the resource
+     *                               type.
+     */
+    public String getResource(Frame doingThis, String workspaceName, String file, int resourceType)
+            throws FileNotFoundException, IllegalAccessError {
+        var dest = new File(
+                RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
+                        + File.separator + workspaceName + File.separator + "resources" + File.separator
+                        + file);
+        if (ResourceTypes.get(file) != null) {
+            if (ResourceTypes.get(file) != resourceType)
+                throw new IllegalAccessError(
+                        "The resource, '" + file + "' is not the resource type '" + resourceType + "'");
+            if (dest.exists())
+                return ResourceIDs.get(file);
             else
                 throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
         } else
@@ -84,8 +107,9 @@ public class ResourceFile implements ElementFile {
                 return addTexture(doingThis, filePNG, type, workspaceName);
             }
             FileUtils.copyFile(filePNG, dest);
-            this.Files.put(finalName, type);
-            build(workspaceName, null);
+            this.ResourceTypes.put(finalName, type);
+            this.ResourceIDs.put(finalName, UUID.randomUUID().toString());
+            build(workspaceName, null,null,null);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,8 +142,9 @@ public class ResourceFile implements ElementFile {
     /**
      * NOTE!!!!!!!!!
      * rootPath is the workspace name!
+     * THIS IS ALSO NOT MEANT FOR BUILDING TO PACKS
      */
-    public void build(String rootPath, WPFile workspaceFile) throws IOException {
+    public void build(String rootPath, WPFile workspaceFile,String rootResPackPath,GlobalBuildingVaribles globalResVaribles) throws IOException {
         var source = new SourceResourceFile(this);
         source.buildJSONFile(null, rootPath);
     }

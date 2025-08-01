@@ -79,8 +79,8 @@ public class ItemFile implements ElementFile {
 
     @HelpMessage(message = "The texture for the item.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
-    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
-    public File Texture;
+    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = true, displayName = "Item Texture")
+    public Integer Texture;
 
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;
@@ -106,14 +106,17 @@ public class ItemFile implements ElementFile {
     }
 
     @Override
-    public void build(String rootPath, WPFile workspaceFile) throws IOException {
+    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+            GlobalBuildingVaribles globalResVaribles) throws IOException {
+        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID + ".name", Name);
+
         // make item
         var item = new Item();
         item.format_version = "1.21.60";
         // catagory
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
-        if (Category != null) //make sure to have null checks like this, since its optional
+        if (Category != null) // make sure to have null checks like this, since its optional
             if (!Category.equals("(none)"))
                 cata.category = Category;
         if (Group != null)

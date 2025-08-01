@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -238,10 +239,16 @@ public class RFileOperations {
         SettingsFile settings = SettingsFile.getSettings(doingThis);
         String bpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "BP"
                 + File.separator;
+        String rpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "RP"
+                + File.separator;
         File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
+        File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
 
         try {
-            // check to see if there are other things there
+            /*
+             * --------------------------------- SYNC BP -----------------------------------
+             */
+            // check for unrecinized BP
             for (File f : comBpPath.listFiles()) {
                 if (f.isDirectory()) {
                     if (!settings.currentBPSynced.contains(f.getName()) && !settings.ignored.contains(f.getName())) { // if
@@ -268,9 +275,42 @@ public class RFileOperations {
                     }
                 }
             }
+            /*
+             * --------------------------------- SYNC RP -----------------------------------
+             */
+            // check for unrecinized RP
+            for (File f : comRpPath.listFiles()) {
+                if (f.isDirectory()) {
+                    if (!settings.currentRPSynced.contains(f.getName()) && !settings.ignored.contains(f.getName())) { // if
+                                                                                                                      // it
+                                                                                                                      // doesnt
+                                                                                                                      // recicnise
+                                                                                                                      // it
+
+                        var choice = JOptionPane.showConfirmDialog(doingThis,
+                                "These is an unrecignised resource pack in here, \"" + f.getName()
+                                        + "\"\nDo you want to remove it, (yes) or ignore it (no).",
+                                "Development RP warning",
+                                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                        switch (choice) {
+                            case JOptionPane.YES_OPTION:
+                                f.delete();
+                            case JOptionPane.NO_OPTION:
+                                settings.ignored.add(f.getName());
+                            case JOptionPane.CANCEL_OPTION:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+            /*
+             * --------------------------------- SYNC BP -----------------------------------
+             */
             // clear currently synced
             settings.currentBPSynced.clear();
-            for (File f : new File(bpPath).listFiles()) {
+            for (File f : new File(bpPath).listFiles()) { //
                 if (f.isDirectory() && Arrays.asList(f.list()).contains("manifest.json")) { // if its a dir, and it has
                                                                                             // manifest
                     File bpDestPath = new File(
@@ -299,6 +339,40 @@ public class RFileOperations {
                     }
                 }
             }
+            /*
+             * --------------------------------- SYNC RP -----------------------------------
+             */
+            // clear currently synced
+            settings.currentRPSynced.clear();
+            for (File f : new File(rpPath).listFiles()) { //
+                if (f.isDirectory() && Arrays.asList(f.list()).contains("manifest.json")) { // if its a dir, and it has
+                                                                                            // manifest
+                    File rpDestPath = new File(
+                            settings.comMojangPath + File.separator + "development_resource_packs" + File.separator
+                                    + f.getName());
+
+                    if (rpDestPath.exists())
+                        FileUtils.deleteDirectory(comBpPath);
+
+                    settings.currentBPSynced.add(f.getName()); // add to currently synced
+                    try {
+                        FileUtils.copyDirectory(f, rpDestPath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", rpDestPath.getPath(),
+                                e);
+                    }
+                } else {
+                    var choice = JOptionPane
+                            .showConfirmDialog(
+                                    doingThis, "There is a file/folder in the build folder that is not an resource pack, "
+                                            + f.getName() + ". Remove this?",
+                                    "Invaild Folder/File", JOptionPane.YES_NO_OPTION);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        f.delete();
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(doingThis, "Failed to execute Minecraft Sync", e.getMessage(), e);
@@ -308,7 +382,7 @@ public class RFileOperations {
     }
 
     public static SourceWPFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
-            WPFile wpf, ImageIcon imgIcon)
+            WPFile wpf, File addonIcon)
             throws Exception {
 
         String[] wsFolders = {
@@ -353,19 +427,15 @@ public class RFileOperations {
                 var srcIcon = new File(wsFolder.getAbsolutePath() + File.separator + "icon." + wpf.IconExtension);
                 trying = srcIcon;
 
-                // make buffered image
-                var image = imgIcon.getImage();
-                BufferedImage BI = new BufferedImage(image.getWidth(null),
-                        image.getHeight(null),
-                        BufferedImage.TYPE_INT_ARGB);
-                BI.getGraphics().drawImage(image, 0, 0, null);
-
-                ImageIO.write(BI, wpf.IconExtension, srcIcon);
+                // copy the icon
+                Files.write(srcIcon.toPath(), Files.readAllBytes(addonIcon.toPath()), StandardOpenOption.CREATE);
 
                 return srcWPF;
 
             } catch (Exception e) { // handle exception
-                ErrorShower.showError((Frame) loading.getParent(), "IO Error, with path " + wsFolder.getAbsolutePath(),
+                e.printStackTrace();
+                ErrorShower.showError((Frame) loading.getParent(),
+                        "Exepection, with path " + wsFolder.getAbsolutePath(),
                         "IO Error", e);
                 throw e;
             } finally {

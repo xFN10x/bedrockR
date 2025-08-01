@@ -7,19 +7,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import javax.swing.border.LineBorder;
 
+import java.awt.event.MouseEvent;
+import java.io.File;
+
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
+import fn10.bedrockr.windows.RTextureAddingSelector;
 
 /**
  * The main Components for <code>RElementCreationScreen</code>.
@@ -51,18 +58,21 @@ public class RElementValue extends JPanel {
     public RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
-            Class<?> SourceFileClass) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+            Class<?> SourceFileClass,
+            String WorkspaceName) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass,
-                ((ElementFile) SourceFileClass.getConstructor().newInstance()), true);
+                ((ElementFile) SourceFileClass.getConstructor().newInstance()), true, WorkspaceName);
     }
 
     public RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
-            ElementFile TargetFile) {
-        this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false);
+            ElementFile TargetFile,
+            String WorkspaceName) {
+        this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false,
+                WorkspaceName);
     }
 
     @SuppressWarnings("unchecked")
@@ -71,7 +81,8 @@ public class RElementValue extends JPanel {
             Boolean Optional,
             Class<?> SourceFileClass,
             ElementFile TargetFile,
-            boolean FromEmpty) {
+            boolean FromEmpty,
+            String WorkspaceName) {
         super();
 
         this.parentFrame = parentFrame;
@@ -101,8 +112,9 @@ public class RElementValue extends JPanel {
             } catch (Exception e) {
 
                 e.printStackTrace();
-                if (TargetFile.getDraft())
-                    return;
+                if (!FromEmpty)
+                    if (TargetFile.getDraft())
+                        return;
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                         DisplayName, e);
@@ -113,8 +125,9 @@ public class RElementValue extends JPanel {
             try { // try to get field
                 field = SourceFileClass.getField(TargetField);
             } catch (Exception e) {
-                if (TargetFile.getDraft())
-                    return;
+                if (!FromEmpty)
+                    if (TargetFile.getDraft())
+                        return;
                 e.printStackTrace();
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -130,8 +143,9 @@ public class RElementValue extends JPanel {
                         ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string in field,
                                                                                         // if it is editing
                 } catch (Exception e) {
-                    if (TargetFile.getDraft())
-                        return;
+                    if (!FromEmpty)
+                        if (TargetFile.getDraft())
+                            return;
                     e.printStackTrace();
                     ErrorShower.showError(parentFrame,
                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -150,8 +164,9 @@ public class RElementValue extends JPanel {
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    if (TargetFile.getDraft())
-                        return;
+                    if (!FromEmpty)
+                        if (TargetFile.getDraft())
+                            return;
                     ErrorShower.showError(parentFrame,
                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
                             DisplayName, e);
@@ -175,8 +190,9 @@ public class RElementValue extends JPanel {
             try { // try to get field
                 field = SourceFileClass.getField(TargetField);
             } catch (Exception e) {
-                if (TargetFile.getDraft())
-                    return;
+                if (!FromEmpty)
+                    if (TargetFile.getDraft())
+                        return;
                 e.printStackTrace();
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -216,15 +232,57 @@ public class RElementValue extends JPanel {
         }
         // END OF HASH MAP STUFF
         // ------------------------------------------------------------------------------------------
-        else { // really unsafe, if its a type is doesnt know, do this
+        // vvvvvvvvv File handling
+        else if (InputType.equals(Integer.class) || InputType.equals(int.class)) {
+            Field field;
+            try { // try to get field
+                field = SourceFileClass.getField(TargetField);
+            } catch (Exception e) {
+                if (!FromEmpty)
+                    if (TargetFile.getDraft())
+                        return;
+                e.printStackTrace();
+                ErrorShower.showError(parentFrame,
+                        "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                        DisplayName, e);
+                return;
+            }
+            // see if this is a resource
+            var anno = field.getAnnotation(RAnnotation.ResourcePackResourceType.class);
+
+            if (anno != null) { // if a resource
+                switch (anno.value()) {
+                    case ResourceFile.ITEM_TEXTURE:
+                        Input = new JPanel();
+                        ((JPanel) Input).setBorder(getBorder());
+                        Input.addMouseListener(new MouseAdapter() {
+
+                            public void mouseClicked(MouseEvent e) {
+                                try {
+                                    RTextureAddingSelector.openSelector(parentFrame, ResourceFile.ITEM_TEXTURE,
+                                            WorkspaceName);
+                                } catch (InterruptedException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        });
+
+                    default:
+                        break;
+                }
+            } else { // its a regular int
+
+            }
+        } else { // really unsafe, if its a type is doesnt know, do this
             Input = new JTextField();
             try {
                 var field = SourceFileClass.getField(TargetField);
                 if (!FromEmpty)
                     ((JTextField) Input).setText(field.get(TargetFile).toString()); // set text to string if not editng
             } catch (Exception e) {
-                if (TargetFile.getDraft())
-                    return;
+                if (!FromEmpty)
+                    if (TargetFile.getDraft())
+                        return;
                 e.printStackTrace();
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -316,13 +374,22 @@ public class RElementValue extends JPanel {
 
     }
 
+    /**
+     * 
+     * @return A bool, indicating if this field should be read.
+     */
+    public Boolean getOptionallyEnabled() {
+        if (Required) return true;
+        return EnableDis.isSelected();
+    }
+
     public String getTarget() {
         return Target;
     }
 
     @SuppressWarnings("unchecked")
     public Object getValue() {
-        //System.out.println(InputType.getName());
+        // System.out.println(InputType.getName());
         if (valid(true)) {
             if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
                 var casted = ((JComboBox<String>) Input);
@@ -330,7 +397,8 @@ public class RElementValue extends JPanel {
             } else if (InputType.equals(HashMap.class)) {
                 var mapToBuild = new HashMap<String, Object>();
                 for (Component comp : HashMapInnerPane.getComponents()) {
-                    if (comp.getName() == null) continue;
+                    if (comp.getName() == null)
+                        continue;
                     if (comp.getName().equals("E")) {
                         var mapElement = ((RElementMapValue) comp).getKeyAndVal();
                         mapToBuild.put(mapElement.getKey(), mapElement.getValue());
@@ -340,8 +408,8 @@ public class RElementValue extends JPanel {
             } else {
                 try {
                     if (Input.getName() != null)
-                    if (Input.getName().equals("dd")) // if its a drop down
-                        return ((JComboBox<String>) Input).getSelectedItem();
+                        if (Input.getName().equals("dd")) // if its a drop down
+                            return ((JComboBox<String>) Input).getSelectedItem();
                     String text = ((JTextField) Input).getText();
                     if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
                         return Integer.parseInt(text);
@@ -366,8 +434,10 @@ public class RElementValue extends JPanel {
 
     @SuppressWarnings("unchecked")
     public boolean valid(boolean strict) {
-        // Launcher.LOG.info(InputType.getName());
+        if (!getOptionallyEnabled()) return true; //if its disabled, true, because it wont get written anyways
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
+            return true;
+        } else if (InputType.equals(File.class)) {
             return true;
         } else if (InputType.equals(HashMap.class)) {
             return true;
@@ -393,8 +463,6 @@ public class RElementValue extends JPanel {
                     if (!Filter.getValid(text))
                         Problem = "String is not valid.";
                     return Filter.getValid(text);
-                } else {
-                    return false;
                 }
             } catch (Exception e) {
                 Problem = process;

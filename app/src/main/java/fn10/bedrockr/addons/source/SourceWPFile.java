@@ -75,7 +75,7 @@ public class SourceWPFile implements ElementSource {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
+    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent, String Workspace) {
         return null;
     }
 

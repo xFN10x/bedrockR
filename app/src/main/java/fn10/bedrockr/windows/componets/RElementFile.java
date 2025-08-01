@@ -77,8 +77,8 @@ public class RElementFile extends RElement implements ActionListener {
         try {
             var srczz = file.getSourceClass();
             var newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
-            ((RElementEditingScreen) srczz.getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class)
-                    .invoke(newsrc, wksp, wksp)).setVisible(true);
+            ((RElementEditingScreen) srczz.getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
+                    .invoke(newsrc, wksp, wksp,((WPFile)wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);

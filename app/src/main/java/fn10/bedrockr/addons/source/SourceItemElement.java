@@ -82,7 +82,7 @@ public class SourceItemElement implements ElementSource {
 
     @SuppressWarnings("null")
     @Override
-    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent) {
+    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent, String Workspace) {
         var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent,
                 RElementEditingScreen.SPECIAL_AREA_STYLE);
 
@@ -101,7 +101,8 @@ public class SourceItemElement implements ElementSource {
                                 details.displayName(), // display name
                                 details.Optional(),
                                 getSerilizedClass(),
-                                this.serilized);
+                                this.serilized,
+                                Workspace);
                     else // create file without anything there
                          // ---------------------------------------------------------------------
                         rev = new RElementValue(Parent,field.getType(),
@@ -111,7 +112,7 @@ public class SourceItemElement implements ElementSource {
                                 details.displayName(), // display name
                                 details.Optional(),
                                 getSerilizedClass(),
-                                this.serilized);
+                                Workspace);
                     if (field.getAnnotation(RAnnotation.SpecialField.class) != null)
                         frame.setSpecialField(rev);
                     else
