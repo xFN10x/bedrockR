@@ -7,10 +7,22 @@ public class RMapElement {
     public String HelpDescription;
 
     public RMapElement(String ID, Class<?> Type) {
+        this(ID,ID,Type, "No help is available for this element.");
+    }
+
+    public RMapElement(String Name, String ID, Class<?> Type) {
+        this(Name,ID,Type, "No help is available for this element.");
+    }
+
+    public RMapElement(String ID, Class<?> Type, String Help) {
+        this(ID,ID,Type, Help);
+    }
+
+    public RMapElement(String Name, String ID, Class<?> Type,String Help) {
         this.Type = Type;
         this.ID = ID;
 
-        this.DisplayName = ID;
-        this.HelpDescription = "No help for this component.";
+        this.DisplayName = Name;
+        this.HelpDescription = Help;
     }
 }
