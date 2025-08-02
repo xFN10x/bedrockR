@@ -20,6 +20,7 @@ import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
 
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFonts;
 
@@ -51,8 +52,11 @@ public class RElementMapValue extends JPanel {
         IDNameLabel.setText(RME.ID);
         IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - (RME.DisplayName.length() / 10)));
 
+        if (RME.Type == SharedJSONClasses.minecraftDamage.class) { //minecraft:damage
+            InputField = new JSpinner();
+        }
         // set input field to whatever is nessesary
-        if (RME.Type == String.class) { // string
+        else if (RME.Type == String.class) { // string
             InputField = new JTextField();
         } else if (RME.Type == Integer.class || RME.Type == int.class) { // int
             InputField = new JSpinner();
@@ -112,7 +116,11 @@ public class RElementMapValue extends JPanel {
     public Map.Entry<String, Object> getKeyAndVal() {
         Object val = null;
         try {
-            if (rMapElement.Type == String.class) { // string
+            if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { //minecraft:damage
+                val = new SharedJSONClasses.minecraftDamage();
+                ((SharedJSONClasses.minecraftDamage)val).damage = (int) ((JSpinner)InputField).getValue();
+            } 
+            else if (rMapElement.Type == String.class) { // string
                 val = ((JTextField) InputField).getText();
             } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class) { // int
                 val = ((JSpinner)InputField).getValue();

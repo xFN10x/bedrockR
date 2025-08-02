@@ -195,7 +195,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
                                 imageExtension, ModPrefixInput.getText()),
 
-                        (ImageIcon) AddonIcon.getIcon());
+                        ((ImageIcon) AddonIcon.getIcon()).getImage());
 
                 if (workspace != null) {
                     RFileOperations.openWorkspace(((Frame) this.getParent()), workspace);

@@ -46,7 +46,11 @@ public class RLoadingScreen extends RDialog {
     public void increaseProgressBySteps(@Nullable String TextChange) throws IllegalAccessException {
         if (Steps == null)
             throw new IllegalArgumentException("Total steps not set yet.");
-        MainBar.setIndeterminate(false);
+        if (!MainBar.isIndeterminate())
+            SwingUtilities.invokeLater(() -> {
+                MainBar.setIndeterminate(false);
+            });
+
         changeText(TextChange);
 
         SwingUtilities.invokeLater(() -> {

@@ -18,7 +18,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
-/**
+/**********************
  * The WPFile, is an ElementFile that handles workspace varibles, and building
  * manifests, and other base stuff for both packs.
  */
@@ -102,7 +102,7 @@ public class WPFile implements ElementFile {
         manifest.modules = modules.toArray(new Module[0]);
 
         // build manifest
-        var gson = new GsonBuilder().setPrettyPrinting().create();
+        //var gson = new GsonBuilder().setPrettyPrinting().create();
         var json = gson.toJson(manifest);
 
         var path = new File(rootPath + File.separator + "manifest.json").toPath();
