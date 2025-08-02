@@ -51,7 +51,7 @@ public class GlobalBuildingVaribles implements ElementFile {
     @Override
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
             GlobalBuildingVaribles globalResVaribles) throws IOException {
-        var gson = new GsonBuilder().setPrettyPrinting().create();
+        //var gson = new GsonBuilder().setPrettyPrinting().create();
 
         Langs.add("en_US"); // currently, only english support
 

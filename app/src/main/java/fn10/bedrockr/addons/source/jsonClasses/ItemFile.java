@@ -135,9 +135,7 @@ public class ItemFile implements ElementFile {
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
-        var gson = new GsonBuilder().setPrettyPrinting().create();
-        var json = gson.toJson(item);
-
+var json = gson.toJson(item);
         var path = new File(rootPath + File.separator + "items" + File.separator + ID + ".json").toPath();
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,

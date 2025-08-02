@@ -1,6 +1,7 @@
 package fn10.bedrockr.utils;
 
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceResourceFile;
 import fn10.bedrockr.addons.source.SourceWPFile;
@@ -43,7 +44,7 @@ public class RFileOperations {
     static {
         var settings = SettingsFile.getSettings(null);
         COMMOJANG = settings.comMojangPath;
-        System.out.println(COMMOJANG);
+        // System.out.println(COMMOJANG);
     }
     private static final String[] ILLEGAL_CHARACTERS = {
             "<",
@@ -198,7 +199,7 @@ public class RFileOperations {
 
     public static File getBaseDirectory(Frame doingThis) {
         try {
-            System.out.println(BaseDirectory.toPath());
+            // System.out.println(BaseDirectory.toPath());
             if (!BaseDirectory.exists()) {
                 return Files.createDirectories(BaseDirectory.toPath()).toFile();
             } else
@@ -237,74 +238,85 @@ public class RFileOperations {
 
     public static void mcSync(Frame doingThis) {
         SettingsFile settings = SettingsFile.getSettings(doingThis);
-        String bpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "BP"
-                + File.separator;
-        String rpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "RP"
-                + File.separator;
-        File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
-        File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
-
         try {
+            String bpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "BP"
+                    + File.separator;
+            String rpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "RP"
+                    + File.separator;
+            File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
+            File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
+            if (!comBpPath.exists()) {
+                Launcher.LOG.info("Making dev BP folder...");
+                Files.createDirectories(comBpPath.toPath());
+            }
+            if (!comRpPath.exists()) {
+                Launcher.LOG.info("Making dev RP folder...");
+                Files.createDirectories(comRpPath.toPath());
+            }
+            File[] comBpFiles = comBpPath.listFiles();
+            File[] comRpFiles = comRpPath.listFiles();
             /*
              * --------------------------------- SYNC BP -----------------------------------
              */
             // check for unrecinized BP
-            for (File f : comBpPath.listFiles()) {
-                if (f.isDirectory()) {
-                    if (!settings.currentBPSynced.contains(f.getName()) && !settings.ignored.contains(f.getName())) { // if
-                                                                                                                      // it
-                                                                                                                      // doesnt
-                                                                                                                      // recicnise
-                                                                                                                      // it
+            if (comBpFiles != null)
+                for (File f : comBpFiles) {
+                    if (f.isDirectory()) {
+                        if (!settings.currentBPSynced.contains(f.getName())
+                                && !settings.ignored.contains(f.getName())) { // if
+                                                                              // it
+                                                                              // doesnt
+                                                                              // recicnise
+                                                                              // it
 
-                        var choice = JOptionPane.showConfirmDialog(doingThis,
-                                "These is an unrecignised addon in here, \"" + f.getName()
-                                        + "\"\nDo you want to remove it, (yes) or ignore it (no).",
-                                "Development BP warning",
-                                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-                        switch (choice) {
-                            case JOptionPane.YES_OPTION:
-                                f.delete();
-                            case JOptionPane.NO_OPTION:
-                                settings.ignored.add(f.getName());
-                            case JOptionPane.CANCEL_OPTION:
-                                break;
-                            default:
-                                break;
+                            var choice = JOptionPane.showConfirmDialog(doingThis,
+                                    "These is an unrecignised addon in here, \"" + f.getName()
+                                            + "\"\nDo you want to remove it, (yes) or ignore it (no).",
+                                    "Development BP warning",
+                                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                            switch (choice) {
+                                case JOptionPane.YES_OPTION:
+                                    f.delete();
+                                case JOptionPane.NO_OPTION:
+                                    settings.ignored.add(f.getName());
+                                case JOptionPane.CANCEL_OPTION:
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                 }
-            }
             /*
              * --------------------------------- SYNC RP -----------------------------------
              */
             // check for unrecinized RP
-            for (File f : comRpPath.listFiles()) {
-                if (f.isDirectory()) {
-                    if (!settings.currentRPSynced.contains(f.getName()) && !settings.ignored.contains(f.getName())) { // if
-                                                                                                                      // it
-                                                                                                                      // doesnt
-                                                                                                                      // recicnise
-                                                                                                                      // it
+            if (comRpFiles != null)
+                for (File f : comRpFiles) {
+                    if (f.isDirectory()) {
+                        if (!settings.currentRPSynced.contains(f.getName())
+                                && !settings.ignored.contains(f.getName())) { // if
+                                                                              // it
+                                                                              // doesnt
+                                                                              // recicnise
+                                                                              // it
 
-                        var choice = JOptionPane.showConfirmDialog(doingThis,
-                                "These is an unrecignised resource pack in here, \"" + f.getName()
-                                        + "\"\nDo you want to remove it, (yes) or ignore it (no).",
-                                "Development RP warning",
-                                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-                        switch (choice) {
-                            case JOptionPane.YES_OPTION:
-                                f.delete();
-                            case JOptionPane.NO_OPTION:
-                                settings.ignored.add(f.getName());
-                            case JOptionPane.CANCEL_OPTION:
-                                break;
-                            default:
-                                break;
+                            var choice = JOptionPane.showConfirmDialog(doingThis,
+                                    "These is an unrecignised resource pack in here, \"" + f.getName()
+                                            + "\"\nDo you want to remove it, (yes) or ignore it (no).",
+                                    "Development RP warning",
+                                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                            switch (choice) {
+                                case JOptionPane.YES_OPTION:
+                                    f.delete();
+                                case JOptionPane.NO_OPTION:
+                                    settings.ignored.add(f.getName());
+                                default:
+                                    break;
+                            }
                         }
                     }
                 }
-            }
             /*
              * --------------------------------- SYNC BP -----------------------------------
              */
@@ -318,7 +330,7 @@ public class RFileOperations {
                                     + f.getName());
 
                     if (bpDestPath.exists())
-                        FileUtils.deleteDirectory(comBpPath);
+                        FileUtils.deleteDirectory(bpDestPath);
 
                     settings.currentBPSynced.add(f.getName()); // add to currently synced
                     try {
@@ -352,9 +364,9 @@ public class RFileOperations {
                                     + f.getName());
 
                     if (rpDestPath.exists())
-                        FileUtils.deleteDirectory(comBpPath);
+                        FileUtils.deleteDirectory(rpDestPath);
 
-                    settings.currentBPSynced.add(f.getName()); // add to currently synced
+                    settings.currentRPSynced.add(f.getName()); // add to currently synced
                     try {
                         FileUtils.copyDirectory(f, rpDestPath);
                     } catch (IOException e) {
@@ -365,7 +377,8 @@ public class RFileOperations {
                 } else {
                     var choice = JOptionPane
                             .showConfirmDialog(
-                                    doingThis, "There is a file/folder in the build folder that is not an resource pack, "
+                                    doingThis,
+                                    "There is a file/folder in the build folder that is not an resource pack, "
                                             + f.getName() + ". Remove this?",
                                     "Invaild Folder/File", JOptionPane.YES_NO_OPTION);
                     if (choice == JOptionPane.YES_OPTION) {
@@ -379,6 +392,15 @@ public class RFileOperations {
         } finally {
             settings.buildFile(doingThis); // finally
         }
+    }
+
+    public static SourceWPFile createWorkspace(RLoadingScreen loading, WPFile wpf, Image addonIcon) throws Exception {
+        BufferedImage bufferedImage = new BufferedImage(addonIcon.getWidth(loading), addonIcon.getHeight(loading),
+                BufferedImage.TYPE_INT_RGB);
+        bufferedImage.getGraphics().drawImage(addonIcon, 0, 0, loading);
+        File file = new File(File.createTempFile("bed", "rockr").getAbsolutePath());
+        ImageIO.write(bufferedImage, BASE_PATH, file);
+        return createWorkspace(loading, wpf, file);
     }
 
     public static SourceWPFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)

@@ -21,7 +21,7 @@ public class ItemComponents implements RMapElementProvider {
             new RMapElement("minecraft:max_stack_size", Integer.class),
             new RMapElement("minecraft:rarity", String.class),
             new RMapElement("minecraft:should_despawn", Boolean.class),
-            new RMapElement("minecraft:stacked_by_data", Boolean.class),
+            new RMapElement("minecraft:stacked_6by_data", Boolean.class),
             new RMapElement("minecraft:storage_weight_limit", Integer.class),
             new RMapElement("minecraft:storage_weight_modifier", Integer.class),
             new RMapElement("minecraft:use_animation", String.class)
