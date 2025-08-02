@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.border.LineBorder;
 
@@ -202,6 +203,21 @@ public class RElementValue extends JPanel {
             // finally, get the annotation after getting the field
             var anno = field.getAnnotation(RAnnotation.MapFieldSelectables.class);
 
+            if (!FromEmpty) {
+                try {
+                    for (Map.Entry<String, Object> entry : ((Map<String, Object>) field.get(TargetFile)).entrySet()) {
+                        var ToAdd = new RElementMapValue(parentFrame,
+                                new RMapElement(((String) entry.getKey()), entry.getValue().getClass()));
+                        ToAdd.setVal(entry.getValue());
+                        HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
+                        HashMapInnerPane.add(ToAdd);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
+                }
+            }
+
             // add the button
             HashMapAdd.addActionListener((e) -> {
                 try {
@@ -216,7 +232,7 @@ public class RElementValue extends JPanel {
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                     HashMapInnerPane.add(toAdd);
 
-                    // finish, and why this wasent working before
+                    // finish, and why this wasnt working before
                     HashMapInnerPane.revalidate();
                     HashMapInnerPane.repaint();
 
@@ -232,8 +248,8 @@ public class RElementValue extends JPanel {
         }
         // END OF HASH MAP STUFF
         // ------------------------------------------------------------------------------------------
-        // vvvvvvvvv File handling
-        else if (InputType.equals(Integer.class) || InputType.equals(int.class)) {
+
+        else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
             Field field;
             try { // try to get field
                 field = SourceFileClass.getField(TargetField);
@@ -270,7 +286,7 @@ public class RElementValue extends JPanel {
                     default:
                         break;
                 }
-            } else { // its a regular int
+            } else { // its a regular int TODO: add handling for int values
 
             }
         } else { // really unsafe, if its a type is doesnt know, do this
@@ -293,12 +309,12 @@ public class RElementValue extends JPanel {
         if (Optional) // stop the enable check affecting non-optional things
             EnableDis.addItemListener(new ItemListener() {
                 {
-                    Input.setEnabled(EnableDis.isSelected() ? true : false);
+                    Input.setEnabled(EnableDis.isSelected());
                 }
 
                 @Override
                 public void itemStateChanged(ItemEvent e) {
-                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED ? true : false);
+                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
                 }
 
             });
@@ -379,7 +395,8 @@ public class RElementValue extends JPanel {
      * @return A bool, indicating if this field should be read.
      */
     public Boolean getOptionallyEnabled() {
-        if (Required) return true;
+        if (Required)
+            return true;
         return EnableDis.isSelected();
     }
 
@@ -434,7 +451,8 @@ public class RElementValue extends JPanel {
 
     @SuppressWarnings("unchecked")
     public boolean valid(boolean strict) {
-        if (!getOptionallyEnabled()) return true; //if its disabled, true, because it wont get written anyways
+        if (!getOptionallyEnabled())
+            return true; // if its disabled, true, because it wont get written anyways
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             return true;
         } else if (InputType.equals(File.class)) {
