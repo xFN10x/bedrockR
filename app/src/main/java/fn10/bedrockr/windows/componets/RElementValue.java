@@ -8,9 +8,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
-
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import org.checkerframework.checker.units.qual.N;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
@@ -261,7 +263,7 @@ public class RElementValue extends JPanel {
 
             Input = new JSpinner();
 
-        } else if (InputType.equals(UUID.class)) { //resource
+        } else if (InputType.equals(UUID.class)) { // resource
             Field field;
             try { // try to get field
                 field = SourceFileClass.getField(TargetField);
@@ -319,6 +321,44 @@ public class RElementValue extends JPanel {
 
                     setMaximumSize(new Dimension(350, 80));
                     setPreferredSize(new Dimension(350, 80));
+
+                    if (!FromEmpty) {
+                        UUID Id;
+                        try {
+                            Id = (UUID) field.get(TargetFile);
+                        } catch (IllegalArgumentException | IllegalAccessException e) {
+                            if (TargetFile.getDraft())
+                                return;
+                            e.printStackTrace();
+                            ErrorShower.showError(parentFrame,
+                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                                    DisplayName, e);
+                            return;
+                        }
+                        String id = Id.toString();
+
+                        var res = RFileOperations.getResources(parentFrame,
+                                WorkspaceName);
+                        var filename = MapUtilities.getKeyFromValue(
+                                res.Serilized.ResourceIDs,
+                                id);
+                        Name.setText(
+                                filename);
+                        // System.out.println(Selected.getKey());
+                        ID.setText(id);
+                        try {
+                            Icon.setIcon(ImageUtilites.ResizeIcon(
+                                    new ImageIcon(Files.readAllBytes(res.Serilized.getResourceFile(parentFrame,
+                                            WorkspaceName, Name.getText(), ResourceFile.ITEM_TEXTURE).toPath())),
+                                    64, 64));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ErrorShower.showError(parentFrame,
+                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                                    DisplayName, e);
+                        }
+                        Input.setName(id);
+                    }
 
                     Input.addMouseListener(new MouseAdapter() {
                         public void mouseClicked(MouseEvent e) {
@@ -378,23 +418,18 @@ public class RElementValue extends JPanel {
                 }
 
             });
-        Help.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    JOptionPane.showMessageDialog(parentFrame,
-                            SourceFileClass.getDeclaredField(Target).getAnnotation(HelpMessage.class).message(),
-                            "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(parentFrame,
-                            "Failed to get help message! Tell the dev! Field: " + Target + " Class: "
-                                    + SourceFileClass.getName(),
-                            "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
-                }
+        Help.addActionListener(e -> {
+            try {
+                JOptionPane.showMessageDialog(parentFrame,
+                        SourceFileClass.getDeclaredField(Target).getAnnotation(HelpMessage.class).message(),
+                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame,
+                        "Failed to get help message! Tell the dev! Field: " + Target + " Class: "
+                                + SourceFileClass.getName(),
+                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
             }
-
         });
 
         Name.setText(DisplayName);
@@ -521,10 +556,10 @@ public class RElementValue extends JPanel {
             return true;
         } else if (InputType.equals(UUID.class)) {
             if (Input.getName().equals("null")) {
-                    Problem = "No Texture Selected";
-                    return false;
-                } else
-                    return true;
+                Problem = "No Texture Selected";
+                return false;
+            } else
+                return true;
         } else if (InputType.equals(File.class)) {
             return true;
         } else if (InputType.equals(HashMap.class)) {
