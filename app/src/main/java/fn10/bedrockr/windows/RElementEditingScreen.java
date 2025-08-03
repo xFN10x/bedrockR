@@ -1,6 +1,7 @@
 package fn10.bedrockr.windows;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -8,9 +9,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 
@@ -28,10 +32,12 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
-    private JPanel Pane = new JPanel();
+    private JPanel InnerPane = new JPanel();
+    private JScrollPane Pane = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     private JPanel SpecialPane = null;
     private SpringLayout SpecialPaneLay = new SpringLayout();
-    private FlowLayout PaneLay = new FlowLayout(1, 8, 6);
+    private BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
 
     public Class<?> SourceClass;
     public Class<? extends ElementSource> SourceElementClass;
@@ -109,7 +115,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             add(SpecialPane);
         }
 
-        Pane.setLayout(PaneLay);
+        // InnerPane.setMaximumSize(new Dimension(300,1110));
+        // InnerPane.setPreferredSize(new Dimension(300,1110));
+
+        InnerPane.setLayout(PaneLay);
+        InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
 
         add(CreateButton);
         add(DraftButton);
@@ -120,7 +130,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     }
 
     public void addField(RElementValue Field) {
-        Pane.add(Field);
+        InnerPane.add(Field);
+        InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
         Fields.add(Field);
         if (Field.Required)
             RequiredFields.add(Field);
@@ -130,7 +141,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         if (SpecialPane == null)
             throw new IllegalAccessError("This Element Creation Screen was not set to be the special layout.");
         SpecialPane.add(Field);
-        //put field all over 
+        // put field all over
         SpecialPaneLay.putConstraint(SpringLayout.SOUTH, Field, 0, SpringLayout.SOUTH, SpecialPane);
         SpecialPaneLay.putConstraint(SpringLayout.NORTH, Field, 0, SpringLayout.NORTH, SpecialPane);
         SpecialPaneLay.putConstraint(SpringLayout.WEST, Field, 0, SpringLayout.WEST, SpecialPane);
@@ -160,7 +171,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (RElementValue rElementValue : Fields) { // add the fields
-                if (!rElementValue.getOptionallyEnabled()) continue;
+                if (!rElementValue.getOptionallyEnabled())
+                    continue;
                 try {
                     SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
                 } catch (Exception e) {

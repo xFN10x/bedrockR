@@ -13,8 +13,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.swing.border.LineBorder;
+
+import org.checkerframework.checker.units.qual.N;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -24,8 +27,13 @@ import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
+import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
 
@@ -250,6 +258,10 @@ public class RElementValue extends JPanel {
         // ------------------------------------------------------------------------------------------
 
         else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
+
+            Input = new JSpinner();
+
+        } else if (InputType.equals(UUID.class)) { //resource
             Field field;
             try { // try to get field
                 field = SourceFileClass.getField(TargetField);
@@ -263,31 +275,79 @@ public class RElementValue extends JPanel {
                         DisplayName, e);
                 return;
             }
-            // see if this is a resource
-            var anno = field.getAnnotation(RAnnotation.ResourcePackResourceType.class);
+            ResourcePackResourceType anno = field.getAnnotation(RAnnotation.ResourcePackResourceType.class);
 
-            if (anno != null) { // if a resource
-                switch (anno.value()) {
-                    case ResourceFile.ITEM_TEXTURE:
-                        Input = new JPanel();
-                        ((JPanel) Input).setBorder(getBorder());
-                        Input.addMouseListener(new MouseAdapter() {
+            switch (anno.value()) {
+                case ResourceFile.ITEM_TEXTURE: // if its an item texture
+                    SpringLayout layout = new SpringLayout();
+                    Input = new JPanel();
+                    Input.setName("null");
+                    ((JPanel) Input).setBorder(getBorder());
+                    ((JPanel) Input).setLayout(layout);
 
-                            public void mouseClicked(MouseEvent e) {
-                                try {
-                                    RTextureAddingSelector.openSelector(parentFrame, ResourceFile.ITEM_TEXTURE,
-                                            WorkspaceName);
-                                } catch (InterruptedException e1) {
-                                    e1.printStackTrace();
-                                }
+                    JLabel Name = new JLabel("(Select a texture.)");
+                    Name.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
+                    JLabel ID = new JLabel();
+                    ID.setFont(RFonts.RegMinecraftFont.deriveFont(6f));
+                    JLabel Type = new JLabel("Item Texture");
+                    Type.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
+                    Type.setForeground(getForeground().darker().darker());
+
+                    JLabel Icon = new JLabel(ImageUtilites.ResizeIcon(
+                            new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
+                    Icon.setMaximumSize(new Dimension(64, 64));
+                    Icon.setPreferredSize(new Dimension(64, 64));
+                    Icon.setBorder(((JPanel) Input).getBorder());
+
+                    layout.putConstraint(SpringLayout.WEST, Icon, 5, SpringLayout.WEST, Input);
+                    layout.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER,
+                            Input);
+
+                    layout.putConstraint(SpringLayout.WEST, Name, 5, SpringLayout.EAST, Icon);
+                    layout.putConstraint(SpringLayout.NORTH, Name, 0, SpringLayout.NORTH, Icon);
+
+                    layout.putConstraint(SpringLayout.WEST, ID, 5, SpringLayout.EAST, Icon);
+                    layout.putConstraint(SpringLayout.NORTH, ID, 0, SpringLayout.SOUTH, Name);
+
+                    layout.putConstraint(SpringLayout.WEST, Type, 5, SpringLayout.EAST, Icon);
+                    layout.putConstraint(SpringLayout.SOUTH, Type, 0, SpringLayout.SOUTH, Icon);
+
+                    ((JPanel) Input).add(Icon);
+                    ((JPanel) Input).add(Name);
+                    ((JPanel) Input).add(ID);
+                    ((JPanel) Input).add(Type);
+
+                    setMaximumSize(new Dimension(350, 80));
+                    setPreferredSize(new Dimension(350, 80));
+
+                    Input.addMouseListener(new MouseAdapter() {
+                        public void mouseClicked(MouseEvent e) {
+                            try {
+                                var Selected = RTextureAddingSelector.openSelector(parentFrame,
+                                        ResourceFile.ITEM_TEXTURE,
+                                        WorkspaceName);
+                                System.out.println(Selected);
+                                if (Selected == null)
+                                    return;
+                                var filename = MapUtilities.getKeyFromValue(
+                                        RFileOperations.getResources(parentFrame,
+                                                WorkspaceName).Serilized.ResourceIDs,
+                                        Selected.getKey());
+                                Name.setText(
+                                        filename);
+                                // System.out.println(Selected.getKey());
+                                ID.setText(Selected.getKey());
+                                Icon.setIcon(Selected.getValue());
+                                Input.setName(Selected.getKey());
+
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
                             }
-                        });
+                        }
+                    });
 
-                    default:
-                        break;
-                }
-            } else { // its a regular int TODO: add handling for int values
-
+                default:
+                    break;
             }
         } else { // really unsafe, if its a type is doesnt know, do this
             Input = new JTextField();
@@ -422,15 +482,17 @@ public class RElementValue extends JPanel {
                     }
                 }
                 return mapToBuild;
+            } else if (InputType.equals(UUID.class)) {
+                return UUID.fromString(Input.getName());
+            } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
+                return ((JSpinner) Input).getValue();
             } else {
                 try {
                     if (Input.getName() != null)
                         if (Input.getName().equals("dd")) // if its a drop down
                             return ((JComboBox<String>) Input).getSelectedItem();
                     String text = ((JTextField) Input).getText();
-                    if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
-                        return Integer.parseInt(text);
-                    } else if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
+                    if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
                         return Float.parseFloat(text);
                     } else if (InputType.equals(String.class)) { // string
                         if (!Filter.getValid(text))
@@ -455,12 +517,19 @@ public class RElementValue extends JPanel {
             return true; // if its disabled, true, because it wont get written anyways
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             return true;
+        } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
+            return true;
+        } else if (InputType.equals(UUID.class)) {
+            if (Input.getName().equals("null")) {
+                    Problem = "No Texture Selected";
+                    return false;
+                } else
+                    return true;
         } else if (InputType.equals(File.class)) {
             return true;
         } else if (InputType.equals(HashMap.class)) {
             return true;
         } else {
-            var process = Problem;
             try {
                 if (Input.getName() == "dd") { // for a string drop down
                     Problem = "String is not valid.";
@@ -471,11 +540,8 @@ public class RElementValue extends JPanel {
                     return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
                 }
                 String text = ((JTextField) Input).getText(); // get the text if its not specilized
-                if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
-                    process = "Failed to turn into Integer";
-                    Integer.parseInt(text);
-                } else if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
-                    process = "Failed to turn into Integer";
+                if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
+                    Problem = "Failed to turn into Integer";
                     Float.parseFloat(text);
                 } else if (InputType.equals(String.class)) { // string
                     if (!Filter.getValid(text))
@@ -483,7 +549,6 @@ public class RElementValue extends JPanel {
                     return Filter.getValid(text);
                 }
             } catch (Exception e) {
-                Problem = process;
                 if (strict)
                     return false;
                 else {
