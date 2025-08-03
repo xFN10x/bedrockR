@@ -19,11 +19,14 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.windows.RWorkspace;
 
 public class ResourceFile implements ElementFile {
 
     public Map<String, Integer> ResourceTypes = new HashMap<String, Integer>();
     public Map<String, String> ResourceIDs = new HashMap<String, String>();
+
+    public static RWorkspace ActiveWorkspace = null;
 
     public static final int ITEM_TEXTURE = 0;
 
@@ -109,7 +112,7 @@ public class ResourceFile implements ElementFile {
             FileUtils.copyFile(filePNG, dest);
             this.ResourceTypes.put(finalName, type);
             this.ResourceIDs.put(finalName, UUID.randomUUID().toString());
-            build(workspaceName, null,null,null);
+            build(workspaceName, null, null, null);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,7 +147,11 @@ public class ResourceFile implements ElementFile {
      * rootPath is the workspace name!
      * THIS IS ALSO NOT MEANT FOR BUILDING TO PACKS
      */
-    public void build(String rootPath, WPFile workspaceFile,String rootResPackPath,GlobalBuildingVaribles globalResVaribles) throws IOException {
+    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+            GlobalBuildingVaribles globalResVaribles) throws IOException {
+        if (ActiveWorkspace != null)
+            ActiveWorkspace.refreshResources();
+
         var source = new SourceResourceFile(this);
         source.buildJSONFile(null, rootPath);
     }

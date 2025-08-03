@@ -21,10 +21,10 @@ import fn10.bedrockr.utils.RFonts;
 
 public class RElement extends JPanel implements MouseListener {
 
-    protected JLabel Icon = new JLabel();
+    public JLabel Icon = new JLabel();
     protected SpringLayout Lay = new SpringLayout();
-    protected JLabel Name = new JLabel();
-    protected JLabel Desc = new JLabel();
+    public JLabel Name = new JLabel();
+    public JLabel Desc = new JLabel();
 
     private Runnable func;
     protected boolean selected;

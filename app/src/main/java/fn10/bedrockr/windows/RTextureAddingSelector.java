@@ -1,11 +1,15 @@
 package fn10.bedrockr.windows;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Map;
 
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
@@ -22,6 +26,8 @@ public class RTextureAddingSelector extends RDialog {
     private final JButton addButton = new JButton("Add");
     private final JButton cancelButton = new JButton("Cancel");
 
+    protected JButton selected = null;
+
     public static final int OK_CHOICE = 1;
     public static final int CANCEL_CHOICE = 0;
 
@@ -37,6 +43,11 @@ public class RTextureAddingSelector extends RDialog {
                 new Dimension(500, 400));
 
         addButton.addActionListener(e -> {
+            if (selected == null)
+            {
+                JOptionPane.showMessageDialog(parent, "You must select a texture, or cancel.", "Selection Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             choice = OK_CHOICE;
             dispose();
         });
@@ -79,6 +90,9 @@ public class RTextureAddingSelector extends RDialog {
                     ToAdd.setIcon(resizedIcon);
                     ToAdd.setName(resIDs.get(entry.getKey()));
                     ToAdd.setToolTipText(entry.getKey() + " (" + resIDs.get(entry.getKey()) + ")");
+                    ToAdd.addActionListener(e -> {
+                        selected = ((JButton) e.getSource());
+                    });
                     InnerPanel.add(ToAdd);
                 }
             } catch (Exception e1) {
@@ -98,33 +112,31 @@ public class RTextureAddingSelector extends RDialog {
 
     /**
      * 
-     * @return A map entry, in of which, the key is the UUID, and the value is the image to be displayed.
+     * @return A map entry, in of which, the key is the UUID, and the value is the
+     *         image to be displayed.
      */
     public Map.Entry<String, ImageIcon> getSelected() {
-        for (Component comp : InnerPanel.getComponents()) {
-            if (comp.getName() == null || comp.getName().equals("NO"))
-                continue; // check to see what it is
-            if (((JButton) comp).isSelected())
-                return new Map.Entry<String, ImageIcon>() {
+        if (selected != null)
+            return new Map.Entry<String, ImageIcon>() {
 
-                    @Override
-                    public String getKey() {
-                        return comp.getName();
-                    }
+                @Override
+                public String getKey() {
+                    return selected.getName();
+                }
 
-                    @Override
-                    public ImageIcon getValue() {
-                        return (ImageIcon) ((JButton) comp).getIcon();
-                    }
+                @Override
+                public ImageIcon getValue() {
+                    return (ImageIcon) ((JButton) selected).getIcon();
+                }
 
-                    @Override
-                    public ImageIcon setValue(ImageIcon value) {
-                        return null;
-                    }
+                @Override
+                public ImageIcon setValue(ImageIcon value) {
+                    return null;
+                }
 
-                };
-        }
-        return null;
+            };
+        else
+            return null;
     }
 
     public static Map.Entry<String, ImageIcon> openSelector(Frame parent, Integer TextureType, String Workspace)
@@ -133,9 +145,10 @@ public class RTextureAddingSelector extends RDialog {
 
         thiS.setVisible(true);
 
-        if (thiS.choice == CANCEL_CHOICE)
+        if (thiS.choice == CANCEL_CHOICE) {
+            System.out.println("canceled");
             return null;
-        else
+        } else
             return thiS.getSelected();
 
     }

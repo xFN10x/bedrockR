@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
@@ -79,8 +80,8 @@ public class ItemFile implements ElementFile {
 
     @HelpMessage(message = "The texture for the item.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
-    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = true, displayName = "Item Texture")
-    public Integer Texture;
+    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
+    public UUID TextureUUID;
 
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;

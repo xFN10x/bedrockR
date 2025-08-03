@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Dialog.ModalExclusionType;
@@ -16,7 +17,9 @@ import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Map;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -31,6 +34,7 @@ import org.apache.commons.io.FilenameUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceResourceFile;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -38,9 +42,11 @@ import fn10.bedrockr.addons.source.jsonClasses.GlobalBuildingVaribles;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.base.RLoadingScreen;
+import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
@@ -77,9 +83,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 true,
                 false);
         setExtendedState(MAXIMIZED_BOTH);
+        ResourceFile.ActiveWorkspace = this;
 
         this.SWPF = WPF;
-        FlowLayout InnerLayout = new FlowLayout(FlowLayout.CENTER,3,3);
+        FlowLayout InnerLayout1 = new FlowLayout(FlowLayout.CENTER);
+        BoxLayout InnerLayout2 = new BoxLayout(ResourceInnerPanelView, BoxLayout.Y_AXIS);
 
         Tabs.addTab("Elements", ElementView);
         Tabs.addTab("Resources", ResourceView);
@@ -90,11 +98,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         
         ElementView.setBorder(viewsBorder);
         ElementView.setVisible(false);
-        //System.out.println(ElementInnerPanelView.getSize());
+
         ResourceView.setBorder(viewsBorder);
         ResourceView.setVisible(false);
-
-        //ElementInnerPanelView.setMaximumSize(new Dimension(200,0));
 
         AddElement.setActionCommand("add");
         AddElement.addActionListener(this);
@@ -138,8 +144,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
 
-        ElementInnerPanelView.setLayout(InnerLayout);
-        ResourceInnerPanelView.setLayout(InnerLayout);
+        ElementInnerPanelView.setLayout(InnerLayout1);
+        ElementInnerPanelView.setMaximumSize(new Dimension(400,0));
+        ElementInnerPanelView.setPreferredSize(new Dimension(400,0));
+        ResourceInnerPanelView.setLayout(InnerLayout2);
 
         add(Tabs);
         add(VerticleSep);
@@ -161,7 +169,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         pack();
 
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
-        refreshElements();
+        refreshAll();
     }
 
     public void buildElements(boolean rebuild) {
@@ -184,7 +192,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     progress.changeText("Removing old files...");
                     FileUtils.deleteDirectory(new File(builddir));
                 }
-                refreshElements();
+                refreshAll();
                 GlobalBuildingVaribles GlobalResVars = new GlobalBuildingVaribles();
                 ArrayList<RElementFile> ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
@@ -231,6 +239,31 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 SwingUtilities.invokeLater(progress::dispose);
             }
         }).start();
+    }
+
+    public void refreshAll() {
+        refreshResources();
+        refreshElements();
+    }
+
+    public void refreshResources() {
+        SwingUtilities.invokeLater(() -> {
+            SourceResourceFile resFile = RFileOperations.getResources(this, SWPF.workspaceName());
+            for (Map.Entry<String,String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
+                try {
+                    var ToAdd = new RElement(null, null);
+                    ToAdd.setMaximumSize(new Dimension(1400,80));
+                    ToAdd.setPreferredSize(new Dimension(1400,80));
+                    ToAdd.Name.setText(entry.getKey());
+                    ToAdd.Desc.setText(entry.getValue());
+                    File file = resFile.Serilized.getResourceFile(this, SWPF.workspaceName(), entry.getKey(), ResourceFile.ITEM_TEXTURE);
+                    ToAdd.Icon.setIcon(ImageUtilites.ResizeIcon(new ImageIcon(Files.readAllBytes(file.toPath())), 70, 70));
+                    ResourceInnerPanelView.add(ToAdd);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void refreshElements() {
@@ -315,7 +348,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     @Override
     public void onElementDraft(ElementSource element) {
         element.buildJSONFile(this, (((WPFile) SWPF.getSerilized()).WorkspaceName));
-        refreshElements();
+        refreshAll();
     }
 
     @Override
@@ -326,6 +359,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     @Override
     public void onElementCreate(ElementSource element) {
         element.buildJSONFile(this, (((WPFile) SWPF.getSerilized()).WorkspaceName));
-        refreshElements();
+        refreshAll();
     }
 }
