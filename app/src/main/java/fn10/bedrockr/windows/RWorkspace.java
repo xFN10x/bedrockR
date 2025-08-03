@@ -79,19 +79,22 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         setExtendedState(MAXIMIZED_BOTH);
 
         this.SWPF = WPF;
-        var gride = new FlowLayout(1, 8, 6);
+        FlowLayout InnerLayout = new FlowLayout(FlowLayout.CENTER,3,3);
 
         Tabs.addTab("Elements", ElementView);
         Tabs.addTab("Resources", ResourceView);
         Tabs.addTab("Settings", null);
         Tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        var viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
-        // Tabs.setBorder(viewsBorder);
+        FlatLineBorder viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
+        
         ElementView.setBorder(viewsBorder);
         ElementView.setVisible(false);
+        //System.out.println(ElementInnerPanelView.getSize());
         ResourceView.setBorder(viewsBorder);
         ResourceView.setVisible(false);
+
+        //ElementInnerPanelView.setMaximumSize(new Dimension(200,0));
 
         AddElement.setActionCommand("add");
         AddElement.addActionListener(this);
@@ -135,8 +138,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
 
-        ElementInnerPanelView.setLayout(gride);
-        ResourceInnerPanelView.setLayout(gride);
+        ElementInnerPanelView.setLayout(InnerLayout);
+        ResourceInnerPanelView.setLayout(InnerLayout);
 
         add(Tabs);
         add(VerticleSep);
@@ -182,8 +185,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(builddir));
                 }
                 refreshElements();
-                var GlobalResVars = new GlobalBuildingVaribles();
-                var ToBuild = new ArrayList<RElementFile>();
+                GlobalBuildingVaribles GlobalResVars = new GlobalBuildingVaribles();
+                ArrayList<RElementFile> ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
                     for (Component comp : ElementInnerPanelView.getComponents()) {
                         if (!comp.getName().equals("RElementFile"))
