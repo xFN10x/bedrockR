@@ -339,12 +339,13 @@ public class RElementValue extends JPanel {
 
                         var res = RFileOperations.getResources(parentFrame,
                                 WorkspaceName);
+
                         var filename = MapUtilities.getKeyFromValue(
                                 res.Serilized.ResourceIDs,
                                 id);
+
                         Name.setText(
                                 filename);
-                        // System.out.println(Selected.getKey());
                         ID.setText(id);
                         try {
                             Icon.setIcon(ImageUtilites.ResizeIcon(
