@@ -1,6 +1,7 @@
 package fn10.bedrockr.utils;
 
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.List;
 import java.awt.image.BufferedImage;
@@ -21,6 +22,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
+import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -394,12 +396,16 @@ public class RFileOperations {
         }
     }
 
+    @Deprecated
+    @DoNotCall("This doesnt work")
     public static SourceWPFile createWorkspace(RLoadingScreen loading, WPFile wpf, Image addonIcon) throws Exception {
-        BufferedImage bufferedImage = new BufferedImage(addonIcon.getWidth(loading), addonIcon.getHeight(loading),
+        BufferedImage bufferedImage = new BufferedImage(addonIcon.getHeight(null), addonIcon.getHeight(null),
                 BufferedImage.TYPE_INT_RGB);
-        bufferedImage.getGraphics().drawImage(addonIcon, 0, 0, loading);
+        bufferedImage.getGraphics().drawImage(addonIcon, 0, 0, null);
         File file = new File(File.createTempFile("bed", "rockr").getAbsolutePath());
         ImageIO.write(bufferedImage, BASE_PATH, file);
+        file.delete();
+        bufferedImage.getGraphics().dispose();
         return createWorkspace(loading, wpf, file);
     }
 
@@ -443,14 +449,13 @@ public class RFileOperations {
 
                 loading.changeText("Creating workspace...");
 
-                var srcWPF = new SourceWPFile(wpf);
+                SourceWPFile srcWPF = new SourceWPFile(wpf);
                 srcWPF.buildJSONFile((Frame) loading.getParent(), wpf.WorkspaceName);
 
-                var srcIcon = new File(wsFolder.getAbsolutePath() + File.separator + "icon." + wpf.IconExtension);
+                File srcIcon = new File(wsFolder.getAbsolutePath() + File.separator + "icon." + wpf.IconExtension);
                 trying = srcIcon;
 
-                // copy the icon
-                Files.write(srcIcon.toPath(), Files.readAllBytes(addonIcon.toPath()), StandardOpenOption.CREATE);
+                FileUtils.copyFile(addonIcon, srcIcon);
 
                 return srcWPF;
 

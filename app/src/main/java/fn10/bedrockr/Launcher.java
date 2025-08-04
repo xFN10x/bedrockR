@@ -10,6 +10,7 @@ import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.laf.BedrockrDark;
+import javafx.application.Platform;
 
 import java.awt.*;
 import java.io.File;
@@ -59,6 +60,8 @@ public class Launcher {
     public static Logger LOG = Logger.getLogger("bedrockR");
 
     public static void main(String[] args) {
+        //start up javafx
+        Platform.startup(() -> {});
         // set up logging
         String logloc = RFileOperations.getBaseDirectory(null, File.separator + "logs").getAbsolutePath()
                 + File.separator + "bedrockR-log-"

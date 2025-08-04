@@ -1,10 +1,15 @@
 package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URISyntaxException;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -21,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.tools.Tool;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
@@ -32,6 +38,9 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.base.RLoadingScreen;
+import javafx.application.Platform;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
@@ -43,9 +52,20 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             "1.21.90",
             "1.21.100"
     };
-    protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(getClass().getResource("/addons"+"/DefaultIcon.png"),
+    protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
+            getClass().getResource("/addons" + "/DefaultIcon.png"),
             250, 250);
-    protected JFileChooser file = new JFileChooser();
+    protected File ChosenIconFile;
+    {
+        try {
+            ChosenIconFile = new File(getClass().getResource("/addons" + "/DefaultIcon.png").toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            ChosenIconFile = null;
+        }
+    }
+    // protected JFileChooser file = new JFileChooser();
+    protected FileChooser fileChooser = new FileChooser();
     protected String imageExtension = "png";
 
     protected JLabel AddonIcon = new JLabel(ChosenIcon);
@@ -165,15 +185,31 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "changeIcon") {
             try {
-                file.setDialogTitle("Choose Addon Icon");
-                file.setFileFilter(
-                        new FileNameExtensionFilter("Image Files (*.png,*.jpg)", "png", "jpg"));
-                file.showOpenDialog(this);
-                ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file.getSelectedFile())), 250, 250);
-                AddonIcon.setIcon(ChosenIcon);
-                //Launcher.LOG.info(file.getSelectedFile().getName());
-                imageExtension = file.getSelectedFile().getName().split("\\.")[1];
-                Launcher.LOG.info("Icon extension will be: " + imageExtension);
+                
+                // file.setDialogTitle("Choose Addon Icon");
+                // file.setFileFilter(
+                // new FileNameExtensionFilter("Image Files (*.png,*.jpg)", "png", "jpg"));
+                // file.showOpenDialog(this);
+                // ChosenIconFile = file.getSelectedFile();
+                // ChosenIcon = ImageUtilites.ResizeIcon(new
+                // ImageIcon(ImageIO.read(file.getSelectedFile())), 250, 250);
+                fileChooser.setTitle("Choose Addon's Icon");
+                fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png"));
+                Platform.runLater(() -> {
+                    try {
+                        File file = fileChooser.showOpenDialog(null);
+                        // File file = fileChooser.showOpenDialog(null);
+                        ChosenIconFile = file;
+                        ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file)), 250, 250);
+                        AddonIcon.setIcon(ChosenIcon);
+                        // Launcher.LOG.info(file.getSelectedFile().getName());
+                        imageExtension = file.getName().split("\\.")[1];
+                        Launcher.LOG.info("Icon extension will be: " + imageExtension);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                });
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -195,7 +231,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
                                 imageExtension, ModPrefixInput.getText()),
 
-                        ((ImageIcon) AddonIcon.getIcon()).getImage());
+                        ChosenIconFile);
 
                 if (workspace != null) {
                     RFileOperations.openWorkspace(((Frame) this.getParent()), workspace);
@@ -206,7 +242,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                ErrorShower.showError(((Frame)getParent()), "Failed to make new addon.", "Grrrr", ex);
+                ErrorShower.showError(((Frame) getParent()), "Failed to make new addon.", "Grrrr", ex);
             }
             // });
 
@@ -228,7 +264,8 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     private void checkForError() {
         var text = NameInput.getText();
         File proposedDir = new File(
-                RFileOperations.getBaseDirectory((Frame) getParent()) + File.separator+"workspace"+File.separator + NameInput.getText());
+                RFileOperations.getBaseDirectory((Frame) getParent()) + File.separator + "workspace" + File.separator
+                        + NameInput.getText());
 
         // Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" +
         // NameInput.getText());
