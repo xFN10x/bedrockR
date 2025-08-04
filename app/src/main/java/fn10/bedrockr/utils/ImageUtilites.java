@@ -9,12 +9,20 @@ import javax.swing.*;
 
 public class ImageUtilites {
 
+    public static ImageIcon ResizeIcon(ImageIcon OG, int width, int height, int scalingMode) {
+        return new ImageIcon(OG.getImage().getScaledInstance(width, height, scalingMode));
+    }
+
     public static ImageIcon ResizeIcon(ImageIcon OG, int width, int height) {
         return new ImageIcon(OG.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 
     public static Image ResizeImage(BufferedImage OG, int width, int height) {
         return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    }
+
+    public static ImageIcon ResizeImageByURL(URL OG, int width, int height, int scalingMode) {
+        return new ImageIcon(new ImageIcon(OG).getImage().getScaledInstance(width, height, scalingMode));
     }
 
     public static ImageIcon ResizeImageByURL(URL OG, int width, int height) {

@@ -91,7 +91,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         Tabs.addTab("Elements", ElementView);
         Tabs.addTab("Resources", ResourceView);
-        Tabs.addTab("Settings", null);
+        //Tabs.addTab("Settings", null);
         Tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         FlatLineBorder viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
