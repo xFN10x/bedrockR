@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -51,18 +52,22 @@ public class RAddon extends JPanel implements MouseListener {
         this.ancestor = Ancestor;
 
         BufferedImage BI;
-        var step = 0;
+        Image resizedImage = null;
+        int step = 0;
         try {
             // dirty line of code coming up... "varibles? never hear of 'er"
             WPFile = new SourceWPFile(Files.readString(RFileOperations
-                    .getFileFromWorkspace((Frame) getParent(), WPName, File.separator + RFileOperations.WPFFILENAME, true)
+                    .getFileFromWorkspace((Frame) getParent(), WPName, File.separator + RFileOperations.WPFFILENAME,
+                            true)
                     .toPath()));
             WPF = (WPFile) WPFile.getSerilized();
             step = 1;
             var iconFile = RFileOperations.getFileFromWorkspace((Frame) getParent(), WPName,
-                    File.separator+"icon." + WPF.IconExtension, true);
+                    File.separator + "icon." + WPF.IconExtension, true);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
+            resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
+
         } catch (Exception e) {
             e.printStackTrace();
             if (step == 0) {
@@ -81,16 +86,22 @@ public class RAddon extends JPanel implements MouseListener {
                         if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             BI = ImageIO.read(bic.getSelectedFile());
                             ImageIO.write(BI, WPF.IconExtension, RFileOperations
-                                    .getFileFromWorkspace((Frame) getParent(), WPName, File.separator+"icon." + WPF.IconExtension));
+                                    .getFileFromWorkspace((Frame) getParent(), WPName,
+                                            File.separator + "icon." + WPF.IconExtension));
                         }
+
                     }
+                    resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
+
                 } catch (Exception e2) {
                     e2.printStackTrace();
                     BI = null;
+                    resizedImage = null;
                     return;
                 }
             } else {
                 BI = null;
+                resizedImage = null;
                 return;
             }
         }
@@ -99,8 +110,6 @@ public class RAddon extends JPanel implements MouseListener {
         setPreferredSize(new Dimension(90, 90));
         setBackground(BGC);
         setBorder(new FlatLineBorder(new Insets(2, 2, 2, 2), Color.WHITE, 1, 16));
-
-        var resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
         BufferedImage BI2 = new BufferedImage(resizedImage.getWidth(null), // back to bufferedimage
                 resizedImage.getHeight(null),
