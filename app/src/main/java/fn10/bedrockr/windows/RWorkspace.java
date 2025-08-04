@@ -38,7 +38,7 @@ import fn10.bedrockr.addons.source.SourceResourceFile;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.jsonClasses.GlobalBuildingVaribles;
+import fn10.bedrockr.addons.source.jsonClasses.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
@@ -193,7 +193,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(builddir));
                 }
                 refreshAll();
-                GlobalBuildingVaribles GlobalResVars = new GlobalBuildingVaribles();
+                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WPFile)SWPF.getSerilized(),RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
                 ArrayList<RElementFile> ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
                     for (Component comp : ElementInnerPanelView.getComponents()) {

@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
 
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
-import fn10.bedrockr.addons.source.jsonClasses.GlobalBuildingVaribles;
+import fn10.bedrockr.addons.source.jsonClasses.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 
@@ -30,7 +30,7 @@ public interface ElementFile { // mostly for making functions better to read
 
     Boolean getDraft();
 
-    void build(String rootPath, WPFile workspaceFile, String rootResPackPath, GlobalBuildingVaribles globalResVaribles)
+    void build(String rootPath, WPFile workspaceFile, String rootResPackPath, GlobalBuildingVariables globalResVaribles)
             throws IOException;
 
 }

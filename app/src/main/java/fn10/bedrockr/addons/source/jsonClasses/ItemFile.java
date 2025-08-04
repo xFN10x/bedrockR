@@ -9,13 +9,13 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
-import com.google.gson.GsonBuilder;
-
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.items.ItemComponents;
+import fn10.bedrockr.addons.source.items.ItemComponents.minecraftIcon;
+import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 
 public class ItemFile implements ElementFile {
@@ -108,8 +108,8 @@ public class ItemFile implements ElementFile {
 
     @Override
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVaribles globalResVaribles) throws IOException {
-        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID + ".name", Name);
+            GlobalBuildingVariables globalResVaribles) throws IOException {
+        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID, Name);
 
         // make item
         var item = new Item();
@@ -132,11 +132,15 @@ public class ItemFile implements ElementFile {
         // inner item
         var inner = new Item.InnerItem();
         inner.description = desc;
+
+        Components.put("minecraft:icon", globalResVaribles.addItemTexture(
+                    MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
+
         inner.components = Components;
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
-var json = gson.toJson(item);
+        var json = gson.toJson(item);
         var path = new File(rootPath + File.separator + "items" + File.separator + ID + ".json").toPath();
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,

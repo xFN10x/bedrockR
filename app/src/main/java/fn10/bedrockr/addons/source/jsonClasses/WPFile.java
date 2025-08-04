@@ -75,7 +75,7 @@ public class WPFile implements ElementFile {
 
     @Override
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVaribles globalResVaribles) throws IOException {
+            GlobalBuildingVariables globalResVaribles) throws IOException {
 
         // build BP manifest
         // ----------------------------------------------------------------------

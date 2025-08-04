@@ -3,12 +3,9 @@ package fn10.bedrockr.windows.componets;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
-import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -18,12 +15,8 @@ import java.util.UUID;
 
 import javax.swing.border.LineBorder;
 
-import org.checkerframework.checker.units.qual.N;
-
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
-
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;

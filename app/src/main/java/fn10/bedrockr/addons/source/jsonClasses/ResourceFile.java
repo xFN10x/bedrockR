@@ -148,7 +148,7 @@ public class ResourceFile implements ElementFile {
      * THIS IS ALSO NOT MEANT FOR BUILDING TO PACKS
      */
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVaribles globalResVaribles) throws IOException {
+            GlobalBuildingVariables globalResVaribles) throws IOException {
         if (ActiveWorkspace != null)
             ActiveWorkspace.refreshResources();
 

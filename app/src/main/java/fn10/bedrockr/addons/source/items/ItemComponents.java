@@ -9,13 +9,21 @@ import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 
 public class ItemComponents implements RMapElementProvider {
 
+    public static class minecraftIcon {
+        public String texture;
+
+        public minecraftIcon(String tex) {
+            this.texture = tex;
+        }
+    }
+
     public static RMapElement[] Components = {
             new RMapElement("minecraft:allow_off_hand", Boolean.class),
             new RMapElement("minecraft:can_destroy_in_creative", Boolean.class),
-            new RMapElement("Weapon Damage","minecraft:damage", Integer.class),
-            new RMapElement("Enchanted Glint","minecraft:glint", Boolean.class),
+            new RMapElement("Weapon Damage", "minecraft:damage", Integer.class),
+            new RMapElement("Enchanted Glint", "minecraft:glint", Boolean.class),
             new RMapElement("minecraft:hand_equipped", Boolean.class),
-            new RMapElement("Text Colour","minecraft:hover_text_color", String.class),
+            new RMapElement("Text Colour", "minecraft:hover_text_color", String.class),
             new RMapElement("minecraft:interact_button", String.class),
             new RMapElement("minecraft:liquid_clipped", Boolean.class),
             new RMapElement("minecraft:max_stack_size", Integer.class),
