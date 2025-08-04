@@ -14,8 +14,13 @@ plugins {
     id 'java'
     id 'org.panteleyev.jpackageplugin' version '1.7.3'
     id("com.gradleup.shadow") version "9.0.0-beta17"
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
 
 repositories {
     // Use Maven Central for resolving dependencies.
