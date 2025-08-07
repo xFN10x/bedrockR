@@ -1,7 +1,6 @@
 package fn10.bedrockr.utils;
 
 import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.List;
 import java.awt.image.BufferedImage;
@@ -11,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

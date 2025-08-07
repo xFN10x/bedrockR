@@ -6,10 +6,11 @@ import java.util.logging.LogRecord;
 
 public class RLogFilter implements Filter {
 
-    @Override
-    public boolean isLoggable(LogRecord arg0) {
-		if(arg0.getLevel() == Level.CONFIG) return false;
-		return true;
-    }
+  @Override
+  public boolean isLoggable(LogRecord arg0) {
+    if (arg0.getLevel() == Level.CONFIG)
+      return false;
+    return true;
+  }
 
 }

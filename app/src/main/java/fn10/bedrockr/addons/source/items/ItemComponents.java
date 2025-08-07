@@ -17,7 +17,7 @@ public class ItemComponents implements RMapElementProvider {
         }
     }
 
-    public static RMapElement[] Components = {
+   /*  private static RMapElement[] Components = {
             new RMapElement("minecraft:allow_off_hand", Boolean.class, "This component was not tested. Use at your own risk"),
             new RMapElement("minecraft:can_destroy_in_creative", Boolean.class, "This component was not tested. Use at your own risk"),
             new RMapElement("Weapon Damage", "minecraft:damage", Integer.class),
@@ -79,10 +79,25 @@ public class ItemComponents implements RMapElementProvider {
         AvailableComponents.put("minecraft:food", null); // add class
         AvailableComponents.put("minecraft:fuel", null); // minecraft, WHY DO YOU NEED OBJECTS FOR THESEEEEE
 
-    }
+    } */
 
     public static RMapElement[] getPickable() {
-        return Components;
+        return new RMapElement[] {
+            new RMapElement("minecraft:allow_off_hand", Boolean.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:can_destroy_in_creative", Boolean.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("Weapon Damage", "minecraft:damage", Integer.class, "The damage this item does. It will say the amount of damage it does on the tooltip."),
+            new RMapElement("Enchanted Glint", "minecraft:glint", Boolean.class,"Specifies if the item looks like its enchanted"),
+            new RMapElement("minecraft:hand_equipped", Boolean.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("Text Colour", "minecraft:hover_text_color", String.class,"The colour of the item name"),
+            new RMapElement("minecraft:interact_button", String.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:liquid_clipped", Boolean.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:max_stack_size", Integer.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:rarity", String.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:should_despawn", Boolean.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:stacked_by_data", Boolean.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:storage_weight_limit", Integer.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:storage_weight_modifier", Integer.class, "This component was not tested. Use at your own risk"),
+            new RMapElement("minecraft:use_animation", String.class, "This component was not tested. Use at your own risk")
+    };
     }
-
 }
