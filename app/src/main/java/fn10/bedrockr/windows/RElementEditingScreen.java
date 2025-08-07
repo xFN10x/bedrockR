@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -153,6 +154,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public List<RElementValue> checkForErrors(boolean strict) {
         List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
+        var log = Launcher.LOG;
+        log.info("--------------------- CHECKING FOR ERRORS-----------------------");
         for (RElementValue rElementValue : Fields) {
             if (!rElementValue.valid(strict))
                 IncorrectFields.add(rElementValue);
@@ -170,15 +173,17 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (RElementValue rElementValue : Fields) { // add the fields
-                if (!rElementValue.getOptionallyEnabled())
+                if (!rElementValue.getOptionallyEnabled()) // if its not enabled, continue
                     continue;
-                try {
-                    SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
-                    continue;
-                }
+                else
+                    try { 
+                        SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue()); 
+                        //try to set field ^
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
+                        continue;
+                    }
 
             }
 
@@ -210,7 +215,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             }
         } else if (action.equals("draft")) { // drafting, check if nessesary fields are entered
             if (checkForErrors(false) == null) {
-                create(false);
+                create(true);
             } else { // show errored things
                 // pov: you thought something was going to complicated, but you didnt need to
                 // search anything up VVVVVVV

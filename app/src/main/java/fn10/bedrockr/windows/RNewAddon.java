@@ -1,23 +1,18 @@
 package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.net.URISyntaxException;
-
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -25,9 +20,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.tools.Tool;
-
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
@@ -45,25 +37,22 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
     protected final static String[] PICKABLE_VERSIONS = {
-            "1.21.50",
-            "1.21.60",
-            "1.21.70",
-            "1.21.80",
+            "1.21.100",
             "1.21.90",
-            "1.21.100"
+            "1.21.80",
+            "1.21.70",
+            "1.21.60",
+            "1.21.50",
+            "1.21.40",
+            "1.21.30",
+            "1.21.20",
+            "1.21.10",
+            "1.21.00",
     };
     protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
-            getClass().getResource("/addons" + "/DefaultIcon.png"),
+            getClass().getResource("/addons/DefaultIcon.png"),
             250, 250);
-    protected File ChosenIconFile;
-    {
-        try {
-            ChosenIconFile = new File(getClass().getResource("/addons" + "/DefaultIcon.png").toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            ChosenIconFile = null;
-        }
-    }
+    protected File ChosenIconFile = null;
     // protected JFileChooser file = new JFileChooser();
     protected FileChooser fileChooser = new FileChooser();
     protected String imageExtension = "png";
@@ -185,7 +174,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "changeIcon") {
             try {
-                
+
                 // file.setDialogTitle("Choose Addon Icon");
                 // file.setFileFilter(
                 // new FileNameExtensionFilter("Image Files (*.png,*.jpg)", "png", "jpg"));
@@ -214,6 +203,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 ex.printStackTrace();
             }
         } else if (e.getActionCommand() == "create") {
+
+            if (ChosenIconFile == null) {
+                JOptionPane.showMessageDialog(this, "Please select a file", "error, thanks lince", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             var name = NameInput.getText();
             Launcher.LOG.info("Making new addon: " + name);

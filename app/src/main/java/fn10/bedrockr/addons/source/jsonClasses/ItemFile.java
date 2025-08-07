@@ -9,12 +9,12 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
+import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.items.ItemComponents;
-import fn10.bedrockr.addons.source.items.ItemComponents.minecraftIcon;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 
@@ -133,10 +133,10 @@ public class ItemFile implements ElementFile {
         var inner = new Item.InnerItem();
         inner.description = desc;
 
-        Components.put("minecraft:icon", globalResVaribles.addItemTexture(
+        inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
                     MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
 
-        inner.components = Components;
+        //inner.components = Components;
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file

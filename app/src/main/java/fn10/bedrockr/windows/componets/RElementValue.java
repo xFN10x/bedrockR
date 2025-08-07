@@ -17,6 +17,8 @@ import javax.swing.border.LineBorder;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
+
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -210,7 +212,7 @@ public class RElementValue extends JPanel {
                 try {
                     for (Map.Entry<String, Object> entry : ((Map<String, Object>) field.get(TargetFile)).entrySet()) {
                         var ToAdd = new RElementMapValue(parentFrame,
-                                new RMapElement(((String) entry.getKey()), entry.getValue().getClass()));
+                                RMapElement.LookupMap.get(entry.getKey()));
                         ToAdd.setVal(entry.getValue());
                         HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                         HashMapInnerPane.add(ToAdd);
@@ -501,13 +503,13 @@ public class RElementValue extends JPanel {
                 var casted = ((JComboBox<String>) Input);
                 return (casted.getSelectedIndex() == 0);
             } else if (InputType.equals(HashMap.class)) {
-                var mapToBuild = new HashMap<String, Object>();
+                var mapToBuild = new HashMap<RMapElement, Object>();
                 for (Component comp : HashMapInnerPane.getComponents()) {
                     if (comp.getName() == null)
                         continue;
                     if (comp.getName().equals("E")) {
-                        var mapElement = ((RElementMapValue) comp).getKeyAndVal();
-                        mapToBuild.put(mapElement.getKey(), mapElement.getValue());
+                        var mapElement = ((RElementMapValue) comp);
+                        mapToBuild.put(mapElement.rMapElement, mapElement.getKeyAndVal().getValue());
                     }
                 }
                 return mapToBuild;
@@ -542,54 +544,89 @@ public class RElementValue extends JPanel {
 
     @SuppressWarnings("unchecked")
     public boolean valid(boolean strict) {
-        if (!getOptionallyEnabled())
-            return true; // if its disabled, true, because it wont get written anyways
+        var log = Launcher.LOG;
+        log.info("================== Checking field " + this.Target + "... ==================");
+
+        if (!strict) {
+            Field field;
+            try {
+                field = SourceFileClass.getField(Target);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                log.info(Target + ": failed to get field; so it fails");
+
+                return false;
+            }
+            if (field.getAnnotation(RAnnotation.VeryImportant.class) == null)
+            {
+                log.info(Target + ": its not important, and drafting; so it passes");
+
+                return true; // if its not strict (drafing) and not important (not like ElementName)
+            }
+        }
+
+        if (!getOptionallyEnabled()) {
+            log.info(Target + ": Not Enabled, so it passes");
+            return true;
+        } // if its disabled, true, because it wont get written anyways
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
+            log.info(Target + ": Bool cannot be wrong, so it passes");
+
             return true;
         } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
+            log.info(Target + ": Int cannot be wrong, so it passes");
+
             return true;
         } else if (InputType.equals(UUID.class)) {
+
             if (Input.getName().equals("null")) {
                 Problem = "No Texture Selected";
+                log.info(Target + ": No UUID can be read, so it fails");
+
                 return false;
-            } else
+            } else {
+                log.info(Target + ": Texture is selected, and cannot be wrong. it passes");
                 return true;
+            }
         } else if (InputType.equals(File.class)) {
+            log.info(Target + ": File cannot be wrong. it passes");
+
             return true;
         } else if (InputType.equals(HashMap.class)) {
+            log.info(Target + ": (Hash)Map cannot be wrong. it passes");
+
             return true;
         } else {
             try {
+                log.info(Target + ": Scary!");
+
                 if (Input.getName() == "dd") { // for a string drop down
                     Problem = "String is not valid.";
                     if (!Filter.getValid(((String) ((JComboBox<String>) Input).getSelectedItem()))) {
                         Problem = "String is not valid.";
+                        log.info(Target + ": Drop down didnt pass filter, " + Filter.getClass().getName()
+                                + "it doesnt pass");
+
                         return false;
                     }
                     return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
                 }
                 String text = ((JTextField) Input).getText(); // get the text if its not specilized
                 if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
-                    Problem = "Failed to turn into Integer";
+                    Problem = "Failed to turn into Float";
+                    log.info(Target + ": Parseing to float (Scary!)");
+
                     Float.parseFloat(text);
                 } else if (InputType.equals(String.class)) { // string
-                    if (!Filter.getValid(text))
-                        Problem = "String is not valid.";
+
+                    Problem = "String is not valid.";
+                    log.info(Target + ": String is checking if vaild");
+
                     return Filter.getValid(text);
                 }
             } catch (Exception e) {
-                if (strict)
-                    return false;
-                else {
-                    Field field;
-                    try {
-                        field = SourceFileClass.getField(Target);
-                    } catch (Exception e1) {
-                        return false;
-                    }
-                    if (field.getAnnotation(RAnnotation.VeryImportant.class) != null)
-                        return false;
-                }
+                e.printStackTrace();
+
             }
         }
         return false;

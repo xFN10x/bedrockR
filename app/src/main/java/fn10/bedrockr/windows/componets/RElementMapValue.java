@@ -36,7 +36,7 @@ public class RElementMapValue extends JPanel {
     protected final JLabel IDNameLabel = new JLabel();
     protected Component InputField = null;
 
-    protected final RMapElement rMapElement;
+    public final RMapElement rMapElement;
     protected final Frame Ancestor;
 
     protected final SpringLayout Lay = new SpringLayout();
@@ -117,18 +117,19 @@ public class RElementMapValue extends JPanel {
     public void setVal(Object val) {
         try {
             if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
-((JSpinner) InputField).setValue(val);
+                ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == String.class) { // string
-                ((JTextField) InputField).setText(((String)val));
+                ((JTextField) InputField).setText(((String) val));
             } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
                     || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
                 ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
                 ((JFormattedTextField) InputField).setText(String.valueOf(val));
             } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
-                ((JComboBox<String>) InputField).setSelectedIndex(((Boolean)val) == true ? 0 : 1);
+                ((JComboBox<String>) InputField).setSelectedIndex(((Boolean) val) == true ? 0 : 1);
             } else { // else
-                throw new IllegalArgumentException(InputField.getClass().getName()+" does not suppot type "+ rMapElement.Type.getName());
+                throw new IllegalArgumentException(
+                        InputField.getClass().getName() + " does not suppot type " + rMapElement.Type.getName());
             }
         } catch (Exception e) {
             e.printStackTrace();
