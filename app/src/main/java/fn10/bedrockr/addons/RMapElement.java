@@ -1,6 +1,7 @@
 package fn10.bedrockr.addons;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +15,9 @@ public class RMapElement {
     public Class<?> Type;
     public String DisplayName;
     public String HelpDescription;
-    public List<Filter> Filters;
+    public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
 
-    public static enum Filter {
+    public static enum MapValueFilter {
         NotNegitive
     }
 
@@ -31,10 +32,14 @@ public class RMapElement {
         return ID;
     }
 
+    public boolean equals(RMapElement compare) {
+        return this.ID.equals(compare.ID);
+    }
+
     public boolean Valid(Object value) {
         var log = Launcher.LOG;
         log.info(">---------=--------< Checking RMapElement " + this.DisplayName + "... >---------=--------<");
-        for (Filter filter : Filters) {
+        for (MapValueFilter filter : Filters) {
             switch (filter) {
                 case NotNegitive:
                     log.info(DisplayName + " : Checking if negitive");
@@ -76,7 +81,7 @@ public class RMapElement {
         this.HelpDescription = Help;
     }
 
-    public RMapElement(String Name, String ID, Class<?> Type, String Help, @Nullable Filter... filters) {
+    public RMapElement(String Name, String ID, Class<?> Type, String Help, @Nullable MapValueFilter... filters) {
         this.Type = Type;
         this.ID = ID;
 

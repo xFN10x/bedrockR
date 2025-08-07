@@ -1,5 +1,7 @@
 package fn10.bedrockr.addons.source.jsonClasses;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FileUtils;
 
@@ -111,6 +116,15 @@ public class GlobalBuildingVariables implements ElementFile {
 
         for (File file : ItemTextures) {
             FileUtils.copyFileToDirectory(file, ItemTextureFolder.toFile());
+            // check texture size
+            BufferedImage testImage = ImageIO.read(file);
+            if (Math.pow(testImage.getHeight(), 2) >= 512) {
+                JOptionPane.showMessageDialog(null,
+                        "The texture " + file.getName()
+                                + " is bigger than 512 pixels, which is really big, it is not reccomened to do this as this item may cause lag.",
+                        "Image is MASSIVE: " + testImage.getWidth() + "x" + testImage.getHeight(),
+                        JOptionPane.WARNING_MESSAGE);
+            }
             ItemTexturesFile.texture_data.put(file.getName().replace(".png", ""), new TextureData(file.getName()));
         }
 
