@@ -112,6 +112,7 @@ public class RElementFile extends RElement implements ActionListener {
             var file = new File(filePath);
             file.delete();
             wksp.refreshElements();
+            wksp.buildElements(true);
         } else if (ac.equals("draft")) {
             try {
                 file.setDraft(true);

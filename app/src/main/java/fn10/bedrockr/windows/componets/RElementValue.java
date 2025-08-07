@@ -9,7 +9,9 @@ import java.awt.event.MouseAdapter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -182,6 +184,7 @@ public class RElementValue extends JPanel {
                                                                       // ---------------------------------------------------
             Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
             /*
              * HashMapInnerScroll is the pane that is inside input, IT IS A JPANEL, NOT A
              * JSCROLLPANE!!!!
@@ -208,12 +211,17 @@ public class RElementValue extends JPanel {
             // finally, get the annotation after getting the field
             var anno = field.getAnnotation(RAnnotation.MapFieldSelectables.class);
 
+            List<RMapElement> picked = new ArrayList<RMapElement>();
             if (!FromEmpty) {
                 try {
                     for (Map.Entry<String, Object> entry : ((Map<String, Object>) field.get(TargetFile)).entrySet()) {
                         var ToAdd = new RElementMapValue(parentFrame,
                                 RMapElement.LookupMap.get(entry.getKey()));
                         ToAdd.setVal(entry.getValue());
+                        ToAdd.setName("E");
+
+                        picked.add(RMapElement.LookupMap.get(entry.getKey()));
+
                         HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                         HashMapInnerPane.add(ToAdd);
                     }
@@ -226,13 +234,14 @@ public class RElementValue extends JPanel {
             // add the button
             HashMapAdd.addActionListener((e) -> {
                 try {
-                    var select = RMapValueAddingSelector.openSelector(parentFrame,
-                            ((RMapElement[]) anno.value().getMethod("getPickable").invoke(null)));
+                    RMapElement select = RMapValueAddingSelector.openSelector(parentFrame,
+                            ((RMapElement[]) anno.value().getMethod("getPickable").invoke(null)), picked);
                     if (select == null)
                         return;
                     var toAdd = new RElementMapValue(parentFrame, select);
                     toAdd.setAlignmentX(0.5f);
                     toAdd.setName("E");
+                    picked.add(select);
 
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                     HashMapInnerPane.add(toAdd);
@@ -430,6 +439,17 @@ public class RElementValue extends JPanel {
 
         Name.setText(DisplayName);
 
+        try {
+            if (!FromEmpty) {
+                var field = SourceFileClass.getField(TargetField);
+                if (field.get(TargetFile) != null) {
+                    EnableDis.setSelected(true);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // put in center is not hashmap
         if (InputType.equals(HashMap.class))
             Lay.putConstraint(SpringLayout.NORTH, Name, 10, SpringLayout.NORTH, this);
@@ -557,8 +577,7 @@ public class RElementValue extends JPanel {
 
                 return false;
             }
-            if (field.getAnnotation(RAnnotation.VeryImportant.class) == null)
-            {
+            if (field.getAnnotation(RAnnotation.VeryImportant.class) == null) {
                 log.info(Target + ": its not important, and drafting; so it passes");
 
                 return true; // if its not strict (drafing) and not important (not like ElementName)
@@ -567,8 +586,13 @@ public class RElementValue extends JPanel {
 
         if (!getOptionallyEnabled()) {
             log.info(Target + ": Not Enabled, so it passes");
-            return true;
-        } // if its disabled, true, because it wont get written anyways
+            return true;// if its disabled, true, because it wont get written anyways
+        }
+        if (Target.equals("Group")) {
+            JOptionPane.showMessageDialog(parentFrame,
+                    "Creative groups are not tested, and may not work. It is reccomended not to use this.",
+                    "Creative Group Warning", JOptionPane.WARNING_MESSAGE);
+        }
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             log.info(Target + ": Bool cannot be wrong, so it passes");
 

@@ -18,8 +18,13 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.google.gson.internal.LazilyParsedNumber;
 
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFonts;
@@ -61,6 +66,13 @@ public class RElementMapValue extends JPanel {
         } else if (RME.Type == Integer.class || RME.Type == int.class || RME.Type == double.class
                 || RME.Type == Double.class) { // int, DOUBLES WILL BE TREATED AS INTS
             InputField = new JSpinner();
+
+            if (RME.Filters.contains(MapValueFilter.NotNegitive))
+                ((JSpinner) InputField).addChangeListener(c -> {
+                    if (((Integer) ((JSpinner) InputField).getValue()) < 0) {
+                        ((JSpinner) InputField).setValue(0);
+                    }
+                });
         } else if (RME.Type == Float.class || RME.Type == float.class) { // float
             InputField = new JFormattedTextField(NumberFormat.getNumberInstance());
         } else if (RME.Type.isArray()) { // array
@@ -122,7 +134,11 @@ public class RElementMapValue extends JPanel {
                 ((JTextField) InputField).setText(((String) val));
             } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
                     || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
-                ((JSpinner) InputField).setValue(val);
+
+                if (val instanceof LazilyParsedNumber)
+                    ((JSpinner) InputField).setValue(((LazilyParsedNumber) val).intValue());
+                else
+                    ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
                 ((JFormattedTextField) InputField).setText(String.valueOf(val));
             } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool

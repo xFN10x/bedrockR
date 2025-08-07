@@ -28,11 +28,12 @@ public class RMapValueAddingSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    protected RMapValueAddingSelector(Frame parent, RMapElement[] AvailableComponents) {
+    protected RMapValueAddingSelector(Frame parent, RMapElement[] AvailableComponents,
+            java.util.List<RMapElement> UnavailableComponents) {
         super(
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
-                "New Item",
+                "New Map Item",
                 new Dimension(330, 400));
 
         addButton.addActionListener(e -> {
@@ -61,6 +62,15 @@ public class RMapValueAddingSelector extends RDialog {
 
         for (RMapElement rMapElement : AvailableComponents) {
             try {
+                Boolean continu = false;
+                for (RMapElement unavailable : UnavailableComponents)
+                    if (rMapElement.equals(unavailable)) {
+                        continu = true;
+                        break;
+                    }
+
+                if (continu)
+                    continue;
                 var toAdd = new RMapElementViewer(() -> unselectAll(), rMapElement);
                 toAdd.setAlignmentX(.5f);
                 toAdd.setName("RMEV");
@@ -104,9 +114,10 @@ public class RMapValueAddingSelector extends RDialog {
         return null;
     }
 
-    public static RMapElement openSelector(Frame parent, RMapElement[] AvailableComponents)
+    public static RMapElement openSelector(Frame parent, RMapElement[] AvailableComponents,
+            java.util.List<RMapElement> UnavailableComponents)
             throws InterruptedException {
-        var thiS = new RMapValueAddingSelector(parent, AvailableComponents);
+        var thiS = new RMapValueAddingSelector(parent, AvailableComponents, UnavailableComponents);
 
         thiS.setVisible(true);
 
