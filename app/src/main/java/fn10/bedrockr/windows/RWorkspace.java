@@ -74,6 +74,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     private JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
     private JButton ReBuildElements = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
+    private JButton HelpWikiButton = new JButton(
+            new ImageIcon(getClass().getResource("/addons/workspace/Help.png")));
 
     public RWorkspace(SourceWPFile WPF) {
         super(
@@ -91,11 +93,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         Tabs.addTab("Elements", ElementView);
         Tabs.addTab("Resources", ResourceView);
-        //Tabs.addTab("Settings", null);
+        // Tabs.addTab("Settings", null);
         Tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         FlatLineBorder viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
-        
+
         ElementView.setBorder(viewsBorder);
         ElementView.setVisible(false);
 
@@ -113,6 +115,16 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         ReBuildElements.setActionCommand("rebuild");
         ReBuildElements.addActionListener(this);
+
+        HelpWikiButton.addActionListener(action -> {
+            try {
+                Desktop.getDesktop()
+                        .browse(URI.create("https://github.com/xFN10x/bedrockR/wiki#how-to-make-simple-item"));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         LaunchMC.setActionCommand("launch");
         LaunchMC.addActionListener(this);
@@ -143,10 +155,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         // rebuild button
         Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
+        // help button
+        Lay.putConstraint(SpringLayout.SOUTH, HelpWikiButton, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, HelpWikiButton, -10, SpringLayout.WEST, ReBuildElements);
 
         ElementInnerPanelView.setLayout(InnerLayout1);
-        ElementInnerPanelView.setMaximumSize(new Dimension(400,0));
-        ElementInnerPanelView.setPreferredSize(new Dimension(400,0));
+        ElementInnerPanelView.setMaximumSize(new Dimension(400, 0));
+        ElementInnerPanelView.setPreferredSize(new Dimension(400, 0));
         ResourceInnerPanelView.setLayout(InnerLayout2);
 
         add(Tabs);
@@ -157,6 +172,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         add(LaunchMC);
         add(BuildElements);
         add(ReBuildElements);
+        add(HelpWikiButton);
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -193,7 +209,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(builddir));
                 }
                 refreshAll();
-                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WPFile)SWPF.getSerilized(),RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
+                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WPFile) SWPF.getSerilized(),
+                        RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
                 ArrayList<RElementFile> ToBuild = new ArrayList<RElementFile>();
                 SwingUtilities.invokeAndWait(() -> {
                     for (Component comp : ElementInnerPanelView.getComponents()) {
@@ -249,15 +266,17 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void refreshResources() {
         SwingUtilities.invokeLater(() -> {
             SourceResourceFile resFile = RFileOperations.getResources(this, SWPF.workspaceName());
-            for (Map.Entry<String,String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
+            for (Map.Entry<String, String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
                 try {
                     var ToAdd = new RElement(null, null);
-                    ToAdd.setMaximumSize(new Dimension(1400,80));
-                    ToAdd.setPreferredSize(new Dimension(1400,80));
+                    ToAdd.setMaximumSize(new Dimension(1400, 80));
+                    ToAdd.setPreferredSize(new Dimension(1400, 80));
                     ToAdd.Name.setText(entry.getKey());
                     ToAdd.Desc.setText(entry.getValue());
-                    File file = resFile.Serilized.getResourceFile(this, SWPF.workspaceName(), entry.getKey(), ResourceFile.ITEM_TEXTURE);
-                    ToAdd.Icon.setIcon(ImageUtilites.ResizeIcon(new ImageIcon(Files.readAllBytes(file.toPath())), 70, 70));
+                    File file = resFile.Serilized.getResourceFile(this, SWPF.workspaceName(), entry.getKey(),
+                            ResourceFile.ITEM_TEXTURE);
+                    ToAdd.Icon.setIcon(
+                            ImageUtilites.ResizeIcon(new ImageIcon(Files.readAllBytes(file.toPath())), 70, 70));
                     ResourceInnerPanelView.add(ToAdd);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -32,7 +32,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
     @SuppressWarnings("unchecked")
     public static final Class<? extends ElementSource>[] ELEMENTS = new Class[] {
-            SourceWPFile.class,
+            //SourceWPFile.class,
             SourceItemElement.class
     };
 

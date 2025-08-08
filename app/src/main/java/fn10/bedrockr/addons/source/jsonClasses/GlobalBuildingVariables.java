@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source.jsonClasses;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +52,7 @@ public class GlobalBuildingVariables implements ElementFile {
      * @throws IllegalAccessError
      */
     public String addItemTexture(String textureName) throws IllegalAccessError, FileNotFoundException {
-        var plannedkey = textureName.replace(".png", "");
+        var plannedkey = WPF.Prefix+"_"+textureName.replace(".png", "");
 
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
             ItemTexturesFile.texture_data.put(plannedkey, new TextureData(textureName));

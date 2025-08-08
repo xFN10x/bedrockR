@@ -25,6 +25,7 @@ import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
+import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.MapUtilities;
@@ -298,6 +299,13 @@ public class RElementValue extends JPanel {
                     JLabel Type = new JLabel("Item Texture");
                     Type.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
                     Type.setForeground(getForeground().darker().darker());
+                    JButton AddButton = new JButton("Add...");
+
+                    AddButton.addActionListener(ac -> {
+                        RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
+                                .importTexture(parentFrame, ResourceFile.ITEM_TEXTURE,
+                                        WorkspaceName);
+                    });
 
                     JLabel Icon = new JLabel(ImageUtilites.ResizeIcon(
                             new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
@@ -318,10 +326,15 @@ public class RElementValue extends JPanel {
                     layout.putConstraint(SpringLayout.WEST, Type, 5, SpringLayout.EAST, Icon);
                     layout.putConstraint(SpringLayout.SOUTH, Type, 0, SpringLayout.SOUTH, Icon);
 
+                    Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButton, 0, SpringLayout.HORIZONTAL_CENTER,
+                            Name);
+                    Lay.putConstraint(SpringLayout.SOUTH, AddButton, 0, SpringLayout.SOUTH, Input);
+
                     ((JPanel) Input).add(Icon);
                     ((JPanel) Input).add(Name);
                     ((JPanel) Input).add(ID);
                     ((JPanel) Input).add(Type);
+                    add(AddButton);
 
                     setMaximumSize(new Dimension(350, 80));
                     setPreferredSize(new Dimension(350, 80));
