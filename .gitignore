@@ -1,35 +1,22 @@
-
-# Output directories
-/build/
-/target/
-app/bin/
-
-# Mac OS X files
-.DS_Store
-
-# Eclipse files
-.settings
-.classpath
-.project
-
-# vim files
-.*.sw[a-z]
-*.un~
-
-# Java class files
-*.class
-
-# Gradle
 .gradle
+**/build/
+**/bin/
+!**/src/**/build/
 
-# direnv
-.envrc
+# Ignore Gradle GUI config
+gradle-app.setting
 
-# Ignore Gradle build output directory
-build
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
 
-# build plugin jar files
-gradle-server/src/main/resources/*.jar
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
 
-# Ignore user-specified .tool-versions file (asdf-vm configuration)
-.tool-versions
+# Cache of project
+.gradletasknamecache
+
+# Eclipse Gradle plugin generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
