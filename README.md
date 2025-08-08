@@ -48,9 +48,12 @@ Building a JAR can be done with one command.
 
 The following commands can be used to make certain builds of bedrockR. (You can only run an OS' build command on the target os. e.g., you can only run `jpackageWIN` on Windows.)
 
-`./gradlew jpackageWIN` - Make a Windows installer. 
+`./gradlew jpackageWIN` - Make a Windows installer.
+
 `./gradlew jpackageDEB` - Make a Debian installer. 
+
 `./gradlew jpackageRPM` - Make a RPM installer. 
+
 `./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR based on your current OS.
 
 Now check `app/build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
