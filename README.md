@@ -54,6 +54,6 @@ The following commands can be used to make certain builds of bedrockR. (You can 
 
 `./gradlew jpackageRPM` - Make a RPM installer. 
 
-`./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR based on your current OS.
+`./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR for windows, only on windows.
 
 Now check `app/build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
