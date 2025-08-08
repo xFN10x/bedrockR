@@ -30,14 +30,14 @@ public class Launcher {
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
     static {
-        System.out.println("pathsep is " + File.separator);
+        // System.out.println("pathsep is " + File.separator);
         try {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui" + "/Icon_huge.png"));
             // ICONS = new Image[] {
             ICONS.add(ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui" + "/Icon_16.png")));
-                    ICONS.add(ImageIO.read(Launcher.class
+            ICONS.add(ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui" + "/Icon_27.png")));
             ICONS.add(ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui" + "/Icon_32.png")));
@@ -60,8 +60,9 @@ public class Launcher {
     public static Logger LOG = Logger.getLogger("bedrockR");
 
     public static void main(String[] args) {
-        //start up javafx
-        Platform.startup(() -> {});
+        // start up javafx
+        Platform.startup(() -> {
+        });
         // set up logging
         String logloc = RFileOperations.getBaseDirectory(null, File.separator + "logs").getAbsolutePath()
                 + File.separator + "bedrockR-log-"
@@ -108,13 +109,14 @@ public class Launcher {
         FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
 
         try {
-            String.valueOf(BedrockrDark.setup());
+            GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .registerFont(Font.createFont(Font.TRUETYPE_FONT, Launcher.class.getResourceAsStream("/ui/font.otf")));
+            BedrockrDark.setup();
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorShower.showError(null, "failed to load theme " + e.getCause().toString(), "FlatLaf Error", e);
+            ErrorShower.showError(null, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error", e);
         }
-        // LOG.info(UIManager.getLookAndFeel().toString());
-
+        
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);

@@ -90,14 +90,7 @@ def JPackageSettings = { org.panteleyev.jpackage.JPackageTask task ->
     task.mainJar = "bedrockR-${version}-all.jar"
     task.mainClass = "fn10.bedrockr.Launcher"
 
-    task.windows {
-        task.type = org.panteleyev.jpackage.ImageType.MSI
-        task.winConsole = true
-        task.winMenu = true
-        task.winShortcutPrompt = true
-        task.winPerUserInstall = true
-        task.winDirChooser = true
-    }
+    
 }
 
 tasks.named("jpackage", org.panteleyev.jpackage.JPackageTask) {
@@ -112,6 +105,37 @@ tasks.register("jpackageDEB", org.panteleyev.jpackage.JPackageTask) { task ->
         type = ImageType.DEB
         linuxPackageName = "bedrockr"
         linuxShortcut = true
+    }
+}
+
+// WIN task
+tasks.register("jpackageWIN", org.panteleyev.jpackage.JPackageTask) { task ->
+    JPackageSettings(task)
+
+    task.windows {
+        task.type = org.panteleyev.jpackage.ImageType.MSI
+        //task.winConsole = true
+        task.winMenu = true
+        task.winShortcutPrompt = true
+        task.winPerUserInstall = true
+        task.winDirChooser = true
+    }
+}
+
+tasks.register("jpackagePORTABLE", org.panteleyev.jpackage.JPackageTask) { task ->
+    JPackageSettings(task)
+
+        task.type = ImageType.APP_IMAGE
+
+
+    task.linux {
+        //type = ImageType.DEB
+        linuxPackageName = "bedrockr"
+        linuxShortcut = true
+    }
+
+    task.windows {
+
     }
 }
 

@@ -18,6 +18,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
 
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
     public RLaunchPage(Dimension Size) {
@@ -38,7 +40,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         seperater.setPreferredSize(new Dimension(400, 3));
 
         JLabel othergreeting = new JLabel(
-                "Welcome back to bedrockR! Below are your current addons. Have none? Create a new one.");
+                "Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and \nmaybe check out the wiki.");
         othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
 
         FlowLayout gride = new FlowLayout(1,8,6);
@@ -51,21 +53,55 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         // outerprojectpart.putClientProperty(FlatClientProperties.STYLE, "arc: 40");
         //outerprojectpart.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16), Color.WHITE, 1, 16));
 
-        var ProjectsPart = new JPanel();
+        JPanel ProjectsPart = new JPanel();
         ProjectsPart.setPreferredSize(new Dimension(540, 200));
         ProjectsPart.setBackground(BGC);
         ProjectsPart.setLayout(gride);
         ProjectsPart.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.WHITE, 1, 16));
 
-        var menuBar = new JMenuBar();
-        var addonsMenu = new JMenu("Addons");
+        Desktop desk = Desktop.getDesktop();
+        JMenuBar menuBar = new JMenuBar();
+        JMenu addonsMenu = new JMenu("Addons");
+        JMenu helpMenu = new JMenu("Help");
         // newprojectbutton.addActionListener(this);
-        var newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
+        JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
         newaddonButton.addActionListener(this);
+        JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
+        somButton.addActionListener(ac -> {
+            try {
+                desk.browse(URI.create("https://summer.hackclub.com/projects/703"));
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        });
+        JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
+        gitButton.addActionListener(ac -> {
+            try {
+                desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        });
+        JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
+        helpButton.addActionListener(ac -> {
+            try {
+                desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        });
 
         addonsMenu.add(newaddonButton);
 
+        helpMenu.add(helpButton);
+        helpMenu.add(gitButton);
+        helpMenu.add(somButton);
+
         menuBar.add(addonsMenu);
+        menuBar.add(helpMenu);
 
         if (RFileOperations.getWorkspaces(this) != null)
         for (var folder : RFileOperations.getWorkspaces(this)) {
@@ -84,9 +120,6 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         // projects part
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, ProjectsPart, 0, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, ProjectsPart, -7, SpringLayout.HORIZONTAL_CENTER, this);
-        // outer projects part
-        //Lay.putConstraint(SpringLayout.VERTICAL_CENTER, outerprojectpart, 0, SpringLayout.VERTICAL_CENTER, this);
-        //Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, outerprojectpart, -7, SpringLayout.HORIZONTAL_CENTER, this);
 
         setJMenuBar(menuBar);
         add(greeting);

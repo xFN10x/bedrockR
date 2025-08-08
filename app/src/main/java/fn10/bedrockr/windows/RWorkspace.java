@@ -266,6 +266,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void refreshResources() {
         SwingUtilities.invokeLater(() -> {
             SourceResourceFile resFile = RFileOperations.getResources(this, SWPF.workspaceName());
+            ResourceInnerPanelView.removeAll();
             for (Map.Entry<String, String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
                 try {
                     var ToAdd = new RElement(null, null);
