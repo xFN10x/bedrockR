@@ -52,7 +52,7 @@ public class GlobalBuildingVariables implements ElementFile {
      * @throws IllegalAccessError
      */
     public String addItemTexture(String textureName) throws IllegalAccessError, FileNotFoundException {
-        var plannedkey = WPF.Prefix+"_"+textureName.replace(".png", "");
+        var plannedkey = WPF.Prefix + "_" + textureName.replace(".png", "");
 
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
             ItemTexturesFile.texture_data.put(plannedkey, new TextureData(textureName));
@@ -124,7 +124,9 @@ public class GlobalBuildingVariables implements ElementFile {
                         "Image is MASSIVE: " + testImage.getWidth() + "x" + testImage.getHeight(),
                         JOptionPane.WARNING_MESSAGE);
             }
-            ItemTexturesFile.texture_data.put(file.getName().replace(".png", ""), new TextureData(file.getName()));
+            testImage.getGraphics().dispose();
+            ItemTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
+                    new TextureData(file.getName()));
         }
 
         Path dest = Path.of(rootResPackPath, "textures", "item_texture.json");
@@ -133,6 +135,7 @@ public class GlobalBuildingVariables implements ElementFile {
         Files.write(dest, json.getBytes());
 
         // #endregion
+
     }
 
 }
