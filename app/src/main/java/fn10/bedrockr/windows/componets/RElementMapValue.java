@@ -18,9 +18,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import com.google.gson.internal.LazilyParsedNumber;
 
 import fn10.bedrockr.addons.RMapElement;
@@ -126,6 +123,7 @@ public class RElementMapValue extends JPanel {
         validate();
     }
 
+    @SuppressWarnings("unchecked")
     public void setVal(Object val) {
         try {
             if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage

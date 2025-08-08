@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;

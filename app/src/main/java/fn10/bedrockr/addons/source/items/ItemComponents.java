@@ -1,9 +1,5 @@
 package fn10.bedrockr.addons.source.items;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;

@@ -1,6 +1,35 @@
-# Ignore Gradle project-specific cache directory
+
+# Output directories
+/build/
+/target/
+app/bin/
+
+# Mac OS X files
+.DS_Store
+
+# Eclipse files
+.settings
+.classpath
+.project
+
+# vim files
+.*.sw[a-z]
+*.un~
+
+# Java class files
+*.class
+
+# Gradle
 .gradle
+
+# direnv
+.envrc
 
 # Ignore Gradle build output directory
 build
-bin
+
+# build plugin jar files
+gradle-server/src/main/resources/*.jar
+
+# Ignore user-specified .tool-versions file (asdf-vm configuration)
+.tool-versions
