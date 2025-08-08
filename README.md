@@ -35,14 +35,7 @@ Building a JAR can be done with one command.
 
 (Make sure you are cd'ed into the source code directory)
 
-- First, run
-
-  ```powershell
-    ./gradlew (powershell)
-    gradlew (cmd prompt)
-  ```
-
-- Then, run the last command,
+- Run the command;
 
   ```powershell
   ./gradlew shadowJar (powershell)
@@ -51,16 +44,13 @@ Building a JAR can be done with one command.
 
 - Now you should be able to find the JAR in `app/build/builtJars`
 
-#### MSI/DEB
+#### Distrobution copies
 
-This is probably what you want to do when building, as the following commands make an installer depending on what platform you are on.
+The following commands can be used to make certain builds of bedrockR. (You can only run an OS' build command on the target os. e.g., you can only run `jpackageWIN` on Windows.)
 
-(Make sure you execute these in the project directory)
+`./gradlew jpackageWIN` - Make a Windows installer. 
+`./gradlew jpackageDEB` - Make a Debian installer. 
+`./gradlew jpackageRPM` - Make a RPM installer. 
+`./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR based on your current OS.
 
-- Run
-  
-  ```powershell
-    ./gradlew build jpackage (powershell/terminal)
-    gradlew build jpackage (cmd prompt)
-  ```
-Now check `app/build/builtDist`, and you should see your platform's distribution.
+Now check `app/build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
