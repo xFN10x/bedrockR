@@ -299,16 +299,40 @@ public class RElementValue extends JPanel {
                     JLabel Type = new JLabel("Item Texture");
                     Type.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
                     Type.setForeground(getForeground().darker().darker());
-                    JButton AddButton = new JButton("Add...");
+                    JButton AddButton = new JButton("+");
+                    JButton SelectButton = new JButton("Select");
+                    JLabel Icon = new JLabel(ImageUtilites.ResizeIcon(
+                            new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
 
                     AddButton.addActionListener(ac -> {
                         RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
                                 .importTexture(parentFrame, ResourceFile.ITEM_TEXTURE,
                                         WorkspaceName);
                     });
+                    SelectButton.addActionListener(ac -> {
+                        try {
+                            var Selected = RTextureAddingSelector.openSelector(parentFrame,
+                                    ResourceFile.ITEM_TEXTURE,
+                                    WorkspaceName);
+                            System.out.println(Selected);
+                            if (Selected == null)
+                                return;
+                            var filename = MapUtilities.getKeyFromValue(
+                                    RFileOperations.getResources(parentFrame,
+                                            WorkspaceName).Serilized.ResourceIDs,
+                                    Selected.getKey());
+                            Name.setText(
+                                    filename);
+                            // System.out.println(Selected.getKey());
+                            ID.setText(Selected.getKey());
+                            Icon.setIcon(Selected.getValue());
+                            Input.setName(Selected.getKey());
 
-                    JLabel Icon = new JLabel(ImageUtilites.ResizeIcon(
-                            new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+
                     Icon.setMaximumSize(new Dimension(64, 64));
                     Icon.setPreferredSize(new Dimension(64, 64));
                     Icon.setBorder(((JPanel) Input).getBorder());
@@ -326,6 +350,9 @@ public class RElementValue extends JPanel {
                     layout.putConstraint(SpringLayout.WEST, Type, 5, SpringLayout.EAST, Icon);
                     layout.putConstraint(SpringLayout.SOUTH, Type, 0, SpringLayout.SOUTH, Icon);
 
+                    layout.putConstraint(SpringLayout.SOUTH, SelectButton, -5, SpringLayout.SOUTH, Input);
+                    layout.putConstraint(SpringLayout.EAST, SelectButton, -5, SpringLayout.EAST, Input);
+
                     Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButton, 0, SpringLayout.HORIZONTAL_CENTER,
                             Name);
                     Lay.putConstraint(SpringLayout.SOUTH, AddButton, 0, SpringLayout.SOUTH, Input);
@@ -334,6 +361,7 @@ public class RElementValue extends JPanel {
                     ((JPanel) Input).add(Name);
                     ((JPanel) Input).add(ID);
                     ((JPanel) Input).add(Type);
+                    ((JPanel) Input).add(SelectButton);
                     add(AddButton);
 
                     setMaximumSize(new Dimension(350, 80));
@@ -377,32 +405,6 @@ public class RElementValue extends JPanel {
                         }
                         Input.setName(id);
                     }
-
-                    Input.addMouseListener(new MouseAdapter() {
-                        public void mouseClicked(MouseEvent e) {
-                            try {
-                                var Selected = RTextureAddingSelector.openSelector(parentFrame,
-                                        ResourceFile.ITEM_TEXTURE,
-                                        WorkspaceName);
-                                System.out.println(Selected);
-                                if (Selected == null)
-                                    return;
-                                var filename = MapUtilities.getKeyFromValue(
-                                        RFileOperations.getResources(parentFrame,
-                                                WorkspaceName).Serilized.ResourceIDs,
-                                        Selected.getKey());
-                                Name.setText(
-                                        filename);
-                                // System.out.println(Selected.getKey());
-                                ID.setText(Selected.getKey());
-                                Icon.setIcon(Selected.getValue());
-                                Input.setName(Selected.getKey());
-
-                            } catch (InterruptedException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-                    });
 
                 default:
                     break;
