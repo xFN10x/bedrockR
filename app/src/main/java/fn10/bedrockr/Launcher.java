@@ -25,7 +25,7 @@ import com.formdev.flatlaf.FlatLaf;
 
 public class Launcher {
 
-    public static String VERSION = "a1.0";
+    public static String VERSION = "a1.01";
     public static Image ICON;
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
