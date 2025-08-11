@@ -9,6 +9,8 @@ A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 Minecraft bedrock Addons are experimental, and very hard to create compared to Java mods. With this tool, you will be able to create addons, that fully showcase MCPEs addon capibilitys, and unlike other tools, like MCreator, This will be updated along side Minecraft, and it will let you *live* test your mods, using Minecrafts built-in tools.
 
+**FOR A TUTORIAL, READ WIKI**
+
 ## Source Code
 
 This app was made with Visual Studio Code, and it is fully setup to be used with it.
