@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceResourceFile;
 import fn10.bedrockr.addons.source.SourceWPFile;
@@ -59,7 +60,7 @@ public class RFileOperations {
     private static final Map<String, Class<? extends ElementSource>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
-        ELEMENT_EXTENSION_CLASSES.put("blockref", SourceItemElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
