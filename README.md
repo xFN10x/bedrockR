@@ -7,7 +7,7 @@ A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 ## Why?
 
-Minecraft bedrock Addons are experimental, and very hard to create compared to Java mods. With this tool, you will be able to create addons, that fully showcase MCPEs addon capibilitys, and unlike other tools, like MCreator, This will be updated along side Minecraft, and it will let you *live* test your mods, using Minecrafts built-in tools.
+Minecraft Bedrock Addons are experimental and very hard to create compared to Java mods. With this tool, you will be able to create addons that fully showcase MCPE's addon capabilities, and unlike other tools, such as MCreator, this will be updated alongside Minecraft, and it will let you *live* test your mods, using Minecraft's built-in tools.
 
 **FOR A TUTORIAL, READ WIKI**
 
@@ -15,11 +15,11 @@ Minecraft bedrock Addons are experimental, and very hard to create compared to J
 
 This app was made with Visual Studio Code, and it is fully setup to be used with it.
 
-bedrockR is made with Java 21, and it is tested, and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
+bedrockR is made with Java 21, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
 
 ### Debugging/Contributing
 
-It is reccomened to use Visual Studio code to make edits. Here are the extension I reccomend:
+It is recommended to use Visual Studio Code to make edits. Here are the extensions I recommend:
 
 - [Debugger for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug)
 - [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
@@ -35,7 +35,7 @@ If you can, use this for building when convenient.
 
 Building a JAR can be done with one command.
 
-(Make sure you are cd'ed into the source code directory)
+(Make sure you are cd'd into the source code directory)
 
 - Run the command;
 
@@ -46,7 +46,7 @@ Building a JAR can be done with one command.
 
 - Now you should be able to find the JAR in `app/build/builtJars`
 
-#### Distrobution copies
+#### Distribution copies
 
 The following commands can be used to make certain builds of bedrockR. (You can only run an OS' build command on the target os. e.g., you can only run `jpackageWIN` on Windows.)
 
