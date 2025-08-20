@@ -32,7 +32,7 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build Portable
-      run: ./gradlew jpackagePORTABLE
+      run: ./gradlew jpackagePORTABLE --info
 
     - name: Upload Portable   
       uses: actions/upload-artifact@v4
@@ -41,7 +41,7 @@ jobs:
         path: build/builtDist  
 
     - name: Build Normal
-      run: ./gradlew jpackage
+      run: ./gradlew jpackage --info
 
     - name: Upload Normal   
       uses: actions/upload-artifact@v4
