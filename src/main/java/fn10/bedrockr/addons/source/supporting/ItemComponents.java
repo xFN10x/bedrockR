@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.source.items;
+package fn10.bedrockr.addons.source.supporting;
 
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
