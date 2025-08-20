@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: PSPTools-${{matrix.os}}-portable
-        path: build/builtDist  
+        path: app/build/builtDist  
 
     - name: Build Normal
       run: ./gradlew jpackage --info
@@ -48,19 +48,21 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       with:
         name: PSPTools-${{matrix.os}}
-        path: build/builtDist  
+        path: app/build/builtDist  
 
-    - name: Upload Portable   
+    - name: Upload Normal   
       uses: actions/upload-artifact@v4
       with:
         name: PSPTools-${{matrix.os}}-portable
-        path: build/builtDist  
+        path: app/build/builtDist  
 
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'ubuntu-latest'
       with:
+        if-no-files-found: error
         name: bedrockR-a.1.1.jar
-        path: build/builtJars/bedrockR-a.1.1-all.jar
+        path: app/build/builtJars/bedrockR-a.1.1-all.jar
+      
 
 
   dependency-submission:
