@@ -90,28 +90,6 @@ def JPackageSettings = { org.panteleyev.jpackage.JPackageTask task ->
     task.mainJar = "bedrockR-${version}-all.jar"
     task.mainClass = "fn10.bedrockr.Launcher"
 
-    
-}
-
-tasks.named("jpackage", org.panteleyev.jpackage.JPackageTask) {
-    JPackageSettings(delegate)
-}
-
-// DEB task
-tasks.register("jpackageDEB", org.panteleyev.jpackage.JPackageTask) { task ->
-    JPackageSettings(task)
-
-    task.linux {
-        type = ImageType.DEB
-        linuxPackageName = "bedrockr"
-        linuxShortcut = true
-    }
-}
-
-// WIN task
-tasks.register("jpackageWIN", org.panteleyev.jpackage.JPackageTask) { task ->
-    JPackageSettings(task)
-
     task.windows {
         task.type = org.panteleyev.jpackage.ImageType.MSI
         //task.winConsole = true
@@ -120,35 +98,25 @@ tasks.register("jpackageWIN", org.panteleyev.jpackage.JPackageTask) { task ->
         task.winPerUserInstall = true
         task.winDirChooser = true
     }
+
+    task.linux {
+        type = ImageType.DEB
+        linuxPackageName = "bedrockr"
+        linuxShortcut = true
+    }
 }
+
+tasks.named("jpackage", org.panteleyev.jpackage.JPackageTask) {
+    JPackageSettings(delegate)
+}
+
 
 tasks.register("jpackagePORTABLE", org.panteleyev.jpackage.JPackageTask) { task ->
     JPackageSettings(task)
 
-        task.type = ImageType.APP_IMAGE
-
-
-    task.linux {
-        //type = ImageType.DEB
-        linuxPackageName = "bedrockr"
-        linuxShortcut = true
-    }
-
-    task.windows {
-
-    }
+    task.type = ImageType.APP_IMAGE
 }
 
-// RPM task
-tasks.register("jpackageRPM", org.panteleyev.jpackage.JPackageTask) { task ->
-    JPackageSettings(task)
-
-    task.linux {
-        type = ImageType.RPM
-        linuxPackageName = "bedrockr"
-        linuxShortcut = true
-    }
-}
 
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   archiveBaseName = 'bedrockR'
