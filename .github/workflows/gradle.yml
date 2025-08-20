@@ -37,7 +37,7 @@ jobs:
     - name: Upload Portable   
       uses: actions/upload-artifact@v4
       with:
-        name: PSPTools-${{matrix.os}}-portable
+        name: bedrockR-${{matrix.os}}-portable
         path: build/builtDist  
 
     - name: Build Normal
@@ -47,7 +47,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: matrix.os == 'ubuntu-latest'
       with:
-        name: PSPTools-${{matrix.os}}
+        name: bedrockR-${{matrix.os}}
         path: build/builtDist  
 
 
