@@ -67,8 +67,8 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-def version = 'a1.01'
-def winver = '0.1.1'
+def version = 'a1.1'
+def winver = '0.2.0'
 
 def JPackageSettings = { org.panteleyev.jpackage.JPackageTask task ->
     task.dependsOn("build", "shadowJar")
