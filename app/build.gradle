@@ -93,9 +93,9 @@ def JPackageSettings = { org.panteleyev.jpackage.JPackageTask task ->
     }
 
     task.linux {
-        type = ImageType.DEB
-        linuxPackageName = "bedrockr"
-        linuxShortcut = true
+        task.type = ImageType.DEB
+        task.linuxPackageName = "bedrockr"
+        task.linuxShortcut = true
     }
 }
 
