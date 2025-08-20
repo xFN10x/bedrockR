@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.source.jsonClasses;
+package fn10.bedrockr.addons.source.elementFiles;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

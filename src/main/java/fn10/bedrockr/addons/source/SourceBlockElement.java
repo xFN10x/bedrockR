@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
+
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.ItemFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
@@ -19,27 +20,27 @@ import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class SourceItemElement implements ElementSource {
+public class SourceBlockElement implements ElementSource {
     private final String Location = File.separator + "elements" + File.separator;
     private Class<ItemFile> serilizedClass = ItemFile.class;
     private ItemFile serilized;
 
-    public SourceItemElement(ItemFile obj) {
+    public SourceBlockElement(ItemFile obj) { //TODO: change
         this.serilized = obj;
     }
 
-    public SourceItemElement() {
+    public SourceBlockElement() {
         this.serilized = null;
     }
 
-    public SourceItemElement(String jsonString) {
+    public SourceBlockElement(String jsonString) {
         this.serilized = (ItemFile) getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() {
-        return new ElementDetails("Item ",
-                "<html>A basic item. Can be made as food, <br>block placer, or entity spawner.</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Item.png")));
+        return new ElementDetails("Block",
+                "<html>A block. Can have custom drops, and a custom hitbox.</html>",
+                new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class SourceItemElement implements ElementSource {
     public File buildJSONFile(Frame doingThis, String workspace) {
         var string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
-                Location + serilized.ElementName + ".itemref");
+                Location + serilized.ElementName + ".blockref");
         file.setWritable(true);
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -92,7 +93,7 @@ public class SourceItemElement implements ElementSource {
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                     if (this.serilized != null) // create field with a file already there
-                        rev = new RElementValue(Parent,field.getType(),
+                        rev = new RElementValue(Parent, field.getType(),
                                 details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                         // if no filter, dont add one
                                         : field.getType() == String.class ? new RegularStringFilter() : null,
@@ -105,7 +106,7 @@ public class SourceItemElement implements ElementSource {
                                 Workspace);
                     else // create file without anything there
                          // ---------------------------------------------------------------------
-                        rev = new RElementValue(Parent,field.getType(),
+                        rev = new RElementValue(Parent, field.getType(),
                                 details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                         : field.getType() == String.class ? new RegularStringFilter() : null,
                                 field.getName(), // target
