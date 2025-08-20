@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.source.items.ItemComponents;
+import fn10.bedrockr.addons.source.supporting.ItemComponents;
 
 public class RMapElement {
     public String ID;

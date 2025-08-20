@@ -23,7 +23,7 @@ import javax.swing.event.DocumentListener;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
-import fn10.bedrockr.addons.source.jsonClasses.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;

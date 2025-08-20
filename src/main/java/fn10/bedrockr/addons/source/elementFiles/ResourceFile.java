@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.source.jsonClasses;
+package fn10.bedrockr.addons.source.elementFiles;
 
 import java.awt.Frame;
 import java.io.File;
