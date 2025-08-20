@@ -1,4 +1,4 @@
-# ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/app/src/main/resources/ui/BrandingFullWShadow.png)
+# ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/src/main/resources/ui/BrandingFullWShadow.png)
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xFN10x/bedrockR/gradle.yml)
 ![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR)
