@@ -1,4 +1,4 @@
-# ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/app/src/main/resources/ui/BrandingFullWShadow.png)
+# ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/src/main/resources/ui/BrandingFullWShadow.png)
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xFN10x/bedrockR/gradle.yml)
 ![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR)
@@ -7,17 +7,19 @@ A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 ## Why?
 
-Minecraft bedrock Addons are experimental, and very hard to create compared to Java mods. With this tool, you will be able to create addons, that fully showcase MCPEs addon capibilitys, and unlike other tools, like MCreator, This will be updated along side Minecraft, and it will let you *live* test your mods, using Minecrafts built-in tools.
+Minecraft Bedrock Addons are experimental and very hard to create compared to Java mods. With this tool, you will be able to create addons that fully showcase MCPE's addon capabilities, and unlike other tools, such as MCreator, this will be updated alongside Minecraft, and it will let you *live* test your mods, using Minecraft's built-in tools.
+
+**FOR A TUTORIAL, READ WIKI**
 
 ## Source Code
 
 This app was made with Visual Studio Code, and it is fully setup to be used with it.
 
-bedrockR is made with Java 21, and it is tested, and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
+bedrockR is made with Java 21, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
 
 ### Debugging/Contributing
 
-It is reccomened to use Visual Studio code to make edits. Here are the extension I reccomend:
+It is recommended to use Visual Studio Code to make edits. Here are the extensions I recommend:
 
 - [Debugger for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug)
 - [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
@@ -33,16 +35,9 @@ If you can, use this for building when convenient.
 
 Building a JAR can be done with one command.
 
-(Make sure you are cd'ed into the source code directory)
+(Make sure you are cd'd into the source code directory)
 
-- First, run
-
-  ```powershell
-    ./gradlew (powershell)
-    gradlew (cmd prompt)
-  ```
-
-- Then, run the last command,
+- Run the command;
 
   ```powershell
   ./gradlew shadowJar (powershell)
@@ -51,16 +46,16 @@ Building a JAR can be done with one command.
 
 - Now you should be able to find the JAR in `app/build/builtJars`
 
-#### MSI/DEB
+#### Distribution copies
 
-This is probably what you want to do when building, as the following commands make an installer depending on what platform you are on.
+The following commands can be used to make certain builds of bedrockR. (You can only run an OS' build command on the target os. e.g., you can only run `jpackageWIN` on Windows.)
 
-(Make sure you execute these in the project directory)
+`./gradlew jpackageWIN` - Make a Windows installer.
 
-- Run
-  
-  ```powershell
-    ./gradlew build jpackage (powershell/terminal)
-    gradlew build jpackage (cmd prompt)
-  ```
-Now check `app/build/builtDist`, and you should see your platform's distribution.
+`./gradlew jpackageDEB` - Make a Debian installer. 
+
+`./gradlew jpackageRPM` - Make a RPM installer. 
+
+`./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR for windows, only on windows.
+
+Now check `app/build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
