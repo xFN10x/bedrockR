@@ -59,6 +59,7 @@ public class RFileOperations {
     private static final Map<String, Class<? extends ElementSource>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("blockref", Source.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
