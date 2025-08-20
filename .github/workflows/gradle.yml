@@ -50,11 +50,6 @@ jobs:
         name: PSPTools-${{matrix.os}}
         path: app/build/builtDist  
 
-    - name: Upload Normal   
-      uses: actions/upload-artifact@v4
-      with:
-        name: PSPTools-${{matrix.os}}-portable
-        path: app/build/builtDist  
 
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'ubuntu-latest'
