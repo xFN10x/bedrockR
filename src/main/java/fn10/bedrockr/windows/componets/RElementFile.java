@@ -13,8 +13,8 @@ import javax.swing.JPopupMenu;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
+import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.jsonClasses.WPFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RWorkspace;

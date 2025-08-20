@@ -4,9 +4,9 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FileWriter;
 
+import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.jsonClasses.ResourceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;

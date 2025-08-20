@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.source.jsonClasses;
+package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.items.ItemComponents;
+import fn10.bedrockr.addons.source.supporting.ItemComponents;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 
