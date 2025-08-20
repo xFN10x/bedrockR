@@ -71,7 +71,7 @@ def version = 'a1.01'
 def winver = '0.1.1'
 
 def JPackageSettings = { org.panteleyev.jpackage.JPackageTask task ->
-    task.dependsOn("clean", "build", "shadowJar")
+    task.dependsOn("build", "shadowJar")
 
     task.input = layout.buildDirectory.dir("builtJars")
     task.destination = layout.buildDirectory.dir("builtDist")
