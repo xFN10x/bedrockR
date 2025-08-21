@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.supporting.BlockComponents;
 import fn10.bedrockr.addons.source.supporting.ItemComponents;
 
 public class RMapElement {
@@ -18,12 +19,15 @@ public class RMapElement {
     public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
 
     public static enum MapValueFilter {
-        NotNegitive
+        NotNegitive, Between0And1
     }
 
     public static Map<String, RMapElement> LookupMap = new HashMap<String, RMapElement>();
     static {
-        for (RMapElement element : ItemComponents.getPickable()) {
+        for (RMapElement element : new ItemComponents().getPickable()) {
+            LookupMap.put(element.ID, element);
+        }
+        for (RMapElement element : new BlockComponents().getPickable()) {
             LookupMap.put(element.ID, element);
         }
     }

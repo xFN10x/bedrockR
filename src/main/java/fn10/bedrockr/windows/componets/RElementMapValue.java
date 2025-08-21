@@ -5,17 +5,16 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
 import com.google.gson.internal.LazilyParsedNumber;
@@ -71,7 +70,10 @@ public class RElementMapValue extends JPanel {
                     }
                 });
         } else if (RME.Type == Float.class || RME.Type == float.class) { // float
-            InputField = new JFormattedTextField(NumberFormat.getNumberInstance());
+            if (RME.Filters.contains(MapValueFilter.Between0And1))
+                InputField = new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.1));
+            else
+                InputField = new JSpinner(new SpinnerNumberModel(0, Float.MIN_VALUE, Float.MAX_VALUE, 0.1));
         } else if (RME.Type.isArray()) { // array
             InputField = new JLabel("Array input not implemented.");
         } else if (RME.Type == Boolean.class || RME.Type == boolean.class) { // bool
@@ -138,7 +140,7 @@ public class RElementMapValue extends JPanel {
                 else
                     ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
-                ((JFormattedTextField) InputField).setText(String.valueOf(val));
+                ((JSpinner) InputField).setValue(val);;
             } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
                 ((JComboBox<String>) InputField).setSelectedIndex(((Boolean) val) == true ? 0 : 1);
             } else { // else
@@ -164,7 +166,7 @@ public class RElementMapValue extends JPanel {
                     || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
                 val = ((JSpinner) InputField).getValue();
             } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
-                val = Float.parseFloat(((JFormattedTextField) InputField).getText());
+                val = ((Double)((JSpinner) InputField).getValue()).floatValue();
             } else if (rMapElement.Type.isArray()) { // array
 
             } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
@@ -173,7 +175,7 @@ public class RElementMapValue extends JPanel {
                 if (rMapElement.Type == null) {
                     InputField = new JLabel("Input type is null.");
                 } else {
-                    InputField = new JLabel("Unknown input type: " + rMapElement.Type.getName());
+                    InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
                 }
             }
         } catch (Exception e) {

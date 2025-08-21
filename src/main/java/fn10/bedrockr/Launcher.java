@@ -39,39 +39,45 @@ public class Launcher {
     public static Image ICON;
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
-    static {
-        // System.out.println("pathsep is " + File.separator);
-        try {
-            ICON = ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_huge.png"));
-            // ICONS = new Image[] {
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_16.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_27.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_32.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_64.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_128.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_256.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui" + "/Icon_huge.png")));
-            // };
-        } catch (Exception e) {
-            e.printStackTrace();
-            ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
-        }
-    }
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");
 
     public static void main(String[] args) {
+        String ver = System.getProperty("java.version");
+        if (ver.startsWith("1.")) {
+            JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
+                    + "\n Required version: 21.0.0-LTS", "Java error", JOptionPane.ERROR_MESSAGE);
+        } else if (Integer.parseInt(ver.substring(0, 2)) < 21) {
+            JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
+                    + "\n Required version: 21.0.0-LTS", "Java error", JOptionPane.ERROR_MESSAGE);
+        }
 
         RSplashScreen loading = new RSplashScreen();
+
+        try {
+            ICON = ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_huge.png"));
+            // ICONS = new Image[] {
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_16.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_27.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_32.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_64.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_128.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_256.png")));
+            ICONS.add(ImageIO.read(Launcher.class
+                    .getResourceAsStream("/ui/Icon_huge.png")));
+            // };
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
+        }
 
         // start up javafx
         Platform.startup(() -> {

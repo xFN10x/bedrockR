@@ -22,8 +22,6 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
 
 import com.google.errorprone.annotations.DoNotCall;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -35,15 +33,14 @@ import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.windows.RLoadingScreen;
 import fn10.bedrockr.windows.RWorkspace;
-import fn10.bedrockr.windows.base.RLoadingScreen;
 
 public class RFileOperations {
 
     private static final String USER_DIR = System.getProperty("user.home");
     private static final String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static final File BaseDirectory = new File(BASE_PATH);
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static String COMMOJANG = null;
     static {
         var settings = SettingsFile.getSettings(null);
@@ -235,10 +232,14 @@ public class RFileOperations {
         });
     }
 
-    public static File getBaseDirectory(Frame doingThis, String Folder) {
-        var file = new File(BASE_PATH + Folder);
+    public static File getBaseDirectory(Frame doingThis, String... Folders) {
+        return getBaseDirectory(doingThis, false, Folders);
+    }
+
+    public static File getBaseDirectory(Frame doingThis, Boolean strict, String... Folders) {
+        File file = Path.of(BASE_PATH, Folders).toFile();
         try {
-            if (!file.exists()) {
+            if (!file.exists() && !strict) {
                 return Files.createDirectories(file.toPath()).toFile();
             } else
                 return file;

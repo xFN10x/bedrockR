@@ -22,6 +22,8 @@ import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,6 +33,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.Launcher;
@@ -45,7 +48,6 @@ import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RFrame;
-import fn10.bedrockr.windows.base.RLoadingScreen;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
@@ -77,6 +79,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     private JButton HelpWikiButton = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/Help.png")));
 
+    private JMenuBar menuBar = new JMenuBar();
+    private JMenu fileMenu = new JMenu("File");
+    private JMenu helpMenu = new JMenu("Help");
+
     public RWorkspace(SourceWPFile WPF) {
         super(
                 DO_NOTHING_ON_CLOSE,
@@ -95,7 +101,63 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Tabs.addTab("Resources", ResourceView);
         // Tabs.addTab("Settings", null);
         Tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        // #region menu bar
+        setJMenuBar(menuBar);
+        Desktop desk = Desktop.getDesktop();
 
+        fileMenu.add("Open Workspace folder").addActionListener(ac -> {
+            try {
+                desk.open(RFileOperations.getWorkspace(this, WPF.workspaceName()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        fileMenu.add("Open built RP Folder").addActionListener(ac -> {
+            try {
+                desk.open(RFileOperations.getBaseDirectory(this, "build", "RP", WPF.workspaceName()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        fileMenu.add("Open built BP Folder").addActionListener(ac -> {
+            try {
+                desk.open(RFileOperations.getBaseDirectory(this, "build", "BP", WPF.workspaceName()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        helpMenu.add("bedrockR Wiki").addActionListener(ac -> {
+            try {
+                desk.browse(new URI("https://github.com/xFN10x/bedrockR/wiki"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        helpMenu.add("bedrockR Github").addActionListener(ac -> {
+            try {
+                desk.browse(new URI("https://github.com/xFN10x/bedrockR"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        helpMenu.add("bedrockR on Summer Of Making").addActionListener(ac -> {
+            try {
+                desk.browse(new URI("https://github.com/xFN10x/bedrockR"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        helpMenu.add("Open bedrockR Directory").addActionListener(ac -> {
+            try {
+                desk.open(RFileOperations.getBaseDirectory(this));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        menuBar.add(fileMenu);
+        menuBar.add(helpMenu);
+        // #endregion
         FlatLineBorder viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
 
         ElementView.setBorder(viewsBorder);
