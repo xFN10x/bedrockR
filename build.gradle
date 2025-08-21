@@ -7,16 +7,10 @@ plugins {
     id 'java'
     id 'org.panteleyev.jpackageplugin' version '1.7.3'
     id("com.gradleup.shadow") version "9.0.0-beta17"
-    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-javafx {
-    version = "21"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
-}
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
@@ -32,14 +26,7 @@ sourceSets {
 
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation libs.junit.jupiter
-
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    // This dependency is used by the application.
     implementation libs.guava
-    
     //gson
     implementation 'com.google.code.gson:gson:2.13.1'
     //flat laf
@@ -50,7 +37,6 @@ dependencies {
     implementation 'commons-io:commons-io:2.19.0'
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -58,13 +44,7 @@ java {
 }
 
 application {
-    // Define the main class for the application.
     mainClass = 'fn10.bedrockr.Launcher'
-}
-
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
 }
 
 def version = 'a1.1'

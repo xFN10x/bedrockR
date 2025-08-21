@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,6 +21,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
@@ -30,9 +33,6 @@ import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
-import javafx.application.Platform;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
@@ -54,7 +54,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             250, 250);
     protected File ChosenIconFile;
     // protected JFileChooser file = new JFileChooser();
-    protected FileChooser fileChooser = new FileChooser();
+    protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
     protected JLabel AddonIcon = new JLabel(ChosenIcon);
@@ -170,11 +170,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "changeIcon") {
             try {
-                fileChooser.setTitle("Choose Addon's Icon");
-                fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png"));
-                Platform.runLater(() -> {
-                    try {
-                        File file = fileChooser.showOpenDialog(null);
+                fileChooser.setDialogTitle("Choose Addon's Icon");
+                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image files", "png"));;
+                fileChooser.showOpenDialog(this);
+                try {
+                        File file = fileChooser.getSelectedFile();
                         ChosenIconFile = file;
                         ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file)), 250, 250);
                         AddonIcon.setIcon(ChosenIcon);
@@ -182,7 +182,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
-                });
+
 
             } catch (Exception ex) {
                 ex.printStackTrace();
