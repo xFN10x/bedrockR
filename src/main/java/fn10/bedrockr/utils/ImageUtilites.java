@@ -26,14 +26,18 @@ public class ImageUtilites {
     }
 
     public static ImageIcon ResizeImageByURL(URL OG, int width, int height) {
-        var image = new ImageIcon(OG);
+        ImageIcon image = new ImageIcon(OG);
 
         return new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 
     public static Point getScreenCenter(Component target) {
-        var size = Toolkit.getDefaultToolkit().getScreenSize();
-        //Launcher.LOG.info(new Point(((int)(size.getWidth() * 0.5)), ((int) (size.getHeight() * 0.5))).toString());
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        return new Point(((int)((size.getWidth() - target.getWidth()) * 0.5)), ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
+    }
+
+    public static Point getCenter(Component target) {
+        Dimension size = target.getParent().getSize();
         return new Point(((int)((size.getWidth() - target.getWidth()) * 0.5)), ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
     }
 

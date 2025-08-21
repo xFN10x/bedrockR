@@ -24,6 +24,8 @@ public class Greetings { // no, the class is not welcoming you, it is for those 
         new Greeting("Now in alpha!",24),
         new Greeting("bedrocker",26),
         new Greeting("Rock Bedrock!",25),
+        new Greeting("bedrockR, myyyyy rival",26),
+        new Greeting("PSPTools, now out!",26),
     };
 
     

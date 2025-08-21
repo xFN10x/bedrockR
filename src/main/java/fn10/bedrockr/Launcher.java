@@ -9,6 +9,7 @@ import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
+import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.laf.BedrockrDark;
 import javafx.application.Platform;
 
@@ -25,7 +26,8 @@ import com.formdev.flatlaf.FlatLaf;
 
 public class Launcher {
 
-    public static String VERSION = "a1.01";
+    public static String VERSION = "a1.1";
+    public static int CHECKVERSION = 1;
     public static Image ICON;
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
@@ -60,6 +62,9 @@ public class Launcher {
     public static Logger LOG = Logger.getLogger("bedrockR");
 
     public static void main(String[] args) {
+
+        RSplashScreen loading = new RSplashScreen();
+
         // start up javafx
         Platform.startup(() -> {
         });
@@ -78,7 +83,6 @@ public class Launcher {
 
         // try to add file handler
         try {
-
             Handler fileHandler = new FileHandler(logloc, 2000, 1, true);
             fileHandler.setFormatter(new RLogFormatter());
             fileHandler.setFilter(new RLogFilter());
@@ -90,7 +94,6 @@ public class Launcher {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 for (var h : LOG.getHandlers()) {
-                    // LOG.removeHandler(h);
                     h.close();
                 }
             }
@@ -102,7 +105,6 @@ public class Launcher {
         LOG.info("Launch Args: " + String.join(",", args));
         LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
                 System.getProperty("java.vm.name")));
-        // LOG.info(System.getenv("LOCALAPPDATA"));
 
         // setup theme
 
@@ -110,16 +112,18 @@ public class Launcher {
 
         try {
             GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .registerFont(Font.createFont(Font.TRUETYPE_FONT, Launcher.class.getResourceAsStream("/ui/font.otf")));
+                    .registerFont(
+                            Font.createFont(Font.TRUETYPE_FONT, Launcher.class.getResourceAsStream("/ui/font.otf")));
             BedrockrDark.setup();
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(null, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error", e);
         }
-        
+
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
+            loading.setVisible(false);
             launch.setVisible(true);
         });
     }

@@ -81,7 +81,7 @@ public class BlockFile implements ElementFile {
 
     @HelpMessage(message = "The texture for the block.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
-    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
+    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Block Texture")
     public UUID TextureUUID;
 
     @UneditableByCreation
