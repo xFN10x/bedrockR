@@ -9,7 +9,13 @@ A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 Minecraft Bedrock Addons are experimental and very hard to create compared to Java mods. With this tool, you will be able to create addons that fully showcase MCPE's addon capabilities, and unlike other tools, such as MCreator, this will be updated alongside Minecraft, and it will let you *live* test your mods, using Minecraft's built-in tools.
 
-**FOR A TUTORIAL, READ WIKI**
+**A bedrockR tutorial is [here](https://github.com/xFN10x/bedrockR/wiki)**
+
+#### Tip: Using the Jar
+
+Using the Release Jar, can be useful if there isnt a build for your platform, or for if you just want to try out bedrockR. If you already have a JDK installed, make sure it is Java 21, most downloads will just lead straight to java 8.
+
+Go [here](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21) for a JDK I reccomend.
 
 ## Source Code
 
@@ -27,7 +33,7 @@ It is recommended to use Visual Studio Code to make edits. Here are the extensio
 - [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency), and
 - [Language Support for Java](https://marketplace.visualstudio.com/items?itemName=redhat.java)
 
-If you can, use this for building when convenient.
+These extensions are useful if you are adding a lot of new things.
 
 ### Building
 
@@ -50,12 +56,8 @@ Building a JAR can be done with one command.
 
 The following commands can be used to make certain builds of bedrockR. (You can only run an OS' build command on the target os. e.g., you can only run `jpackageWIN` on Windows.)
 
-`./gradlew jpackageWIN` - Make a Windows installer.
+`./gradlew jpackage` - Make an installer based on your OS.
 
-`./gradlew jpackageDEB` - Make a Debian installer. 
+`./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR for your platform.
 
-`./gradlew jpackageRPM` - Make a RPM installer. 
-
-`./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR for windows, only on windows.
-
-Now check `app/build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
+Now check `build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
