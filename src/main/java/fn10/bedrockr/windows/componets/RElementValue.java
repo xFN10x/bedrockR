@@ -5,7 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -17,14 +16,12 @@ import java.util.UUID;
 
 import javax.swing.border.LineBorder;
 
-import java.awt.event.MouseEvent;
 import java.io.File;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
@@ -236,7 +233,7 @@ public class RElementValue extends JPanel {
             HashMapAdd.addActionListener((e) -> {
                 try {
                     RMapElement select = RMapValueAddingSelector.openSelector(parentFrame,
-                            ((RMapElement[]) anno.value().getMethod("getPickable").invoke(null)), picked);
+                            ((RMapElement[]) anno.value().getMethod("getPickable").invoke(anno.value().getConstructor().newInstance())), picked);
                     if (select == null)
                         return;
                     var toAdd = new RElementMapValue(parentFrame, select);

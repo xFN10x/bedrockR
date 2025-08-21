@@ -1,14 +1,23 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Block;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description.MenuCategory;
 import fn10.bedrockr.addons.source.FieldFilters;
-import fn10.bedrockr.addons.source.SourceItemElement;
+import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.supporting.ItemComponents;
+import fn10.bedrockr.addons.source.supporting.BlockComponents;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -40,7 +49,7 @@ public class BlockFile implements ElementFile {
     public boolean Hidden;
 
     @HelpMessage(message = "The Creative Tab is this block on.")
-    @FieldDetails(Optional = true, displayName = "Category", Filter = FieldFilters.CommonFilter1.class)
+    @FieldDetails(Optional = false, displayName = "Category", Filter = FieldFilters.CommonFilter1.class)
     @StringDropdownField({"construction", "equipment", "items", "nature" })
     public String Category;
 
@@ -74,7 +83,7 @@ public class BlockFile implements ElementFile {
     public String Group;
 
     @SpecialField
-    @MapFieldSelectables(ItemComponents.class)
+    @MapFieldSelectables(BlockComponents.class)
     @HelpMessage(message = "Defining parts of a block. This is were you would specify ")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public HashMap<String, Object> Components;
@@ -89,7 +98,7 @@ public class BlockFile implements ElementFile {
 
     @Override
     public Class<? extends ElementSource> getSourceClass() {
-        return SourceItemElement.class;
+        return SourceBlockElement.class;
     }
 
     @Override
@@ -110,7 +119,39 @@ public class BlockFile implements ElementFile {
     @Override
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'build'");
+        globalResVaribles.EnglishTexts.put("block." + workspaceFile.Prefix + ":" + ID, Name);
+
+        // make item
+        Block item = new Block();
+        item.format_version = "1.21.100";
+        // catagory
+        MenuCategory cata = new MenuCategory();
+        cata.hidden = Hidden;
+        if (Category != null) // make sure to have null checks like this, since its optional
+            //if (!Category.equals("(none)"))
+                cata.category = Category;
+        if (Group != null)
+            //if (!Group.equals("(none)"))
+                cata.group = "minecraft:" + Group;
+
+        // description
+        Description desc = new Description();
+        desc.menu_category = cata;
+        desc.identifier = workspaceFile.Prefix + ":" + ID;
+
+        // inner item
+        InnerItem inner = new InnerItem();
+        inner.description = desc;
+
+        inner.components = Components;
+        
+        item.body = inner;
+
+        // build file
+        var json = gson.toJson(item);
+        var path = new File(rootPath + File.separator + "blocks" + File.separator + ID + ".json").toPath();
+        FileUtils.createParentDirectories(path.toFile());
+        Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+                StandardOpenOption.WRITE);
     }
 }

@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.source.elementFiles.ItemFile;
+import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -22,10 +22,10 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceBlockElement implements ElementSource {
     private final String Location = File.separator + "elements" + File.separator;
-    private Class<ItemFile> serilizedClass = ItemFile.class;
-    private ItemFile serilized;
+    private Class<BlockFile> serilizedClass = BlockFile.class;
+    private BlockFile serilized;
 
-    public SourceBlockElement(ItemFile obj) { //TODO: change
+    public SourceBlockElement(BlockFile obj) {
         this.serilized = obj;
     }
 
@@ -34,7 +34,7 @@ public class SourceBlockElement implements ElementSource {
     }
 
     public SourceBlockElement(String jsonString) {
-        this.serilized = (ItemFile) getFromJSON(jsonString);
+        this.serilized = (BlockFile) getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() {

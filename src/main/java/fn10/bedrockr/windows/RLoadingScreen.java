@@ -1,4 +1,4 @@
-package fn10.bedrockr.windows.base;
+package fn10.bedrockr.windows;
 
 import javax.annotation.Nullable;
 import javax.swing.JLabel;
@@ -10,6 +10,7 @@ import javax.swing.border.LineBorder;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFonts;
+import fn10.bedrockr.windows.base.RDialog;
 
 import java.awt.*;
 
@@ -22,6 +23,7 @@ public class RLoadingScreen extends RDialog {
 
     public void changeText(String text) {
         try {
+            System.out.println(text);
             SwingUtilities.invokeLater(() -> {
                 MainText.setText(text);
             });

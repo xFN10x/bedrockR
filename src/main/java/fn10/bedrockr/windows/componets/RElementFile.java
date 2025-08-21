@@ -31,6 +31,7 @@ public class RElementFile extends RElement implements ActionListener {
 
         super(File.getSourceClass(), null, (File.getDraft() ? Color.gray : Color.green));
         this.file = File;
+        System.out.println(File.getSourceClass().getCanonicalName());
         this.filePath = FilePath;
         this.wksp = Workspace;
         this.setName("RElementFile");
@@ -38,7 +39,7 @@ public class RElementFile extends RElement implements ActionListener {
 
         Name.setText(File.getElementName());
         if (clr != Color.green) {
-            Name.setText(File.getElementName()+ " (DRAFT)");
+            Name.setText(File.getElementName() + " (DRAFT)");
             Name.setForeground(clr.brighter());
             Desc.setForeground(clr.brighter());
             this.setBackground(clr.darker().darker());
@@ -77,17 +78,20 @@ public class RElementFile extends RElement implements ActionListener {
         try {
             var srczz = file.getSourceClass();
             var newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
-            ((RElementEditingScreen) srczz.getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
-                    .invoke(newsrc, wksp, wksp,((WPFile)wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
+            ((RElementEditingScreen) srczz
+                    .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
+                    .invoke(newsrc, wksp, wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
         }
     }
-/**
- * Get the {@code ElementFile} that this was built with.
- * @return The corrisponding {@code ElementFile}
- */
+
+    /**
+     * Get the {@code ElementFile} that this was built with.
+     * 
+     * @return The corrisponding {@code ElementFile}
+     */
     public ElementFile getFile() {
         return file;
     }
