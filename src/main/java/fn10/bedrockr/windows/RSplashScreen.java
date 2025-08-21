@@ -9,13 +9,14 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.utils.ImageUtilites;
 
 public class RSplashScreen extends JWindow {
 
     private final JLabel image = new JLabel();
-    //private final JProgressBar prog = new JProgressBar(JProgressBar.VERTICAL);
+    // private final JProgressBar prog = new JProgressBar(JProgressBar.VERTICAL);
 
     private final SpringLayout lay = new SpringLayout();
 
@@ -49,7 +50,9 @@ public class RSplashScreen extends JWindow {
 
         add(image);
 
-        setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            setVisible(true);
+        });
     }
 
 }
