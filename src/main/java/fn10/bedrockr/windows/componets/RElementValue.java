@@ -380,6 +380,9 @@ public class RElementValue extends JPanel {
                                     DisplayName, e);
                             return;
                         }
+                        if (Id == null)
+                            break;
+
                         String id = Id.toString();
 
                         var res = RFileOperations.getResources(parentFrame,
