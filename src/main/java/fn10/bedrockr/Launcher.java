@@ -12,7 +12,6 @@ import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.laf.BedrockrDark;
-import javafx.application.Platform;
 
 import java.awt.*;
 import java.io.File;
@@ -79,9 +78,6 @@ public class Launcher {
             ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
         }
 
-        // start up javafx
-        Platform.startup(() -> {
-        });
         // set up logging
         String logloc = RFileOperations.getBaseDirectory(null, File.separator + "logs").getAbsolutePath()
                 + File.separator + "bedrockR-log-"
