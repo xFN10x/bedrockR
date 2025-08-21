@@ -1,10 +1,10 @@
-Minecraft is © 2025 Mojang AB. TM Microsoft Corporation.
+Minecraft is © 2025 Mojang AB. TM Microsoft Corporation. (bedrockR is not associated with Mojang AB/Microsoft Corp.)
 
 ------------------------------------------------------------------------
 
 bedrockR, is licensed in:
                     GNU GENERAL PUBLIC LICENSE
-                       Version 3, 29 June 2007
+                      Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
