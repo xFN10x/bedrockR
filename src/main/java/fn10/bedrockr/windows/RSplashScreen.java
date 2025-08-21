@@ -15,7 +15,7 @@ import fn10.bedrockr.utils.ImageUtilites;
 public class RSplashScreen extends JWindow {
 
     private final JLabel image = new JLabel();
-    private final JProgressBar prog = new JProgressBar(JProgressBar.VERTICAL);
+    //private final JProgressBar prog = new JProgressBar(JProgressBar.VERTICAL);
 
     private final SpringLayout lay = new SpringLayout();
 
@@ -44,13 +44,8 @@ public class RSplashScreen extends JWindow {
         }
         setLayout(lay);
 
-        lay.putConstraint(SpringLayout.NORTH, prog, 0, SpringLayout.NORTH, getContentPane());
-        lay.putConstraint(SpringLayout.EAST, prog, 0, SpringLayout.EAST, getContentPane());
-        lay.putConstraint(SpringLayout.SOUTH, prog, 0, SpringLayout.SOUTH, getContentPane());
-
         setSize(new Dimension(800, 500));
         setLocation(ImageUtilites.getScreenCenter(this));
-        add(prog);
 
         add(image);
 

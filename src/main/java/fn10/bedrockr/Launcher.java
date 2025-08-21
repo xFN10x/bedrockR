@@ -5,6 +5,7 @@ package fn10.bedrockr;
 
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.http.Format1Latest;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
@@ -16,18 +17,25 @@ import javafx.application.Platform;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.logging.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.FlatLaf;
+import com.google.gson.Gson;
 
 public class Launcher {
 
     public static String VERSION = "a1.1";
-    public static int CHECKVERSION = 1;
+    public static int CHECKVERSION = 0;
     public static Image ICON;
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
@@ -118,6 +126,31 @@ public class Launcher {
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(null, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error", e);
+        }
+
+        // try to see if this version is out of date
+        try {
+            HttpClient client = HttpClient.newBuilder().build();
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(new URI("https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/latest.json"))
+                    .version(HttpClient.Version.HTTP_2).GET().build();
+
+            HttpResponse<String> response = client.send(req, BodyHandlers.ofString());
+
+            Format1Latest serilized = new Gson().fromJson(response.body(), Format1Latest.class);
+
+            if (serilized.LatestVersion > CHECKVERSION) {
+                int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
+                        "Version out of date (" + serilized.CurrentStringVersion + " > " + VERSION + ")",
+                        JOptionPane.YES_NO_OPTION);
+                if (op == JOptionPane.YES_OPTION) {
+                    Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR/releases/latest"));
+                    return;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // open app
