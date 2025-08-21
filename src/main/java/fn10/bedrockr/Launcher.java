@@ -35,7 +35,7 @@ import com.google.gson.Gson;
 public class Launcher {
 
     public static String VERSION = "a1.1";
-    public static int CHECKVERSION = 0;
+    public static int CHECKVERSION = 1;
     public static Image ICON;
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
@@ -145,7 +145,7 @@ public class Launcher {
                         JOptionPane.YES_NO_OPTION);
                 if (op == JOptionPane.YES_OPTION) {
                     Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR/releases/latest"));
-                    return;
+                    System.exit(0);
                 }
             }
 
@@ -156,8 +156,8 @@ public class Launcher {
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
-            loading.setVisible(false);
             launch.setVisible(true);
+            loading.setVisible(false);
         });
     }
 }
