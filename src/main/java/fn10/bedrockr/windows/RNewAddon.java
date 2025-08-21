@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
@@ -29,7 +30,6 @@ import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
-import fn10.bedrockr.windows.base.RLoadingScreen;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -52,7 +52,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
             getClass().getResource("/addons/DefaultIcon.png"),
             250, 250);
-    protected File ChosenIconFile = null;
+    protected File ChosenIconFile;
     // protected JFileChooser file = new JFileChooser();
     protected FileChooser fileChooser = new FileChooser();
     protected String imageExtension = "png";
@@ -69,6 +69,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 DISPOSE_ON_CLOSE,
                 "New Addon",
                 new Dimension(459, 350));
+        try {
+            ChosenIconFile = new File(RNewAddon.class.getResource("/addons/DefaultIcon.png").toURI());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -161,39 +166,19 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         checkForError();
     }
 
-    // private static void showError(Component parent, String msg, String title,
-    // Exception ex) {
-    // StringWriter sw = new StringWriter();
-    // ex.printStackTrace(new PrintWriter(sw));
-    // JOptionPane.showMessageDialog(parent,
-    // msg + "\n" + sw.toString(),
-    // title, JOptionPane.ERROR_MESSAGE);
-    // }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "changeIcon") {
             try {
-
-                // file.setDialogTitle("Choose Addon Icon");
-                // file.setFileFilter(
-                // new FileNameExtensionFilter("Image Files (*.png,*.jpg)", "png", "jpg"));
-                // file.showOpenDialog(this);
-                // ChosenIconFile = file.getSelectedFile();
-                // ChosenIcon = ImageUtilites.ResizeIcon(new
-                // ImageIcon(ImageIO.read(file.getSelectedFile())), 250, 250);
                 fileChooser.setTitle("Choose Addon's Icon");
                 fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png"));
                 Platform.runLater(() -> {
                     try {
                         File file = fileChooser.showOpenDialog(null);
-                        // File file = fileChooser.showOpenDialog(null);
                         ChosenIconFile = file;
                         ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file)), 250, 250);
                         AddonIcon.setIcon(ChosenIcon);
-                        // Launcher.LOG.info(file.getSelectedFile().getName());
                         imageExtension = file.getName().split("\\.")[1];
-                        Launcher.LOG.info("Icon extension will be: " + imageExtension);
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -205,21 +190,22 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         } else if (e.getActionCommand() == "create") {
 
             if (ChosenIconFile == null) {
-                JOptionPane.showMessageDialog(this, "Please select a file", "error, thanks lince", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please select a file", "error, thanks lince",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            var name = NameInput.getText();
+            String name = NameInput.getText();
             Launcher.LOG.info("Making new addon: " + name);
 
             // try {
-            var loading = new RLoadingScreen((JFrame) getParent());
+            RLoadingScreen loading = new RLoadingScreen((JFrame) getParent());
 
             // new Thread(() -> {
             // try {
             // SwingUtilities.invokeLater(() -> {
             try {
-                var workspace = RFileOperations.createWorkspace(loading,
+                SourceWPFile workspace = RFileOperations.createWorkspace(loading,
 
                         new WPFile(NameInput.getText(),
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
@@ -238,16 +224,6 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 ex.printStackTrace();
                 ErrorShower.showError(((Frame) getParent()), "Failed to make new addon.", "Grrrr", ex);
             }
-            // });
-
-            // } catch (Exception ex) {
-            // ex.printStackTrace();
-            // ErrorShower.showError((Frame) getParent(), "Failed to make new addon.",
-            // "Grrrr", ex);
-            // return;
-            // }
-            // }).start();
-            // }
 
         } else {
             Launcher.LOG.warning("No action event! " + getClass().getName());
@@ -256,13 +232,10 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     }
 
     private void checkForError() {
-        var text = NameInput.getText();
+        String text = NameInput.getText();
         File proposedDir = new File(
                 RFileOperations.getBaseDirectory((Frame) getParent()) + File.separator + "workspace" + File.separator
                         + NameInput.getText());
-
-        // Launcher.LOG.info(RFileOperations.getBaseDirectory(this) + "/workspace/" +
-        // NameInput.getText());
 
         SwingUtilities.invokeLater(() -> {
             if (text == "") {
