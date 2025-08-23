@@ -351,7 +351,7 @@ public class RElementValue extends JPanel {
                     layout.putConstraint(SpringLayout.EAST, SelectButton, -5, SpringLayout.EAST, Input);
 
                     Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButton, 0, SpringLayout.HORIZONTAL_CENTER,
-                            Name);
+                            this.Name);
                     Lay.putConstraint(SpringLayout.SOUTH, AddButton, 0, SpringLayout.SOUTH, Input);
 
                     ((JPanel) Input).add(Icon);
@@ -411,7 +411,7 @@ public class RElementValue extends JPanel {
                     SpringLayout layoutBlock = new SpringLayout();
                     Input = new JPanel();
                     Input.setName("null");
-                    ((JPanel) Input).setBorder(getBorder());
+                    ((JPanel) Input).setBorder(new LineBorder(Color.darkGray));
                     ((JPanel) Input).setLayout(layoutBlock);
 
                     JLabel NameBlock = new JLabel("(Select a texture.)");
@@ -476,7 +476,7 @@ public class RElementValue extends JPanel {
                     layoutBlock.putConstraint(SpringLayout.EAST, SelectButtonBlock, -5, SpringLayout.EAST, Input);
 
                     Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButtonBlock, 0, SpringLayout.HORIZONTAL_CENTER,
-                            NameBlock);
+                            this.Name);
                     Lay.putConstraint(SpringLayout.SOUTH, AddButtonBlock, 0, SpringLayout.SOUTH, Input);
 
                     ((JPanel) Input).add(IconBlock);

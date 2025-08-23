@@ -96,7 +96,8 @@ public class ResourceFile implements ElementFile {
             Object input = JOptionPane.showInputDialog(doingThis,
                     "What do you want to name this texture? (" + filePNG.getName() + ")",
                     "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null, filePNG.getName());
-                    
+            if (input == null)
+                return false;
             String finalName = (((String) input).contains(".png") ? input.toString() : input + ".png");
 
             File dest = Path.of(RFileOperations.getBaseDirectory(doingThis, "workspace").getPath(), workspaceName,

@@ -42,7 +42,7 @@ public class BlockFile implements ElementFile {
     @FieldDetails(Optional = false, displayName = "Block Name", Filter = FieldFilters.RegularStringFilter.class)
     public String Name;
 
-    @HelpMessage(message = "The Unique ID for this block. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'")
+    @HelpMessage(message = "The Unique ID for this block. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'\nThis is the name of the block in commands, and it will look like this in commands: (addon prefix):(idenifier)")
     @FieldDetails(Optional = false, displayName = "Block Idenifier", Filter = FieldFilters.IDStringFilter.class)
     public String ID;
 
@@ -55,7 +55,7 @@ public class BlockFile implements ElementFile {
     @StringDropdownField({ "construction", "equipment", "items", "nature" })
     public String Category;
 
-    @HelpMessage(message = "The group that this block is put into. These groups ")
+    @HelpMessage(message = "The group that this block is put into. These groups are not in all categorys, so make sure you select a group in the category.")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
@@ -95,8 +95,8 @@ public class BlockFile implements ElementFile {
     @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Block Texture")
     public UUID TextureUUID;
 
-    @HelpMessage(message = "The group that this block is put into. These groups ")
-    @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
+    @HelpMessage(message = "The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
+    @FieldDetails(Optional = true, displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({ "amethyst_block", "amethyst_cluster", "ancient_debris", "anvil", "azalea", "azalea_leaves",
             "bamboo", "bamboo_sapling", "bamboo_wood", "bamboo_wood_hanging_sign", "basalt", "big_dripleaf",
@@ -156,11 +156,9 @@ public class BlockFile implements ElementFile {
         // catagory
         MenuCategory cata = new MenuCategory();
         cata.hidden = Hidden;
-        if (Category != null) // make sure to have null checks like this, since its optional
-            // if (!Category.equals("(none)"))
-            cata.category = Category;
+        cata.category = Category;
+
         if (Group != null)
-            // if (!Group.equals("(none)"))
             cata.group = "minecraft:" + Group;
 
         // description
