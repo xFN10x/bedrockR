@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.URI;
 
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
+    public JPanel ProjectsPart = new JPanel();
+
     public RLaunchPage(Dimension Size) {
         super(
                 EXIT_ON_CLOSE,
@@ -43,17 +45,10 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 "Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and \nmaybe check out the wiki.");
         othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
 
-        FlowLayout gride = new FlowLayout(1,8,6);
+        FlowLayout gride = new FlowLayout(1, 8, 6);
 
         Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
 
-       // var outerprojectpart = new JPanel();
-        //outerprojectpart.setPreferredSize(new Dimension(540, 200));
-        //outerprojectpart.setBackground(BGC);
-        // outerprojectpart.putClientProperty(FlatClientProperties.STYLE, "arc: 40");
-        //outerprojectpart.setBorder(new FlatLineBorder(new Insets(16, 16, 16, 16), Color.WHITE, 1, 16));
-
-        JPanel ProjectsPart = new JPanel();
         ProjectsPart.setPreferredSize(new Dimension(540, 200));
         ProjectsPart.setBackground(BGC);
         ProjectsPart.setLayout(gride);
@@ -103,11 +98,6 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         menuBar.add(addonsMenu);
         menuBar.add(helpMenu);
 
-        if (RFileOperations.getWorkspaces(this) != null)
-        for (var folder : RFileOperations.getWorkspaces(this)) {
-            ProjectsPart.add(new RAddon(folder, this));
-        }
-
         gride.layoutContainer(ProjectsPart);
         // seperater
         Lay.putConstraint(SpringLayout.NORTH, seperater, 10, SpringLayout.SOUTH, greeting);
@@ -121,6 +111,8 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, ProjectsPart, 0, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, ProjectsPart, -7, SpringLayout.HORIZONTAL_CENTER, this);
 
+        refresh();
+
         setJMenuBar(menuBar);
         add(greeting);
         add(othergreeting);
@@ -130,11 +122,25 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
     }
 
+    public void refresh() {
+        new Thread(() -> {
+            ProjectsPart.removeAll();
+            if (RFileOperations.getWorkspaces(this) != null)
+                for (var folder : RFileOperations.getWorkspaces(this)) {
+                    SwingUtilities.invokeLater(() -> {
+                        ProjectsPart.add(new RAddon(this, folder));
+                        ProjectsPart.repaint();
+                        ProjectsPart.revalidate();
+                    });
+                }
+        }).start();
+    }
+
     @Override
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getActionCommand() == "New Addon") {
             SwingUtilities.invokeLater(() -> {
-                var newAddonPage = new RNewAddon(this);
+                RNewAddon newAddonPage = new RNewAddon(this);
                 newAddonPage.setVisible(true);
             });
         }

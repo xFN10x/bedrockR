@@ -29,6 +29,7 @@ public class ResourceFile implements ElementFile {
     public static RWorkspace ActiveWorkspace = null;
 
     public static final int ITEM_TEXTURE = 0;
+    public static final int BLOCK_TEXTURE = 1;
 
     public File getResourceFile(Frame doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {

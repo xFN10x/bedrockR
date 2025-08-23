@@ -19,8 +19,10 @@ import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.ItemTexture;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.ItemTexture.TextureData;
+import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
+import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockTexture;
+import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture;
+import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture.TextureData;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 
@@ -33,8 +35,11 @@ public class GlobalBuildingVariables implements ElementFile {
 
     public List<String> Langs = new ArrayList<String>();
     public Map<String, String> EnglishTexts = new HashMap<String, String>();
+    public Map<String, BlockJSONEntry> BlockRPEntrys = new HashMap<String, BlockJSONEntry>();
     public ItemTexture ItemTexturesFile = new ItemTexture();
+    public BlockTexture BlockTexturesFile = new BlockTexture();
     public List<File> ItemTextures = new ArrayList<File>();
+    public List<File> BlockTextures = new ArrayList<File>();
     public ResourceFile Resource;
     public WPFile WPF;
 
@@ -57,6 +62,23 @@ public class GlobalBuildingVariables implements ElementFile {
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
             ItemTexturesFile.texture_data.put(plannedkey, new TextureData(textureName));
         ItemTextures.add(Resource.getResourceFile(null, WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
+        return plannedkey;
+    }
+
+    /**
+     * Adds/Gets the block texture from the resource pack
+     * 
+     * @param textureName the name of the texture, such as {@code bedrock_sword.png}
+     * @return the string that can be passed to the {@code minecraft:icon}
+     * @throws FileNotFoundException Resource not found
+     * @throws IllegalAccessError
+     */
+    public String addBlockTexture(String textureName) throws IllegalAccessError, FileNotFoundException {
+        var plannedkey = WPF.Prefix + "_" + textureName.replace(".png", "");
+
+        if (BlockTexturesFile.texture_data.containsKey(plannedkey))
+            BlockTexturesFile.texture_data.put(plannedkey, new BlockTexture.TextureData(textureName));
+        BlockTextures.add(Resource.getResourceFile(null, WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
         return plannedkey;
     }
 
@@ -121,7 +143,7 @@ public class GlobalBuildingVariables implements ElementFile {
                 JOptionPane.showMessageDialog(null,
                         "The texture " + file.getName()
                                 + " is bigger than 512 pixels, which is really big, it is not reccomened to do this as this item may cause lag.",
-                        "Image is MASSIVE: " + testImage.getWidth() + "x" + testImage.getHeight(),
+                        "Image is Giant: " + testImage.getWidth() + "x" + testImage.getHeight(),
                         JOptionPane.WARNING_MESSAGE);
             }
             testImage.getGraphics().dispose();
@@ -133,6 +155,48 @@ public class GlobalBuildingVariables implements ElementFile {
         String json = gson.toJson(ItemTexturesFile);
 
         Files.write(dest, json.getBytes());
+
+        // #endregion
+
+
+        // #region Block RP
+
+        // move textures
+        Path BlockTextureFolder = Path.of(rootResPackPath, "textures", "blocks");
+        Files.createDirectories(BlockTextureFolder);
+
+        for (File file : BlockTextures) {
+            FileUtils.copyFileToDirectory(file, BlockTextureFolder.toFile());
+            // check texture size
+            BufferedImage testImage = ImageIO.read(file);
+            if (Math.pow(testImage.getHeight(), 2) >= 512) {
+                JOptionPane.showMessageDialog(null,
+                        "The texture " + file.getName()
+                                + " is bigger than 512 pixels, which is really big, it is not reccomened to do this as this item may cause lag.",
+                        "Image is Giant: " + testImage.getWidth() + "x" + testImage.getHeight(),
+                        JOptionPane.WARNING_MESSAGE);
+            }
+            testImage.getGraphics().dispose();
+            BlockTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
+                    new BlockTexture.TextureData(file.getName()));
+        }
+
+        // microsoft decided to make this werid
+        Map<String, Object> ActualBlocksJSON = new HashMap<String, Object>();
+        ActualBlocksJSON.put("format_version", "1.21.40");
+        ActualBlocksJSON.putAll(BlockRPEntrys);
+
+        Path blocksJsonPath = Path.of(rootResPackPath, "blocks.json");
+        blocksJsonPath.toFile().createNewFile();
+        Files.writeString(blocksJsonPath, gson.toJson(ActualBlocksJSON));
+
+        //do the terrian_texture.json
+        BlockTexturesFile.resource_pack_name = WPF.WorkspaceName;
+        BlockTexturesFile.texture_name = "atlas.terrain";
+
+        Path terrainTexturePath = Path.of(rootResPackPath, "textures", "terrain_texture.json");
+        terrainTexturePath.toFile().createNewFile();
+        Files.writeString(terrainTexturePath, gson.toJson(BlockTexturesFile));
 
         // #endregion
 

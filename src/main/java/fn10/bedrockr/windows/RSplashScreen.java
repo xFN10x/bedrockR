@@ -26,23 +26,18 @@ public class RSplashScreen extends JWindow {
         LocalTime sunset = LocalTime.of(7, 0);
         LocalTime sunrise = LocalTime.of(19, 0);
 
-        System.out.println(LocalTime.now().toString());
-        System.out.println(sunrise.toString());
-        System.out.println(sunset.toString());
         int compareSunSet = now.compareTo(sunset);
         int compareSunRise = sunrise.compareTo(now);
 
-        System.out.println(compareSunSet);
-        System.out.println(compareSunRise);
-
         if (compareSunSet > 0 && compareSunRise < 0) // if its after sun set, but before sun rise
         {
-            image.setIcon(new ImageIcon(getClass().getResource("/splash.png")));
+            image.setIcon(new ImageIcon(getClass().getResource("/splash_night.png")));
 
         } else {
 
             image.setIcon(new ImageIcon(getClass().getResource("/splash.png")));
         }
+        
         setLayout(lay);
 
         setSize(new Dimension(800, 500));

@@ -13,11 +13,13 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Block;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description.MenuCategory;
+import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
 import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
+import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -30,7 +32,7 @@ import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 public class BlockFile implements ElementFile {
 
-        @HelpMessage(message = "The Name Of The Element")
+    @HelpMessage(message = "The Name Of The Element")
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
@@ -50,13 +52,13 @@ public class BlockFile implements ElementFile {
 
     @HelpMessage(message = "The Creative Tab is this block on.")
     @FieldDetails(Optional = false, displayName = "Category", Filter = FieldFilters.CommonFilter1.class)
-    @StringDropdownField({"construction", "equipment", "items", "nature" })
+    @StringDropdownField({ "construction", "equipment", "items", "nature" })
     public String Category;
 
     @HelpMessage(message = "The group that this block is put into. These groups ")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
-    @StringDropdownField({"itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
+    @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
             "itemGroup.name.boots", "itemGroup.name.bundles", "itemGroup.name.buttons", "itemGroup.name.candles",
             "itemGroup.name.chalkboard", "itemGroup.name.chest", "itemGroup.name.chestboat",
@@ -88,10 +90,31 @@ public class BlockFile implements ElementFile {
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public HashMap<String, Object> Components;
 
-    @HelpMessage(message = "The texture for the block.")
-    @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
+    @HelpMessage(message = "<html>The texture for the block.<br><br><b>As of a1.1, you can only make blocks with 1 texture.</b></html>")
+    @ResourcePackResourceType(ResourceFile.BLOCK_TEXTURE)
     @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Block Texture")
     public UUID TextureUUID;
+
+    @HelpMessage(message = "The group that this block is put into. These groups ")
+    @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
+    // avalible groups 1.21.70
+    @StringDropdownField({ "amethyst_block", "amethyst_cluster", "ancient_debris", "anvil", "azalea", "azalea_leaves",
+            "bamboo", "bamboo_sapling", "bamboo_wood", "bamboo_wood_hanging_sign", "basalt", "big_dripleaf",
+            "bone_block", "calcite", "candle", "cave_vines", "chain", "cherry_leaves", "cherry_wood",
+            "cherry_wood_hanging_sign", "chiseled_bookshelf", "cloth", "comparator", "copper", "copper_bulb",
+            "copper_grate", "coral", "creaking_heart", "decorated_pot", "deepslate", "deepslate_bricks",
+            "dirt_with_roots", "dripstone_block", "eyeblossom", "frog_spawn", "froglight", "fungus", "glass",
+            "glow_lichen", "grass", "gravel", "hanging_roots", "hanging_sign", "heavy_core", "honey_block", "iron",
+            "itemframe", "ladder", "lantern", "large_amethyst_bud", "lever", "lodestone", "mangrove_roots",
+            "medium_amethyst_bud", "metal", "mob_spawner", "moss_block", "moss_carpet", "mud", "mud_bricks",
+            "muddy_mangrove_roots", "nether_brick", "nether_gold_ore", "nether_sprouts", "nether_wart", "nether_wood",
+            "nether_wood_hanging_sign", "netherite", "netherrack", "nylium", "packed_mud", "pale_hanging_moss",
+            "pink_petals", "pointed_dripstone", "polished_tuff", "powder_snow", "resin", "resin_brick", "roots", "sand",
+            "scaffolding", "sculk", "sculk_catalyst", "sculk_sensor", "sculk_shrieker", "sculk_vein", "shroomlight",
+            "slime", "small_amethyst_bud", "snow", "soul_sand", "soul_soil", "sponge", "spore_blossom", "stem", "stone",
+            "suspicious_gravel", "suspicious_sand", "sweet_berry_bush", "trial_spawner", "tuff", "tuff_bricks",
+            "turtle_egg", "vault", "vines", "web", "weeping_vines", "wet_sponge", "wood" })
+    public String Sound;
 
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;
@@ -121,6 +144,12 @@ public class BlockFile implements ElementFile {
             GlobalBuildingVariables globalResVaribles) throws IOException {
         globalResVaribles.EnglishTexts.put("block." + workspaceFile.Prefix + ":" + ID, Name);
 
+        globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
+                new BlockJSONEntry(Sound,
+                        globalResVaribles.addBlockTexture(MapUtilities
+                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())),
+                        null, null));
+
         // make item
         Block item = new Block();
         item.format_version = "1.21.100";
@@ -128,11 +157,11 @@ public class BlockFile implements ElementFile {
         MenuCategory cata = new MenuCategory();
         cata.hidden = Hidden;
         if (Category != null) // make sure to have null checks like this, since its optional
-            //if (!Category.equals("(none)"))
-                cata.category = Category;
+            // if (!Category.equals("(none)"))
+            cata.category = Category;
         if (Group != null)
-            //if (!Group.equals("(none)"))
-                cata.group = "minecraft:" + Group;
+            // if (!Group.equals("(none)"))
+            cata.group = "minecraft:" + Group;
 
         // description
         Description desc = new Description();
@@ -144,7 +173,7 @@ public class BlockFile implements ElementFile {
         inner.description = desc;
 
         inner.components = Components;
-        
+
         item.body = inner;
 
         // build file

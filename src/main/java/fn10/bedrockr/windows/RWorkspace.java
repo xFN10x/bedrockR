@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -252,11 +253,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     public void buildElements(boolean rebuild) {
         // make loading screen
-        var progress = new RLoadingScreen(this);
-        var builddir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
+        RLoadingScreen progress = new RLoadingScreen(this);
+        String BPdir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
                 + "BP" + File.separator +
                 SWPF.getSerilized().getElementName() + File.separator;
-        var resdir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
+        String RPdir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
                 + "RP" + File.separator +
                 SWPF.getSerilized().getElementName() + File.separator;
         SwingUtilities.invokeLater(() -> {
@@ -268,7 +269,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             try {
                 if (rebuild) {
                     progress.changeText("Removing old files...");
-                    FileUtils.deleteDirectory(new File(builddir));
+                    FileUtils.deleteDirectory(new File(BPdir));
+                    FileUtils.deleteDirectory(new File(RPdir));
                 }
                 refreshAll();
                 GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WPFile) SWPF.getSerilized(),
@@ -286,8 +288,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 // buildBP
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
-                SWPF.getSerilized().build(builddir,
-                        ((WPFile) SWPF.getSerilized()), resdir, GlobalResVars); // build
+                SWPF.getSerilized().build(BPdir,
+                        ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
                 progress.increaseProgressBySteps("Done!"); // next
                 // build rest
                 for (RElementFile rElementFile : ToBuild) {
@@ -295,15 +297,15 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         continue;
                     // build a element, then incrament the counter
                     progress.changeText("Building " + rElementFile.getFile().getElementName()); // change text
-                    rElementFile.getFile().build(builddir,
-                            ((WPFile) SWPF.getSerilized()), resdir, GlobalResVars); // build
+                    rElementFile.getFile().build(BPdir,
+                            ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }
                 // build RP
                 // build global res vars
                 progress.changeText("Building resources... "); // change text
-                GlobalResVars.build(builddir,
-                        ((WPFile) SWPF.getSerilized()), resdir, GlobalResVars);
+                GlobalResVars.build(BPdir,
+                        ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars);
 
                 // do mc sync
                 if (((WPFile) SWPF.getSerilized()).MinecraftSync) {
@@ -331,16 +333,19 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             ResourceInnerPanelView.removeAll();
             for (Map.Entry<String, String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
                 try {
-                    var ToAdd = new RElement(null, null);
+                    RElement ToAdd = new RElement(null, null);
                     ToAdd.setMaximumSize(new Dimension(1400, 80));
                     ToAdd.setPreferredSize(new Dimension(1400, 80));
                     ToAdd.Name.setText(entry.getKey());
                     ToAdd.Desc.setText(entry.getValue());
+                    ToAdd.CanBeSelected = false;
                     File file = resFile.Serilized.getResourceFile(this, SWPF.workspaceName(), entry.getKey(),
-                            ResourceFile.ITEM_TEXTURE);
+                            resFile.Serilized.ResourceTypes.get(entry.getKey()));
                     ToAdd.Icon.setIcon(
                             ImageUtilites.ResizeIcon(new ImageIcon(Files.readAllBytes(file.toPath())), 70, 70));
                     ResourceInnerPanelView.add(ToAdd);
+
+                    ResourceInnerPanelView.add(Box.createVerticalStrut(4));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -386,7 +391,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 addFrame.setVisible(true);
             });
         } else if (ac.equals("texture")) {
-            String[] options = { "Cancel", "Item Texure" };
+            String[] options = new String[] { "Cancel", "Item Texure", "Block Texture" };
             var choice = JOptionPane.showOptionDialog(
                     this,
                     "What kind of texture would you like you add?",
@@ -406,6 +411,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                     RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.ITEM_TEXTURE,
+                                    ((WPFile) SWPF.getSerilized()).WorkspaceName);
+                case 2:
+
+                    RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
+                            .importTexture(this, ResourceFile.BLOCK_TEXTURE,
                                     ((WPFile) SWPF.getSerilized()).WorkspaceName);
 
                 default:

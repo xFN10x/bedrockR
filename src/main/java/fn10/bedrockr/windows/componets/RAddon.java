@@ -21,11 +21,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.io.FileUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
@@ -34,6 +37,7 @@ import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.windows.RLaunchPage;
 
 public class RAddon extends JPanel implements MouseListener {
 
@@ -41,6 +45,7 @@ public class RAddon extends JPanel implements MouseListener {
     private SpringLayout Lay = new SpringLayout();
     protected JLabel Icon = new JLabel();
     protected JSeparator Div = new JSeparator();
+    protected JPopupMenu Popup = new JPopupMenu();
     protected JLabel Name;
     protected JLabel Version;
     protected JLabel LoadText;
@@ -48,8 +53,8 @@ public class RAddon extends JPanel implements MouseListener {
     protected WPFile WPF;
     protected JFrame ancestor;
 
-    public RAddon(String WPName, JFrame Ancestor) {
-        this.ancestor = Ancestor;
+    public RAddon(RLaunchPage parent, String WPName) {
+        this.ancestor = parent;
 
         BufferedImage BI;
         Image resizedImage = null;
@@ -62,7 +67,7 @@ public class RAddon extends JPanel implements MouseListener {
                     .toPath()));
             WPF = (WPFile) WPFile.getSerilized();
             step = 1;
-            var iconFile = RFileOperations.getFileFromWorkspace((Frame) getParent(), WPName,
+            File iconFile = RFileOperations.getFileFromWorkspace((Frame) getParent(), WPName,
                     File.separator + "icon." + WPF.IconExtension, true);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
@@ -121,8 +126,6 @@ public class RAddon extends JPanel implements MouseListener {
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         Icon.setPreferredSize(new Dimension(100, 100));
-        // Icon.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0), Color.GRAY, 1,
-        // 16));
 
         Name = new RoundedLabel(WPName, 16);
         Name.setAlignmentX(CENTER_ALIGNMENT);
@@ -172,6 +175,24 @@ public class RAddon extends JPanel implements MouseListener {
         add(Icon);// have last
 
         addMouseListener(this);
+
+        Popup.add("Delete Addon").addActionListener(ac -> {
+            if (JOptionPane.showConfirmDialog(parent,
+                    "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
+                    JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                try {
+                    System.out.println(RFileOperations.getWorkspace(this, WPFile.workspaceName()).getAbsolutePath());
+                    FileUtils.deleteDirectory(RFileOperations.getWorkspace(this, WPFile.workspaceName()));
+                    JOptionPane.showMessageDialog(parent,
+                            "The Addon " + WPFile.workspaceName() + " has been deleted.");
+                    parent.refresh();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        setComponentPopupMenu(Popup);
     }
 
     @Override

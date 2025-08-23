@@ -31,6 +31,7 @@ public class RElement extends JPanel implements MouseListener {
     protected Color outlineColour = Color.green;
     private Class<? extends ElementSource> clasz;
     private ElementDetails details;
+    public boolean CanBeSelected = true;
 
     public RElement(Class<? extends ElementSource> clazz, Runnable selectedFunction)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -44,15 +45,19 @@ public class RElement extends JPanel implements MouseListener {
     }
 
     /**
-     * A ui-component with an icon, name and description. Can be easily changed to make it custom.
+     * A ui-component with an icon, name and description. Can be easily changed to
+     * make it custom.
+     * 
      * @param clazz
-     * Used for unmodified versions of this, this can be <code>null</code> if you want to customize it. 
+     *                         Used for unmodified versions of this, this can be
+     *                         <code>null</code> if you want to customize it.
      * @param selectedFunction
-     * Runs before making this selected. Used for managing how many you can select in a list for example.
+     *                         Runs before making this selected. Used for managing
+     *                         how many you can select in a list for example.
      * @param borderColour
-     * Default is <code>Color.green</code>
+     *                         Default is <code>Color.green</code>
      * @param icon
-     * Declares if this has an icon. 
+     *                         Declares if this has an icon.
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
@@ -133,6 +138,8 @@ public class RElement extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
+        if (!CanBeSelected)
+            return;
         if (func != null)
             func.run();
         selected = true;

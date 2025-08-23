@@ -40,9 +40,9 @@ public class RTextureAddingSelector extends RDialog {
                 new Dimension(500, 400));
 
         addButton.addActionListener(e -> {
-            if (selected == null)
-            {
-                JOptionPane.showMessageDialog(parent, "You must select a texture, or cancel.", "Selection Error", JOptionPane.ERROR_MESSAGE);
+            if (selected == null) {
+                JOptionPane.showMessageDialog(parent, "You must select a texture, or cancel.", "Selection Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             choice = OK_CHOICE;
@@ -75,12 +75,12 @@ public class RTextureAddingSelector extends RDialog {
 
         for (Map.Entry<String, Integer> entry : resTypes.entrySet()) {
             try {
-                if (entry.getValue() == ResourceFile.ITEM_TEXTURE) {
-                    var ToAdd = new JButton();
-                    var size = new Dimension(48, 48);
-                    var normalIcon = new ImageIcon(res
-                            .getResourceFile(parent, Workspace, entry.getKey(), ResourceFile.ITEM_TEXTURE).getPath());
-                    var resizedIcon = new ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
+                if (entry.getValue() == TextureType) {
+                    JButton ToAdd = new JButton();
+                    Dimension size = new Dimension(48, 48);
+                    ImageIcon normalIcon = new ImageIcon(res
+                            .getResourceFile(parent, Workspace, entry.getKey(), entry.getValue()).getPath());
+                    ImageIcon resizedIcon = new ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
                             (int) size.getHeight(), Image.SCALE_AREA_AVERAGING));
                     ToAdd.setMinimumSize(size);
                     ToAdd.setPreferredSize(size);

@@ -1,13 +1,14 @@
 package fn10.bedrockr.utils;
 
-import java.awt.Frame;
+import java.awt.Component;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
+
 public class ErrorShower {
-    public static void showError(Frame parent, String msg, String title, Exception ex) {
+    public static void showError(Component parent, String msg, String title, Exception ex) {
 
         StringWriter sw = new StringWriter();
         ex.printStackTrace(new PrintWriter(sw));

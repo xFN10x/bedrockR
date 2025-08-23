@@ -15,6 +15,7 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RWorkspace;
@@ -31,11 +32,10 @@ public class RElementFile extends RElement implements ActionListener {
 
         super(File.getSourceClass(), null, (File.getDraft() ? Color.gray : Color.green));
         this.file = File;
-        System.out.println(File.getSourceClass().getCanonicalName());
         this.filePath = FilePath;
         this.wksp = Workspace;
         this.setName("RElementFile");
-        var clr = (File.getDraft() ? Color.gray : Color.green);
+        Color clr = (File.getDraft() ? Color.gray : Color.green);
 
         Name.setText(File.getElementName());
         if (clr != Color.green) {
@@ -45,13 +45,13 @@ public class RElementFile extends RElement implements ActionListener {
             this.setBackground(clr.darker().darker());
         }
 
-        var popup = new JPopupMenu(File.getElementName());
+        JPopupMenu popup = new JPopupMenu(File.getElementName());
 
-        var editItem = new JMenuItem("Edit Element...");
-        var removeItem = new JMenuItem("Remove Element");
-        var draftItem = new JMenuItem("Draft Element...");
+        JMenuItem editItem = new JMenuItem("Edit Element...");
+        JMenuItem removeItem = new JMenuItem("Remove Element");
+        JMenuItem draftItem = new JMenuItem("Draft Element...");
         draftItem.setEnabled(!file.getDraft());
-        var buildItem = new JMenuItem("Build Element...");
+        JMenuItem buildItem = new JMenuItem("Build Element...");
 
         editItem.addActionListener(this);
         editItem.setActionCommand("edit");
@@ -61,9 +61,6 @@ public class RElementFile extends RElement implements ActionListener {
 
         draftItem.addActionListener(this);
         draftItem.setActionCommand(file.getDraft() ? "undraft" : "draft");
-
-        buildItem.addActionListener(this);
-        buildItem.setActionCommand("build");
 
         popup.add(editItem);
         popup.add(removeItem);
@@ -76,8 +73,8 @@ public class RElementFile extends RElement implements ActionListener {
 
     protected void openWindow() {
         try {
-            var srczz = file.getSourceClass();
-            var newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
+            Class<? extends ElementSource> srczz = file.getSourceClass();
+            ElementSource newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
             ((RElementEditingScreen) srczz
                     .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
                     .invoke(newsrc, wksp, wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
@@ -109,18 +106,18 @@ public class RElementFile extends RElement implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var ac = e.getActionCommand();
+        String ac = e.getActionCommand();
         if (ac.equals("edit")) {
             openWindow();
         } else if (ac.equals("remove")) {
-            var file = new File(filePath);
+            File file = new File(filePath);
             file.delete();
             wksp.refreshElements();
             wksp.buildElements(true);
         } else if (ac.equals("draft")) {
             try {
                 file.setDraft(true);
-                var src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
+                ElementSource src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
                 src.buildJSONFile(wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
@@ -131,7 +128,7 @@ public class RElementFile extends RElement implements ActionListener {
         } else if (ac.equals("undraft")) {
             try {
                 file.setDraft(false);
-                var src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
+                ElementSource src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
                 src.buildJSONFile(wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
