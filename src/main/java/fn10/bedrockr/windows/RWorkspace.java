@@ -365,7 +365,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     });
                     popup.add("Open Resource Directory").addActionListener(ac -> {
                         try {
-                            Desktop.getDesktop().browse(new URI(file.getParent()));
+                            Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
