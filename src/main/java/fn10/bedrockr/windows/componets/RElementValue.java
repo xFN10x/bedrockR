@@ -100,7 +100,7 @@ public class RElementValue extends JPanel {
 
         setMaximumSize(Size);
         setPreferredSize(Size);
-        setBorder(new LineBorder(Color.DARK_GRAY));
+        setBorder(new LineBorder(getBackground()));
         setLayout(Lay);
 
         Help.putClientProperty("JButton.buttonType", "help");
@@ -178,8 +178,7 @@ public class RElementValue extends JPanel {
                             DisplayName, e);
                 }
             }
-            /*--------*/} else if (InputType.equals(HashMap.class)) { // hashmap stuf
-                                                                      // ---------------------------------------------------
+        } else if (InputType.equals(HashMap.class)) {
             Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
@@ -233,7 +232,9 @@ public class RElementValue extends JPanel {
             HashMapAdd.addActionListener((e) -> {
                 try {
                     RMapElement select = RMapValueAddingSelector.openSelector(parentFrame,
-                            ((RMapElement[]) anno.value().getMethod("getPickable").invoke(anno.value().getConstructor().newInstance())), picked);
+                            ((RMapElement[]) anno.value().getMethod("getPickable")
+                                    .invoke(anno.value().getConstructor().newInstance())),
+                            picked);
                     if (select == null)
                         return;
                     var toAdd = new RElementMapValue(parentFrame, select);
@@ -258,8 +259,7 @@ public class RElementValue extends JPanel {
             Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
             Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
         }
-        // END OF HASH MAP STUFF
-        // ------------------------------------------------------------------------------------------
+
 
         else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
 
@@ -405,6 +405,132 @@ public class RElementValue extends JPanel {
                         }
                         Input.setName(id);
                     }
+                    break;
+
+                case ResourceFile.BLOCK_TEXTURE: // if its an item texture
+                    SpringLayout layoutBlock = new SpringLayout();
+                    Input = new JPanel();
+                    Input.setName("null");
+                    ((JPanel) Input).setBorder(getBorder());
+                    ((JPanel) Input).setLayout(layoutBlock);
+
+                    JLabel NameBlock = new JLabel("(Select a texture.)");
+                    NameBlock.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
+                    JLabel IDBlock = new JLabel();
+                    IDBlock.setFont(RFonts.RegMinecraftFont.deriveFont(6f));
+                    JLabel TypeBlock = new JLabel("Block Texture");
+                    TypeBlock.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
+                    TypeBlock.setForeground(getForeground().darker().darker());
+                    JButton AddButtonBlock = new JButton("+");
+                    JButton SelectButtonBlock = new JButton("Select");
+                    JLabel IconBlock = new JLabel(ImageUtilites.ResizeIcon(
+                            new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
+
+                    AddButtonBlock.addActionListener(ac -> {
+                        RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
+                                .importTexture(parentFrame, ResourceFile.BLOCK_TEXTURE,
+                                        WorkspaceName);
+                    });
+                    SelectButtonBlock.addActionListener(ac -> {
+                        try {
+                            var Selected = RTextureAddingSelector.openSelector(parentFrame,
+                                    ResourceFile.BLOCK_TEXTURE,
+                                    WorkspaceName);
+                            System.out.println(Selected);
+                            if (Selected == null)
+                                return;
+                            var filename = MapUtilities.getKeyFromValue(
+                                    RFileOperations.getResources(parentFrame,
+                                            WorkspaceName).Serilized.ResourceIDs,
+                                    Selected.getKey());
+                            NameBlock.setText(
+                                    filename);
+                            // System.out.println(Selected.getKey());
+                            IDBlock.setText(Selected.getKey());
+                            IconBlock.setIcon(Selected.getValue());
+                            Input.setName(Selected.getKey());
+
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+
+                    IconBlock.setMaximumSize(new Dimension(64, 64));
+                    IconBlock.setPreferredSize(new Dimension(64, 64));
+                    IconBlock.setBorder(((JPanel) Input).getBorder());
+
+                    layoutBlock.putConstraint(SpringLayout.WEST, IconBlock, 5, SpringLayout.WEST, Input);
+                    layoutBlock.putConstraint(SpringLayout.VERTICAL_CENTER, IconBlock, 0, SpringLayout.VERTICAL_CENTER,
+                            Input);
+
+                    layoutBlock.putConstraint(SpringLayout.WEST, NameBlock, 5, SpringLayout.EAST, IconBlock);
+                    layoutBlock.putConstraint(SpringLayout.NORTH, NameBlock, 0, SpringLayout.NORTH, IconBlock);
+
+                    layoutBlock.putConstraint(SpringLayout.WEST, IDBlock, 5, SpringLayout.EAST, IconBlock);
+                    layoutBlock.putConstraint(SpringLayout.NORTH, IDBlock, 0, SpringLayout.SOUTH, NameBlock);
+
+                    layoutBlock.putConstraint(SpringLayout.WEST, TypeBlock, 5, SpringLayout.EAST, IconBlock);
+                    layoutBlock.putConstraint(SpringLayout.SOUTH, TypeBlock, 0, SpringLayout.SOUTH, IconBlock);
+
+                    layoutBlock.putConstraint(SpringLayout.SOUTH, SelectButtonBlock, -5, SpringLayout.SOUTH, Input);
+                    layoutBlock.putConstraint(SpringLayout.EAST, SelectButtonBlock, -5, SpringLayout.EAST, Input);
+
+                    Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButtonBlock, 0, SpringLayout.HORIZONTAL_CENTER,
+                            NameBlock);
+                    Lay.putConstraint(SpringLayout.SOUTH, AddButtonBlock, 0, SpringLayout.SOUTH, Input);
+
+                    ((JPanel) Input).add(IconBlock);
+                    ((JPanel) Input).add(NameBlock);
+                    ((JPanel) Input).add(IDBlock);
+                    ((JPanel) Input).add(TypeBlock);
+                    ((JPanel) Input).add(SelectButtonBlock);
+                    add(AddButtonBlock);
+
+                    setMaximumSize(new Dimension(350, 80));
+                    setPreferredSize(new Dimension(350, 80));
+
+                    if (!FromEmpty) {
+                        UUID Id;
+                        try {
+                            Id = (UUID) field.get(TargetFile);
+                        } catch (IllegalArgumentException | IllegalAccessException e) {
+                            if (TargetFile.getDraft())
+                                return;
+                            e.printStackTrace();
+                            ErrorShower.showError(parentFrame,
+                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                                    DisplayName, e);
+                            return;
+                        }
+                        if (Id == null)
+                            break;
+
+                        String id = Id.toString();
+
+                        var res = RFileOperations.getResources(parentFrame,
+                                WorkspaceName);
+
+                        var filename = MapUtilities.getKeyFromValue(
+                                res.Serilized.ResourceIDs,
+                                id);
+
+                        NameBlock.setText(
+                                filename);
+                        IDBlock.setText(id);
+                        try {
+                            IconBlock.setIcon(ImageUtilites.ResizeIcon(
+                                    new ImageIcon(Files.readAllBytes(res.Serilized.getResourceFile(parentFrame,
+                                            WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
+                                    64, 64));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ErrorShower.showError(parentFrame,
+                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                                    DisplayName, e);
+                        }
+                        Input.setName(id);
+                    }
+                    break;
 
                 default:
                     break;

@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.addon.jsonClasses.BP;
+package fn10.bedrockr.addons.addon.jsonClasses.RP;
 
 import java.util.HashMap;
 import java.util.Map;

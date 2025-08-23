@@ -1,5 +1,6 @@
 package fn10.bedrockr.utils;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.List;
@@ -268,7 +269,7 @@ public class RFileOperations {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
     }
 
-    public static File getFileFromWorkspace(Frame windowDoingThis, String WorkspaceName, String ToCreate,
+    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
             Boolean strict) {
         try {
             var proposed = BaseDirectory + File.separator + "workspace" + File.separator + WorkspaceName + ToCreate;
@@ -285,7 +286,7 @@ public class RFileOperations {
 
     }
 
-    public static File getWorkspace(Frame windowDoingThis, String WorkspaceName) {
+    public static File getWorkspace(Component windowDoingThis, String WorkspaceName) {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, File.separator, true);
     }
 

@@ -166,7 +166,7 @@ public class RElementMapValue extends JPanel {
                     || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
                 val = ((JSpinner) InputField).getValue();
             } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
-                val = ((Double)((JSpinner) InputField).getValue()).floatValue();
+                val = ((JSpinner) InputField).getValue();
             } else if (rMapElement.Type.isArray()) { // array
 
             } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
