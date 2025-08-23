@@ -24,14 +24,13 @@ public class SharedJSONClasses {
     public static class StrictMapSerilizer implements JsonSerializer<Map<String, Object>> {
 
         @Override
-        public JsonElement serialize(Map<String,Object> src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(Map<String, Object> src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject jsonObject = new JsonObject();
             for (Map.Entry<String, Object> entry : src.entrySet()) {
                 Object value = entry.getValue();
 
                 var key = entry.getKey();
 
-                Launcher.LOG.info(value.getClass().getName());
                 if (value instanceof Integer) {
                     jsonObject.addProperty(key, (int) value);
                 } else if (value instanceof Long) {
@@ -41,7 +40,10 @@ public class SharedJSONClasses {
                 } else if (value instanceof Boolean) {
                     jsonObject.addProperty(key, (Boolean) value);
                 } else if (value instanceof Double) {
-                    jsonObject.addProperty(key, ((Double) value).intValue());
+                    if (((Double) value).toString().endsWith(".0"))
+                        jsonObject.addProperty(key, ((Double) value).intValue());
+                    else
+                        jsonObject.addProperty(key, (Double) value);
                 } else {
                     jsonObject.add(key, context.serialize(value));
                 }
@@ -56,8 +58,8 @@ public class SharedJSONClasses {
         @Override
         public Map<RMapElement, Object> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-                    Map<RMapElement,Object> toBuild = new HashMap<RMapElement,Object>();
-            for (Map.Entry<String,JsonElement> entry : json.getAsJsonObject().entrySet()) {
+            Map<RMapElement, Object> toBuild = new HashMap<RMapElement, Object>();
+            for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
                 RMapElement lookupResault = RMapElement.LookupMap.get(entry.getKey());
 
                 Object value;
@@ -85,10 +87,14 @@ public class SharedJSONClasses {
         }
 
     }
+
     public static class minecraftDamage {
         @SerializedName("minecraft:damage")
         public int damage;
+    }
 
+    public static class minecraftDestructibleByMining {
+        public float seconds_to_destroy;
     }
 
     public static class VersionVector {
@@ -97,13 +103,6 @@ public class SharedJSONClasses {
             if (fromThis == null)
                 return new Vector<Integer>();
             java.util.List<String> array = Arrays.asList(fromThis.split("\\."));
-
-            // expand if not big enough
-            // if (array.size() < 3) {
-            // while (array.size() <= 3) {
-            // array.addLast(fromThis);
-            // }
-            // }
 
             // make vector
             var vec = new Vector<Integer>(3, 1);
