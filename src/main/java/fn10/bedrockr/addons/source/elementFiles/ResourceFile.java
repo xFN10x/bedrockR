@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -92,19 +93,14 @@ public class ResourceFile implements ElementFile {
 
     public boolean addTexture(Frame doingThis, File filePNG, int type, String workspaceName) {
         try {
-            var input = JOptionPane.showInputDialog(doingThis,
+            Object input = JOptionPane.showInputDialog(doingThis,
                     "What do you want to name this texture? (" + filePNG.getName() + ")",
                     "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null, filePNG.getName());
-            String finalName = (((String) input).contains(".png") ? input.toString() : input + ".png"); // if it
-                                                                                                        // includes png,
-                                                                                                        // dont add it,
-                                                                                                        // if else, add
-                                                                                                        // it
+                    
+            String finalName = (((String) input).contains(".png") ? input.toString() : input + ".png");
 
-            var dest = new File(
-                    RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
-                            + File.separator + workspaceName + File.separator + "resources" + File.separator
-                            + finalName);
+            File dest = Path.of(RFileOperations.getBaseDirectory(doingThis, "workspace").getPath(), workspaceName,
+                    "resources", finalName).toFile();
             if (dest.exists()) {
                 JOptionPane.showMessageDialog(doingThis, "Resource already exist. Please rename it.", "Naming Error",
                         type);

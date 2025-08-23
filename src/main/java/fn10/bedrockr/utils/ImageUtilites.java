@@ -5,6 +5,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class ImageUtilites {
@@ -17,8 +18,37 @@ public class ImageUtilites {
         return new ImageIcon(OG.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 
+    public static Image ResizeImage(Image OG,  Dimension size) {
+        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), Image.SCALE_SMOOTH);
+    }
+
+    public static Image ResizeImage(BufferedImage OG,  Dimension size) {
+        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), Image.SCALE_SMOOTH);
+    }
+
+    public static Image ResizeImage(Image OG,  Dimension size, int resizeMode) {
+        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), resizeMode);
+    }
+
+    public static Image ResizeImage(BufferedImage OG, Dimension size, int resizeMode) {
+        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), resizeMode);
+    }
+
+
+    public static Image ResizeImage(Image OG, int width, int height) {
+        return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    }
+
     public static Image ResizeImage(BufferedImage OG, int width, int height) {
         return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    }
+
+    public static Image ResizeImage(Image OG, int width, int height, int resizeMode) {
+        return OG.getScaledInstance(width, height, resizeMode);
+    }
+
+    public static Image ResizeImage(BufferedImage OG, int width, int height, int resizeMode) {
+        return OG.getScaledInstance(width, height, resizeMode);
     }
 
     public static ImageIcon ResizeImageByURL(URL OG, int width, int height, int scalingMode) {
@@ -33,12 +63,14 @@ public class ImageUtilites {
 
     public static Point getScreenCenter(Component target) {
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        return new Point(((int)((size.getWidth() - target.getWidth()) * 0.5)), ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
+        return new Point(((int) ((size.getWidth() - target.getWidth()) * 0.5)),
+                ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
     }
 
     public static Point getCenter(Component target) {
         Dimension size = target.getParent().getSize();
-        return new Point(((int)((size.getWidth() - target.getWidth()) * 0.5)), ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
+        return new Point(((int) ((size.getWidth() - target.getWidth()) * 0.5)),
+                ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
     }
 
     // credit: https://stackoverflow.com/a/7603815, and github copilot

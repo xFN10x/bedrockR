@@ -6,8 +6,12 @@ import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
-
 public class ErrorShower {
+
+    public static void showError(Component parent, String msg, Exception ex) {
+        showError(parent, msg, ex.getMessage(), ex);
+    }
+
     public static void showError(Component parent, String msg, String title, Exception ex) {
 
         StringWriter sw = new StringWriter();
