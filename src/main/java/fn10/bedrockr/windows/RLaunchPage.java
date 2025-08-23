@@ -125,6 +125,10 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     public void refresh() {
         new Thread(() -> {
             ProjectsPart.removeAll();
+            JButton ToAdd = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
+            ToAdd.setActionCommand("New Addon");
+            ToAdd.addActionListener(this);
+            ProjectsPart.add(ToAdd);
             if (RFileOperations.getWorkspaces(this) != null)
                 for (var folder : RFileOperations.getWorkspaces(this)) {
                     SwingUtilities.invokeLater(() -> {
@@ -133,6 +137,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                         ProjectsPart.revalidate();
                     });
                 }
+            
         }).start();
     }
 
