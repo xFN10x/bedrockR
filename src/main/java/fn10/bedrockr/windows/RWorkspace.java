@@ -9,16 +9,23 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -27,6 +34,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -42,6 +50,7 @@ import fn10.bedrockr.addons.source.SourceResourceFile;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -227,6 +236,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         ElementInnerPanelView.setPreferredSize(new Dimension(400, 0));
         ResourceInnerPanelView.setLayout(InnerLayout2);
 
+        ResourceView.getVerticalScrollBar().setUnitIncrement(18);
+        ElementView.getVerticalScrollBar().setUnitIncrement(18);
+
         add(Tabs);
         add(VerticleSep);
 
@@ -254,12 +266,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void buildElements(boolean rebuild) {
         // make loading screen
         RLoadingScreen progress = new RLoadingScreen(this);
-        String BPdir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
-                + "BP" + File.separator +
-                SWPF.getSerilized().getElementName() + File.separator;
-        String RPdir = RFileOperations.getBaseDirectory(this).getPath() + File.separator + "build" + File.separator
-                + "RP" + File.separator +
-                SWPF.getSerilized().getElementName() + File.separator;
+        String BPdir = Path.of(RFileOperations.getBaseDirectory(this).getPath(), "build", "BP",
+                SWPF.getSerilized().getElementName()).toString();
+        String RPdir = Path.of(RFileOperations.getBaseDirectory(this).getPath(), "build", "RP",
+                SWPF.getSerilized().getElementName()).toString();
+
         SwingUtilities.invokeLater(() -> {
             progress.setVisible(true);
         });
@@ -339,10 +350,88 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     ToAdd.Name.setText(entry.getKey());
                     ToAdd.Desc.setText(entry.getValue());
                     ToAdd.CanBeSelected = false;
+
                     File file = resFile.Serilized.getResourceFile(this, SWPF.workspaceName(), entry.getKey(),
                             resFile.Serilized.ResourceTypes.get(entry.getKey()));
+                    ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
+
+                    JPopupMenu popup = new JPopupMenu();
+                    popup.add("Open with...").addActionListener(ac -> {
+                        try {
+                            Desktop.getDesktop().open(file);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    popup.add("Open Resource Directory").addActionListener(ac -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI(file.getParent()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    // if (entr)
+                    popup.add("Resize").addActionListener(ac -> {
+                        String choice = JOptionPane.showInputDialog(this,
+                                "What size do you want this image to be?",
+                                "Resize " + entry.getKey(), JOptionPane.QUESTION_MESSAGE,
+                                null, new String[] {
+                                        "16x16",
+                                        "32x32",
+                                        "64x64",
+                                        "96x96",
+                                        "128x128",
+                                        "256x256",
+                                        "512x512",
+                                },
+                                "16x16").toString();
+
+                        if (choice == null)
+                            return;
+
+                        try {
+                            Dimension di = new Dimension(Integer.parseInt(choice.split("x")[0]),
+                                    Integer.parseInt(choice.split("x")[1]));
+                            String old = icon.getImage().getWidth(null) + "x" + icon.getImage().getHeight(null);
+
+                            Image resized = ImageUtilites.ResizeImage(ImageIO.read(file), di, Image.SCALE_AREA_AVERAGING);
+
+                            BufferedImage buff = new BufferedImage(di.width, di.height,
+                                    BufferedImage.TYPE_INT_ARGB);
+
+                            Graphics2D grah = buff.createGraphics();
+                            grah.drawImage(
+                                    resized, 0, 0,
+                                    null);
+                            file.delete();
+                            ImageIO.write(buff, "png", file);
+                            buff.getGraphics().dispose();
+
+                            JOptionPane.showMessageDialog(this, "Resized image from " + old + ", to " + choice);
+                            this.refreshResources();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ErrorShower.showError(this, "Failed to resize image.", e);
+                        }
+                    });
+                    popup.add("Delete").addActionListener(ac -> {
+                        try {
+                            resFile.Serilized.ResourceIDs.remove(entry.getKey());
+                            resFile.Serilized.ResourceTypes.remove(entry.getKey());
+                            file.delete();
+                            this.refreshAll();
+                            ResourceInnerPanelView.repaint();
+                            ResourceView.repaint();
+                            resFile.Serilized.build(SWPF.workspaceName(), null, null, null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    ToAdd.setComponentPopupMenu(popup);
+
                     ToAdd.Icon.setIcon(
-                            ImageUtilites.ResizeIcon(new ImageIcon(Files.readAllBytes(file.toPath())), 70, 70));
+                            ImageUtilites.ResizeIcon(icon, 70, 70));
                     ResourceInnerPanelView.add(ToAdd);
 
                     ResourceInnerPanelView.add(Box.createVerticalStrut(4));
@@ -412,21 +501,28 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.ITEM_TEXTURE,
                                     ((WPFile) SWPF.getSerilized()).WorkspaceName);
+                    break;
                 case 2:
 
                     RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.BLOCK_TEXTURE,
                                     ((WPFile) SWPF.getSerilized()).WorkspaceName);
-
+                    break;
                 default:
                     break;
             }
         } else if (ac.equals("build")) {
             buildElements(false);
-
         } else if (ac.equals("rebuild")) {
             buildElements(true);
         } else if (ac.equals("launch")) {
+            if (SettingsFile.getSettings(this).comMojangPath != null) {
+                if (!new File(SettingsFile.getSettings(this).comMojangPath).exists()) {
+                    JOptionPane.showMessageDialog(this, "You... cant launch minecraft without it installed...",
+                            "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             try {
                 Desktop.getDesktop().browse(new URI("minecraft:///"));
             } catch (Exception e) {
