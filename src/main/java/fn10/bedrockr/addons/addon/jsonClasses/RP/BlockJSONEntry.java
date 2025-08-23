@@ -8,9 +8,13 @@ public class BlockJSONEntry {
     public Boolean isotropic;
 
     public BlockJSONEntry(String sound, String texture, String carried, Boolean iso) {
+        if (sound != null)
         this.sound = sound;
+        if (texture != null)
         this.textures = texture;
+        if (carried != null)
         this.carried_textures = carried;
+        if (iso != null)
         this.isotropic = iso;
     }
 
