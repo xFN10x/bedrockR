@@ -363,6 +363,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             e.printStackTrace();
                         }
                     });
+                    
                     popup.add("Open Resource Directory").addActionListener(ac -> {
                         try {
                             Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
@@ -370,7 +371,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             e.printStackTrace();
                         }
                     });
-                    // if (entr)
+                    
                     popup.add("Resize").addActionListener(ac -> {
                         String choice = JOptionPane.showInputDialog(this,
                                 "What size do you want this image to be?",

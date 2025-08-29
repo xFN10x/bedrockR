@@ -14,6 +14,7 @@ import javax.swing.SpringLayout;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
+import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -35,7 +36,8 @@ public class RNewElement extends RDialog implements ActionListener {
     public static final Class<? extends ElementSource>[] ELEMENTS = new Class[] {
             //SourceWPFile.class,
             SourceItemElement.class,
-            SourceBlockElement.class
+            SourceBlockElement.class,
+            SourceScriptElement.class,
     };
 
     public RNewElement(Frame Parent, String WorkspaceName ) {
