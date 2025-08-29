@@ -30,6 +30,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceResourceFile;
+import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
@@ -109,6 +110,7 @@ public class RFileOperations {
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+<!-- Load Blockly core -->
+<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+<!-- Load the default blocks -->
+<script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+<!-- Load a generator -->
+<script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+<!-- Load a message file -->
+<script src="https://unpkg.com/blockly/msg/en.js"></script>
+
+
+<div id="blocklyDiv" style="height: 441px; width: 955px;"></div>
+
+<script>
+
+    const hatBlocks = {
+        'colourPrimary': '#4a148c',
+        'colourSecondary': '#AD7BE9',
+        'colourTertiary': '#CDB6E9',
+        'hat': 'cap'
+    }
+
+    // custom blocks
+    const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
+        {
+            "type": "sub_block",
+            "tooltip": "",
+            "helpUrl": "",
+            "message0": "After %1",
+            "args0": [
+                {
+                    "type": "field_dropdown",
+                    "name": "EVENT",
+                    "options": [
+                        [
+                            "Entity Dies",
+                            "ENT_DEATH"
+                        ]
+                    ]
+                }
+            ],
+            "nextStatement": null,
+            "colour": 225,
+            "style": {
+                'colourPrimary': '#4a148c',
+                'colourSecondary': '#AD7BE9',
+                'colourTertiary': '#CDB6E9',
+                'hat': 'cap'
+            }
+        }
+        ,
+        {
+            "type": "send_message",
+            "tooltip": "",
+            "helpUrl": "",
+            "message0": "send chat %1  to all players %2",
+            "args0": [
+                {
+                    "type": "field_input",
+                    "name": "CHAT",
+                    "text": "Hello players!"
+                },
+                {
+                    "type": "input_dummy",
+                    "name": "TEXT"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "colour": 225,
+            "inputsInline": false
+        }
+
+    ]);
+
+    // Register the definition.
+    Blockly.common.defineBlocks(definitions);
+
+    const toolbox = {
+        // There are two kinds of toolboxes. The simpler one is a flyout toolbox.
+        kind: 'flyoutToolbox',
+
+        contents: [
+            {
+                kind: 'block',
+                type: 'sub_block'
+            },
+            {
+                kind: 'block',
+                type: 'send_message'
+            },
+            {
+                kind: 'block',
+                type: 'controls_if'
+            },
+            {
+                kind: 'block',
+                type: 'controls_whileUntil'
+            }
+        ]
+    };
+    //load the injection
+    const workspace = Blockly.inject('blocklyDiv', { toolbox: toolbox, trashcan: true });
+
+</script>
+
+</html>

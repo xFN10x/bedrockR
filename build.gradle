@@ -6,7 +6,8 @@ plugins {
     id 'application'
     id 'java'
     id 'org.panteleyev.jpackageplugin' version '1.7.3'
-    id("com.gradleup.shadow") version "9.0.0-beta17"
+    id 'com.gradleup.shadow' version '9.0.0-beta17'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 
@@ -18,12 +19,15 @@ sourceSets {
     main {
         resources {
             srcDirs += ['src/main/java']
-            includes = ['**/*.properties', '**/*.png', '**/*.otf']
+            includes += ['**/*.properties', '**/*.png', '**/*.otf', '**/*.html', '**/*.js']
         }
     }
 }
 
-
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls' ]
+}
 
 dependencies {
     implementation libs.guava
@@ -35,6 +39,13 @@ dependencies {
     implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.0.0-beta17")
 
     implementation 'commons-io:commons-io:2.19.0'
+
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-controls
+    implementation 'org.openjfx:javafx-controls:18.0.2'
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-swing
+    implementation 'org.openjfx:javafx-swing:18.0.2'
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-web
+    implementation 'org.openjfx:javafx-web:18.0.2'
 }
 
 java {

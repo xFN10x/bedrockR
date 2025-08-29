@@ -32,7 +32,7 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private ElementCreationListener Listener;
-    private JPanel InnerPane = new JPanel();
+    public JPanel InnerPane = new JPanel();
     private JScrollPane Pane = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     private JPanel SpecialPane = null;

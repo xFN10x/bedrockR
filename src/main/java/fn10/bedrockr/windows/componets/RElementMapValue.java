@@ -165,7 +165,7 @@ public class RElementMapValue extends JPanel {
             ErrorShower.showError(Ancestor, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     public Map.Entry<String, Object> getKeyAndVal() {
         Object val = null;
