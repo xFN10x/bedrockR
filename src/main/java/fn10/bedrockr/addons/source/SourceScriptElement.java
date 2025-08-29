@@ -71,7 +71,7 @@ public class SourceScriptElement implements ElementSource {
 
         frame.InnerPane.add(new RBlockly());
 
-        frame.setSize(new Dimension());
+        frame.setSize(new Dimension(900, 600));
 
         return frame;
     }
