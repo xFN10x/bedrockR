@@ -11,7 +11,14 @@
 <script src="https://unpkg.com/blockly/msg/en.js"></script>
 
 
-<div id="blocklyDiv" style="height: 441px; width: 955px;"></div>
+<div style="display: flex; flex-direction: row;">
+    <div id="blocklyDiv"
+        style="flex-direction: column; position-anchor: left; height: 441px; width: 800px;">
+    </div>
+    <pre id="preview" style="flex-direction: column;">
+    super sigmas in the mist
+</pre>
+</div>
 
 <script>
 
@@ -78,6 +85,8 @@
     // Register the definition.
     Blockly.common.defineBlocks(definitions);
 
+    
+
     const toolbox = {
         // There are two kinds of toolboxes. The simpler one is a flyout toolbox.
         kind: 'flyoutToolbox',
@@ -104,6 +113,9 @@
     //load the injection
     const workspace = Blockly.inject('blocklyDiv', { toolbox: toolbox, trashcan: true });
 
+    Blockly.getMainWorkspace().addChangeListener(() => {
+        document.getElementById("preview").textContent = javascript.javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace());
+    });
 </script>
 
 </html>
