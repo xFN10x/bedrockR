@@ -4,8 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,9 +20,14 @@ public class RBlockly extends JFXPanel {
     private WebEngine webEngine;
     private Scene scene;
 
+    /**
+     * this is here to stop the GC from collecting it
+     */
+    private final Bridge bridge;
+
     private final JTextArea preview;
 
-    public static class Bridge {
+    public class Bridge {
 
         private final JTextArea preview;
 
@@ -41,6 +44,8 @@ public class RBlockly extends JFXPanel {
 
     public RBlockly(JTextArea previewArea) {
         this.preview = previewArea;
+        Bridge br = new Bridge(preview);
+        this.bridge = br;
         Platform.runLater(() -> {
             webView = new WebView();
             scene = new Scene(webView);
@@ -61,14 +66,14 @@ public class RBlockly extends JFXPanel {
                                 if (newValue == Worker.State.SUCCEEDED) {
                                     System.out.println("loaded");
                                     // when its loaded, add a referance to javascript
-                                    Bridge br = new Bridge(preview);
+
                                     JSObject window = (JSObject) webEngine.executeScript("window");
-                                    window.setMember("rblockly", br);
+                                    window.setMember("rblockly", bridge);
+
                                 }
                             }
 
                         });
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

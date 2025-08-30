@@ -32,30 +32,30 @@ import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 public class BlockFile implements ElementFile {
 
-    @HelpMessage(message = "The Name Of The Element")
+    @HelpMessage("The Name Of The Element")
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public String ElementName;
 
-    @HelpMessage(message = "The name of the block. e.g. \"Diamond\", \"Coal\"...")
+    @HelpMessage("The name of the block. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Block Name", Filter = FieldFilters.RegularStringFilter.class)
     public String Name;
 
-    @HelpMessage(message = "The Unique ID for this block. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'\nThis is the name of the block in commands, and it will look like this in commands: (addon prefix):(idenifier)")
+    @HelpMessage("The Unique ID for this block. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'\nThis is the name of the block in commands, and it will look like this in commands: (addon prefix):(idenifier)")
     @FieldDetails(Optional = false, displayName = "Block Idenifier", Filter = FieldFilters.IDStringFilter.class)
     public String ID;
 
-    @HelpMessage(message = "Specfiys if this block hidden in commands.")
+    @HelpMessage("Specfiys if this block hidden in commands.")
     @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
     public boolean Hidden;
 
-    @HelpMessage(message = "The Creative Tab is this block on.")
+    @HelpMessage("The Creative Tab is this block on.")
     @FieldDetails(Optional = false, displayName = "Category", Filter = FieldFilters.CommonFilter1.class)
     @StringDropdownField({ "construction", "equipment", "items", "nature" })
     public String Category;
 
-    @HelpMessage(message = "The group that this block is put into. These groups are not in all categorys, so make sure you select a group in the category.")
+    @HelpMessage("The group that this block is put into. These groups are not in all categorys, so make sure you select a group in the category.")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
@@ -86,16 +86,16 @@ public class BlockFile implements ElementFile {
 
     @SpecialField
     @MapFieldSelectables(BlockComponents.class)
-    @HelpMessage(message = "Defining parts of a block. This is were you would specify ")
+    @HelpMessage("Defining parts of a block. This is were you would specify ")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public HashMap<String, Object> Components;
 
-    @HelpMessage(message = "<html>The texture for the block.<br><br><b>As of a1.1, you can only make blocks with 1 texture.</b></html>")
+    @HelpMessage("<html>The texture for the block.<br><br><b>As of a1.1, you can only make blocks with 1 texture.</b></html>")
     @ResourcePackResourceType(ResourceFile.BLOCK_TEXTURE)
     @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Block Texture")
     public UUID TextureUUID;
 
-    @HelpMessage(message = "The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
+    @HelpMessage("The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
     @FieldDetails(Optional = true, displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({ "amethyst_block", "amethyst_cluster", "ancient_debris", "anvil", "azalea", "azalea_leaves",
