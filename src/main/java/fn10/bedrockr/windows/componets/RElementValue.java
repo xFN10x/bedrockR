@@ -31,6 +31,7 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
+import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
 
@@ -71,13 +72,13 @@ public class RElementValue extends JPanel {
                 ((ElementFile) SourceFileClass.getConstructor().newInstance()), true, WorkspaceName);
     }
 
-    public RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    public RElementValue(Frame frame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
             ElementFile TargetFile,
             String WorkspaceName) {
-        this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, false,
+        this(frame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile, TargetFile == null,
                 WorkspaceName);
     }
 

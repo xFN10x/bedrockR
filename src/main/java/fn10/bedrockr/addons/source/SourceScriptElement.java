@@ -6,6 +6,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
@@ -18,6 +19,7 @@ import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.componets.RBlockly;
+import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceScriptElement implements ElementSource {
@@ -70,13 +72,17 @@ public class SourceScriptElement implements ElementSource {
         RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
                 RElementEditingScreen.DEFAULT_STYLE);
 
+        RElementValue elementName = new RElementValue(Parent, String.class, new FieldFilters.FileNameLikeStringFilter(),
+                "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
         JTextArea preview = new JTextArea();
         preview.setEditable(false);
-    
+
         frame.InnerPane.setLayout(new BoxLayout(frame.InnerPane, BoxLayout.X_AXIS));
 
         frame.InnerPane.add(new RBlockly(preview));
-        
+
+        frame.InnerPane.add(Box.createHorizontalStrut(5));
+
         frame.InnerPane.add(preview);
 
         frame.setSize(new Dimension(1200, 800));
