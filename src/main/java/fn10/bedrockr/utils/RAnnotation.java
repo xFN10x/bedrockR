@@ -14,7 +14,7 @@ public class RAnnotation {
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface HelpMessage {
-        String message();
+        String value();
     }
 
     @Target({ ElementType.FIELD })

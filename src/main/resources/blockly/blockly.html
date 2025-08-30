@@ -8,11 +8,12 @@
 <script src="https://unpkg.com/blockly/msg/en.js"></script>
 <script src="https://unpkg.com/blockly-theme-dark@latest/dist/index.js"></script>
 
-
-<div style="display: flex; flex-direction: row;">
-    <div id="blocklyDiv" style="flex-direction: column; position-anchor: left; height: 700px; width: 800px;">
+<body>
+    <div id="blocklyDiv" style="flex-direction: column; position-anchor: left; height: 600px; width: 900px;">
     </div>
-</div>
+</body>
+
+
 
 <script>
 
@@ -51,9 +52,7 @@
                 }
             ],
             "colour": 225,
-            "style": {
-                "hat": "cap"
-            }
+            "style": hatBlocks
         },
         {
             "type": "send_message",
@@ -906,6 +905,9 @@
     }
 
     Blockly.getMainWorkspace().addChangeListener(() => {
+        if (workspace.isDragging())
+            return; // Don't update while changes are happening.
+
         rblockly.updatePreview(javascript.javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace()));
     });
 </script>

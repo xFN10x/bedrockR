@@ -19,30 +19,30 @@ import fn10.bedrockr.utils.RAnnotation.*;
 
 public class ItemFile implements ElementFile {
 
-    @HelpMessage(message = "The Name Of The Element")
+    @HelpMessage("The Name Of The Element")
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public String ElementName;
 
-    @HelpMessage(message = "The name of the item. e.g. \"Diamond\", \"Coal\"...")
+    @HelpMessage("The name of the item. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Item Name", Filter = FieldFilters.RegularStringFilter.class)
     public String Name;
 
-    @HelpMessage(message = "The Unique ID for this item. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'")
+    @HelpMessage("The Unique ID for this item. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'")
     @FieldDetails(Optional = false, displayName = "Item Idenifier", Filter = FieldFilters.IDStringFilter.class)
     public String ID;
 
-    @HelpMessage(message = "Specfiys if this item hidden in commands.")
+    @HelpMessage("Specfiys if this item hidden in commands.")
     @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
     public boolean Hidden;
 
-    @HelpMessage(message = "The Creative Tab is this item on.")
+    @HelpMessage("The Creative Tab is this item on.")
     @FieldDetails(Optional = true, displayName = "Item Category", Filter = FieldFilters.CommonFilter1.class)
     @StringDropdownField({"construction", "equipment", "items", "nature" })
     public String Category;
 
-    @HelpMessage(message = "The group that this item is put into. These groups ")
+    @HelpMessage("The group that this item is put into. These groups ")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({"itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
@@ -73,11 +73,11 @@ public class ItemFile implements ElementFile {
 
     @SpecialField
     @MapFieldSelectables(ItemComponents.class)
-    @HelpMessage(message = "Main parts of an item. Components are basicly the options for an item. Like duribility, if its a weapon, etc.")
+    @HelpMessage("Main parts of an item. Components are basicly the options for an item. Like duribility, if its a weapon, etc.")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public HashMap<String, Object> Components;
 
-    @HelpMessage(message = "The texture for the item.")
+    @HelpMessage("The texture for the item.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
     @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
     public UUID TextureUUID;

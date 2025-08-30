@@ -44,7 +44,7 @@ public class RElementValue extends JPanel {
 
     private SpringLayout Lay = new SpringLayout();
     private JLabel Name = new JLabel();
-    private JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
+    public JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
     private Component Input;
     private JCheckBox EnableDis = new JCheckBox();
 
@@ -568,7 +568,7 @@ public class RElementValue extends JPanel {
         Help.addActionListener(e -> {
             try {
                 JOptionPane.showMessageDialog(parentFrame,
-                        SourceFileClass.getDeclaredField(Target).getAnnotation(HelpMessage.class).message(),
+                        SourceFileClass.getDeclaredField(Target).getAnnotation(HelpMessage.class).value(),
                         "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
                 ex.printStackTrace();

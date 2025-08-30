@@ -50,6 +50,24 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     public static final Integer DEFAULT_STYLE = 0;
     public static final Integer SPECIAL_AREA_STYLE = 1;
 
+    private CustomCreateFunction createFunction = null;
+
+    public static interface CustomCreateFunction {
+        void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft);
+
+    }
+
+    /**
+     * Add a custom function on create to override the defaults.
+     * 
+     * @param func - the {@code CustomCreateFunction} to use for creation.
+     * @return the {@code RElementEditingScreen}
+     */
+    public RElementEditingScreen setCustomCreateFunction(CustomCreateFunction func) {
+        this.createFunction = func;
+        return this;
+    }
+
     public RElementEditingScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier) {
@@ -176,9 +194,9 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 if (!rElementValue.getOptionallyEnabled()) // if its not enabled, continue
                     continue;
                 else
-                    try { 
-                        SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue()); 
-                        //try to set field ^
+                    try {
+                        SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
+                        // try to set field ^
                     } catch (Exception e) {
                         e.printStackTrace();
                         ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
@@ -203,7 +221,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         var action = e.getActionCommand();
         if (action.equals("create")) { // create, check for errors, get user to solve them, ready for build
             if (checkForErrors(true) == null) {
-                create(false);
+                if (createFunction == null)
+                    create(false);
+                else
+                    createFunction.onCreate(this, Listener,false);
             } else { // show errored things
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
                 for (RElementValue EV : IncorrectFields) {
@@ -215,7 +236,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             }
         } else if (action.equals("draft")) { // drafting, check if nessesary fields are entered
             if (checkForErrors(false) == null) {
-                create(true);
+                if (createFunction == null)
+                    create(true);
+                else
+                    createFunction.onCreate(this, Listener, true);
             } else { // show errored things
                 // pov: you thought something was going to complicated, but you didnt need to
                 // search anything up VVVVVVV

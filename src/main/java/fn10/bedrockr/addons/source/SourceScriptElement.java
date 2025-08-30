@@ -9,15 +9,17 @@ import java.nio.file.StandardOpenOption;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
+import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RBlockly;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
@@ -26,6 +28,18 @@ public class SourceScriptElement implements ElementSource {
 
     private final String Location = File.separator + "elements" + File.separator;
     private ScriptFile serilized;
+
+    public SourceScriptElement(ScriptFile obj) {
+        this.serilized = obj;
+    }
+
+    public SourceScriptElement() {
+        this.serilized = null;
+    }
+
+    public SourceScriptElement(String jsonString) {
+        this.serilized = (ScriptFile) getFromJSON(jsonString);
+    }
 
     @Override
     public String getJSONString() {
@@ -69,23 +83,70 @@ public class SourceScriptElement implements ElementSource {
 
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
-        RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
-                RElementEditingScreen.DEFAULT_STYLE);
+
+        ElementSource This = this;
+
 
         RElementValue elementName = new RElementValue(Parent, String.class, new FieldFilters.FileNameLikeStringFilter(),
                 "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
+        elementName.setMaximumSize(new Dimension(300, 40));
+        RElementValue scriptName = new RElementValue(Parent, String.class, new FieldFilters.IDStringFilter(),
+                "ScriptName", "Script Name", false, getSerilizedClass(), serilized, Workspace);
+        scriptName.setMaximumSize(new Dimension(300, 40));
+
         JTextArea preview = new JTextArea();
         preview.setEditable(false);
 
+        RBlockly rblockly = new RBlockly(preview);
+
+        JPanel rightStuff = new JPanel();
+        JPanel toprightStuff = new JPanel();
+
+        toprightStuff.setLayout(new BoxLayout(toprightStuff, BoxLayout.X_AXIS));
+        rightStuff.setLayout(new BoxLayout(rightStuff, BoxLayout.Y_AXIS));
+
+        rightStuff.add(preview);
+        rightStuff.add(toprightStuff);
+
+        toprightStuff.add(elementName);
+        toprightStuff.add(Box.createHorizontalStrut(5));
+        toprightStuff.add(scriptName);
+
+        RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
+                RElementEditingScreen.DEFAULT_STYLE).setCustomCreateFunction(new CustomCreateFunction() {
+
+                    @Override
+                    public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
+                            boolean isDraft) {
+                        try {
+                            if (serilized == null)
+                                serilized = new ScriptFile();
+
+                            serilized.ElementName = elementName.getValue().toString();
+                            serilized.ScriptName = scriptName.getValue().toString();
+
+                            serilized.setDraft(isDraft);
+
+                            Listener.onElementCreate(This); // create
+                            Sindow.dispose();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            ErrorShower.showError(Sindow, "Failed to create ElementSource",
+                                    "Source Creation Error", ex);
+                        }
+                    }
+
+                });
+
         frame.InnerPane.setLayout(new BoxLayout(frame.InnerPane, BoxLayout.X_AXIS));
 
-        frame.InnerPane.add(new RBlockly(preview));
+        frame.InnerPane.add(rblockly);
 
         frame.InnerPane.add(Box.createHorizontalStrut(5));
 
-        frame.InnerPane.add(preview);
+        frame.InnerPane.add(rightStuff);
 
-        frame.setSize(new Dimension(1200, 800));
+        frame.setSize(new Dimension(1500, 800));
         frame.setLocation(ImageUtilites.getScreenCenter(frame));
 
         return frame;
