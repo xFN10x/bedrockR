@@ -26,7 +26,7 @@ sourceSets {
 
 javafx {
     version = "21"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.swing', "javafx.web" ]
 }
 
 dependencies {
@@ -39,13 +39,6 @@ dependencies {
     implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.0.0-beta17")
 
     implementation 'commons-io:commons-io:2.19.0'
-
-    // https://mvnrepository.com/artifact/org.openjfx/javafx-controls
-    implementation 'org.openjfx:javafx-controls:18.0.2'
-    // https://mvnrepository.com/artifact/org.openjfx/javafx-swing
-    implementation 'org.openjfx:javafx-swing:18.0.2'
-    // https://mvnrepository.com/artifact/org.openjfx/javafx-web
-    implementation 'org.openjfx:javafx-web:18.0.2'
 }
 
 java {
@@ -58,8 +51,8 @@ application {
     mainClass = 'fn10.bedrockr.Launcher'
 }
 
-def version = 'a1.1'
-def winver = '0.2.0'
+def version = 'a1.2'
+def winver = '0.3.0'
 
 def JPackageSettings = { org.panteleyev.jpackage.JPackageTask task ->
     task.dependsOn("build", "shadowJar")

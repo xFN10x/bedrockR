@@ -6,8 +6,6 @@ import java.io.File;
 
 import javax.swing.ImageIcon;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
