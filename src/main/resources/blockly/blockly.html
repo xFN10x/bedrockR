@@ -10,7 +10,7 @@
 
 
 <div style="display: flex; flex-direction: row;">
-    <div id="blocklyDiv" style="flex-direction: column; position-anchor: left; height: 800px; width: 1011px;">
+    <div id="blocklyDiv" style="flex-direction: column; position-anchor: left; height: 700px; width: 800px;">
     </div>
 </div>
 
@@ -50,7 +50,6 @@
                     "name": "STATEMENTS"
                 }
             ],
-            "nextStatement": null,
             "colour": 225,
             "style": {
                 "hat": "cap"
@@ -108,7 +107,7 @@
             },
             //#region vanilla blocks
             {
-                
+
                 kind: 'category',
                 name: 'Logic',
                 categorystyle: 'logic_category',
@@ -871,7 +870,7 @@
                     },
                 ],
             },
-            
+
             //#endregion
         ],
     };
@@ -902,7 +901,7 @@
     javascript.javascriptGenerator.forBlock['send_message'] = function (block, generator) {
         const text_chat = block.getFieldValue('CHAT');
 
-        const code = `sendMessage("${text_chat}");\n`;
+        const code = `world.sendMessage("${text_chat}");`;
         return code;
     }
 
