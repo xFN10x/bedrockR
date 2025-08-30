@@ -3,17 +3,18 @@ package fn10.bedrockr.addons.source;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
-import java.io.FileWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.componets.RBlockly;
@@ -36,8 +37,8 @@ public class SourceScriptElement implements ElementSource {
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Script",
-                "<html>A block. Can have custom drops, and a custom hitbox.</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
+                "<html>A JavaScript Script, you can edit with block coding.</html>",
+                new ImageIcon(ElementSource.class.getResource("/addons/element/Script.png")));
     }
 
     @Override
@@ -69,9 +70,17 @@ public class SourceScriptElement implements ElementSource {
         RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
                 RElementEditingScreen.DEFAULT_STYLE);
 
-        frame.InnerPane.add(new RBlockly());
+        JTextArea preview = new JTextArea();
+        preview.setEditable(false);
+    
+        frame.InnerPane.setLayout(new BoxLayout(frame.InnerPane, BoxLayout.X_AXIS));
 
-        frame.setSize(new Dimension(900, 600));
+        frame.InnerPane.add(new RBlockly(preview));
+        
+        frame.InnerPane.add(preview);
+
+        frame.setSize(new Dimension(1200, 800));
+        frame.setLocation(ImageUtilites.getScreenCenter(frame));
 
         return frame;
     }

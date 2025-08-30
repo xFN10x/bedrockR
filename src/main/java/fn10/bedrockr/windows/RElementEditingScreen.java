@@ -37,7 +37,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     private JPanel SpecialPane = null;
     private SpringLayout SpecialPaneLay = new SpringLayout();
-    private BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
+    public BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
 
     public Class<?> SourceClass;
     public Class<? extends ElementSource> SourceElementClass;

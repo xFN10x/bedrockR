@@ -33,8 +33,8 @@ import com.google.gson.Gson;
 
 public class Launcher {
 
-    public static String VERSION = "a1.1";
-    public static int CHECKVERSION = 1;
+    public static String VERSION = "a1.2";
+    public static int CHECKVERSION = 2;
     public static Image ICON;
 
     public static java.util.List<Image> ICONS = new ArrayList<Image>();
