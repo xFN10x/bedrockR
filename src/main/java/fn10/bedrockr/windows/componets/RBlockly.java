@@ -4,6 +4,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.swing.JTextArea;
+
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.utils.ErrorShower;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,17 +45,28 @@ public class RBlockly extends JFXPanel {
 
     }
 
+    public void dispose() {
+
+        Platform.runLater(() -> {
+            webView.getEngine().load(null);
+        });
+    }
+
     public RBlockly(JTextArea previewArea) {
         this.preview = previewArea;
         Bridge br = new Bridge(preview);
         this.bridge = br;
+
+        Platform.setImplicitExit(false);
         Platform.runLater(() -> {
+
             webView = new WebView();
             scene = new Scene(webView);
             webEngine = webView.getEngine();
             setScene(scene);
 
             try {
+                System.out.println("running later");
                 webEngine.loadContent(
                         Files.readString(Path.of(getClass().getResource("/blockly/blockly.html").toURI())));
 
@@ -64,16 +78,24 @@ public class RBlockly extends JFXPanel {
                                     javafx.concurrent.Worker.State oldValue,
                                     javafx.concurrent.Worker.State newValue) {
                                 if (newValue == Worker.State.SUCCEEDED) {
-                                    System.out.println("loaded");
                                     // when its loaded, add a referance to javascript
 
                                     JSObject window = (JSObject) webEngine.executeScript("window");
                                     window.setMember("rblockly", bridge);
 
+                                } else if (newValue == Worker.State.FAILED) {
+                                    Exception ex = new Exception("Blockly pane failed to load.");
+
+                                    ex.printStackTrace();
+                                    ErrorShower.showError(getParent(), "Blockly Pane failed to load.", ex);
+
+                                } else {
+                                    Launcher.LOG.info("Unknown state: " + newValue);
                                 }
                             }
 
                         });
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
