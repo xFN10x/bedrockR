@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.processing.Generated;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -23,9 +22,6 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
 
 import com.google.errorprone.annotations.DoNotCall;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
@@ -48,52 +44,6 @@ public class RFileOperations {
         var settings = SettingsFile.getSettings(null);
         COMMOJANG = settings.comMojangPath;
         // System.out.println(COMMOJANG);
-    }
-
-    @Generated("jsonschema2pojo")
-    public static class DateResponce {
-        public class InnerRFileOperations {
-            @SerializedName("sunrise")
-            @Expose
-            public String sunrise;
-            @SerializedName("sunset")
-            @Expose
-            public String sunset;
-            @SerializedName("solar_noon")
-            @Expose
-            public String solarNoon;
-            @SerializedName("day_length")
-            @Expose
-            public Integer dayLength;
-            @SerializedName("civil_twilight_begin")
-            @Expose
-            public String civilTwilightBegin;
-            @SerializedName("civil_twilight_end")
-            @Expose
-            public String civilTwilightEnd;
-            @SerializedName("nautical_twilight_begin")
-            @Expose
-            public String nauticalTwilightBegin;
-            @SerializedName("nautical_twilight_end")
-            @Expose
-            public String nauticalTwilightEnd;
-            @SerializedName("astronomical_twilight_begin")
-            @Expose
-            public String astronomicalTwilightBegin;
-            @SerializedName("astronomical_twilight_end")
-            @Expose
-            public String astronomicalTwilightEnd;
-        }
-
-        @SerializedName("results")
-        @Expose
-        public InnerRFileOperations results;
-        @SerializedName("status")
-        @Expose
-        public String status;
-        @SerializedName("tzid")
-        @Expose
-        public String tzid;
     }
 
     private static final String[] ILLEGAL_CHARACTERS = {
@@ -124,6 +74,15 @@ public class RFileOperations {
             e.printStackTrace();
             ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
             return null;
+        }
+    }
+
+    public static String readResourceAsString(String resource) {
+        try {
+            return Files.readString(Path.of(RFileOperations.class.getResource(resource).toURI()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 
