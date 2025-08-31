@@ -33,7 +33,7 @@ public class ScriptFile implements ElementFile {
 
     @Override
     public String getElementName() {
-        return "Script";
+        return ElementName;
     }
 
     @Override

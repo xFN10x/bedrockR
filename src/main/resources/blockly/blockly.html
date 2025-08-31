@@ -6,23 +6,37 @@
 <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
 <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
 <script src="https://unpkg.com/blockly/msg/en.js"></script>
-<script src="https://unpkg.com/blockly-theme-dark@latest/dist/index.js"></script>
 
 <body>
-    <div id="blocklyDiv" style="flex-direction: column; position-anchor: left; height: 600px; width: 900px;">
+    <div id="blocklyDiv" style="flex-direction: column; height: 707px; width: 800px;">
     </div>
 </body>
 
+<style>
+    @font-face {
+        font-family: 'Minecraft';
+        src: url("https://raw.githubusercontent.com/IdreesInc/Minecraft-Font/main/Minecraft.otf") format("opentype");
+    }
+
+    div {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+    
+
+    body {
+        display: flex;
+        margin: 0px;
+        background-color: #252526;
+    }
+
+    .element-with-scroll::-webkit-scrollbar {
+        display: none;
+    }
+</style>
 
 
 <script>
-
-    const hatBlocks = {
-        'colourPrimary': '#4a148c',
-        'colourSecondary': '#AD7BE9',
-        'colourTertiary': '#CDB6E9',
-        'hat': 'cap'
-    }
 
     // custom blocks
     const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
@@ -52,7 +66,7 @@
                 }
             ],
             "colour": 225,
-            "style": hatBlocks
+            "style": { "hat": "cap" }
         },
         {
             "type": "send_message",
@@ -72,15 +86,13 @@
             ],
             "previousStatement": null,
             "nextStatement": null,
-            "colour": 225,
-            "inputsInline": false
+            "colour": 225
         }
 
     ]);
 
     // Register the definition.
     Blockly.common.defineBlocks(definitions);
-
 
 
     const toolbox = {
@@ -874,7 +886,33 @@
         ],
     };
     //load the injection
-    const workspace = Blockly.inject('blocklyDiv', { toolbox: toolbox, trashcan: true, theme: Blockly.Themes.Dark });
+    const workspace = Blockly.inject('blocklyDiv', {
+        toolbox: toolbox,
+        trashcan: true,
+        renderer: 'thrasos',
+    });
+
+
+    const myTheme = Blockly.Theme.defineTheme('myTheme', {
+        base: Blockly.ThemeDark,
+        startHats: true,
+        componentStyles: {
+            'workspaceBackgroundColour': '#202020',
+            'toolboxBackgroundColour': '#272727',
+            'toolboxForegroundColour': '#fff',
+            'flyoutBackgroundColour': '#252526',
+            'flyoutForegroundColour': '#ccc',
+            'flyoutOpacity': 1,
+            'scrollbarColour': '#797979',
+            'insertionMarkerColour': '#fff',
+            'insertionMarkerOpacity': 0.3,
+            'scrollbarOpacity': 0.4,
+            'cursorColour': '#d0d0d0',
+            'blackBackground': '#333',
+        }
+
+    });
+    workspace.setTheme(myTheme);
 
     javascript.javascriptGenerator.forBlock['sub_block'] = function (block, generator) {
         const dropdown_event = block.getFieldValue('EVENT');

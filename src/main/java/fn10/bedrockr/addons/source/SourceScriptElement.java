@@ -2,6 +2,8 @@ package fn10.bedrockr.addons.source;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -86,7 +88,6 @@ public class SourceScriptElement implements ElementSource {
 
         ElementSource This = this;
 
-
         RElementValue elementName = new RElementValue(Parent, String.class, new FieldFilters.FileNameLikeStringFilter(),
                 "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
         elementName.setMaximumSize(new Dimension(300, 40));
@@ -121,6 +122,7 @@ public class SourceScriptElement implements ElementSource {
                         try {
                             if (serilized == null)
                                 serilized = new ScriptFile();
+                                System.out.println(rblockly.getSize());
 
                             serilized.ElementName = elementName.getValue().toString();
                             serilized.ScriptName = scriptName.getValue().toString();
@@ -148,6 +150,14 @@ public class SourceScriptElement implements ElementSource {
 
         frame.setSize(new Dimension(1500, 800));
         frame.setLocation(ImageUtilites.getScreenCenter(frame));
+
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent e) {
+                rblockly.dispose();
+                
+            }
+
+        });
 
         return frame;
     }
