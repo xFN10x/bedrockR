@@ -55,7 +55,7 @@ public class SourceScriptElement implements ElementSource {
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Script",
-                "<html>A JavaScript Script, you can edit with block coding.</html>",
+                "<html>A JavaScript Script, you can edit<br>with block coding.</html>",
                 new ImageIcon(ElementSource.class.getResource("/addons/element/Script.png")));
     }
 
