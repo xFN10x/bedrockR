@@ -61,7 +61,6 @@ const toolbox = {
         {
             kind: 'category',
             name: 'Server',
-            categorystyle: 'logic_category',
             contents: [
                 {
                     type: 'sub_block',
@@ -853,7 +852,7 @@ const workspace = Blockly.inject('blocklyDiv', {
 });
 
 
-const myTheme = Blockly.Theme.defineTheme('myTheme', {
+const bedrockRDark = Blockly.Theme.defineTheme('bedrockRDark', {
     base: Blockly.ThemeDark,
     startHats: true,
     componentStyles: {
@@ -872,7 +871,7 @@ const myTheme = Blockly.Theme.defineTheme('myTheme', {
     }
 
 });
-workspace.setTheme(myTheme);
+workspace.setTheme(bedrockRDark);
 
 javascript.javascriptGenerator.forBlock['sub_block'] = function (block, generator) {
     const dropdown_event = block.getFieldValue('EVENT');
@@ -891,7 +890,7 @@ javascript.javascriptGenerator.forBlock['sub_block'] = function (block, generato
             break;
     }
 
-    const code = `world.beforeEvents.${event}.subscribe(event => {\n${statement_statements}\n})`;
+    const code = `world.beforeEvents.${event}.subscribe(event => {\n${statement_statements}})`;
     return code;
 }
 
@@ -914,7 +913,6 @@ Blockly.getMainWorkspace().addChangeListener(() => {
 function getSaveJSON() {
     return Blockly.serialization.workspaces.save(Blockly.getMainWorkspace());
 }
-
-function loadJson(JSON) {
-    Blockly.serialization.workspaces.load(JSON, Blockly.getMainWorkspace());
+function loadJson(json) {
+    Blockly.serialization.workspaces.load(JSON.parse(json), Blockly.getMainWorkspace());
 }

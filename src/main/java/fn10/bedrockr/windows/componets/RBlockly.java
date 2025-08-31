@@ -1,5 +1,6 @@
 package fn10.bedrockr.windows.componets;
 
+import javax.annotation.Nullable;
 import javax.swing.JTextArea;
 
 import fn10.bedrockr.Launcher;
@@ -55,7 +56,11 @@ public class RBlockly extends JFXPanel {
         return webEngine.executeScript("JSON.stringify(getSaveJSON())").toString();
     }
 
-    public RBlockly(JTextArea previewArea) {
+    public void loadJson(String json) {
+        webEngine.executeScript("loadJson(JSON.parse("+ json +"))");
+    }
+
+    public RBlockly(JTextArea previewArea, @Nullable String loadFrom) {
         this.preview = previewArea;
         Bridge br = new Bridge(preview);
         this.bridge = br;
@@ -63,11 +68,17 @@ public class RBlockly extends JFXPanel {
         Platform.setImplicitExit(false);
         Platform.runLater(() -> {
 
+            Color bgcolour = Color.rgb(38, 38, 38);
+
             webView = new WebView();
             scene = new Scene(webView);
             webEngine = webView.getEngine();
-            scene.setFill(Color.rgb(38, 38, 38));
+
+            scene.setFill(bgcolour);
+            webView.setPageFill(bgcolour);
+
             setScene(scene);
+
 
             webView.setContextMenuEnabled(false);
 
@@ -89,6 +100,10 @@ public class RBlockly extends JFXPanel {
 
                                     JSObject window = (JSObject) webEngine.executeScript("window");
                                     window.setMember("rblockly", bridge);
+
+                                    if (loadFrom != null) {
+                                        webEngine.executeScript("loadJson('"+ loadFrom +"')");
+                                    }
 
                                 } else if (newValue == Worker.State.FAILED) {
                                     Exception ex = new Exception("Blockly pane failed to load.");

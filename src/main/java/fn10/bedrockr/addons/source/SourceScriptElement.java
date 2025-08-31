@@ -103,8 +103,9 @@ public class SourceScriptElement implements ElementSource {
         JTextArea preview = new JTextArea();
         preview.setEditable(false);
 
-        RBlockly rblockly = new RBlockly(preview);
-
+        RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null);
+        if (serilized != null)
+            System.out.println(serilized.Content);
         JLabel loading = new JLabel("Loading...");
 
         JPanel rightStuff = new JPanel();
@@ -132,15 +133,15 @@ public class SourceScriptElement implements ElementSource {
 
                             serilized.ElementName = elementName.getValue().toString();
                             serilized.ScriptName = scriptName.getValue().toString();
+                            Platform.runLater(() -> {
+                                serilized.Content = rblockly.getJson();
+                            });
 
                             serilized.setDraft(isDraft);
 
                             Listener.onElementCreate(This); // create
                             Sindow.dispose();
 
-                            Platform.runLater(() -> {
-                                System.out.println("JSON IS: " + rblockly.getJson());
-                            });
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             ErrorShower.showError(Sindow, "Failed to create ElementSource",
