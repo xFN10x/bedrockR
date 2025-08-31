@@ -11,8 +11,12 @@ import java.nio.file.StandardOpenOption;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
+
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -25,6 +29,7 @@ import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RBlockly;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import javafx.application.Platform;
 
 public class SourceScriptElement implements ElementSource {
 
@@ -100,6 +105,8 @@ public class SourceScriptElement implements ElementSource {
 
         RBlockly rblockly = new RBlockly(preview);
 
+        JLabel loading = new JLabel("Loading...");
+
         JPanel rightStuff = new JPanel();
         JPanel toprightStuff = new JPanel();
 
@@ -122,7 +129,6 @@ public class SourceScriptElement implements ElementSource {
                         try {
                             if (serilized == null)
                                 serilized = new ScriptFile();
-                                System.out.println(rblockly.getSize());
 
                             serilized.ElementName = elementName.getValue().toString();
                             serilized.ScriptName = scriptName.getValue().toString();
@@ -131,6 +137,10 @@ public class SourceScriptElement implements ElementSource {
 
                             Listener.onElementCreate(This); // create
                             Sindow.dispose();
+
+                            Platform.runLater(() -> {
+                                System.out.println("JSON IS: " + rblockly.getJson());
+                            });
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             ErrorShower.showError(Sindow, "Failed to create ElementSource",
@@ -139,14 +149,22 @@ public class SourceScriptElement implements ElementSource {
                     }
 
                 });
+        SpringLayout lay = new SpringLayout();
 
-        frame.InnerPane.setLayout(new BoxLayout(frame.InnerPane, BoxLayout.X_AXIS));
+        lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH, frame.InnerPane);
+        lay.putConstraint(SpringLayout.SOUTH, rightStuff, 0, SpringLayout.SOUTH, frame.InnerPane);
+        lay.putConstraint(SpringLayout.EAST, rightStuff, 0, SpringLayout.EAST, frame.InnerPane);
+        lay.putConstraint(SpringLayout.WEST, rightStuff, 805, SpringLayout.WEST, frame.InnerPane);
+
+        lay.putConstraint(SpringLayout.NORTH, rblockly, 0, SpringLayout.NORTH, frame.InnerPane);
+        lay.putConstraint(SpringLayout.SOUTH, rblockly, 0, SpringLayout.SOUTH, frame.InnerPane);
+        lay.putConstraint(SpringLayout.WEST, rblockly, 0, SpringLayout.WEST, frame.InnerPane);
+
+        frame.InnerPane.setLayout(lay);
 
         frame.InnerPane.add(rblockly);
-
-        frame.InnerPane.add(Box.createHorizontalStrut(5));
-
         frame.InnerPane.add(rightStuff);
+        frame.InnerPane.add(loading);
 
         frame.setSize(new Dimension(1500, 800));
         frame.setLocation(ImageUtilites.getScreenCenter(frame));
@@ -154,7 +172,6 @@ public class SourceScriptElement implements ElementSource {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 rblockly.dispose();
-                
             }
 
         });
