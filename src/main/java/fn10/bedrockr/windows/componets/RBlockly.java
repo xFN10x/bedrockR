@@ -57,10 +57,10 @@ public class RBlockly extends JFXPanel {
     }
 
     public void loadJson(String json) {
-        webEngine.executeScript("loadJson(JSON.parse("+ json +"))");
+        webEngine.executeScript("loadJson(JSON.parse(" + json + "))");
     }
 
-    public RBlockly(JTextArea previewArea, @Nullable String loadFrom) {
+    public RBlockly(JTextArea previewArea, @Nullable String loadFrom, @Nullable Runnable afterLoaded) {
         this.preview = previewArea;
         Bridge br = new Bridge(preview);
         this.bridge = br;
@@ -78,7 +78,6 @@ public class RBlockly extends JFXPanel {
             webView.setPageFill(bgcolour);
 
             setScene(scene);
-
 
             webView.setContextMenuEnabled(false);
 
@@ -102,8 +101,13 @@ public class RBlockly extends JFXPanel {
                                     window.setMember("rblockly", bridge);
 
                                     if (loadFrom != null) {
-                                        webEngine.executeScript("loadJson('"+ loadFrom +"')");
+                                        webEngine.executeScript("loadJson('" + loadFrom + "')");
                                     }
+                                    if (afterLoaded != null) {
+                                        afterLoaded.run();
+                                    }
+                                    //stop this from happening again
+                                    webEngine.getLoadWorker().stateProperty().removeListener(this);
 
                                 } else if (newValue == Worker.State.FAILED) {
                                     Exception ex = new Exception("Blockly pane failed to load.");

@@ -52,6 +52,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private CustomCreateFunction createFunction = null;
 
+    public final JButton CreateButton = new JButton("Create!");
+    public final JButton DraftButton = new JButton("Save as draft");
+    public final JButton CancelButton = new JButton("Cancel");
+
     public static interface CustomCreateFunction {
         void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft);
 
@@ -87,15 +91,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         this.SourceClass = sourceClass;
         this.SourceElementClass = sourceElementClass.getClass();
 
-        var CreateButton = new JButton("Create!");
         CreateButton.setActionCommand("create");
         CreateButton.addActionListener(this);
 
-        var DraftButton = new JButton("Save as draft");
         DraftButton.setActionCommand("draft");
         DraftButton.addActionListener(this);
 
-        var CancelButton = new JButton("Cancel");
         CancelButton.setActionCommand("cancel");
         CancelButton.addActionListener(this);
 
@@ -224,7 +225,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 if (createFunction == null)
                     create(false);
                 else
-                    createFunction.onCreate(this, Listener,false);
+                    createFunction.onCreate(this, Listener, false);
             } else { // show errored things
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
                 for (RElementValue EV : IncorrectFields) {

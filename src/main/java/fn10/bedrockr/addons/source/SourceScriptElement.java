@@ -7,6 +7,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -103,7 +105,6 @@ public class SourceScriptElement implements ElementSource {
         JTextArea preview = new JTextArea();
         preview.setEditable(false);
 
-        RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null);
         if (serilized != null)
             System.out.println(serilized.Content);
         JLabel loading = new JLabel("Loading...");
@@ -122,40 +123,48 @@ public class SourceScriptElement implements ElementSource {
         toprightStuff.add(scriptName);
 
         RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
-                RElementEditingScreen.DEFAULT_STYLE).setCustomCreateFunction(new CustomCreateFunction() {
+                RElementEditingScreen.DEFAULT_STYLE);
 
-                    @Override
-                    public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
-                            boolean isDraft) {
-                        try {
-                            if (serilized == null)
-                                serilized = new ScriptFile();
+        frame.CreateButton.setEnabled(false);
+        frame.DraftButton.setEnabled(false);
 
-                            serilized.ElementName = elementName.getValue().toString();
-                            serilized.ScriptName = scriptName.getValue().toString();
-                            Platform.runLater(() -> {
-                                serilized.Content = rblockly.getJson();
-                            });
+        RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null, () -> {
+            frame.CreateButton.setEnabled(true);
+            frame.DraftButton.setEnabled(true);
+        });
 
-                            serilized.setDraft(isDraft);
+        frame.setCustomCreateFunction(new CustomCreateFunction() {
 
-                            Listener.onElementCreate(This); // create
-                            Sindow.dispose();
+            @Override
+            public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
+                    boolean isDraft) {
+                try {
+                    Platform.runLater(() -> {
+                        if (serilized == null)
+                            serilized = new ScriptFile();
 
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            ErrorShower.showError(Sindow, "Failed to create ElementSource",
-                                    "Source Creation Error", ex);
-                        }
-                    }
+                        serilized.ElementName = elementName.getValue().toString();
+                        serilized.ScriptName = scriptName.getValue().toString();
+                        serilized.Content = rblockly.getJson();
+                        serilized.setDraft(isDraft);
 
-                });
+                        Listener.onElementCreate(This); // create
+                        Sindow.dispose();
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    ErrorShower.showError(Sindow, "Failed to create ElementSource",
+                            "Source Creation Error", ex);
+                }
+            }
+
+        });
         SpringLayout lay = new SpringLayout();
 
         lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH, frame.InnerPane);
         lay.putConstraint(SpringLayout.SOUTH, rightStuff, 0, SpringLayout.SOUTH, frame.InnerPane);
         lay.putConstraint(SpringLayout.EAST, rightStuff, 0, SpringLayout.EAST, frame.InnerPane);
-        lay.putConstraint(SpringLayout.WEST, rightStuff, 805, SpringLayout.WEST, frame.InnerPane);
+        lay.putConstraint(SpringLayout.WEST, rightStuff, 855, SpringLayout.WEST, frame.InnerPane);
 
         lay.putConstraint(SpringLayout.NORTH, rblockly, 0, SpringLayout.NORTH, frame.InnerPane);
         lay.putConstraint(SpringLayout.SOUTH, rblockly, 0, SpringLayout.SOUTH, frame.InnerPane);
