@@ -40,6 +40,7 @@ public class RBlockly extends JFXPanel {
 
         // this is called in javascript
         public void updatePreview(String code) {
+            System.out.println(code);
             preview.setText(code);
         }
 
