@@ -1,5 +1,6 @@
 // custom blocks
 const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
+  //#region server blocks
   {
     type: "sub_block",
     tooltip: "",
@@ -20,8 +21,7 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
         name: "STATEMENTS",
       },
     ],
-    colour: 225,
-    style: { hat: "cap" },
+    style: "server_blocks_caps",
   },
   {
     type: "send_message",
@@ -30,9 +30,9 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     message0: "send chat %1 to all players %2",
     args0: [
       {
-        type: "field_input",
-        name: "CHAT",
-        text: "Hello players!",
+        type: "input_value",
+        name: "VAL",
+        check: "String",
       },
       {
         type: "input_dummy",
@@ -41,8 +41,100 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: 225,
+    inputsInline: true,
   },
+  //#endregion
+  //#region block blocks
+  {
+    type: "get_block_from_event",
+    tooltip:
+      'Returns the block involved with this event. e.g. If the event is "Item Used on Block" it returns that block. (WARNING: NOT ALL EVENTS RETURN A BLOCK)',
+    helpUrl: "",
+    message0: "get Block from event %1",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+    ],
+    output: "Block",
+    style: "block_blocks",
+    inputsInline: true,
+  },
+  {
+    type: "is_block_air",
+    tooltip: "Check",
+    helpUrl: "",
+    message0: "is  %1 air? %2",
+    args0: [
+      {
+        type: "input_value",
+        name: "TARGET",
+        check: "Block",
+      },
+      {
+        type: "input_end_row",
+        name: "TEXT",
+      },
+    ],
+    output: "Boolean",
+    inputsInline: true,
+    style: "block_blocks",
+  },
+  {
+    type: "is_block_liquid",
+    tooltip: "Returns if the block is something like water, or lava.",
+    helpUrl: "",
+    message0: "is %1 a liquid? %2",
+    args0: [
+      {
+        type: "input_value",
+        name: "TARGET",
+        check: "Block",
+      },
+      {
+        type: "input_end_row",
+        name: "NAME",
+      },
+    ],
+    output: "Boolean",
+    style: "block_blocks",
+  },
+  {
+    type: "get_block_location",
+    tooltip: "Get the world location of the block",
+    helpUrl: "",
+    message0: "Location of block %1",
+    args0: [
+      {
+        type: "input_value",
+        name: "NAME",
+        check: "Block",
+      },
+    ],
+    output: "Vec3",
+    style: "block_blocks",
+    inputsInline: true,
+  },
+  //STOP FORGETTING COMMAS ^
+  //#endregion
+  //#region entity blocks
+  {
+    type: "get_player_from_event",
+    tooltip: "Returns the player who caused the event.(NOT IN ALL EVENTS)",
+    helpUrl: "",
+    message0: "get Player of event %1",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+    ],
+    output: "Player",
+    style: "player_blocks",
+    inputsInline: true,
+  },
+  //#endregion
 ]);
 
 // Register the definition.
@@ -54,6 +146,7 @@ const toolbox = {
     {
       kind: "category",
       name: "Server",
+      categorystyle: "server_category",
       contents: [
         {
           type: "sub_block",
@@ -68,6 +161,51 @@ const toolbox = {
     {
       kind: "sep",
     },
+    {
+      kind: "category",
+      name: "Block",
+      categorystyle: "block_category",
+      contents: [
+        {
+          type: "get_block_from_event",
+          kind: "block",
+        },
+        {
+          type: "is_block_air",
+          kind: "block",
+        },
+        {
+          type: "is_block_liquid",
+          kind: "block",
+        },
+        {
+          type: "get_block_location",
+          kind: "block",
+        } /*{
+          type: "get_block_from_event",
+          kind: "block",
+        },*/,
+      ],
+    },
+    {
+      kind: "category",
+      name: "Entity",
+      categorystyle: "entity_category",
+      contents: [
+        {
+          kind: "label",
+          text: "Players",
+        },
+        {
+          type: "get_player_from_event",
+          kind: "block",
+        },
+      ],
+    },
+    {
+      kind: "sep",
+    },
+
     //#region vanilla blocks
     {
       kind: "category",
@@ -836,16 +974,57 @@ const toolbox = {
     //#endregion
   ],
 };
+
 //load the injection
 const workspace = Blockly.inject("blocklyDiv", {
   toolbox: toolbox,
   trashcan: true,
-  renderer: "thrasos",
+  renderer: "geras",
 });
 
 const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
   base: Blockly.ThemeDark,
   startHats: true,
+  categoryStyles: {
+    server_category: {
+      colour: "#6d6d6d",
+    },
+    block_category: {
+      colour: "#00a028",
+    },
+    entity_category: {
+      colour: "#004a98",
+    },
+  },
+  blockStyles: {
+    server_blocks: {
+      colourPrimary: "#6d6d6d",
+      colourSecondary: "#2b2b2b",
+      colourTertiary: "#e8e8e8",
+    },
+    server_blocks_caps: {
+      colourPrimary: "#6d6d6d",
+      colourSecondary: "#2b2b2b",
+      colourTertiary: "#e8e8e8",
+      hat: "cap",
+    },
+    //confusing name
+    block_blocks: {
+      colourPrimary: "#00a028",
+      colourSecondary: "#006218",
+      colourTertiary: "#8aa190",
+    },
+    entity_blocks: {
+      colourPrimary: "#004a98",
+      colourSecondary: "#002d5d",
+      colourTertiary: "#007bff",
+    },
+    player_blocks: {
+      colourPrimary: "#2f79c8",
+      colourSecondary: "#1d528b",
+      colourTertiary: "#4e76a0",
+    },
+  },
   componentStyles: {
     workspaceBackgroundColour: "#202020",
     toolboxBackgroundColour: "#272727",
@@ -862,6 +1041,62 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
   },
 });
 workspace.setTheme(bedrockRDark);
+
+javascript.javascriptGenerator.forBlock["get_block_location"] = function () {
+  // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_name = generator.valueToCode(
+    block,
+    "NAME",
+    javascript.Order.ATOMIC
+  );
+
+  // TODO: Assemble javascript into the code variable.
+  const code = "...";
+  // TODO: Change Order.NONE to the correct operator precedence strength
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["is_block_liquid"] = function () {
+  // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_target = generator.valueToCode(
+    block,
+    "TARGET",
+    javascript.Order.ATOMIC
+  );
+
+  // TODO: Assemble javascript into the code variable.
+  const code = "...";
+  // TODO: Change Order.NONE to the correct operator precedence strength
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["get_block_from_event"] = function () {
+  // TODO: Assemble javascript into the code variable.
+  const code = "...";
+  // TODO: Change Order.NONE to the correct operator precedence strength
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["get_player_from_event"] = function () {
+  // TODO: Assemble javascript into the code variable.
+  const code = "...";
+  // TODO: Change Order.NONE to the correct operator precedence strength
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["is_block_air"] = function () {
+  // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_target = generator.valueToCode(
+    block,
+    "TARGET",
+    javascript.Order.ATOMIC
+  );
+
+  // TODO: Assemble javascript into the code variable.
+  const code = "...";
+  // TODO: Change Order.NONE to the correct operator precedence strength
+  return [code, javascript.Order.NONE];
+};
 
 javascript.javascriptGenerator.forBlock["sub_block"] = function (
   block,
@@ -885,7 +1120,7 @@ javascript.javascriptGenerator.forBlock["sub_block"] = function (
       break;
   }
 
-  const code = `world.beforeEvents.${event}.subscribe(event => {\n${statement_statements}})`;
+  const code = `world.afterEvents.${event}.subscribe(event => {\n${statement_statements}})`;
   return code;
 };
 
@@ -893,7 +1128,7 @@ javascript.javascriptGenerator.forBlock["send_message"] = function (
   block,
   generator
 ) {
-  const text_chat = block.getFieldValue("CHAT");
+  const value_val = generator.valueToCode(block, "VAL", javascript.Order.NONE);
 
   const code = `world.sendMessage("${text_chat}");`;
   return code;
@@ -916,3 +1151,17 @@ function loadJson(json) {
     Blockly.getMainWorkspace()
   );
 }
+
+// do stuff to make rendering work
+setTimeout(() => {
+  try {
+    Blockly.svgResize(workspace);
+    if (workspace.resize) workspace.resize();
+    workspace.getAllBlocks(false).forEach((b) => {
+      if (b.initSvg) b.initSvg();
+      if (b.render) b.render();
+    });
+  } catch (e) {
+    console.error("Error with trying to rerender it", e);
+  }
+}, 100);
