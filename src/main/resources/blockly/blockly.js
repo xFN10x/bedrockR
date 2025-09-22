@@ -8,7 +8,7 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     message0: "After entity dies %1 do %2",
     args0: [
       {
-        type: "input_end_row",
+        type: "input_dummy",
         name: "TEXT",
       },
       {
@@ -80,16 +80,12 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     type: "is_block_air",
     tooltip: "Check",
     helpUrl: "",
-    message0: "is  %1 air? %2",
+    message0: "is  %1 air?",
     args0: [
       {
         type: "input_value",
         name: "TARGET",
         check: "Block",
-      },
-      {
-        type: "input_end_row",
-        name: "TEXT",
       },
     ],
     output: "Boolean",
@@ -100,16 +96,12 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     type: "is_block_liquid",
     tooltip: "Returns if the block is something like water, or lava.",
     helpUrl: "",
-    message0: "is %1 a liquid? %2",
+    message0: "is %1 a liquid?",
     args0: [
       {
         type: "input_value",
         name: "TARGET",
         check: "Block",
-      },
-      {
-        type: "input_end_row",
-        name: "NAME",
       },
     ],
     output: "Boolean",
@@ -206,16 +198,12 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     tooltip:
       "This should be checked before you start doing anything with entitys. Checks if the entity is able to be modified, or read from.",
     helpUrl: "",
-    message0: "Get if entity %1 is valid %2",
+    message0: "Get if entity %1 is valid",
     args0: [
       {
         type: "input_value",
         name: "TARGET",
         check: "Entity",
-      },
-      {
-        type: "input_end_row",
-        name: "END",
       },
     ],
     style: "entity_blocks",
@@ -1094,7 +1082,7 @@ const toolbox = {
 const workspace = Blockly.inject("blocklyDiv", {
   toolbox: toolbox,
   trashcan: true,
-  renderer: "geras",
+  renderer: "Thrasos",
 });
 
 const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
@@ -1169,15 +1157,24 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
 });
 workspace.setTheme(bedrockRDark);
 
+javascript.javascriptGenerator.forBlock['get_entity_valid'] = function(
+  block,
+  generator
+) {
+  const value_target = generator.valueToCode(block, 'TARGET', javascript.Order.NONE);
+
+  const code = `${value_target}.isValid`;
+  return [code, javascript.Order.NONE];
+}
+
 javascript.javascriptGenerator.forBlock["get_entity_bool"] = function (
   block,
   generator
 ) {
-  // TODO: change Order.ATOMIC to the correct operator precedence strength
   const value_target = generator.valueToCode(
     block,
     "TARGET",
-    javascript.Order.ATOMIC
+    javascript.Order.NONE
   );
 
   const dropdown_dropdown = block.getFieldValue("DROPDOWN");
@@ -1313,16 +1310,46 @@ function loadJson(json) {
   );
 }
 
+let _renderTimeout = null;
 // do stuff to make rendering work
-setTimeout(() => {
-  try {
-    Blockly.svgResize(workspace);
-    if (workspace.resize) workspace.resize();
-    workspace.getAllBlocks(false).forEach((b) => {
-      if (b.initSvg) b.initSvg();
-      if (b.render) b.render();
-    });
-  } catch (e) {
-    console.error("Error with trying to rerender it", e);
-  }
-}, 100);
+function fixRendering(delay = 120) {
+  // debounce
+  if (_renderTimeout) clearTimeout(_renderTimeout);
+  _renderTimeout = setTimeout(() => {
+    try {
+      // ensure the Blockly svg fits its container
+      Blockly.svgResize(workspace);
+
+      // "render" call on workspace helps re-layout the toolbox/blocks
+      if (typeof workspace.render === "function") workspace.render();
+
+      // re-init & render every block's svg if necessary
+      workspace.getAllBlocks(false).forEach((b) => {
+        // initSvg only if not already initialized
+        if (typeof b.initSvg === "function" && !b.svg_) {
+          try {
+            b.initSvg();
+          } catch (e) {
+          }
+        }
+        if (typeof b.render === "function") {
+          try {
+            b.render();
+          } catch (e) {
+          
+          }
+        }
+      });
+
+      // also trigger a resize event in the page (some engines rely on it)
+      try {
+        window.dispatchEvent(new Event("resize"));
+      } catch (e) {}
+    } catch (e) {
+      console.error("fixRendering error", e);
+    }
+    _renderTimeout = null;
+  }, delay);
+}
+
+fixRendering(150)
