@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -126,6 +127,9 @@ public class SourceScriptElement implements ElementSource {
                 RElementEditingScreen.DEFAULT_STYLE);
 
         frame.CreateButton.setEnabled(false);
+        JButton DebugButton = (JButton)frame.add(new JButton("Debug"));
+        frame.Lay.putConstraint(SpringLayout.EAST, frame.CancelButton, 5, SpringLayout.WEST, DebugButton);
+        frame.Lay.putConstraint(SpringLayout.SOUTH, frame.CancelButton, 0, SpringLayout.SOUTH, DebugButton);
         frame.DraftButton.setEnabled(false);
 
         RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null, () -> {

@@ -5,15 +5,10 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     type: "sub_block",
     tooltip: "",
     helpUrl: "",
-    message0: "After %1 %2 %3",
+    message0: "After entity dies %1 do %2",
     args0: [
       {
-        type: "field_dropdown",
-        name: "EVENT",
-        options: [["Entity Dies", "ENT_DEATH"]],
-      },
-      {
-        type: "input_dummy",
+        type: "input_end_row",
         name: "TEXT",
       },
       {
@@ -21,6 +16,25 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
         name: "STATEMENTS",
       },
     ],
+    nextStatement: null,
+    style: "server_blocks_caps",
+  },
+  {
+    type: "sub_entitydie_block",
+    tooltip: "",
+    helpUrl: "",
+    message0: "After entity dies %1 do %2",
+    args0: [
+      {
+        type: "input_end_row",
+        name: "TEXT",
+      },
+      {
+        type: "input_statement",
+        name: "STATEMENTS",
+      },
+    ],
+    nextStatement: null,
     style: "server_blocks_caps",
   },
   {
@@ -41,6 +55,7 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
+    style: "server_blocks",
     inputsInline: true,
   },
   //#endregion
@@ -120,6 +135,93 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
   //#endregion
   //#region entity blocks
   {
+    type: "get_dead_entity_from_event",
+    tooltip:
+      "Returns the entity, which will be dead, from the event. (Works with: ",
+    helpUrl: "",
+    message0: "get Dead-Entity of event %1",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+    ],
+    style: "entity_blocks",
+    output: "Entity",
+    inputsInline: true,
+  },
+  {
+    type: "get_id_of_entity",
+    tooltip:
+      "Gets an ID of an entity. This ID is the same everytime the world loads.",
+    helpUrl: "",
+    message0: "Unqiue ID of entity %1",
+    args0: [
+      {
+        type: "input_value",
+        name: "NAME",
+        check: "Entity",
+      },
+    ],
+    output: "String",
+    style: "entity_blocks",
+    inputsInline: true,
+  },
+  {
+    type: "get_entity_bool",
+    tooltip: "Gets a boolean value from the entity.",
+    helpUrl: "",
+    message0: "Get if entity  %1 is %2 %3",
+    args0: [
+      {
+        type: "input_value",
+        name: "TARGET",
+        check: "Entity",
+      },
+      {
+        type: "field_dropdown",
+        name: "DROPDOWN",
+        options: [
+          ["climbing", "isClimbing"],
+          ["falling", "isFalling"],
+          ["in water", "isInWater"],
+          ["on the ground", "isOnGround"],
+          ["sleeping", "isSleeping"],
+          ["is sneaking", "isSneaking"],
+          ["sprinting", "isSprinting"],
+          ["swimming", "isSwimming"],
+        ],
+      },
+      {
+        type: "input_dummy",
+        name: "NAME",
+      },
+    ],
+    output: "Boolean",
+    style: "entity_blocks",
+    inputsInline: true,
+  },
+  {
+    type: "get_entity_valid",
+    tooltip:
+      "This should be checked before you start doing anything with entitys. Checks if the entity is able to be modified, or read from.",
+    helpUrl: "",
+    message0: "Get if entity %1 is valid %2",
+    args0: [
+      {
+        type: "input_value",
+        name: "TARGET",
+        check: "Entity",
+      },
+      {
+        type: "input_end_row",
+        name: "END",
+      },
+    ],
+    style: "entity_blocks",
+    output: "Boolean",
+  },
+  {
     type: "get_player_from_event",
     tooltip: "Returns the player who caused the event.(NOT IN ALL EVENTS)",
     helpUrl: "",
@@ -149,7 +251,7 @@ const toolbox = {
       categorystyle: "server_category",
       contents: [
         {
-          type: "sub_block",
+          type: "sub_entitydie_block",
           kind: "block",
         },
         {
@@ -181,10 +283,7 @@ const toolbox = {
         {
           type: "get_block_location",
           kind: "block",
-        } /*{
-          type: "get_block_from_event",
-          kind: "block",
-        },*/,
+        },
       ],
     },
     {
@@ -192,6 +291,22 @@ const toolbox = {
       name: "Entity",
       categorystyle: "entity_category",
       contents: [
+        {
+          type: "get_dead_entity_from_event",
+          kind: "block",
+        },
+        {
+          type: "get_id_of_entity",
+          kind: "block",
+        },
+        {
+          type: "get_entity_bool",
+          kind: "block",
+        },
+        {
+          type: "get_entity_valid",
+          kind: "block",
+        },
         {
           kind: "label",
           text: "Players",
@@ -997,6 +1112,18 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
     },
   },
   blockStyles: {
+    //#region vanilla
+    colour_blocks: { colourPrimary: "20" },
+    list_blocks: { colourPrimary: "260" },
+    logic_blocks: { colourPrimary: "210" },
+    loop_blocks: { colourPrimary: "120" },
+    math_blocks: { colourPrimary: "230" },
+    procedure_blocks: { colourPrimary: "290" },
+    text_blocks: { colourPrimary: "160" },
+    variable_blocks: { colourPrimary: "330" },
+    variable_dynamic_blocks: { colourPrimary: "310" },
+    hat_blocks: { colourPrimary: "330", hat: "cap" },
+    //#endregion
     server_blocks: {
       colourPrimary: "#6d6d6d",
       colourSecondary: "#2b2b2b",
@@ -1042,85 +1169,119 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
 });
 workspace.setTheme(bedrockRDark);
 
-javascript.javascriptGenerator.forBlock["get_block_location"] = function () {
+javascript.javascriptGenerator.forBlock["get_entity_bool"] = function (
+  block,
+  generator
+) {
   // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_target = generator.valueToCode(
+    block,
+    "TARGET",
+    javascript.Order.ATOMIC
+  );
+
+  const dropdown_dropdown = block.getFieldValue("DROPDOWN");
+
+  const code = `${value_target}.${dropdown_dropdown}`;
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["get_id_of_entity"] = function (
+  block,
+  generator
+) {
   const value_name = generator.valueToCode(
     block,
     "NAME",
-    javascript.Order.ATOMIC
+    javascript.Order.NONE
   );
 
-  // TODO: Assemble javascript into the code variable.
-  const code = "...";
-  // TODO: Change Order.NONE to the correct operator precedence strength
+  const code = `${value_name}.id`;
   return [code, javascript.Order.NONE];
 };
 
-javascript.javascriptGenerator.forBlock["is_block_liquid"] = function () {
-  // TODO: change Order.ATOMIC to the correct operator precedence strength
+javascript.javascriptGenerator.forBlock["get_dead_entity_from_event"] =
+  function (block, generator) {
+    const code = "deadEntity";
+    return [code, javascript.Order.NONE];
+  };
+
+javascript.javascriptGenerator.forBlock["get_block_location"] = function (
+  block,
+  generator
+) {
+  const value_name = generator.valueToCode(
+    block,
+    "NAME",
+    javascript.Order.NONE
+  );
+
+  const code = `${value_name}.location`;
+
+  console.log(javascript.Order);
+
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["is_block_liquid"] = function (
+  block,
+  generator
+) {
   const value_target = generator.valueToCode(
     block,
     "TARGET",
-    javascript.Order.ATOMIC
+    javascript.Order.NONE
   );
 
-  // TODO: Assemble javascript into the code variable.
-  const code = "...";
-  // TODO: Change Order.NONE to the correct operator precedence strength
+  const code = `${value_target}.isLiquid`;
   return [code, javascript.Order.NONE];
 };
 
-javascript.javascriptGenerator.forBlock["get_block_from_event"] = function () {
-  // TODO: Assemble javascript into the code variable.
-  const code = "...";
-  // TODO: Change Order.NONE to the correct operator precedence strength
+javascript.javascriptGenerator.forBlock["get_block_from_event"] = function (
+  block,
+  generator
+) {
+  const code = "block";
   return [code, javascript.Order.NONE];
 };
 
-javascript.javascriptGenerator.forBlock["get_player_from_event"] = function () {
-  // TODO: Assemble javascript into the code variable.
-  const code = "...";
-  // TODO: Change Order.NONE to the correct operator precedence strength
+javascript.javascriptGenerator.forBlock["get_player_from_event"] = function (
+  block,
+  generator
+) {
+  const code = "source";
   return [code, javascript.Order.NONE];
 };
 
-javascript.javascriptGenerator.forBlock["is_block_air"] = function () {
-  // TODO: change Order.ATOMIC to the correct operator precedence strength
+javascript.javascriptGenerator.forBlock["is_block_air"] = function (
+  block,
+  generator
+) {
   const value_target = generator.valueToCode(
     block,
     "TARGET",
-    javascript.Order.ATOMIC
+    javascript.Order.NONE
   );
-
-  // TODO: Assemble javascript into the code variable.
-  const code = "...";
-  // TODO: Change Order.NONE to the correct operator precedence strength
+  const code = `${value_target}.isAir`;
   return [code, javascript.Order.NONE];
 };
 
+//put this here for compatibility
 javascript.javascriptGenerator.forBlock["sub_block"] = function (
   block,
   generator
 ) {
-  const dropdown_event = block.getFieldValue("EVENT");
-
   const statement_statements = generator.statementToCode(block, "STATEMENTS");
+  const code = `world.afterEvents.entityDie.subscribe(event => {\n  const {damageSource, deadEntity} = event;\n${statement_statements}})`;
+  return code;
+};
 
-  javascript.javascriptGenerator.provideFunction_("import_server", [
-    "import { system, world, ItemStack } from '@minecraft/server';",
-  ]);
-
-  var event;
-  switch (dropdown_event) {
-    case "ENT_DEATH":
-      event = "entityDie";
-      break;
-
-    default:
-      break;
-  }
-
-  const code = `world.afterEvents.${event}.subscribe(event => {\n${statement_statements}})`;
+javascript.javascriptGenerator.forBlock["sub_entitydie_block"] = function (
+  block,
+  generator
+) {
+  const statement_statements = generator.statementToCode(block, "STATEMENTS");
+  const code = `world.afterEvents.entityDie.subscribe(event => {\n  const {damageSource, deadEntity} = event;\n${statement_statements}})`;
   return code;
 };
 
@@ -1130,7 +1291,7 @@ javascript.javascriptGenerator.forBlock["send_message"] = function (
 ) {
   const value_val = generator.valueToCode(block, "VAL", javascript.Order.NONE);
 
-  const code = `world.sendMessage("${text_chat}");`;
+  const code = `world.sendMessage(${value_val});`;
   return code;
 };
 

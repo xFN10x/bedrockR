@@ -1,5 +1,7 @@
 package fn10.bedrockr.windows.componets;
 
+import java.net.URL;
+
 import javax.annotation.Nullable;
 import javax.swing.JTextArea;
 
@@ -40,7 +42,6 @@ public class RBlockly extends JFXPanel {
 
         // this is called in javascript
         public void updatePreview(String code) {
-            System.out.println(code);
             preview.setText(code);
         }
 
@@ -51,6 +52,18 @@ public class RBlockly extends JFXPanel {
         Platform.runLater(() -> {
             webView.getEngine().load(null);
         });
+    }
+
+    public void execute(URL scriptURL) {
+        try {
+            execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void execute(String script) {
+        webEngine.executeScript(script);
     }
 
     public String getJson() {
@@ -97,7 +110,6 @@ public class RBlockly extends JFXPanel {
 
                                     webEngine
                                             .executeScript(RFileOperations.readResourceAsString("/blockly/blockly.js"));
-
                                     JSObject window = (JSObject) webEngine.executeScript("window");
                                     window.setMember("rblockly", bridge);
 
@@ -107,7 +119,7 @@ public class RBlockly extends JFXPanel {
                                     if (afterLoaded != null) {
                                         afterLoaded.run();
                                     }
-                                    //stop this from happening again
+                                    // stop this from happening again
                                     webEngine.getLoadWorker().stateProperty().removeListener(this);
 
                                 } else if (newValue == Worker.State.FAILED) {
