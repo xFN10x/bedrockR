@@ -55,15 +55,29 @@ public class RBlockly extends JFXPanel {
     }
 
     public void execute(URL scriptURL) {
-        try {
-            execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (!Platform.isFxApplicationThread())
+            Platform.runLater(() -> {
+                try {
+                    execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        else
+            try {
+                execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     public void execute(String script) {
-        webEngine.executeScript(script);
+        if (!Platform.isFxApplicationThread())
+            Platform.runLater(() -> {
+                webEngine.executeScript(script);
+            });
+        else
+            webEngine.executeScript(script);
     }
 
     public String getJson() {

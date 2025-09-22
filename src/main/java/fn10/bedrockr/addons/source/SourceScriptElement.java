@@ -5,6 +5,9 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Timer;
@@ -127,14 +130,18 @@ public class SourceScriptElement implements ElementSource {
                 RElementEditingScreen.DEFAULT_STYLE);
 
         frame.CreateButton.setEnabled(false);
-        JButton DebugButton = (JButton)frame.add(new JButton("Debug"));
-        frame.Lay.putConstraint(SpringLayout.EAST, frame.CancelButton, 5, SpringLayout.WEST, DebugButton);
-        frame.Lay.putConstraint(SpringLayout.SOUTH, frame.CancelButton, 0, SpringLayout.SOUTH, DebugButton);
+        JButton DebugButton = (JButton) frame.add(new JButton("Debug"));
+        frame.Lay.putConstraint(SpringLayout.WEST, DebugButton, 10, SpringLayout.EAST, frame.CancelButton);
+        frame.Lay.putConstraint(SpringLayout.SOUTH, DebugButton, 0, SpringLayout.SOUTH, frame.CancelButton);
         frame.DraftButton.setEnabled(false);
 
         RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null, () -> {
             frame.CreateButton.setEnabled(true);
             frame.DraftButton.setEnabled(true);
+        });
+
+        DebugButton.addActionListener(ac -> {
+            rblockly.execute("fixRendering(150)");
         });
 
         frame.setCustomCreateFunction(new CustomCreateFunction() {
