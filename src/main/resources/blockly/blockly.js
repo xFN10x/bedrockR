@@ -20,6 +20,43 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     style: "server_blocks_caps",
   },
   {
+    type: "sub_worldload_block",
+    tooltip: "",
+    helpUrl: "",
+    message0: "when world is loaded %1 do %2",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+      {
+        type: "input_statement",
+        name: "STATEMENTS",
+      },
+    ],
+    nextStatement: null,
+    style: "server_blocks_caps",
+  },
+  {
+    type: "every_tick",
+    tooltip: "",
+    helpUrl: "",
+    message0: "every game tick %1 do %2",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+      {
+        type: "input_statement",
+        name: "STATEMENTS",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    style: "server_blocks",
+  },
+  {
     type: "sub_entitydie_block",
     tooltip: "",
     helpUrl: "",
@@ -209,6 +246,7 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     style: "entity_blocks",
     output: "Boolean",
   },
+  //player blocks
   {
     type: "get_player_from_event",
     tooltip: "Returns the player who caused the event.(NOT IN ALL EVENTS)",
@@ -224,6 +262,47 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     style: "player_blocks",
     inputsInline: true,
   },
+  {
+    type: "get_players",
+    tooltip:
+      'Returns an array with all current players in world. PLEASE USE "for all players do:" BLOCK, NOT BUILT IN ',
+    helpUrl: "",
+    message0: "get players in world %1",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+    ],
+    style: "player_blocks",
+    output: "Array",
+  },
+  {
+    type: "for_all_players",
+    tooltip:
+      'Illiterates though each player, each player being the varible "plr" unless chosen otherwise.',
+    helpUrl: "",
+    message0: "for all players %1 %2 do %3",
+    args0: [
+      {
+        type: "field_variable",
+        name: "plr",
+        variable: "plr",
+      },
+      {
+        type: "input_dummy",
+        name: "TEXT",
+      },
+      {
+        type: "input_statement",
+        name: "STATEMENT",
+      },
+    ],
+    previousStatement: null,
+    style: "player_blocks",
+    nextStatement: null,
+  },
+
   //#endregion
 ]);
 
@@ -240,6 +319,14 @@ const toolbox = {
       contents: [
         {
           type: "sub_entitydie_block",
+          kind: "block",
+        },
+        {
+          type: "sub_worldload_block",
+          kind: "block",
+        },
+        {
+          type: "every_tick",
           kind: "block",
         },
         {
@@ -301,6 +388,14 @@ const toolbox = {
         },
         {
           type: "get_player_from_event",
+          kind: "block",
+        },
+        {
+          type: "get_players",
+          kind: "block",
+        },
+        {
+          type: "for_all_players",
           kind: "block",
         },
       ],
@@ -1073,6 +1168,12 @@ const toolbox = {
         },
       ],
     },
+    {
+      kind: "CATEGORY",
+      name: "Variables",
+      categorystyle: "variable_category",
+      custom: "VARIABLE",
+    },
 
     //#endregion
   ],
@@ -1157,15 +1258,36 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
 });
 workspace.setTheme(bedrockRDark);
 
-javascript.javascriptGenerator.forBlock['get_entity_valid'] = function(
+javascript.javascriptGenerator.forBlock["for_all_players"] = function (
   block,
   generator
 ) {
-  const value_target = generator.valueToCode(block, 'TARGET', javascript.Order.NONE);
+  const variable_plr = generator.getVariableName(block.getFieldValue("plr"));
+
+  const statement_statement = generator.statementToCode(block, "STATEMENT");
+
+  const code = `Array.from(world.getAllPlayers).forEach(${variable_plr} => {\n${statement_statement}})\n`;
+  return code;
+};
+
+javascript.javascriptGenerator.forBlock["get_players"] = function () {
+  const code = "world.getAllPlayers()";
+  return [code, javascript.Order.NONE];
+};
+
+javascript.javascriptGenerator.forBlock["get_entity_valid"] = function (
+  block,
+  generator
+) {
+  const value_target = generator.valueToCode(
+    block,
+    "TARGET",
+    javascript.Order.NONE
+  );
 
   const code = `${value_target}.isValid`;
   return [code, javascript.Order.NONE];
-}
+};
 
 javascript.javascriptGenerator.forBlock["get_entity_bool"] = function (
   block,
@@ -1263,13 +1385,39 @@ javascript.javascriptGenerator.forBlock["is_block_air"] = function (
   return [code, javascript.Order.NONE];
 };
 
+javascript.javascriptGenerator.forBlock["sub_worldload_block"] = function (
+  block,
+  generator
+) {
+  javascript.javascriptGenerator.provideFunction_("import_server", [
+    "import { system, world} from '@minecraft/server';",
+  ]);
+
+  const statement_statements = generator.statementToCode(block, "STATEMENTS");
+  const code = `world.afterEvents.worldLoad.subscribe(event => {\n${statement_statements}})\n`;
+  return code;
+};
+
+javascript.javascriptGenerator.forBlock["every_tick"] = function () {
+  const statement_statements = generator.statementToCode(block, "STATEMENTS");
+
+  const code = `system.runInterval(() => {\n
+    ${statement_statements}
+}, 1);`;
+  return code;
+};
+
 //put this here for compatibility
 javascript.javascriptGenerator.forBlock["sub_block"] = function (
   block,
   generator
 ) {
+  javascript.javascriptGenerator.provideFunction_("import_server", [
+    "import { system, world} from '@minecraft/server';",
+  ]);
+
   const statement_statements = generator.statementToCode(block, "STATEMENTS");
-  const code = `world.afterEvents.entityDie.subscribe(event => {\n  const {damageSource, deadEntity} = event;\n${statement_statements}})`;
+  const code = `world.afterEvents.entityDie.subscribe(event => {\n  const {damageSource, deadEntity} = event;\n${statement_statements}})\n`;
   return code;
 };
 
@@ -1277,8 +1425,12 @@ javascript.javascriptGenerator.forBlock["sub_entitydie_block"] = function (
   block,
   generator
 ) {
+  javascript.javascriptGenerator.provideFunction_("import_server", [
+    "import { system, world} from '@minecraft/server';",
+  ]);
+
   const statement_statements = generator.statementToCode(block, "STATEMENTS");
-  const code = `world.afterEvents.entityDie.subscribe(event => {\n  const {damageSource, deadEntity} = event;\n${statement_statements}})`;
+  const code = `world.afterEvents.entityDie.subscribe(event => {\n  const {damageSource, deadEntity} = event;\n${statement_statements}})\n`;
   return code;
 };
 
@@ -1288,7 +1440,7 @@ javascript.javascriptGenerator.forBlock["send_message"] = function (
 ) {
   const value_val = generator.valueToCode(block, "VAL", javascript.Order.NONE);
 
-  const code = `world.sendMessage(${value_val});`;
+  const code = `world.sendMessage(${value_val});\n`;
   return code;
 };
 
@@ -1329,15 +1481,12 @@ function fixRendering(delay = 120) {
         if (typeof b.initSvg === "function" && !b.svg_) {
           try {
             b.initSvg();
-          } catch (e) {
-          }
+          } catch (e) {}
         }
         if (typeof b.render === "function") {
           try {
             b.render();
-          } catch (e) {
-          
-          }
+          } catch (e) {}
         }
       });
 
@@ -1352,4 +1501,4 @@ function fixRendering(delay = 120) {
   }, delay);
 }
 
-fixRendering(150)
+fixRendering(150);
