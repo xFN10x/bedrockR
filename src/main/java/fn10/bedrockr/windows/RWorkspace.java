@@ -297,11 +297,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 });
                 progress.Steps = ToBuild.size() + 1;
                 // buildBP
-                // build workspace
-                progress.changeText("Building workspace..."); // change text
-                SWPF.getSerilized().build(BPdir,
-                        ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
-                progress.increaseProgressBySteps("Done!"); // next
+
                 // build rest
                 for (RElementFile rElementFile : ToBuild) {
                     if (rElementFile.getFile().getDraft())
@@ -317,7 +313,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 progress.changeText("Building resources... "); // change text
                 GlobalResVars.build(BPdir,
                         ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars);
-
+                // build workspace
+                progress.changeText("Building workspace..."); // change text
+                SWPF.getSerilized().build(BPdir,
+                        ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
+                        
+                progress.increaseProgressBySteps("Done!"); // next
                 // do mc sync
                 if (((WPFile) SWPF.getSerilized()).MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
@@ -363,7 +364,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             e.printStackTrace();
                         }
                     });
-                    
+
                     popup.add("Open Resource Directory").addActionListener(ac -> {
                         try {
                             Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
@@ -371,7 +372,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             e.printStackTrace();
                         }
                     });
-                    
+
                     popup.add("Resize").addActionListener(ac -> {
                         String choice = JOptionPane.showInputDialog(this,
                                 "What size do you want this image to be?",
@@ -395,7 +396,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                     Integer.parseInt(choice.split("x")[1]));
                             String old = icon.getImage().getWidth(null) + "x" + icon.getImage().getHeight(null);
 
-                            Image resized = ImageUtilites.ResizeImage(ImageIO.read(file), di, Image.SCALE_AREA_AVERAGING);
+                            Image resized = ImageUtilites.ResizeImage(ImageIO.read(file), di,
+                                    Image.SCALE_AREA_AVERAGING);
 
                             BufferedImage buff = new BufferedImage(di.width, di.height,
                                     BufferedImage.TYPE_INT_ARGB);

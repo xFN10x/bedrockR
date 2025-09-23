@@ -32,17 +32,19 @@ public class RBlockly extends JFXPanel {
 
     private final JTextArea preview;
 
-    public class Bridge {
+    public static class Bridge {
 
-        private final JTextArea preview;
+        private JTextArea preview = null;
 
         public Bridge(JTextArea preview) {
-            this.preview = preview;
+            if (preview != null)
+                this.preview = preview;
         }
 
         // this is called in javascript
         public void updatePreview(String code) {
-            preview.setText(code);
+            if (preview != null)
+                preview.setText(code);
         }
 
     }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
@@ -25,6 +26,7 @@ import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture.TextureData;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.utils.RFileOperations;
 
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds
@@ -36,10 +38,13 @@ public class GlobalBuildingVariables implements ElementFile {
     public List<String> Langs = new ArrayList<String>();
     public Map<String, String> EnglishTexts = new HashMap<String, String>();
     public Map<String, BlockJSONEntry> BlockRPEntrys = new HashMap<String, BlockJSONEntry>();
+
     public ItemTexture ItemTexturesFile = new ItemTexture();
     public BlockTexture BlockTexturesFile = new BlockTexture();
+
     public List<File> ItemTextures = new ArrayList<File>();
     public List<File> BlockTextures = new ArrayList<File>();
+
     public ResourceFile Resource;
     public WPFile WPF;
 
@@ -64,6 +69,8 @@ public class GlobalBuildingVariables implements ElementFile {
         ItemTextures.add(Resource.getResourceFile(null, WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
         return plannedkey;
     }
+
+    
 
     /**
      * Adds/Gets the block texture from the resource pack
@@ -158,7 +165,6 @@ public class GlobalBuildingVariables implements ElementFile {
 
         // #endregion
 
-
         // #region Block RP
 
         // move textures
@@ -190,7 +196,7 @@ public class GlobalBuildingVariables implements ElementFile {
         blocksJsonPath.toFile().createNewFile();
         Files.writeString(blocksJsonPath, gson.toJson(ActualBlocksJSON));
 
-        //do the terrian_texture.json
+        // do the terrian_texture.json
         BlockTexturesFile.resource_pack_name = WPF.WorkspaceName;
         BlockTexturesFile.texture_name = "atlas.terrain";
 
