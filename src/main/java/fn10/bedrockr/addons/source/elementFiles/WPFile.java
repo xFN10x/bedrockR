@@ -2,15 +2,25 @@ package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.Vector;
+
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Header;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Module;
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses.VersionVector;
 import fn10.bedrockr.addons.source.SourceWPFile;
@@ -37,6 +47,8 @@ public class WPFile implements ElementFile {
     public String uuid2;
     public String uuid3;
     public String uuid4;
+
+    public Map<UUID, String> Scripts = new HashMap<UUID, String>();
 
     public WPFile(String WPName, String MEV, String DES, String IE, String PREFIX) {
         this.Format = 1;
@@ -73,16 +85,31 @@ public class WPFile implements ElementFile {
         return false;
     }
 
+    /**
+     * Adds a javascript script to the addon
+     * 
+     * @param name - the name of the script. {@code name = "script.js"} would be
+     *             located in {@code scripts/script.js}, and
+     *             {@code name = "folder/script.js"} would be located in
+     *             {@code scripts/folder/script.js}
+     * @return the path the file can be written to.
+     */
+    public Path addScript(String rootPath, String name) {
+        Scripts.put(UUID.randomUUID(), "scripts/" + name);
+
+        return Path.of(rootPath, "scripts", name + ".js");
+    }
+
     @Override
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
 
         // build BP manifest
-        // ----------------------------------------------------------------------
-        var manifest = new Manifest();
+        // --------------------------------------------------------------------
+        Manifest manifest = new Manifest();
         manifest.formatVersion = 2;
         // header
-        var header = new Manifest.Header();
+        Header header = new Manifest.Header();
         header.name = WorkspaceName;
         header.description = Description;
         header.uuid = this.uuid1;
@@ -91,26 +118,45 @@ public class WPFile implements ElementFile {
         // add header
         manifest.header = header;
         // modules
-        var module = new Manifest.Module();
-        module.type = "data";
-        module.uuid = this.uuid2;
-        module.version = VersionVector.fromString(BPVersion);
-        // add modules
-        var modules = new ArrayList<Manifest.Module>();
-        modules.add(module);
+        List<Module> mods = new ArrayList<>();
+        Module dataModule = new Manifest.Module();
+        dataModule.type = "data";
+        dataModule.uuid = this.uuid2;
+        dataModule.version = VersionVector.fromString(BPVersion);
+        mods.add(dataModule);
+        if (Scripts != null) {
+            if (Scripts.size() > 0) {
+                for (Entry<UUID, String> entry : Scripts.entrySet()) {
+                    Module mod = new Module();
+                    mod.uuid = entry.getKey().toString();
+                    mod.version = new Vector<Integer>(List.of(new Integer[] { 1, 0, 0 }));
+                    mod.type = "script";
+                    mod.language = "javascript";
+                    mod.entry = entry.getValue();
+                }
+            }
+        }
+        // dependencies
+        List<Dependence> depndences = new ArrayList<>();
+
+        if (Scripts != null)
+            if (Scripts.size() > 0) {
+                Dependence mcserver = new Manifest.Dependence();
+                mcserver.module_name = "@minecraft/server";
+                mcserver.version = "2.0.0";
+            }
         // add to manifest
-        manifest.modules = modules.toArray(new Module[0]);
+        manifest.modules = mods.toArray(new Module[0]);
+        manifest.dependencies = depndences.toArray(new Dependence[0]);
 
         // build manifest
-        //var gson = new GsonBuilder().setPrettyPrinting().create();
+        // var gson = new GsonBuilder().setPrettyPrinting().create();
         var json = gson.toJson(manifest);
 
         var path = new File(rootPath + File.separator + "manifest.json").toPath();
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);
-
-        // Files.writeString(path, json)
 
         // add image
         var img = Files.readAllBytes(
@@ -152,8 +198,6 @@ public class WPFile implements ElementFile {
         FileUtils.createParentDirectories(RPpath.toFile());
         Files.write(RPpath, RPjson.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);
-
-        // Files.writeString(path, json)
 
         // add image
         var img2 = Files.readAllBytes(

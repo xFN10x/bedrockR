@@ -64,10 +64,10 @@ public class Manifest {
          * and if it is, only accepted value is <code>"javascript"</code>
          */
         public String language; // only if type is "script", if it is, only value is "javascript"
+        public String entry;
     }
     public static class Dependence {
-        public String uuid;
-        public Vector<Integer> version;
+        public String version;
         public String module_name;
     }
     public static class Capability { //i dont think this will be used at all.
@@ -95,5 +95,6 @@ public class Manifest {
     public Header header;
     public Module[] modules;
     public Capability[] capabilities;
+    public Dependence[] dependencies;
     public Metadata metadata;
 }
