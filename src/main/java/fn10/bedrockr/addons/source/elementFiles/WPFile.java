@@ -95,9 +95,14 @@ public class WPFile implements ElementFile {
      * @return the path the file can be written to.
      */
     public Path addScript(String rootPath, String name) {
+        // i still dont know how this is null, so just check here
+        if (Scripts == null) {
+           Scripts = new HashMap<UUID, String>();
+        }
+        
         Scripts.put(UUID.randomUUID(), "scripts/" + name);
 
-        return Path.of(rootPath, "scripts", name + ".js");
+        return Path.of(rootPath, "scripts", name);
     }
 
     @Override
@@ -125,7 +130,7 @@ public class WPFile implements ElementFile {
         dataModule.version = VersionVector.fromString(BPVersion);
         mods.add(dataModule);
         if (Scripts != null) {
-            if (Scripts.size() > 0) {
+            if (!Scripts.isEmpty()) {
                 for (Entry<UUID, String> entry : Scripts.entrySet()) {
                     Module mod = new Module();
                     mod.uuid = entry.getKey().toString();
@@ -133,6 +138,7 @@ public class WPFile implements ElementFile {
                     mod.type = "script";
                     mod.language = "javascript";
                     mod.entry = entry.getValue();
+                    mods.add(mod);
                 }
             }
         }
@@ -140,10 +146,11 @@ public class WPFile implements ElementFile {
         List<Dependence> depndences = new ArrayList<>();
 
         if (Scripts != null)
-            if (Scripts.size() > 0) {
+            if (!Scripts.isEmpty()) {
                 Dependence mcserver = new Manifest.Dependence();
                 mcserver.module_name = "@minecraft/server";
                 mcserver.version = "2.0.0";
+                depndences.add(mcserver);
             }
         // add to manifest
         manifest.modules = mods.toArray(new Module[0]);

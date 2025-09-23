@@ -1,8 +1,16 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceScriptElement;
@@ -45,6 +53,21 @@ public class ScriptFile implements ElementFile {
     @UneditableByCreation
     private transient Bridge bridge = new RBlockly.Bridge(null);
 
+    @UneditableByCreation
+    /**
+     * format with; string version, elementname, scriptname, version (= 1.0.0)
+     */
+    private transient String scriptHeader = "/*\r\n" + //
+            "  This script was generated with - bedrockR (https://github.com/xFN10x/bedrockR)\r\n" + //
+            "  Version: %s\r\n" +
+            "\r\n" +
+            "  Details:\r\n" +
+            "    ElementName = %s\r\n" +
+            "    ScriptName = %s\r\n" +
+            "    Version = %s\r\n" +
+            "*/\r\n" +
+            "\r\n";
+
     @Override
     public Class<? extends ElementSource> getSourceClass() {
         return SourceScriptElement.class;
@@ -68,7 +91,6 @@ public class ScriptFile implements ElementFile {
     @Override
     public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-
         try {
             Platform.startup(() -> {
             });
@@ -100,7 +122,18 @@ public class ScriptFile implements ElementFile {
                                 }
                                 // stop this from happening again
                                 webEngine.getLoadWorker().stateProperty().removeListener(this);
-                                System.out.println("Built: " + webEngine.executeScript("getSaveJSON()").toString());
+                                final String code = webEngine.executeScript(
+                                        "javascript.javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace())")
+                                        .toString();
+
+                                final String finishedCode = String.format(scriptHeader, Launcher.VERSION, ElementName,
+                                        ScriptName, "1.0.0") + code;
+                                try {
+                                    FileUtils.writeStringToFile(workspaceFile.addScript(rootPath, ScriptName + ".js").toFile(), finishedCode, StandardCharsets.UTF_8);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    ErrorShower.showError(null, "Failed to write script.", e);
+                                }
                                 latch.countDown();
                             } else if (newValue == Worker.State.FAILED) {
                                 Exception ex = new Exception("Blockly pane failed to load.");
@@ -117,7 +150,7 @@ public class ScriptFile implements ElementFile {
 
         });
         try {
-            latch.await();
+            latch.await(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

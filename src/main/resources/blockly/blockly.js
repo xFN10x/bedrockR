@@ -1502,3 +1502,15 @@ function fixRendering(delay = 120) {
 }
 
 fixRendering(150);
+
+//ignore this
+
+/*
+  This script was generated with - bedrockR (https://github.com/xFN10x/bedrockR)
+  Version: %s
+
+  Details:
+    ElementName = %s
+    ScriptName = %s
+    Version = %s
+*/
