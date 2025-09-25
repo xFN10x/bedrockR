@@ -14,6 +14,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
@@ -94,7 +95,7 @@ public class SourceScriptElement implements ElementSource {
 
         for (ElementFile elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(Parent, Workspace)) {
             if (elementsFromWorkspace.getElementName().contains(new ScriptFile().getElementName())) {
-
+                JOptionPane.showMessageDialog(Parent, "As of a1.2, you can only make 1 script in your addon.", "Cannot make more than 1 script", JOptionPane.INFORMATION_MESSAGE);
             }
         }
 
