@@ -91,7 +91,6 @@ public class SourceScriptElement implements ElementSource {
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
 
-if ()
 
         ElementSource This = this;
 

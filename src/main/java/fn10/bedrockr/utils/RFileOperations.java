@@ -66,6 +66,12 @@ public class RFileOperations {
     public static final String WPFFILENAME = "workspace.WPF";
     public static final String RESOURCE_FILE_NAME = "resources.json";
 
+    /**
+     * Gets the class of an elementfile, based on the extension
+     * @param doingThis the closest  (J)frame
+     * @param fileExtension
+     * @return
+     */
     public static Class<? extends ElementSource> getElementClassFromFileExtension(Frame doingThis,
             String fileExtension) {
         try {
