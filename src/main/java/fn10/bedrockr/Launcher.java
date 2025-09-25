@@ -13,7 +13,11 @@ import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.laf.BedrockrDark;
 
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +27,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.*;
 
 import javax.imageio.ImageIO;
@@ -37,7 +42,7 @@ public class Launcher {
     public static int CHECKVERSION = 2;
     public static Image ICON;
 
-    public static java.util.List<Image> ICONS = new ArrayList<Image>();
+    public static List<Image> ICONS = new ArrayList<Image>();
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");
@@ -46,10 +51,10 @@ public class Launcher {
         String ver = System.getProperty("java.version");
         if (ver.startsWith("1.")) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
-                    + "\n Required version: 21.0.0-LTS", "Java error", JOptionPane.ERROR_MESSAGE);
+                    + "\n Required version: 21.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
         } else if (Integer.parseInt(ver.substring(0, 2)) < 21) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
-                    + "\n Required version: 21.0.0-LTS", "Java error", JOptionPane.ERROR_MESSAGE);
+                    + "\n Required version: 21.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
         }
 
         RSplashScreen loading = new RSplashScreen();
