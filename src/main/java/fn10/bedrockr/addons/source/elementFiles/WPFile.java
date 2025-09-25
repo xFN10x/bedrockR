@@ -149,7 +149,7 @@ public class WPFile implements ElementFile {
             if (!Scripts.isEmpty()) {
                 Dependence mcserver = new Manifest.Dependence();
                 mcserver.module_name = "@minecraft/server";
-                mcserver.version = "2.0.0";
+                mcserver.version = "2.1.0";
                 depndences.add(mcserver);
             }
         // add to manifest
