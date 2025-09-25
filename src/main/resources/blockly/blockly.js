@@ -278,6 +278,22 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     output: "Array",
   },
   {
+    type: "player_entity",
+    tooltip: "Lets you connect player blocks to entity blocks",
+    helpUrl: "",
+    message0: "%1 as entity",
+    args0: [
+      {
+        type: "input_value",
+        name: "PLR",
+        check: "Player",
+      }
+    ],
+    output: "Entity",
+    inputsInline: true,
+    style: "player_blocks",
+  },
+  {
     type: "for_all_players",
     tooltip:
       'Illiterates though each player, each player being the varible "plr" unless chosen otherwise.',
@@ -379,10 +395,6 @@ const toolbox = {
           kind: "block",
         },
         {
-          type: "get_entity_valid",
-          kind: "block",
-        },
-        {
           kind: "label",
           text: "Players",
         },
@@ -396,6 +408,10 @@ const toolbox = {
         },
         {
           type: "for_all_players",
+          kind: "block",
+        },
+        {
+          type: "player_entity",
           kind: "block",
         },
       ],
@@ -1258,6 +1274,15 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
 });
 workspace.setTheme(bedrockRDark);
 
+javascript.javascriptGenerator.forBlock['player_entity'] = function(
+  block,
+  generator
+) {
+  //at some point ill just make player blocks connect by them selfs
+  const value_plr = generator.valueToCode(block, 'PLR', javascript.Order.NONE);
+  return [value_plr, javascript.Order.NONE];
+}
+
 javascript.javascriptGenerator.forBlock["for_all_players"] = function (
   block,
   generator
@@ -1266,7 +1291,7 @@ javascript.javascriptGenerator.forBlock["for_all_players"] = function (
 
   const statement_statement = generator.statementToCode(block, "STATEMENT");
 
-  const code = `Array.from(world.getAllPlayers).forEach(${variable_plr} => {\n${statement_statement}})\n`;
+  const code = `Array.from(world.getAllPlayers()).forEach(${variable_plr} => {\n${statement_statement}})\n`;
   return code;
 };
 
