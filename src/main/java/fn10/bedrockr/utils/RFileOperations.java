@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,7 @@ import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.windows.RLoadingScreen;
 import fn10.bedrockr.windows.RWorkspace;
@@ -68,15 +70,36 @@ public class RFileOperations {
     public static final String RESOURCE_FILE_NAME = "resources.json";
 
     /**
-     * Gets the class of an elementfile, based on the extension
-     * @param doingThis the closest  (J)frame
+     * Gets the class of the ElementSource linked with the ElementFile, based on the
+     * extension
+     * 
+     * @param doingThis     the closest (J)frame
      * @param fileExtension
      * @return
      */
-    public static Class<? extends ElementSource> getElementClassFromFileExtension(Frame doingThis,
+    public static Class<? extends ElementSource> getElementSourceClassFromFileExtension(Frame doingThis,
             String fileExtension) {
         try {
             return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
+            return null;
+        }
+    }
+
+    /**
+     * Gets the class of the ElementSource linked with the ElementFile, based on the
+     * extension
+     * 
+     * @param doingThis     the closest (J)frame
+     * @param fileExtension
+     * @return
+     */
+    public static ElementSource getElementSourceFromFileExtension(Frame doingThis,
+            String fileExtension) {
+        try {
+            return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
@@ -490,6 +513,34 @@ public class RFileOperations {
             }
         }
 
+    }
+
+    public static Path getFileFromElementFile(Frame doingThis, String workspace, ElementFile elementFile) {
+        Path proposed = Path.of(RFileOperations
+                .getFileFromWorkspace(doingThis, workspace,
+                        File.separator + "elements" + File.separator)
+                .getAbsolutePath(),
+                elementFile.getElementName() + "."
+                        + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
+        return proposed;
+    }
+
+    public static ElementFile[] getElementsFromWorkspace(Frame doingThis, String workspace) {
+        java.util.List<ElementFile> building = new ArrayList<>();
+        for (File file : RFileOperations
+                .getFileFromWorkspace(doingThis, workspace,
+                        File.separator + "elements" + File.separator)
+                .listFiles()) {
+            try {
+                ElementSource source = getElementSourceFromFileExtension(doingThis,
+                        file.getName().substring(file.getName().lastIndexOf('.')));
+                source.getFromJSON(Files.readString(file.toPath()));
+                building.add(source.getSerilized());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return building.toArray(new ElementFile[0]);
     }
 
 }
