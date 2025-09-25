@@ -32,7 +32,7 @@ javafx {
 dependencies {
     implementation libs.guava
     //gson
-    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
     //flat laf
     implementation 'com.formdev:flatlaf:3.6'
 
