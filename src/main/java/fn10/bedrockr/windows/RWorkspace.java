@@ -191,7 +191,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         HelpWikiButton.addActionListener(action -> {
             try {
                 Desktop.getDesktop()
-                        .browse(URI.create("https://github.com/xFN10x/bedrockR/wiki#how-to-make-simple-item"));
+                        .browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
 
             } catch (Exception e) {
                 e.printStackTrace();
