@@ -19,6 +19,10 @@ public class SourceResourceFile implements ElementSource {
         this.Serilized = serilized;
     }
 
+    public SourceResourceFile() {
+        this.Serilized = null;
+    }
+
     public SourceResourceFile(String json) {
        this.Serilized = gson.fromJson(json, ResourceFile.class);
     }

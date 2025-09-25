@@ -99,6 +99,7 @@ public class RFileOperations {
     public static ElementSource getElementSourceFromFileExtension(Frame doingThis,
             String fileExtension) {
         try {
+            System.out.println(fileExtension);
             return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
@@ -522,6 +523,7 @@ public class RFileOperations {
                 .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
+        System.out.println("PROPOSED " + proposed);
         return proposed;
     }
 
@@ -533,9 +535,9 @@ public class RFileOperations {
                 .listFiles()) {
             try {
                 ElementSource source = getElementSourceFromFileExtension(doingThis,
-                        file.getName().substring(file.getName().lastIndexOf('.')));
-                source.getFromJSON(Files.readString(file.toPath()));
-                building.add(source.getSerilized());
+                        file.getName().substring(file.getName().lastIndexOf('.') + 1));
+                
+                building.add(source.getFromJSON(Files.readString(file.toPath())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
