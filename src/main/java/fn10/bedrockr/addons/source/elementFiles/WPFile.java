@@ -2,7 +2,6 @@ package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -15,8 +14,6 @@ import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
-
-import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;

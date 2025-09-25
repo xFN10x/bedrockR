@@ -31,7 +31,6 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
-import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
 

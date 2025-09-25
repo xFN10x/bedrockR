@@ -16,7 +16,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 
 public class SharedJSONClasses {

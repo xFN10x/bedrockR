@@ -5,7 +5,6 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class ImageUtilites {

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
@@ -26,7 +25,6 @@ import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture.TextureData;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.RFileOperations;
 
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds

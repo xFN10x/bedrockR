@@ -5,10 +5,8 @@ import java.time.LocalTime;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.utils.ImageUtilites;
