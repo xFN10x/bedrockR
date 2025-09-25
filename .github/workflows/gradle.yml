@@ -5,6 +5,10 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+    
+env:
+  vector_ver: '0.3.0'
+  string_ver: a1.2
 
 jobs:
   build:
@@ -43,23 +47,38 @@ jobs:
     - name: Build Normal
       run: ./gradlew jpackage --info
 
-    - name: Upload Normal   
+    - name: Upload Normal (linux, ARM) 
+      if: matrix.os == 'ubuntu-24.04-arm'
       uses: actions/upload-artifact@v4
       with:
-        name: build-${{matrix.os}}
-        path: build/builtDist  
+        name: bedrockR-${{env.string_ver}}-linux-arm64.deb
+        path: build/builtDist/bedrockr_${{env.vector_ver}}_arm64.deb
+
+    - name: Upload Normal (linux) 
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: bedrockR-${{env.string_ver}}-linux-arm64.deb
+        path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
+
+    - name: Upload Normal (windows) 
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: bedrockR-${{env.string_ver}}-windows-64.deb
+        path: build/builtDist/bedrockR-${{env.vector_ver}}.msi
 
 
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'ubuntu-latest'
       with:
         if-no-files-found: error
-        name: bedrockR-a.1.1.jar
-        path: build/builtJars/bedrockR-a1.1-all.jar
+        name: bedrockR-${{env.string_ver}}.jar
+        path: build/builtJars/bedrockR-${{env.string_ver}}-all.jar
       
 
 
-  dependency-submission:
+  dependency-submission: 
 
     runs-on: ubuntu-latest
     permissions:
