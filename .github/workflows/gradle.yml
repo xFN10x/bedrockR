@@ -58,7 +58,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: bedrockR-${{env.string_ver}}-linux-arm64.deb
+        name: bedrockR-${{env.string_ver}}-linux-amd64.deb
         path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
 
     - name: Upload Normal (windows) 
