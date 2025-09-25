@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -89,6 +90,8 @@ public class SourceScriptElement implements ElementSource {
 
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
+
+if ()
 
         ElementSource This = this;
 

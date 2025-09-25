@@ -1,15 +1,11 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.Launcher;
@@ -129,7 +125,10 @@ public class ScriptFile implements ElementFile {
                                 final String finishedCode = String.format(scriptHeader, Launcher.VERSION, ElementName,
                                         ScriptName, "1.0.0") + code;
                                 try {
-                                    FileUtils.writeStringToFile(workspaceFile.addScript(rootPath, ScriptName + ".js").toFile(), finishedCode, StandardCharsets.UTF_8);
+                                    Path path = workspaceFile.addScript(rootPath, ScriptName + ".js");
+                                    FileUtils.writeStringToFile(
+                                            path.toFile(),
+                                            finishedCode, StandardCharsets.UTF_8);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                     ErrorShower.showError(null, "Failed to write script.", e);
