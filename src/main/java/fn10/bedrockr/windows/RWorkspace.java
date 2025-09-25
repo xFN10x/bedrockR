@@ -315,7 +315,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 progress.changeText("Building workspace..."); // change text
                 SWPF.getSerilized().build(BPdir,
                         ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
-                        
+
                 progress.increaseProgressBySteps("Done!"); // next
                 // do mc sync
                 if (((WPFile) SWPF.getSerilized()).MinecraftSync) {
@@ -446,26 +446,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void refreshElements() {
         SwingUtilities.invokeLater(() -> {
             ElementInnerPanelView.removeAll();
-            for (File file : RFileOperations
-                    .getFileFromWorkspace(this, ((WPFile) SWPF.getSerilized()).WorkspaceName,
-                            File.separator + "elements" + File.separator)
-                    .listFiles()) { // get all elements in workspace
-                // Launcher.LOG.info(file.getName());
-                var ext = FilenameUtils.getExtension(file.getName());
+            for (ElementFile file : RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName())) {
                 try {
-                    if (ext.contains("ref")) { // if it is a file, do
-                        file.setReadable(true);
-                        Class<? extends ElementSource> clazz = RFileOperations.getElementClassFromFileExtension(this,
-                                ext);
-                        ElementSource newsrc = clazz.getConstructor(String.class)
-                                .newInstance(Files.readString(file.toPath()));
-                        ElementInnerPanelView
-                                .add(new RElementFile(this, (ElementFile) newsrc.getSerilized(), file.getPath()));
-                    }
+                    ElementInnerPanelView
+                            .add(new RElementFile(this, file, RFileOperations
+                                    .getFileFromElementFile(this, SWPF.workspaceName(), file).toString()));
+
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ErrorShower.showError(this, "Failed to load element", "Element Error", e);
-                    return;
                 }
             }
             ElementInnerPanelView.updateUI();
