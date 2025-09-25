@@ -7,6 +7,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -90,6 +92,11 @@ public class SourceScriptElement implements ElementSource {
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
 
+        for (ElementFile elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(Parent, Workspace)) {
+            if (elementsFromWorkspace.getElementName().contains(new ScriptFile().getElementName())) {
+
+            }
+        }
 
         ElementSource This = this;
 

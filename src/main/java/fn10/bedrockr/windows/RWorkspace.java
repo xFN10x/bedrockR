@@ -21,6 +21,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -284,25 +285,28 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 refreshAll();
                 GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WPFile) SWPF.getSerilized(),
                         RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
-                ArrayList<RElementFile> ToBuild = new ArrayList<RElementFile>();
-                SwingUtilities.invokeAndWait(() -> {
+                List<ElementFile> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
+
+                //change this to actually get the files instead of the ui elements
+                /*SwingUtilities.invokeAndWait(() -> {
                     for (Component comp : ElementInnerPanelView.getComponents()) {
                         if (!comp.getName().equals("RElementFile"))
                             continue;
                         var casted = ((RElementFile) comp);
                         ToBuild.add(casted);
                     }
-                });
+                });*/
+
                 progress.Steps = ToBuild.size() + 1;
                 // buildBP
 
                 // build rest
-                for (RElementFile rElementFile : ToBuild) {
-                    if (rElementFile.getFile().getDraft())
+                for (ElementFile elementFile : ToBuild) {
+                    if (elementFile.getDraft())
                         continue;
                     // build a element, then incrament the counter
-                    progress.changeText("Building " + rElementFile.getFile().getElementName()); // change text
-                    rElementFile.getFile().build(BPdir,
+                    progress.changeText("Building " + elementFile.getElementName()); // change text
+                    elementFile.build(BPdir,
                             ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }

@@ -29,12 +29,21 @@ public interface ElementSource {
 
     abstract String getJSONString();
 
+    /**
+     * THIS SHOULD NOT SET SERILIZED
+     * @param jsonString the string, which is a json, that is serilized
+     * @return the ElementFile.
+     */
     abstract ElementFile getFromJSON(String jsonString);
 
     abstract File buildJSONFile(Frame doingThis, String workspace);
 
     abstract Class<?> getSerilizedClass();
 
+    /**
+     * Gets the ElementFile linked to this ElementSource object.
+     * @return the ElementFile
+     */
     abstract ElementFile getSerilized();
 
     abstract RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent, String Workspace);
