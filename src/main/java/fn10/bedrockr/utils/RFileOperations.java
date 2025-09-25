@@ -39,6 +39,7 @@ public class RFileOperations {
     private static final String USER_DIR = System.getProperty("user.home");
     private static final String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static final File BaseDirectory = new File(BASE_PATH);
+    @SuppressWarnings("unused")
     private static String COMMOJANG = null;
     static {
         var settings = SettingsFile.getSettings(null);

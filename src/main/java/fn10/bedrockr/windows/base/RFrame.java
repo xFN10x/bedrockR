@@ -4,7 +4,6 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 
 import java.awt.*;
-import java.io.IOError;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
