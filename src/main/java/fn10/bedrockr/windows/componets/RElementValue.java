@@ -729,11 +729,6 @@ public class RElementValue extends JPanel {
             log.info(Target + ": Not Enabled, so it passes");
             return true;// if its disabled, true, because it wont get written anyways
         }
-        if (Target.equals("Group")) {
-            JOptionPane.showMessageDialog(parentFrame,
-                    "Creative groups are not tested, and may not work. It is reccomended not to use this.",
-                    "Creative Group Warning", JOptionPane.WARNING_MESSAGE);
-        }
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             log.info(Target + ": Bool cannot be wrong, so it passes");
 

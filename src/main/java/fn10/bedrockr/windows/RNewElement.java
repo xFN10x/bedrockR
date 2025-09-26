@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
@@ -15,8 +16,11 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
+import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SpringUtilities;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElement;
@@ -33,13 +37,13 @@ public class RNewElement extends RDialog implements ActionListener {
 
     @SuppressWarnings("unchecked")
     public static final Class<? extends ElementSource>[] ELEMENTS = new Class[] {
-            //SourceWPFile.class,
+            // SourceWPFile.class,
             SourceItemElement.class,
             SourceBlockElement.class,
             SourceScriptElement.class,
     };
 
-    public RNewElement(Frame Parent, String WorkspaceName ) {
+    public RNewElement(Frame Parent, String WorkspaceName) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,
@@ -59,7 +63,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 }));
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError((Frame)getParent(), "error", "very bad error message", e);
+                ErrorShower.showError((Frame) getParent(), "error", "very bad error message", e);
                 continue;
             }
         }
@@ -98,22 +102,34 @@ public class RNewElement extends RDialog implements ActionListener {
             if (Creating == null)
                 return;
 
+            if (Creating == SourceScriptElement.class) {
+                for (ElementFile elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(Parent,
+                        workspaceName)) {
+                    if (elementsFromWorkspace.getClass() == ScriptFile.class) {
+                        JOptionPane.showMessageDialog(Parent, "As of a1.2, you can only make 1 script in your addon.",
+                                "Cannot make more than 1 script", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                }
+            }
+
             try {
                 ElementSource instance = Creating.getDeclaredConstructor().newInstance();
 
                 RElementEditingScreen screen = (RElementEditingScreen) Creating
                         .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
-                        .invoke(instance, this.Parent, this.Parent,workspaceName);
+                        .invoke(instance, this.Parent, this.Parent, workspaceName);
                 screen.setVisible(true);
                 dispose();
 
             } catch (Exception ex) {
                 ex.printStackTrace();
                 if (ex.getCause() != null) {
-                    ErrorShower.showError((Frame)getParent(), "Failed to create component. " + ex.getCause().getMessage() + "\n\n",
+                    ErrorShower.showError((Frame) getParent(),
+                            "Failed to create component. " + ex.getCause().getMessage() + "\n\n",
                             "Erorrrrrrrrrr", ex);
                 } else {
-                    ErrorShower.showError((Frame)getParent(), "Failed to create component. ",
+                    ErrorShower.showError((Frame) getParent(), "Failed to create component. ",
                             "Erorrrrrrrrrr", ex);
                 }
                 return;
