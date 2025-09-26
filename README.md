@@ -2,6 +2,9 @@
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xFN10x/bedrockR/gradle.yml)
 ![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR)
+![Dependabot](https://img.shields.io/badge/dependabot-025E8C?style=for-the-badge&logo=dependabot&logoColor=white)
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./license.txt)
 
 A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
