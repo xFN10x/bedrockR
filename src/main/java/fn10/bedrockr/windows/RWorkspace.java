@@ -287,19 +287,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
                 List<ElementFile> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
 
-                //change this to actually get the files instead of the ui elements
-                /*SwingUtilities.invokeAndWait(() -> {
-                    for (Component comp : ElementInnerPanelView.getComponents()) {
-                        if (!comp.getName().equals("RElementFile"))
-                            continue;
-                        var casted = ((RElementFile) comp);
-                        ToBuild.add(casted);
-                    }
-                });*/
-
                 progress.Steps = ToBuild.size() + 1;
-                // buildBP
 
+                ((WPFile)SWPF.getSerilized()).reset();
+                
                 // build rest
                 for (ElementFile elementFile : ToBuild) {
                     if (elementFile.getDraft())
