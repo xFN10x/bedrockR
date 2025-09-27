@@ -37,23 +37,15 @@ import fn10.bedrockr.windows.base.RDialog;
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
     protected final static String[] PICKABLE_VERSIONS = {
+            "1.21.110",
             "1.21.100",
+            "1.21.93",
             "1.21.90",
-            "1.21.80",
-            "1.21.70",
-            "1.21.60",
-            "1.21.50",
-            "1.21.40",
-            "1.21.30",
-            "1.21.20",
-            "1.21.10",
-            "1.21.00",
     };
     protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
             getClass().getResource("/addons/DefaultIcon.png"),
             250, 250);
     protected File ChosenIconFile;
-    // protected JFileChooser file = new JFileChooser();
     protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
@@ -68,7 +60,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         super(Parent,
                 DISPOSE_ON_CLOSE,
                 "New Addon",
-                new Dimension(459, 350));
+                new Dimension(459, 380));
         try {
             ChosenIconFile = new File(RNewAddon.class.getResource("/addons/DefaultIcon.png").toURI());
         } catch (Exception e) {
