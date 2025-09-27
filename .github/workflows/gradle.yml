@@ -56,7 +56,7 @@ jobs:
       if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: bedrockR-${{env.string_ver}}-win-x64-portable
+        name: bedrockR-${{env.string_ver}}-windows-x64-portable
         path: build/builtDist
 
     - name: Build Normal
