@@ -53,7 +53,7 @@ jobs:
         path: build/builtDist
 
     - name: Upload Portable (windows) 
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
         name: bedrockR-${{env.string_ver}}-win-x64-portable
@@ -61,7 +61,7 @@ jobs:
 
     - name: Build Normal
       run: ./gradlew jpackage --info
-    # upload 
+    # upload normal
     - name: Upload Normal (linux, ARM) 
       if: matrix.os == 'ubuntu-24.04-arm'
       uses: actions/upload-artifact@v4
@@ -77,7 +77,7 @@ jobs:
         path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
 
     - name: Upload Normal (windows) 
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
         name: bedrockR-${{env.string_ver}}-windows-x64.deb
