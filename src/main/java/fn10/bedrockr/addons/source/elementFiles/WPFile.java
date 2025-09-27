@@ -83,6 +83,16 @@ public class WPFile implements ElementFile {
     }
 
     /**
+     * This should be called everytime you rebuild your addon. Since some stuff
+     * doesnt reset automaticly.
+     */
+    public void reset() {
+        if (Scripts == null)
+            Scripts = new HashMap<UUID, String>();
+        Scripts.clear();
+    }
+
+    /**
      * Adds a javascript script to the addon
      * 
      * @param name - the name of the script. {@code name = "script.js"} would be
@@ -94,9 +104,9 @@ public class WPFile implements ElementFile {
     public Path addScript(String rootPath, String name) {
         // i still dont know how this is null, so just check here
         if (Scripts == null) {
-           Scripts = new HashMap<UUID, String>();
+            Scripts = new HashMap<UUID, String>();
         }
-        
+
         Scripts.put(UUID.randomUUID(), "scripts/" + name);
 
         return Path.of(rootPath, "scripts", name);

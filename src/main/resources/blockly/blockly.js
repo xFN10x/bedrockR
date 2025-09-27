@@ -294,7 +294,6 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     style: "player_blocks",
   },
   {
-    //TODO: add this blocks to the toolbox
     type: "set_plr_gamemode",
     tooltip: "Set the players gamemode",
     helpUrl: "",
@@ -325,7 +324,6 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
     nextStatement: null,
   },
   {
-    //TODO: add this blocks to the toolbox
     type: "get_player_gamemode",
     tooltip: 'Gets the game mode of the player. e.g. "Survival"',
     helpUrl: "",
@@ -337,10 +335,10 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
         check: "Player",
       },
     ],
+    style: "player_blocks",
     output: "String",
   },
   {
-    //TODO: add this blocks to the toolbox
     type: "get_player_name",
     tooltip:
       "Gets the players name. The same one that appears on their nametag.",
@@ -353,6 +351,7 @@ const definitions = Blockly.common.createBlockDefinitionsFromJsonArray([
         check: "Player",
       },
     ],
+    style: "player_blocks",
     output: "String",
   },
   {
@@ -1349,30 +1348,50 @@ const bedrockRDark = Blockly.Theme.defineTheme("bedrockRDark", {
 
 workspace.setTheme(bedrockRDark);
 
-javascript.javascriptGenerator.forBlock['get_player_name'] = function() {
+javascript.javascriptGenerator.forBlock["get_player_name"] = function (
+  block,
+  generator
+) {
+  const value_name = generator.valueToCode(
+    block,
+    "NAME",
+    javascript.Order.NONE
+  );
 
-  const value_name = generator.valueToCode(block, 'NAME', javascript.Order.NONE);
-
-  const code = `${value_name}.name`
+  const code = `${value_name}.name`;
   return [code, javascript.Order.NONE];
-}
+};
 
-javascript.javascriptGenerator.forBlock['get_player_gamemode'] = function() {
-  const value_name = generator.valueToCode(block, 'NAME', javascript.Order.NONE);
+javascript.javascriptGenerator.forBlock["get_player_gamemode"] = function (
+  block,
+  generator
+) {
+  const value_name = generator.valueToCode(
+    block,
+    "NAME",
+    javascript.Order.NONE
+  );
 
-  const code = `${value_name}.getGameMode();\n`;
+  const code = `${value_name}.getGameMode();`;
 
   return [code, javascript.Order.NONE];
-}
+};
 
-javascript.javascriptGenerator.forBlock['set_plr_gamemode'] = function() {
-  const value_target = generator.valueToCode(block, 'TARGET', javascript.Order.NONE);
+javascript.javascriptGenerator.forBlock["set_plr_gamemode"] = function (
+  block,
+  generator
+) {
+  const value_target = generator.valueToCode(
+    block,
+    "TARGET",
+    javascript.Order.NONE
+  );
 
-  const dropdown_name = block.getFieldValue('NAME');
+  const dropdown_name = block.getFieldValue("NAME");
 
-  const code = `${value_target}.setGameMode(GameMode.${dropdown_name});n`;
+  const code = `${value_target}.setGameMode(GameMode.${dropdown_name});`;
   return code;
-}
+};
 
 javascript.javascriptGenerator.forBlock["player_entity"] = function (
   block,
