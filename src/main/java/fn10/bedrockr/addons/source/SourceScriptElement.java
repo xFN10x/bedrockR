@@ -165,7 +165,7 @@ public class SourceScriptElement implements ElementSource {
                 }
             }
 
-        });
+        }).addCustomRElementValues(elementName, scriptName);
         SpringLayout lay = new SpringLayout();
 
         lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH, frame.InnerPane);
