@@ -34,7 +34,7 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.13.1'
     //flat laf
-    implementation 'com.formdev:flatlaf:3.6'
+    implementation 'com.formdev:flatlaf:3.6.1'
 
     implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.2.2")
 
