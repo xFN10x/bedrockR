@@ -6,7 +6,7 @@ plugins {
     id 'application'
     id 'java'
     id 'org.panteleyev.jpackageplugin' version '1.7.3'
-    id 'com.gradleup.shadow' version '9.0.0-beta17'
+    id 'com.gradleup.shadow' version '9.2.2'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
@@ -36,7 +36,7 @@ dependencies {
     //flat laf
     implementation 'com.formdev:flatlaf:3.6'
 
-    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.0.0-beta17")
+    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.2.2")
 
     implementation 'commons-io:commons-io:2.19.0'
 }
