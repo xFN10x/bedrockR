@@ -1,7 +1,6 @@
 package fn10.bedrockr.windows;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +38,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.Launcher;
@@ -287,18 +283,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
                 List<ElementFile> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
 
-                //change this to actually get the files instead of the ui elements
-                /*SwingUtilities.invokeAndWait(() -> {
-                    for (Component comp : ElementInnerPanelView.getComponents()) {
-                        if (!comp.getName().equals("RElementFile"))
-                            continue;
-                        var casted = ((RElementFile) comp);
-                        ToBuild.add(casted);
-                    }
-                });*/
-
                 progress.Steps = ToBuild.size() + 1;
-                // buildBP
+
+                ((WPFile)SWPF.getSerilized()).reset();
 
                 // build rest
                 for (ElementFile elementFile : ToBuild) {

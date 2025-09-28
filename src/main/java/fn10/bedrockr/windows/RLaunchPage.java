@@ -42,14 +42,14 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         seperater.setPreferredSize(new Dimension(400, 3));
 
         JLabel othergreeting = new JLabel(
-                "Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and \nmaybe check out the wiki.");
+                "<html>Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and <br>maybe check out the wiki.</html>");
         othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
 
         FlowLayout gride = new FlowLayout(1, 8, 6);
 
         Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
 
-        ProjectsPart.setPreferredSize(new Dimension(540, 200));
+        ProjectsPart.setPreferredSize(new Dimension(540, 180));
         ProjectsPart.setBackground(BGC);
         ProjectsPart.setLayout(gride);
         ProjectsPart.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.WHITE, 1, 16));
