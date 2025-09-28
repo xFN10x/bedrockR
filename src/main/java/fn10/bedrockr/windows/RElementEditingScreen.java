@@ -62,7 +62,19 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     }
 
     /**
-     * Add a custom function on create to override the defaults.
+     * Adds RElementValues to the Fields this editing screen checks.
+     *
+     * 
+     * @param func - the {@code CustomCreateFunction} to use for creation.
+     * @return the {@code RElementEditingScreen}
+     */
+    public RElementEditingScreen addCustomRElementValues(RElementValue... elementValues) {
+        Fields.addAll(List.of(elementValues));
+        return this;
+    }
+
+    /**
+     * Replaces the Fields array, with a custom one.
      * 
      * @param func - the {@code CustomCreateFunction} to use for creation.
      * @return the {@code RElementEditingScreen}
@@ -179,7 +191,6 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             if (!rElementValue.valid(strict))
                 IncorrectFields.add(rElementValue);
         }
-        // Launcher.LOG.info(String.valueOf(IncorrectFields.size()));
         if (IncorrectFields.size() != 0) {
             this.IncorrectFields = IncorrectFields;
             return IncorrectFields;
