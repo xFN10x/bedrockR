@@ -289,6 +289,10 @@ public class RFileOperations {
                     + File.separator;
             String rpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "RP"
                     + File.separator;
+                    if (!Path.of(settings.comMojangPath).toFile().exists()) {
+                        JOptionPane.showMessageDialog(doingThis,"The com.mojang folder doesnt exist. Cannot carry out MC Sync", "com.mojang isnt at: " + settings.comMojangPath , JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
             File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
             if (!comBpPath.exists()) {
@@ -302,7 +306,7 @@ public class RFileOperations {
             File[] comBpFiles = comBpPath.listFiles();
             File[] comRpFiles = comRpPath.listFiles();
             /*
-             * --------------------------------- SYNC BP -----------------------------------
+             * --------------------------------- CHECK BP -----------------------------------
              */
             // check for unrecinized BP
             if (comBpFiles != null)
@@ -334,9 +338,9 @@ public class RFileOperations {
                     }
                 }
             /*
-             * --------------------------------- SYNC RP -----------------------------------
+             * --------------------------------- CHECK RP -----------------------------------
              */
-            // check for unrecinized RP
+            // check for unrececiniewicnew0inq390vj-[ ] (i cannot spell) RP
             if (comRpFiles != null)
                 for (File f : comRpFiles) {
                     if (f.isDirectory()) {
