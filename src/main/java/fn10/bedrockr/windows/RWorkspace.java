@@ -110,6 +110,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         setJMenuBar(menuBar);
         Desktop desk = Desktop.getDesktop();
 
+        fileMenu.add("Change/Add MC Sync").addActionListener(ac -> {
+            try {
+                RFileOperations.showMCSyncPopup(this, WPF);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         fileMenu.add("Open Workspace folder").addActionListener(ac -> {
             try {
                 desk.open(RFileOperations.getWorkspace(this, WPF.workspaceName()));

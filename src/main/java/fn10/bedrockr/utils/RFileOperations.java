@@ -2,9 +2,7 @@ package fn10.bedrockr.utils;
 
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.List;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -16,13 +14,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
-import com.google.errorprone.annotations.DoNotCall;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
@@ -178,6 +174,62 @@ public class RFileOperations {
         }
     }
 
+    public static void showMCSyncPopup(Frame doingThis, SourceWPFile WPF) {
+        ((WPFile) WPF.getSerilized()).MinecraftSync = true; // enable
+        WPF.buildJSONFile(doingThis, // rebuild
+                ((WPFile) WPF.getSerilized()).WorkspaceName);
+
+        String[] platforms = { "Windows (pre-1.21.120)", "Windows" };
+        var platformSelection = JOptionPane.showOptionDialog(
+                doingThis,
+                "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
+                "Platform Selection",
+                0,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                platforms,
+                "Windows");
+
+        var settings = SettingsFile.getSettings(doingThis);
+        switch (platformSelection) {
+            case 0:
+
+                settings.comMojangPath = System.getenv("LOCALAPPDATA")
+                        + "\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang";
+                if (!new File(settings.comMojangPath).exists()) {
+                    JOptionPane.showMessageDialog(doingThis,
+                            "Couldn't find com.mojang (pre-1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \n Retry by selecting the option in the File menu.",
+                            "oops", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                settings.buildFile(doingThis);
+
+                JOptionPane.showMessageDialog(doingThis,
+                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
+                        "yippe", JOptionPane.INFORMATION_MESSAGE);
+            case 1:
+
+                settings.comMojangPath = System.getenv("APPDATA")
+                        + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";
+                if (!new File(settings.comMojangPath).exists()) {
+                    JOptionPane.showMessageDialog(doingThis,
+                            "Couldn't find com.mojang (after 1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \\n"
+                                    + //
+                                    " Retry by selecting the option in the File menu.",
+                            "oops", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                settings.buildFile(doingThis);
+
+                JOptionPane.showMessageDialog(doingThis,
+                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
+                        "yippe", JOptionPane.INFORMATION_MESSAGE);
+
+            default:
+                break;
+        }
+    }
+
     public static void openWorkspace(Frame doingThis, SourceWPFile WPF) {
         var workspaceView = new RWorkspace(WPF);
         SwingUtilities.invokeLater(() -> {
@@ -188,38 +240,16 @@ public class RFileOperations {
                         "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
                         "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 if (ask == JOptionPane.YES_OPTION) {
-                    ((WPFile) WPF.getSerilized()).MinecraftSync = true; // enable
-                    WPF.buildJSONFile(doingThis, // rebuild
-                            ((WPFile) WPF.getSerilized()).WorkspaceName);
-
-                    String[] platforms = { "Windows" };
-                    var platformSelection = JOptionPane.showOptionDialog(
-                            doingThis,
-                            "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
-                            "Platform Selection",
-                            0,
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null,
-                            platforms,
-                            null);
-
-                    switch (platformSelection) {
-                        case 0:
-
-                            var settings = SettingsFile.getSettings(doingThis);
-
-                            settings.comMojangPath = System.getenv("LOCALAPPDATA")
-                                    + "\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang";
-
-                            settings.buildFile(doingThis);
-
-                            JOptionPane.showMessageDialog(doingThis,
-                                    "Minecraft Sync is now enabled. You only need to reload your world to test now!",
-                                    "yippe", JOptionPane.INFORMATION_MESSAGE);
-
-                        default:
-                            break;
-                    }
+                    showMCSyncPopup(doingThis, WPF);
+                }
+            } else if (!new File(SettingsFile.getSettings(doingThis).comMojangPath).exists()) {
+                var ask = JOptionPane.showConfirmDialog(doingThis,
+                        "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
+                        "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                if (ask == JOptionPane.YES_OPTION) {
+                    showMCSyncPopup(doingThis, WPF);
+                } else {
+                    ((WPFile) WPF.getSerilized()).MinecraftSync = false;
                 }
             }
         });
@@ -289,10 +319,11 @@ public class RFileOperations {
                     + File.separator;
             String rpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "RP"
                     + File.separator;
-                    if (!Path.of(settings.comMojangPath).toFile().exists()) {
-                        JOptionPane.showMessageDialog(doingThis,"The com.mojang folder doesnt exist. Cannot carry out MC Sync", "com.mojang isnt at: " + settings.comMojangPath , JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+            if (!Path.of(settings.comMojangPath).toFile().exists()) {
+                JOptionPane.showMessageDialog(doingThis, "The com.mojang folder doesnt exist. Cannot carry out MC Sync",
+                        "com.mojang isnt at: " + settings.comMojangPath, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
             File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
             if (!comBpPath.exists()) {
@@ -306,7 +337,8 @@ public class RFileOperations {
             File[] comBpFiles = comBpPath.listFiles();
             File[] comRpFiles = comRpPath.listFiles();
             /*
-             * --------------------------------- CHECK BP -----------------------------------
+             * --------------------------------- CHECK BP
+             * -----------------------------------
              */
             // check for unrecinized BP
             if (comBpFiles != null)
@@ -338,7 +370,8 @@ public class RFileOperations {
                     }
                 }
             /*
-             * --------------------------------- CHECK RP -----------------------------------
+             * --------------------------------- CHECK RP
+             * -----------------------------------
              */
             // check for unrececiniewicnew0inq390vj-[ ] (i cannot spell) RP
             if (comRpFiles != null)
@@ -444,19 +477,6 @@ public class RFileOperations {
         }
     }
 
-    @Deprecated
-    @DoNotCall("This doesnt work")
-    public static SourceWPFile createWorkspace(RLoadingScreen loading, WPFile wpf, Image addonIcon) throws Exception {
-        BufferedImage bufferedImage = new BufferedImage(addonIcon.getHeight(null), addonIcon.getHeight(null),
-                BufferedImage.TYPE_INT_RGB);
-        bufferedImage.getGraphics().drawImage(addonIcon, 0, 0, null);
-        File file = new File(File.createTempFile("bed", "rockr").getAbsolutePath());
-        ImageIO.write(bufferedImage, BASE_PATH, file);
-        file.delete();
-        bufferedImage.getGraphics().dispose();
-        return createWorkspace(loading, wpf, file);
-    }
-
     public static SourceWPFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
             WPFile wpf, File addonIcon)
             throws Exception {
@@ -540,7 +560,7 @@ public class RFileOperations {
             try {
                 ElementSource source = getElementSourceFromFileExtension(doingThis,
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
-                
+
                 building.add(source.getFromJSON(Files.readString(file.toPath())));
             } catch (Exception e) {
                 e.printStackTrace();
