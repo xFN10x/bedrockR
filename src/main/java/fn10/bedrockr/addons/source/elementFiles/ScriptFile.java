@@ -106,7 +106,6 @@ public class ScriptFile implements ElementFile {
                                 javafx.concurrent.Worker.State newValue) {
                             if (newValue == Worker.State.SUCCEEDED) {
                                 // when its loaded, add a referance to java
-                                // TODO: MAKE IT LOAD CONTENT, THEN GET JS, AND SAVE TO FILE
 
                                 webEngine
                                         .executeScript(RFileOperations.readResourceAsString("/blockly/blockly.js"));
