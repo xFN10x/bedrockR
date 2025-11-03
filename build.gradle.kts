@@ -55,7 +55,11 @@ application {
 val version = "a1.3"
 val winver = "0.4.0"
 
-tasks.named<org.panteleyev.jpackage.JPackageTask>("jpackage") {
+tasks.test {
+    failOnNoDiscoveredTests = false
+}
+
+tasks.jpackage {
     input.set(project.layout.buildDirectory.dir("builtJars"))
     destination.set(project.layout.buildDirectory.dir("builtDist"))
     appVersion.set(winver)
