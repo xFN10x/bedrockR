@@ -12,9 +12,6 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
-import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
-import fn10.bedrockr.windows.componets.RBlockly;
-import fn10.bedrockr.windows.componets.RBlockly.Bridge;
 
 public class RecipeFile implements ElementFile {
 
