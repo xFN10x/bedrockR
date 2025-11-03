@@ -1,5 +1,5 @@
 {
-    "valid": true,
+    "valid": false,
     "format": 1,
     "currentVersion": 3,
     "message": "<html>(Whoops! i missed something! Ignore this if you are on a1.2.1!) <br><br> Your version of bedrockR is out of date. <br> Latest version: <b>a1.2.1</b><br><br> Download latest version? <b>(This version adds support for 1.21.120!)</b> </html>",
