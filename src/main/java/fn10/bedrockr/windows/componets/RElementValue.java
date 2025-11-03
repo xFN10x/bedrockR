@@ -259,8 +259,6 @@ public class RElementValue extends JPanel {
             Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
             Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
         }
-
-
         else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
 
             Input = new JSpinner();

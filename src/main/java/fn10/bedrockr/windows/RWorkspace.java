@@ -41,7 +41,7 @@ import org.apache.commons.io.FileUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.source.SourceResourceFile;
+import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
@@ -337,7 +337,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     public void refreshResources() {
         SwingUtilities.invokeLater(() -> {
-            SourceResourceFile resFile = RFileOperations.getResources(this, SWPF.workspaceName());
+            SourceResourceElement resFile = RFileOperations.getResources(this, SWPF.workspaceName());
             ResourceInnerPanelView.removeAll();
             for (Map.Entry<String, String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
                 try {
