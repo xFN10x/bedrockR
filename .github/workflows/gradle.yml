@@ -89,7 +89,7 @@ jobs:
       with:
         if-no-files-found: error
         name: bedrockR-${{env.string_ver}}.jar
-        path: build/builtJars/bedrockR-${{env.string_ver}}-all.jar
+        path: build/builtJars/bedrockR-${{env.string_ver}}.jar
       
 
 
