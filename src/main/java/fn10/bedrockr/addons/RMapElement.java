@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
 import fn10.bedrockr.addons.source.supporting.ItemComponents;
+import jakarta.annotation.Nullable;
 
 public class RMapElement {
     public String ID;

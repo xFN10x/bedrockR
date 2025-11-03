@@ -2,12 +2,13 @@ package fn10.bedrockr.windows.componets;
 
 import java.net.URL;
 
-import javax.annotation.Nullable;
+
 import javax.swing.JTextArea;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
+import jakarta.annotation.Nullable;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
