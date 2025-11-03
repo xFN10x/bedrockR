@@ -15,7 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.addons.source.SourceResourceFile;
+import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -150,7 +150,7 @@ public class ResourceFile implements ElementFile {
         if (ActiveWorkspace != null)
             ActiveWorkspace.refreshResources();
 
-        var source = new SourceResourceFile(this);
+        var source = new SourceResourceElement(this);
         source.buildJSONFile(null, rootPath);
     }
 

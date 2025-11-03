@@ -22,7 +22,7 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
-import fn10.bedrockr.addons.source.SourceResourceFile;
+import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
@@ -60,6 +60,7 @@ public class RFileOperations {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
         ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceResourceElement.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
@@ -154,13 +155,13 @@ public class RFileOperations {
         }
     }
 
-    public static SourceResourceFile getResources(Frame doingThis, String workspaceName) {
+    public static SourceResourceElement getResources(Frame doingThis, String workspaceName) {
 
         var file = getFileFromWorkspace(doingThis, workspaceName,
                 File.separator + "resources" + File.separator + RESOURCE_FILE_NAME, true);
         if (file.exists())
             try {
-                var source = new SourceResourceFile(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+                var source = new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
                 return source;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -168,7 +169,7 @@ public class RFileOperations {
                 return null;
             }
         else { // make a blank resource file
-            var source = new SourceResourceFile("{}");
+            var source = new SourceResourceElement("{}");
             source.buildJSONFile(doingThis, workspaceName);
             return source;
         }

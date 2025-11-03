@@ -3,21 +3,24 @@ package fn10.bedrockr.addons.addon.jsonClasses.BP;
 import com.google.gson.annotations.SerializedName;
 
 public class Recipe {
-    
+
+    public transient static final Item NULL_ITEM = new Item(
+            "you_should_never_see_this:report-a-github-bug-if-you-see-this");
 
     // classes
+    private static class InnerDiscription {
+        public String identifier;
+    }
+
+    public static class UnlockCondition {
+        public String item;
+        public int data;
+    }
+
     /**
      * used for extending, because everything in here is shared
      */
-    protected class RecipeType {
-        private class InnerDiscription {
-            public String identifier;
-        }
-
-        private class UnlockCondition {
-            public String item;
-            public int data;
-        }
+    protected static class RecipeType {
 
         public InnerDiscription description;
 
@@ -26,18 +29,36 @@ public class Recipe {
         public UnlockCondition[] unlock;
     }
 
-    protected class CraftingRecipeType extends RecipeType {
+    protected static class CraftingRecipeType extends RecipeType {
         public String group;
         public int priority;
     }
 
-    protected class Item {
+    public static class Item {
         public String item;
         public int data;
         public int count;
+
+        public Item(String name, int data, int count) {
+            this.item = name;
+            this.data = data;
+            this.count = count;
+        }
+
+        public Item(String name, int count) {
+            this(name, 0, count);
+        }
+
+        public Item(String name) {
+            this(name, 0);
+        }
+
+        public boolean equals(Item other) {
+            return item.equals(other.item);
+        }
     }
 
-    protected class RecipeShapeless extends CraftingRecipeType {
+    protected static class RecipeShapeless extends CraftingRecipeType {
         public Item[] ingredients;
         public Item result;
     }

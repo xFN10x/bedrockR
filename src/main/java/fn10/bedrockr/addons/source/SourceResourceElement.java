@@ -11,20 +11,20 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class SourceResourceFile implements ElementSource {
+public class SourceResourceElement implements ElementSource {
 
     public ResourceFile Serilized;
 
-    public SourceResourceFile(ResourceFile serilized) {
+    public SourceResourceElement(ResourceFile serilized) {
         this.Serilized = serilized;
     }
 
-    public SourceResourceFile() {
+    public SourceResourceElement() {
         this.Serilized = null;
     }
 
-    public SourceResourceFile(String json) {
-       this.Serilized = gson.fromJson(json, ResourceFile.class);
+    public SourceResourceElement(String json) {
+        this.Serilized = gson.fromJson(json, ResourceFile.class);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SourceResourceFile implements ElementSource {
     public File buildJSONFile(Frame doingThis, String workspace) {
         var string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
-                File.separator+"resources"+File.separator+RFileOperations.RESOURCE_FILE_NAME);
+                File.separator + "resources" + File.separator + RFileOperations.RESOURCE_FILE_NAME);
         file.setWritable(true);
         try {
             FileWriter fileWriter = new FileWriter(file);
