@@ -1,6 +1,6 @@
 package fn10.bedrockr.windows;
 
-import javax.annotation.Nullable;
+
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SpringLayout;
@@ -11,6 +11,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
+import jakarta.annotation.Nullable;
 
 import java.awt.*;
 

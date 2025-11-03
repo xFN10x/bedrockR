@@ -4,10 +4,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.annotation.Nullable;
+
 
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
+import jakarta.annotation.Nullable;
 
 public class RAnnotation {
 
