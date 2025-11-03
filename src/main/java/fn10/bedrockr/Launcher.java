@@ -38,8 +38,8 @@ import com.google.gson.Gson;
 
 public class Launcher {
 
-    public static String VERSION = "a1.2";
-    public static int CHECKVERSION = 2;
+    public static String VERSION = "a1.3";
+    public static int CHECKVERSION = 4;
     public static Image ICON;
 
     public static List<Image> ICONS = new ArrayList<Image>();
@@ -146,7 +146,7 @@ public class Launcher {
 
             Format1Latest serilized = new Gson().fromJson(response.body(), Format1Latest.class);
 
-            if (serilized.LatestVersion > CHECKVERSION) {
+            if (serilized.LatestVersion > CHECKVERSION && serilized.ShouldUse) {
                 int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
                         "Version out of date (" + serilized.CurrentStringVersion + " > " + VERSION + ")",
                         JOptionPane.YES_NO_OPTION);
