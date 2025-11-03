@@ -37,10 +37,9 @@ import fn10.bedrockr.windows.base.RDialog;
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
     protected final static String[] PICKABLE_VERSIONS = {
-            "1.21.110",
-            "1.21.100",
-            "1.21.93",
-            "1.21.90",
+            "1.21.130",
+            "1.21.120",
+            "1.21.114",
     };
     protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
             getClass().getResource("/addons/DefaultIcon.png"),
