@@ -44,6 +44,9 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    /**
+     * This annotation is used to mark a field for automatic builder window creations. Don't use if not doing automatic creation.
+     */
     public @interface UneditableByCreation {
     }
 
