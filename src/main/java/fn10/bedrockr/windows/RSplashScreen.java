@@ -20,6 +20,8 @@ public class RSplashScreen extends JWindow {
 
     public RSplashScreen() {
 
+        setAlwaysOnTop(true);
+
         LocalTime now = LocalTime.now();
         LocalTime sunset = LocalTime.of(7, 0);
         LocalTime sunrise = LocalTime.of(19, 0);
