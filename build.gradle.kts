@@ -12,14 +12,10 @@ repositories {
     mavenCentral()
 }
 
-//sourceSets {
-//    main {
-//        resources {
-//            srcDirs += ["src/main/java"]
-//            includes += ["**/*.properties", "**/*.png", "**/*.otf", "**/*.html", "**/*.js"]
-//        }
-//    }
-//}
+//https://stackoverflow.com/questions/46419817/how-to-add-new-sourceset-with-gradle-kotlin-dsl
+sourceSets["main"].resources {
+    srcDir("src/main/java")
+}
 
 javafx {
     version = "23"
