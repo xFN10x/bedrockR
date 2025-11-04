@@ -193,7 +193,8 @@ public class RElementValue extends JPanel {
                     try {
                         if (InputType.isArray()) {
                             for (Object entry : (Object[]) field.get(TargetFile)) {
-                                RElementValue toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter,
+                                RElementValue toAdd = new RElementValue(parentFrame, InputType.getComponentType(),
+                                        Filter,
                                         null, "",
                                         false, null, WorkspaceName);
                                 toAdd.setValue(entry);
@@ -721,22 +722,8 @@ public class RElementValue extends JPanel {
                     default:
                         break;
                 }
-            } else { // really unsafe, if its a type is doesnt know, do this
-                Input = new JTextField();
-                try {
-                    var field = SourceFileClass.getField(TargetField);
-                    if (!FromEmpty)
-                        ((JTextField) Input).setText(field.get(TargetFile).toString()); // set text to string if not
-                                                                                        // editng
-                } catch (Exception e) {
-                    if (!FromEmpty)
-                        if (TargetFile.getDraft())
-                            return;
-                    e.printStackTrace();
-                    ErrorShower.showError(parentFrame,
-                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                            DisplayName, e);
-                }
+            } else {
+                Input = new JLabel("Not supported.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -938,7 +925,13 @@ public class RElementValue extends JPanel {
                         return;
                     }
                 }
-                ((JTextField) Input).setText(String.valueOf(value));
+                if (Input instanceof JTextField)
+                    ((JTextField) Input).setText(String.valueOf(value));
+                // else is called when the input is a JLabel, its only that when not supported
+                else {
+                    // just ignore unsupported fields
+                    return;
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ErrorShower.showError(parentFrame, "There was a problem setting a field.", "Error", ex);
@@ -990,19 +983,25 @@ public class RElementValue extends JPanel {
                     return ((JSpinner) Input).getValue();
                 } else {
                     try {
-                        if (Input.getName() != null)
-                            if (Input.getName().equals("dd")) // if its a drop down
-                                return ((JComboBox<String>) Input).getSelectedItem();
-                        String text = ((JTextField) Input).getText();
-                        if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
-                            return Float.parseFloat(text);
-                        } else if (InputType.equals(String.class)) { // string
-                            if (Filter != null && !Filter.getValid(text))
-                                Problem = "String is not valid.";
-                            return text;
+                        if (Input.getName() != null && Input.getName().equals("dd")) // if its a drop down
+                            return ((JComboBox<String>) Input).getSelectedItem();
+
+                        if (Input instanceof JTextField) {
+                            String text = ((JTextField) Input).getText();
+                            if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
+                                return Float.parseFloat(text);
+                            } else if (InputType.equals(String.class)) { // string
+                                if (Filter != null && !Filter.getValid(text))
+                                    Problem = "String is not valid.";
+                                return text;
+                            } else {
+                                return null;
+                            }
                         } else {
+                            // just ignore unsupported fields
                             return null;
                         }
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
@@ -1094,21 +1093,25 @@ public class RElementValue extends JPanel {
                         }
                         return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
                     }
-                    String text = ((JTextField) Input).getText(); // get the text if its not specilized
-                    if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
-                        Problem = "Failed to turn into Float";
-                        log.info(Target + ": Parseing to float (Scary!)");
+                    if (Input instanceof JTextField) {
+                        String text = ((JTextField) Input).getText(); // get the text if its not specilized
+                        if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
+                            Problem = "Failed to turn into Float";
+                            log.info(Target + ": Parseing to float (Scary!)");
 
-                        Float.parseFloat(text);
-                    } else if (InputType.equals(String.class)) { // string
+                            Float.parseFloat(text);
+                        } else if (InputType.equals(String.class)) { // string
 
-                        Problem = "String is not valid.";
-                        log.info(Target + ": String is checking if vaild");
-                        // no filter, it doesnt matter
-                        // this might be unsafe however
-                        if (Filter == null)
-                            return true;
-                        return Filter.getValid(text);
+                            Problem = "String is not valid.";
+                            log.info(Target + ": String is checking if vaild");
+                            // no filter, it doesnt matter
+                            // this might be unsafe however
+                            if (Filter == null)
+                                return true;
+                            return Filter.getValid(text);
+                        }
+                    } else {
+                        return false;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
