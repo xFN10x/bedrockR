@@ -49,7 +49,6 @@ public class RElementValue extends JPanel {
     private Component Input;
     private JCheckBox EnableDis = new JCheckBox();
 
-    private final static Dimension Size = new Dimension(350, 40);
     private String Target = "";
     private FieldFilter Filter;
     private Class<?> InputType;
@@ -119,6 +118,12 @@ public class RElementValue extends JPanel {
         this.InputType = InputType;
         this.WorkspaceName = WorkspaceName;
 
+        final Dimension Size;
+        if (Map.class.isAssignableFrom(InputType) || InputType.isArray() || List.class.isAssignableFrom(InputType))
+            Size = new Dimension(350, 100);
+        else
+            Size = new Dimension(350, 40);
+
         setMaximumSize(Size);
         setPreferredSize(Size);
         setBorder(new LineBorder(getBackground()));
@@ -167,24 +172,28 @@ public class RElementValue extends JPanel {
                 }
 
                 final Class<?> genericType;
-                if (field == null) {
-                    return;
-                }
-                if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
-                    java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
-                            .getGenericType();
-                    genericType = (Class<?>) pt.getActualTypeArguments()[0];
-                } else
+                if (!InputType.isArray()) {
+                    if (field == null) {
+                        return;
+                    }
+                    if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
+                        java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
+                                .getGenericType();
+                        genericType = (Class<?>) pt.getActualTypeArguments()[0];
+                    } else
+                        genericType = null;
+                    if (genericType == null) {
+                        throw new NullPointerException("This list doesnt have a type.");
+                    }
+                } else {
                     genericType = null;
-                if (genericType == null) {
-                    throw new NullPointerException("This list doesnt have a type.");
                 }
 
                 if (!FromEmpty && field != null) {
                     try {
                         if (InputType.isArray()) {
                             for (Object entry : (Object[]) field.get(TargetFile)) {
-                                RElementValue toAdd = new RElementValue(parentFrame, InputType.arrayType(), Filter,
+                                RElementValue toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter,
                                         null, "",
                                         false, null, WorkspaceName);
                                 toAdd.setValue(entry);
@@ -218,8 +227,8 @@ public class RElementValue extends JPanel {
                         RElementValue toAdd;
                         if (InputType.isArray()) {
                             Launcher.LOG.info("make an array value element with class: "
-                                    + InputType.arrayType().getCanonicalName());
-                            toAdd = new RElementValue(parentFrame, InputType.arrayType(), Filter, null, "",
+                                    + InputType.getComponentType().getCanonicalName());
+                            toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter, null, "",
                                     false,
                                     null, WorkspaceName);
                         } else {
@@ -332,7 +341,7 @@ public class RElementValue extends JPanel {
                                 DisplayName, e);
                     }
                 }
-            } else if (InputType.equals(HashMap.class)) {
+            } else if (Map.class.isAssignableFrom(InputType)) {
                 Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                 ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
