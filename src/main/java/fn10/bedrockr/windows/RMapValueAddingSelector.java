@@ -125,7 +125,5 @@ public class RMapValueAddingSelector extends RDialog {
             return null;
         else
             return thiS.getSelected();
-
     }
-
 }
