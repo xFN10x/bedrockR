@@ -47,9 +47,9 @@ public class SpringUtilities {
      * minimum, preferred, and maximum sizes.
      */
     public static void printSizes(Component c) {
-        System.out.println("minimumSize = " + c.getMinimumSize());
-        System.out.println("preferredSize = " + c.getPreferredSize());
-        System.out.println("maximumSize = " + c.getMaximumSize());
+        Launcher.LOG.info("minimumSize = " + c.getMinimumSize());
+        Launcher.LOG.info("preferredSize = " + c.getPreferredSize());
+        Launcher.LOG.info("maximumSize = " + c.getMaximumSize());
     }
 
     /**

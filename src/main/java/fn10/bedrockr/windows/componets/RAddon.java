@@ -181,7 +181,7 @@ public class RAddon extends JPanel implements MouseListener {
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
                     JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
-                    System.out.println(RFileOperations.getWorkspace(this, WPFile.workspaceName()).getAbsolutePath());
+                    Launcher.LOG.info(RFileOperations.getWorkspace(this, WPFile.workspaceName()).getAbsolutePath());
                     FileUtils.deleteDirectory(RFileOperations.getWorkspace(this, WPFile.workspaceName()));
                     JOptionPane.showMessageDialog(parent,
                             "The Addon " + WPFile.workspaceName() + " has been deleted.");

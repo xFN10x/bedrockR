@@ -24,7 +24,7 @@ public class RLoadingScreen extends RDialog {
 
     public void changeText(String text) {
         try {
-            System.out.println(text);
+            Launcher.LOG.info(text);
             SwingUtilities.invokeLater(() -> {
                 MainText.setText(text);
             });

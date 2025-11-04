@@ -103,7 +103,7 @@ public class SourceScriptElement implements ElementSource {
         preview.setEditable(false);
 
         if (serilized != null)
-            System.out.println(serilized.Content);
+            Launcher.LOG.info(serilized.Content);
         JLabel loading = new JLabel("Loading...");
 
         JPanel rightStuff = new JPanel();
