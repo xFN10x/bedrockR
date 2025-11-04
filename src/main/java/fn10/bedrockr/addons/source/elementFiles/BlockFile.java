@@ -140,7 +140,7 @@ public class BlockFile implements ElementFile {
     }
 
     @Override
-    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         globalResVaribles.EnglishTexts.put("block." + workspaceFile.Prefix + ":" + ID, Name);
 

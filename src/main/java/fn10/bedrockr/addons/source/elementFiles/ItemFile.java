@@ -106,7 +106,7 @@ public class ItemFile implements ElementFile {
     }
 
     @Override
-    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID, Name);
 

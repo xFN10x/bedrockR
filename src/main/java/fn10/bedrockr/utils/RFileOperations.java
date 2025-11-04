@@ -27,7 +27,7 @@ import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.windows.RLoadingScreen;
@@ -176,9 +176,9 @@ public class RFileOperations {
     }
 
     public static void showMCSyncPopup(Frame doingThis, SourceWPFile WPF) {
-        ((WPFile) WPF.getSerilized()).MinecraftSync = true; // enable
+        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
         WPF.buildJSONFile(doingThis, // rebuild
-                ((WPFile) WPF.getSerilized()).WorkspaceName);
+                ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
 
         String[] platforms = { "Windows (pre-1.21.120)", "Windows" };
         var platformSelection = JOptionPane.showOptionDialog(
@@ -236,7 +236,7 @@ public class RFileOperations {
         SwingUtilities.invokeLater(() -> {
             doingThis.dispose();
             workspaceView.setVisible(true);
-            if (!((WPFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
+            if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
                 var ask = JOptionPane.showConfirmDialog(doingThis,
                         "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
                         "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -250,7 +250,7 @@ public class RFileOperations {
                 if (ask == JOptionPane.YES_OPTION) {
                     showMCSyncPopup(doingThis, WPF);
                 } else {
-                    ((WPFile) WPF.getSerilized()).MinecraftSync = false;
+                    ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
                 }
             }
         });
@@ -479,7 +479,7 @@ public class RFileOperations {
     }
 
     public static SourceWPFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
-            WPFile wpf, File addonIcon)
+            WorkspaceFile wpf, File addonIcon)
             throws Exception {
 
         String[] wsFolders = {

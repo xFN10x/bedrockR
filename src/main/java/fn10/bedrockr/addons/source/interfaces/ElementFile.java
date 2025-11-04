@@ -9,7 +9,7 @@ import com.google.gson.ToNumberPolicy;
 
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 
 public interface ElementFile { // mostly for making functions better to read
@@ -31,7 +31,7 @@ public interface ElementFile { // mostly for making functions better to read
 
     Boolean getDraft();
 
-    void build(String rootPath, WPFile workspaceFile, String rootResPackPath, GlobalBuildingVariables globalResVaribles)
+    void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath, GlobalBuildingVariables globalResVaribles)
             throws IOException;
 
 }

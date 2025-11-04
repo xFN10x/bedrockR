@@ -63,7 +63,7 @@ public class RecipeFile implements ElementFile {
     }
 
     @Override
-    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
            
     }

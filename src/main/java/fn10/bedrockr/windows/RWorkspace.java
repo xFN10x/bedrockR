@@ -46,7 +46,7 @@ import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -91,7 +91,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public RWorkspace(SourceWPFile WPF) {
         super(
                 DO_NOTHING_ON_CLOSE,
-                ((WPFile) WPF.getSerilized()).WorkspaceName,
+                ((WorkspaceFile) WPF.getSerilized()).WorkspaceName,
                 Toolkit.getDefaultToolkit().getScreenSize(),
                 true,
                 false);
@@ -286,13 +286,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(RPdir));
                 }
                 refreshAll();
-                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WPFile) SWPF.getSerilized(),
+                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WorkspaceFile) SWPF.getSerilized(),
                         RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
                 List<ElementFile> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
 
                 progress.Steps = ToBuild.size() + 1;
 
-                ((WPFile)SWPF.getSerilized()).reset();
+                ((WorkspaceFile)SWPF.getSerilized()).reset();
 
                 // build rest
                 for (ElementFile elementFile : ToBuild) {
@@ -301,22 +301,22 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     // build a element, then incrament the counter
                     progress.changeText("Building " + elementFile.getElementName()); // change text
                     elementFile.build(BPdir,
-                            ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
+                            ((WorkspaceFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }
                 // build RP
                 // build global res vars
                 progress.changeText("Building resources... "); // change text
                 GlobalResVars.build(BPdir,
-                        ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars);
+                        ((WorkspaceFile) SWPF.getSerilized()), RPdir, GlobalResVars);
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
                 SWPF.getSerilized().build(BPdir,
-                        ((WPFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
+                        ((WorkspaceFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
 
                 progress.increaseProgressBySteps("Done!"); // next
                 // do mc sync
-                if (((WPFile) SWPF.getSerilized()).MinecraftSync) {
+                if (((WorkspaceFile) SWPF.getSerilized()).MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
                     RFileOperations.mcSync(this);
                 }
@@ -463,7 +463,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var ac = arg0.getActionCommand();
         if (ac.equals("add")) {
             SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewElement(this, ((WPFile) SWPF.getSerilized()).WorkspaceName);
+                var addFrame = new RNewElement(this, ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName);
                 addFrame.setVisible(true);
             });
         } else if (ac.equals("texture")) {
@@ -485,15 +485,15 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 case 1:
 
-                    RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
+                    RFileOperations.getResources(this, ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.ITEM_TEXTURE,
-                                    ((WPFile) SWPF.getSerilized()).WorkspaceName);
+                                    ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName);
                     break;
                 case 2:
 
-                    RFileOperations.getResources(this, ((WPFile) SWPF.getSerilized()).WorkspaceName).Serilized
+                    RFileOperations.getResources(this, ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.BLOCK_TEXTURE,
-                                    ((WPFile) SWPF.getSerilized()).WorkspaceName);
+                                    ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName);
                     break;
                 default:
                     break;
@@ -522,7 +522,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementDraft(ElementSource element) {
-        element.buildJSONFile(this, (((WPFile) SWPF.getSerilized()).WorkspaceName));
+        element.buildJSONFile(this, (((WorkspaceFile) SWPF.getSerilized()).WorkspaceName));
         refreshAll();
     }
 
@@ -533,7 +533,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementCreate(ElementSource element) {
-        element.buildJSONFile(this, (((WPFile) SWPF.getSerilized()).WorkspaceName));
+        element.buildJSONFile(this, (((WorkspaceFile) SWPF.getSerilized()).WorkspaceName));
         refreshAll();
     }
 }
