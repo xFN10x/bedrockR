@@ -8,7 +8,6 @@ import java.util.Vector;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
-import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;

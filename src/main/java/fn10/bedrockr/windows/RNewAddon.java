@@ -36,6 +36,8 @@ import fn10.bedrockr.windows.base.RDialog;
 
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
+    // make sure these are valid versions from here
+    // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
     protected final static String[] PICKABLE_VERSIONS = {
             "1.21.130",
             "1.21.120",
@@ -162,18 +164,18 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         if (e.getActionCommand() == "changeIcon") {
             try {
                 fileChooser.setDialogTitle("Choose Addon's Icon");
-                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image files", "png"));;
+                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image files", "png"));
+                ;
                 fileChooser.showOpenDialog(this);
                 try {
-                        File file = fileChooser.getSelectedFile();
-                        ChosenIconFile = file;
-                        ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file)), 250, 250);
-                        AddonIcon.setIcon(ChosenIcon);
-                        imageExtension = file.getName().split("\\.")[1];
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-
+                    File file = fileChooser.getSelectedFile();
+                    ChosenIconFile = file;
+                    ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file)), 250, 250);
+                    AddonIcon.setIcon(ChosenIcon);
+                    imageExtension = file.getName().split("\\.")[1];
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
 
             } catch (Exception ex) {
                 ex.printStackTrace();
