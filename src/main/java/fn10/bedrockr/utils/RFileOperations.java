@@ -236,7 +236,14 @@ public class RFileOperations {
         var workspaceView = new RWorkspace(WPF);
         //get items ready for use
         RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
-        
+        //TODO: remove after testing
+        try {
+            RItemSelector.openSelector(doingThis, WPF.workspaceName());
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         SwingUtilities.invokeLater(() -> {
             doingThis.dispose();
             workspaceView.setVisible(true);

@@ -3,6 +3,7 @@
  */
 package fn10.bedrockr;
 
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.http.Format1Latest;
@@ -160,12 +161,7 @@ public class Launcher {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            RItemSelector.openSelector(null, "bedrockR - Testing");
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);

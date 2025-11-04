@@ -126,34 +126,25 @@ public class RItemSelector extends RDialog {
         InnerPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        /*
-         * for (Map.Entry<String, Integer> entry : resTypes.entrySet()) {
-         * try {
-         * if (entry.getValue() == TextureType) {
-         * JButton ToAdd = new JButton();
-         * Dimension size = new Dimension(48, 48);
-         * ImageIcon normalIcon = new ImageIcon(res
-         * .getResourceFile(parent, Workspace, entry.getKey(),
-         * entry.getValue()).getPath());
-         * ImageIcon resizedIcon = new
-         * ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
-         * (int) size.getHeight(), Image.SCALE_AREA_AVERAGING));
-         * ToAdd.setMinimumSize(size);
-         * ToAdd.setPreferredSize(size);
-         * ToAdd.setIcon(resizedIcon);
-         * ToAdd.setName(resIDs.get(entry.getKey()));
-         * ToAdd.setToolTipText(entry.getKey() + " (" + resIDs.get(entry.getKey()) +
-         * ")");
-         * ToAdd.addActionListener(e -> {
-         * selected = ((JButton) e.getSource());
-         * });
-         * InnerPanel.add(ToAdd);
-         * }
-         * } catch (Exception e1) {
-         * e1.printStackTrace();
-         * }
-         * }
-         */
+        for (ItemJsonEntry item : vanillaItems) {
+            try {
+                JButton ToAdd = new JButton();
+                Dimension size = new Dimension(48, 48);
+                ToAdd.setMinimumSize(size);
+                ToAdd.setPreferredSize(size);
+                ToAdd.setName("");
+                ToAdd.setText(item.displayName);
+                ToAdd.setToolTipText(item.displayName + " (" + item.id +
+                        ")");
+                ToAdd.addActionListener(e -> {
+                    selected = ((JButton) e.getSource());
+                });
+                InnerPanel.add(ToAdd);
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
 
         setLayout(Lay);
 
@@ -170,31 +161,11 @@ public class RItemSelector extends RDialog {
      * @return A map entry, in of which, the key is the UUID, and the value is the
      *         image to be displayed.
      */
-    public Map.Entry<String, ImageIcon> getSelected() {
-        if (selected != null)
-            return new Map.Entry<String, ImageIcon>() {
-
-                @Override
-                public String getKey() {
-                    return selected.getName();
-                }
-
-                @Override
-                public ImageIcon getValue() {
-                    return (ImageIcon) ((JButton) selected).getIcon();
-                }
-
-                @Override
-                public ImageIcon setValue(ImageIcon value) {
-                    return null;
-                }
-
-            };
-        else
-            return null;
+    public ItemJsonEntry getSelected() {
+        throw new UnsupportedOperationException();
     }
 
-    public static Map.Entry<String, ImageIcon> openSelector(Frame parent, String Workspace)
+    public static ItemJsonEntry openSelector(Frame parent, String Workspace)
             throws InterruptedException {
         var thiS = new RItemSelector(parent, Workspace);
 
