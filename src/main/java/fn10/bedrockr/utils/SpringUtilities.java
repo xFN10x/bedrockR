@@ -33,6 +33,9 @@ package fn10.bedrockr.utils;
 
 import javax.swing.*;
 import javax.swing.SpringLayout;
+
+import fn10.bedrockr.Launcher;
+
 import java.awt.*;
 
 /**

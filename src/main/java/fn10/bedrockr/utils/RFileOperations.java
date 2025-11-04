@@ -97,7 +97,6 @@ public class RFileOperations {
     public static ElementSource getElementSourceFromFileExtension(Frame doingThis,
             String fileExtension) {
         try {
-            Launcher.LOG.info(fileExtension);
             return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
@@ -549,7 +548,7 @@ public class RFileOperations {
                 .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
-        Launcher.LOG.info("PROPOSED " + proposed);
+        Launcher.LOG.info("Found ElementFile on disk: " + proposed);
         return proposed;
     }
 

@@ -166,6 +166,20 @@ public class RElementValue extends JPanel {
                     return;
                 }
 
+                final Class<?> genericType;
+                if (field == null) {
+                    return;
+                }
+                if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
+                    java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
+                            .getGenericType();
+                    genericType = (Class<?>) pt.getActualTypeArguments()[0];
+                } else
+                    genericType = null;
+                if (genericType == null) {
+                    throw new NullPointerException("This list doesnt have a type.");
+                }
+
                 if (!FromEmpty && field != null) {
                     try {
                         if (InputType.isArray()) {
@@ -181,7 +195,7 @@ public class RElementValue extends JPanel {
                             }
                         } else {
                             for (Object entry : (List<?>) field.get(TargetFile)) {
-                                RElementValue toAdd = new RElementValue(parentFrame, InputType.arrayType(), Filter,
+                                RElementValue toAdd = new RElementValue(parentFrame, genericType, Filter,
                                         null, "",
                                         false, null, WorkspaceName);
                                 toAdd.setValue(entry);
@@ -209,18 +223,7 @@ public class RElementValue extends JPanel {
                                     false,
                                     null, WorkspaceName);
                         } else {
-                            Class<?> genericType = null;
-                            if (field == null) {
-                                return;
-                            }
-                            if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
-                                java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
-                                        .getGenericType();
-                                genericType = (Class<?>) pt.getActualTypeArguments()[0];
-                            }
-                            if (genericType == null) {
-                                throw new NullPointerException("This list doesnt have a type.");
-                            }
+
                             Launcher.LOG.info("make an list value element with class: "
                                     + genericType.getCanonicalName());
                             toAdd = new RElementValue(parentFrame, genericType, Filter, null,
@@ -482,7 +485,6 @@ public class RElementValue extends JPanel {
                                 var Selected = RTextureAddingSelector.openSelector(parentFrame,
                                         ResourceFile.ITEM_TEXTURE,
                                         WorkspaceName);
-                                Launcher.LOG.info(Selected);
                                 if (Selected == null)
                                     return;
                                 var filename = MapUtilities.getKeyFromValue(
@@ -609,7 +611,6 @@ public class RElementValue extends JPanel {
                                 var Selected = RTextureAddingSelector.openSelector(parentFrame,
                                         ResourceFile.BLOCK_TEXTURE,
                                         WorkspaceName);
-                                Launcher.LOG.info(Selected);
                                 if (Selected == null)
                                     return;
                                 var filename = MapUtilities.getKeyFromValue(
@@ -840,9 +841,11 @@ public class RElementValue extends JPanel {
     }
 
     public void setValue(Object value) throws ClassNotFoundException {
-        if (value == null) return;
-        if (!value.getClass().equals(InputType)) {
-            throw new ClassNotFoundException("This ElementValue isnt the class of the object.");
+        if (value == null)
+            return;
+        if (!InputType.isAssignableFrom(value.getClass())) {
+            throw new ClassNotFoundException("This ElementValue isnt the class of the object. ("
+                    + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
         }
         if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
@@ -984,7 +987,7 @@ public class RElementValue extends JPanel {
                         if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
                             return Float.parseFloat(text);
                         } else if (InputType.equals(String.class)) { // string
-                            if (!Filter.getValid(text))
+                            if (Filter != null && !Filter.getValid(text))
                                 Problem = "String is not valid.";
                             return text;
                         } else {
@@ -1001,8 +1004,10 @@ public class RElementValue extends JPanel {
                 e.printStackTrace();
                 return null;
             }
-        } else
+        } else {
+            Launcher.LOG.info("Not valid, not getting");
             return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1089,7 +1094,10 @@ public class RElementValue extends JPanel {
 
                         Problem = "String is not valid.";
                         log.info(Target + ": String is checking if vaild");
-
+                        // no filter, it doesnt matter
+                        // this might be unsafe however
+                        if (Filter == null)
+                            return true;
                         return Filter.getValid(text);
                     }
                 } catch (Exception e) {
