@@ -15,6 +15,8 @@ import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 
 public class RecipeFile implements ElementFile {
 
+    public List<String> testList = new ArrayList<String>();
+    public String[] testArray = new String[] {};
     @CantEditAfter
     @HelpMessage("The name of the element. This only shows up in the workspace view.")
     public String ElementName;
