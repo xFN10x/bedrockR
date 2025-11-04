@@ -1111,7 +1111,7 @@ public class RElementValue extends JPanel {
                             return Filter.getValid(text);
                         }
                     } else {
-                        return false;
+                        return true;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
