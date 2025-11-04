@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RFileOperations;
@@ -45,7 +46,7 @@ public class RItemSelector extends RDialog {
     public static ItemJsonEntry[] vanillaItems;
 
     public static void downloadVanillaItems(WorkspaceFile workspace) {
-
+SourceWPFile
     }
 
     protected RItemSelector(Frame parent, String Workspace) {

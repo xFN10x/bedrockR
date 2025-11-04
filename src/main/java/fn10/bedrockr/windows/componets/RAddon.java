@@ -34,7 +34,7 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
@@ -50,7 +50,7 @@ public class RAddon extends JPanel implements MouseListener {
     protected JLabel Name;
     protected JLabel Version;
     protected JLabel LoadText;
-    protected SourceWPFile WPFile;
+    protected SourceWorkspaceFile WPFile;
     protected WorkspaceFile WPF;
     protected JFrame ancestor;
 
@@ -62,7 +62,7 @@ public class RAddon extends JPanel implements MouseListener {
         int step = 0;
         try {
             // dirty line of code coming up... "varibles? never hear of 'er"
-            WPFile = new SourceWPFile(Files.readString(RFileOperations
+            WPFile = new SourceWorkspaceFile(Files.readString(RFileOperations
                     .getFileFromWorkspace((Frame) getParent(), WPName, File.separator + RFileOperations.WPFFILENAME,
                             true)
                     .toPath()));

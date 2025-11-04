@@ -20,7 +20,7 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Header;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Module;
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses.VersionVector;
-import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
@@ -64,7 +64,7 @@ public class WorkspaceFile implements ElementFile {
 
     @Override
     public Class<? extends ElementSource> getSourceClass() {
-        return SourceWPFile.class;
+        return SourceWorkspaceFile.class;
     }
 
     @Override
