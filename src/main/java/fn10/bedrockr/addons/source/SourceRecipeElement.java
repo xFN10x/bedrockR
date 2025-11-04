@@ -2,26 +2,32 @@ package fn10.bedrockr.addons.source;
 
 import java.awt.Frame;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
 import javax.swing.ImageIcon;
 
+import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
+import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceRecipeElement implements ElementSource {
 
     private final String Location = File.separator + "elements" + File.separator;
-    private ScriptFile serilized;
+    private RecipeFile serilized;
 
-    public SourceRecipeElement(ScriptFile obj) {
+    public SourceRecipeElement(RecipeFile obj) {
         this.serilized = obj;
     }
 
@@ -30,7 +36,7 @@ public class SourceRecipeElement implements ElementSource {
     }
 
     public SourceRecipeElement(String jsonString) {
-        this.serilized = (ScriptFile) getFromJSON(jsonString);
+        this.serilized = (RecipeFile) getFromJSON(jsonString);
     }
 
     @Override
@@ -77,7 +83,18 @@ public class SourceRecipeElement implements ElementSource {
 
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBuilderWindow'");
+        var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
+                RElementEditingScreen.SPECIAL_AREA_STYLE);
+
+        try {
+            Field field1 = getSerilizedClass().getField("testList");
+            frame.setSpecialField(new RElementValue(Parent, field1.getType(), null, field1.getName(), "Test Field 1", false,
+                    getSerilizedClass(), Workspace));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return frame;
     }
 }
