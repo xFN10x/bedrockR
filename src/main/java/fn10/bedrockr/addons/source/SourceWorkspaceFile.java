@@ -16,7 +16,7 @@ import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import jakarta.annotation.Nullable;
 
-public class SourceWPFile implements ElementSource {
+public class SourceWorkspaceFile implements ElementSource {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
     private Class<WorkspaceFile> serilizedClass = WorkspaceFile.class;
     private WorkspaceFile serilized;
@@ -25,15 +25,15 @@ public class SourceWPFile implements ElementSource {
         return serilized.WorkspaceName;
     }
 
-    public SourceWPFile(WorkspaceFile obj) {
+    public SourceWorkspaceFile(WorkspaceFile obj) {
         this.serilized = obj;
     }
 
-    public SourceWPFile() {
+    public SourceWorkspaceFile() {
         this.serilized = null;
     }
 
-    public SourceWPFile(String jsonString) {
+    public SourceWorkspaceFile(String jsonString) {
         this.serilized = (WorkspaceFile) getFromJSON(jsonString);
     }
 

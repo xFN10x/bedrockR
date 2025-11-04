@@ -24,7 +24,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
@@ -198,7 +198,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             // try {
             // SwingUtilities.invokeLater(() -> {
             try {
-                SourceWPFile workspace = RFileOperations.createWorkspace(loading,
+                SourceWorkspaceFile workspace = RFileOperations.createWorkspace(loading,
 
                         new WorkspaceFile(NameInput.getText(),
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),

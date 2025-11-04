@@ -25,7 +25,7 @@ import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
-import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -175,7 +175,7 @@ public class RFileOperations {
         }
     }
 
-    public static void showMCSyncPopup(Frame doingThis, SourceWPFile WPF) {
+    public static void showMCSyncPopup(Frame doingThis, SourceWorkspaceFile WPF) {
         ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
         WPF.buildJSONFile(doingThis, // rebuild
                 ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
@@ -231,7 +231,7 @@ public class RFileOperations {
         }
     }
 
-    public static void openWorkspace(Frame doingThis, SourceWPFile WPF) {
+    public static void openWorkspace(Frame doingThis, SourceWorkspaceFile WPF) {
         var workspaceView = new RWorkspace(WPF);
         SwingUtilities.invokeLater(() -> {
             doingThis.dispose();
@@ -478,7 +478,7 @@ public class RFileOperations {
         }
     }
 
-    public static SourceWPFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
+    public static SourceWorkspaceFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
             WorkspaceFile wpf, File addonIcon)
             throws Exception {
 
@@ -518,7 +518,7 @@ public class RFileOperations {
 
                 loading.changeText("Creating workspace...");
 
-                SourceWPFile srcWPF = new SourceWPFile(wpf);
+                SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
                 srcWPF.buildJSONFile((Frame) loading.getParent(), wpf.WorkspaceName);
 
                 File srcIcon = new File(wsFolder.getAbsolutePath() + File.separator + "icon." + wpf.IconExtension);

@@ -42,7 +42,7 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceResourceElement;
-import fn10.bedrockr.addons.source.SourceWPFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
@@ -60,7 +60,7 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public class RWorkspace extends RFrame implements ActionListener, ElementCreationListener {
 
     protected Container CP = getContentPane();
-    public SourceWPFile SWPF;
+    public SourceWorkspaceFile SWPF;
 
     // components
     private JSeparator VerticleSep = new JSeparator(JSeparator.VERTICAL);
@@ -88,7 +88,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     private JMenu fileMenu = new JMenu("File");
     private JMenu helpMenu = new JMenu("Help");
 
-    public RWorkspace(SourceWPFile WPF) {
+    public RWorkspace(SourceWorkspaceFile WPF) {
         super(
                 DO_NOTHING_ON_CLOSE,
                 ((WorkspaceFile) WPF.getSerilized()).WorkspaceName,
