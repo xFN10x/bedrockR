@@ -8,7 +8,7 @@ public class Recipe {
             "you_should_never_see_this:report-a-github-bug-if-you-see-this");
 
     // classes
-    private static class InnerDiscription {
+    public static class InnerDiscription {
         public String identifier;
     }
 
@@ -20,7 +20,7 @@ public class Recipe {
     /**
      * used for extending, because everything in here is shared
      */
-    protected static class RecipeType {
+    public static class RecipeType {
 
         public InnerDiscription description;
 
@@ -29,7 +29,7 @@ public class Recipe {
         public UnlockCondition[] unlock;
     }
 
-    protected static class CraftingRecipeType extends RecipeType {
+    public static class CraftingRecipeType extends RecipeType {
         public String group;
         public int priority;
     }
@@ -58,7 +58,7 @@ public class Recipe {
         }
     }
 
-    protected static class RecipeShapeless extends CraftingRecipeType {
+    public static class RecipeShapeless extends CraftingRecipeType {
         public Item[] ingredients;
         public Item result;
     }
