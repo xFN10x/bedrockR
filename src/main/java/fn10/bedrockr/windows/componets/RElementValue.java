@@ -100,7 +100,8 @@ public class RElementValue extends JPanel {
                 WorkspaceName);
     }
 
-    @SuppressWarnings("unchecked")
+
+    @SuppressWarnings({ "unchecked", "null" })
     protected RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
@@ -120,7 +121,7 @@ public class RElementValue extends JPanel {
 
         final Dimension Size;
         if (Map.class.isAssignableFrom(InputType) || List.class.isAssignableFrom(InputType))
-            Size = new Dimension(350, 100);
+            Size = new Dimension(350, 150);
         else
             Size = new Dimension(350, 40);
 
@@ -130,6 +131,25 @@ public class RElementValue extends JPanel {
         setLayout(Lay);
 
         Help.putClientProperty("JButton.buttonType", "help");
+
+        Field field;
+        try { // try to get field
+            if (SourceFileClass != null) {
+                field = SourceFileClass.getField(TargetField);
+            } else {
+                field = null;
+            }
+        } catch (Exception e) {
+            if (!FromEmpty)
+                if (TargetFile.getDraft())
+                    return;
+                    
+            e.printStackTrace();
+            ErrorShower.showError(parentFrame,
+                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
+                    DisplayName, e);
+            return;
+        }
 
         // do corrisponding actions depending on the type
         try {
@@ -153,23 +173,6 @@ public class RElementValue extends JPanel {
                 ((JScrollPane) Input).setBorder(new LineBorder(Color.DARK_GRAY));
                 Input.setBackground(getBackground().brighter());
                 // get the RMapProvider
-                final Field field;
-                try { // try to get field
-                    if (SourceFileClass != null) {
-                        field = SourceFileClass.getField(TargetField);
-                    } else {
-                        field = null;
-                    }
-                } catch (Exception e) {
-                    if (!FromEmpty)
-                        if (TargetFile.getDraft())
-                            return;
-                    e.printStackTrace();
-                    ErrorShower.showError(parentFrame,
-                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                            DisplayName, e);
-                    return;
-                }
 
                 final Class<?> genericType;
                 if (!InputType.isArray()) {
@@ -203,7 +206,7 @@ public class RElementValue extends JPanel {
                                 HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                                 HashMapInnerPane.add(toAdd);
                             }
-                        } else {
+                        } else if (genericType != null) {
                             for (Object entry : (List<?>) field.get(TargetFile)) {
                                 RElementValue toAdd = new RElementValue(parentFrame, genericType, Filter,
                                         null, "",
@@ -232,7 +235,7 @@ public class RElementValue extends JPanel {
                             toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter, null, "",
                                     false,
                                     null, WorkspaceName);
-                        } else {
+                        } else if (genericType != null) {
 
                             Launcher.LOG.info("make an list value element with class: "
                                     + genericType.getCanonicalName());
@@ -240,6 +243,8 @@ public class RElementValue extends JPanel {
                                     "",
                                     false,
                                     null, WorkspaceName);
+                        } else {
+                            return;
                         }
                         toAdd.setAlignmentX(0.5f);
                         toAdd.setName("E");
@@ -264,7 +269,6 @@ public class RElementValue extends JPanel {
                 String[] vals = { "true", "false" };
                 Input = new JComboBox<String>(vals);
                 try {
-                    var field = SourceFileClass.getField(TargetField);
                     if (!FromEmpty)
                         ((JComboBox<String>) Input).setSelectedIndex((boolean) field.get(TargetFile)
                                 ? 0 // convert bool to index
@@ -281,23 +285,7 @@ public class RElementValue extends JPanel {
                 }
             } else if (InputType.equals(String.class)) { // if string, do this
                 // if normal do this
-                final Field field;
-                try { // try to get field
-                    if (SourceFileClass != null) {
-                        field = SourceFileClass.getField(TargetField);
-                    } else {
-                        field = null;
-                    }
-                } catch (Exception e) {
-                    if (!FromEmpty)
-                        if (TargetFile.getDraft())
-                            return;
-                    e.printStackTrace();
-                    ErrorShower.showError(parentFrame,
-                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                            DisplayName, e);
-                    return;
-                }
+
                 final StringDropdownField anno;
                 if (field != null) {
                     anno = field.getAnnotation(RAnnotation.StringDropdownField.class);
@@ -356,23 +344,7 @@ public class RElementValue extends JPanel {
                 ((JScrollPane) Input).setBorder(new LineBorder(Color.DARK_GRAY));
                 Input.setBackground(getBackground().brighter());
                 // get the RMapProvider
-                final Field field;
-                try { // try to get field
-                    if (SourceFileClass != null) {
-                        field = SourceFileClass.getField(TargetField);
-                    } else {
-                        field = null;
-                    }
-                } catch (Exception e) {
-                    if (!FromEmpty)
-                        if (TargetFile.getDraft())
-                            return;
-                    e.printStackTrace();
-                    ErrorShower.showError(parentFrame,
-                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                            DisplayName, e);
-                    return;
-                }
+
                 // finally, get the annotation after getting the field
                 final MapFieldSelectables anno;
                 if (field != null) {
@@ -440,23 +412,7 @@ public class RElementValue extends JPanel {
                 Input = new JSpinner();
 
             } else if (InputType.equals(UUID.class)) { // resource
-                final Field field;
-                try { // try to get field
-                    if (SourceFileClass != null) {
-                        field = SourceFileClass.getField(TargetField);
-                    } else {
-                        field = null;
-                    }
-                } catch (Exception e) {
-                    if (!FromEmpty)
-                        if (TargetFile.getDraft())
-                            return;
-                    e.printStackTrace();
-                    ErrorShower.showError(parentFrame,
-                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                            DisplayName, e);
-                    return;
-                }
+
                 final ResourcePackResourceType anno;
                 if (field != null) {
                     anno = field.getAnnotation(RAnnotation.ResourcePackResourceType.class);
@@ -759,7 +715,6 @@ public class RElementValue extends JPanel {
 
         try {
             if (!FromEmpty && SourceFileClass != null) {
-                var field = SourceFileClass.getField(TargetField);
                 if (field.get(TargetFile) != null) {
                     EnableDis.setSelected(true);
                 }
@@ -817,8 +772,16 @@ public class RElementValue extends JPanel {
         add(Input);
         if (Optional)
             add(EnableDis);
-        if (SourceFileClass != null)
+
+        final HelpMessage anno;
+        if (field != null) {
+            anno = field.getAnnotation(RAnnotation.HelpMessage.class);
+        } else {
+            anno = null;
+        }
+        if (SourceFileClass != null && anno != null) {
             add(Help);
+        }
 
     }
 
@@ -836,6 +799,7 @@ public class RElementValue extends JPanel {
         return Target;
     }
 
+    @SuppressWarnings("unchecked")
     public void setValue(Object value) throws ClassNotFoundException {
         if (value == null)
             return;
