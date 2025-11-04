@@ -30,6 +30,7 @@ import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RLoadingScreen;
 import fn10.bedrockr.windows.RWorkspace;
 
@@ -233,6 +234,9 @@ public class RFileOperations {
 
     public static void openWorkspace(Frame doingThis, SourceWorkspaceFile WPF) {
         var workspaceView = new RWorkspace(WPF);
+        //get items ready for use
+        RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
+        
         SwingUtilities.invokeLater(() -> {
             doingThis.dispose();
             workspaceView.setVisible(true);
@@ -478,7 +482,8 @@ public class RFileOperations {
         }
     }
 
-    public static SourceWorkspaceFile createWorkspace(RLoadingScreen loading, // String workspaceName, String minimumVersion)
+    public static SourceWorkspaceFile createWorkspace(RLoadingScreen loading, // String workspaceName, String
+                                                                              // minimumVersion)
             WorkspaceFile wpf, File addonIcon)
             throws Exception {
 
