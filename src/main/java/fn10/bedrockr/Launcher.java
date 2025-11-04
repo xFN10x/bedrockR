@@ -9,6 +9,7 @@ import fn10.bedrockr.utils.http.Format1Latest;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
+import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.laf.BedrockrDark;
@@ -159,7 +160,12 @@ public class Launcher {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        try {
+            RItemSelector.openSelector(null, "bedrockR - Testing");
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
