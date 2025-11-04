@@ -83,8 +83,12 @@ public class SourceRecipeElement implements ElementSource {
 
         try {
             Field field1 = getSerilizedClass().getField("testList");
-            frame.setSpecialField(
+            frame.addField(
                     new RElementValue(Parent, field1.getType(), null, field1.getName(), "Test Field 1", false,
+                            getSerilizedClass(), serilized, Workspace));
+            Field field2 = getSerilizedClass().getField("testArray");
+            frame.addField(
+                    new RElementValue(Parent, field2.getType(), null, field2.getName(), "Test Field 2", false,
                             getSerilizedClass(), serilized, Workspace));
         } catch (Exception e) {
             e.printStackTrace();
