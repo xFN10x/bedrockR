@@ -119,7 +119,7 @@ public class RElementValue extends JPanel {
         this.WorkspaceName = WorkspaceName;
 
         final Dimension Size;
-        if (Map.class.isAssignableFrom(InputType) || InputType.isArray() || List.class.isAssignableFrom(InputType))
+        if (Map.class.isAssignableFrom(InputType) || List.class.isAssignableFrom(InputType))
             Size = new Dimension(350, 100);
         else
             Size = new Dimension(350, 40);
@@ -133,7 +133,7 @@ public class RElementValue extends JPanel {
 
         // do corrisponding actions depending on the type
         try {
-            if (InputType.isArray() || List.class.isAssignableFrom(InputType)) {
+            if (List.class.isAssignableFrom(InputType)) {
                 /*
                  * im just stealing most of the hash map stuff, since it is basicly already a
                  * list
@@ -969,7 +969,8 @@ public class RElementValue extends JPanel {
                     return mapToBuild;
                 } else
 
-                if (InputType.isArray() || List.class.isAssignableFrom(InputType)) {
+                if (List.class.isAssignableFrom(InputType)) {
+
                     List<Object> listToBuild = new ArrayList<Object>();
                     for (Component comp : HashMapInnerPane.getComponents()) {
                         if (comp.getName() == null)
@@ -1047,7 +1048,7 @@ public class RElementValue extends JPanel {
         }
 
         try {
-            if (InputType.isArray() || List.class.isAssignableFrom(InputType)) {
+            if (List.class.isAssignableFrom(InputType)) {
                 log.info(Target + ": Arrays cannot be wrong, so it passes");
 
                 return true;
