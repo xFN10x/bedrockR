@@ -170,7 +170,7 @@ public class RElementMapValue extends JPanel {
     public Map.Entry<String, Object> getKeyAndVal() {
         Object val = null;
         try {
-            System.out.println(rMapElement.Type.getName());
+            Launcher.LOG.info(rMapElement.Type.getName());
             if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
                 val = new SharedJSONClasses.minecraftDamage();
                 ((SharedJSONClasses.minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();

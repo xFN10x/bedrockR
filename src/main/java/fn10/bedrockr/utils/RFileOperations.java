@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
+import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWPFile;
@@ -42,7 +43,7 @@ public class RFileOperations {
     static {
         var settings = SettingsFile.getSettings(null);
         COMMOJANG = settings.comMojangPath;
-        // System.out.println(COMMOJANG);
+        // Launcher.LOG.info(COMMOJANG);
     }
 
     private static final String[] ILLEGAL_CHARACTERS = {
@@ -60,7 +61,7 @@ public class RFileOperations {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
         ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
-        ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceResourceElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceRecipeElement.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
@@ -96,7 +97,7 @@ public class RFileOperations {
     public static ElementSource getElementSourceFromFileExtension(Frame doingThis,
             String fileExtension) {
         try {
-            System.out.println(fileExtension);
+            Launcher.LOG.info(fileExtension);
             return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
@@ -276,7 +277,7 @@ public class RFileOperations {
 
     public static File getBaseDirectory(Frame doingThis) {
         try {
-            // System.out.println(BaseDirectory.toPath());
+            // Launcher.LOG.info(BaseDirectory.toPath());
             if (!BaseDirectory.exists()) {
                 return Files.createDirectories(BaseDirectory.toPath()).toFile();
             } else
@@ -548,7 +549,7 @@ public class RFileOperations {
                 .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
-        System.out.println("PROPOSED " + proposed);
+        Launcher.LOG.info("PROPOSED " + proposed);
         return proposed;
     }
 

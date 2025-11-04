@@ -3,20 +3,15 @@ package fn10.bedrockr.addons.source;
 import java.awt.Frame;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
 import javax.swing.ImageIcon;
 
-import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
-import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.componets.RElementValue;
@@ -46,7 +41,7 @@ public class SourceRecipeElement implements ElementSource {
 
     @Override
     public ElementFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, ScriptFile.class);
+        return gson.fromJson(jsonString, RecipeFile.class);
     }
 
     public static ElementDetails getDetails() {
@@ -88,10 +83,10 @@ public class SourceRecipeElement implements ElementSource {
 
         try {
             Field field1 = getSerilizedClass().getField("testList");
-            frame.setSpecialField(new RElementValue(Parent, field1.getType(), null, field1.getName(), "Test Field 1", false,
-                    getSerilizedClass(), Workspace));
+            frame.setSpecialField(
+                    new RElementValue(Parent, field1.getType(), null, field1.getName(), "Test Field 1", false,
+                            getSerilizedClass(), serilized, Workspace));
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

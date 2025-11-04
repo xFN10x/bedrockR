@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
+import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -44,7 +45,7 @@ public class RecipeFile implements ElementFile {
 
     @Override
     public Class<? extends ElementSource> getSourceClass() {
-        return SourceScriptElement.class;
+        return SourceRecipeElement.class;
     }
 
     @Override

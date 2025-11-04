@@ -143,7 +143,7 @@ public class RTextureAddingSelector extends RDialog {
         thiS.setVisible(true);
 
         if (thiS.choice == CANCEL_CHOICE) {
-            System.out.println("canceled");
+            Launcher.LOG.info("canceled");
             return null;
         } else
             return thiS.getSelected();
