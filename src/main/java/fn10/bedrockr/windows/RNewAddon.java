@@ -27,7 +27,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
@@ -200,7 +200,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             try {
                 SourceWPFile workspace = RFileOperations.createWorkspace(loading,
 
-                        new WPFile(NameInput.getText(),
+                        new WorkspaceFile(NameInput.getText(),
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
                                 imageExtension, ModPrefixInput.getText()),
 

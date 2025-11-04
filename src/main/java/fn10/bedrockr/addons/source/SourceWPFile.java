@@ -7,7 +7,7 @@ import java.io.FileWriter;
 
 import javax.swing.ImageIcon;
 
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -18,14 +18,14 @@ import jakarta.annotation.Nullable;
 
 public class SourceWPFile implements ElementSource {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
-    private Class<WPFile> serilizedClass = WPFile.class;
-    private WPFile serilized;
+    private Class<WorkspaceFile> serilizedClass = WorkspaceFile.class;
+    private WorkspaceFile serilized;
 
     public String workspaceName() {
         return serilized.WorkspaceName;
     }
 
-    public SourceWPFile(WPFile obj) {
+    public SourceWPFile(WorkspaceFile obj) {
         this.serilized = obj;
     }
 
@@ -34,7 +34,7 @@ public class SourceWPFile implements ElementSource {
     }
 
     public SourceWPFile(String jsonString) {
-        this.serilized = (WPFile) getFromJSON(jsonString);
+        this.serilized = (WorkspaceFile) getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() {

@@ -29,7 +29,7 @@ import fn10.bedrockr.utils.RFileOperations;
  * The WPFile, is an ElementFile that handles workspace varibles, and building
  * manifests, and other base stuff for both packs.
  */
-public class WPFile implements ElementFile {
+public class WorkspaceFile implements ElementFile {
 
     public int Format;
     public String WorkspaceName;
@@ -47,7 +47,7 @@ public class WPFile implements ElementFile {
 
     public Map<UUID, String> Scripts = new HashMap<UUID, String>();
 
-    public WPFile(String WPName, String MEV, String DES, String IE, String PREFIX) {
+    public WorkspaceFile(String WPName, String MEV, String DES, String IE, String PREFIX) {
         this.Format = 1;
 
         this.WorkspaceName = WPName;
@@ -113,7 +113,7 @@ public class WPFile implements ElementFile {
     }
 
     @Override
-    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
 
         // build BP manifest

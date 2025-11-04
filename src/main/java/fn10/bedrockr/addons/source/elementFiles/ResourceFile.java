@@ -145,7 +145,7 @@ public class ResourceFile implements ElementFile {
      * rootPath is the workspace name!
      * THIS IS ALSO NOT MEANT FOR BUILDING TO PACKS
      */
-    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         if (ActiveWorkspace != null)
             ActiveWorkspace.refreshResources();

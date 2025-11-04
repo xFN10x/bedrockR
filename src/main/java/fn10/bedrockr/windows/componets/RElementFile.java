@@ -13,7 +13,7 @@ import javax.swing.JPopupMenu;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -77,7 +77,7 @@ public class RElementFile extends RElement implements ActionListener {
             ElementSource newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
             ((RElementEditingScreen) srczz
                     .getMethod("getBuilderWindow", Frame.class, ElementCreationListener.class, String.class)
-                    .invoke(newsrc, wksp, wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
+                    .invoke(newsrc, wksp, wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
@@ -118,7 +118,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(true);
                 ElementSource src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.buildJSONFile(wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.buildJSONFile(wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -129,7 +129,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(false);
                 ElementSource src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.buildJSONFile(wksp, ((WPFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.buildJSONFile(wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 e1.printStackTrace();

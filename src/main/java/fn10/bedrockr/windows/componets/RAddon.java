@@ -35,7 +35,7 @@ import com.formdev.flatlaf.util.ColorFunctions;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWPFile;
-import fn10.bedrockr.addons.source.elementFiles.WPFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RLaunchPage;
@@ -51,7 +51,7 @@ public class RAddon extends JPanel implements MouseListener {
     protected JLabel Version;
     protected JLabel LoadText;
     protected SourceWPFile WPFile;
-    protected WPFile WPF;
+    protected WorkspaceFile WPF;
     protected JFrame ancestor;
 
     public RAddon(RLaunchPage parent, String WPName) {
@@ -66,7 +66,7 @@ public class RAddon extends JPanel implements MouseListener {
                     .getFileFromWorkspace((Frame) getParent(), WPName, File.separator + RFileOperations.WPFFILENAME,
                             true)
                     .toPath()));
-            WPF = (WPFile) WPFile.getSerilized();
+            WPF = (WorkspaceFile) WPFile.getSerilized();
             step = 1;
             File iconFile = RFileOperations.getFileFromWorkspace((Frame) getParent(), WPName,
                     File.separator + "icon." + WPF.IconExtension, true);
@@ -79,7 +79,7 @@ public class RAddon extends JPanel implements MouseListener {
             if (step == 0) {
                 return;
             } else if (step == 1) {
-                WPF = (WPFile) WPFile.getSerilized();
+                WPF = (WorkspaceFile) WPFile.getSerilized();
                 try {
                     BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
                     var op = JOptionPane.showConfirmDialog(this, "Woah! The addon " + WPName

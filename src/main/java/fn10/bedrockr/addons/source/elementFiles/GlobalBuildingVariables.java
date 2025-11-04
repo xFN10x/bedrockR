@@ -44,9 +44,9 @@ public class GlobalBuildingVariables implements ElementFile {
     public List<File> BlockTextures = new ArrayList<File>();
 
     public ResourceFile Resource;
-    public WPFile WPF;
+    public WorkspaceFile WPF;
 
-    public GlobalBuildingVariables(WPFile WPF, ResourceFile Resources) {
+    public GlobalBuildingVariables(WorkspaceFile WPF, ResourceFile Resources) {
         this.Resource = Resources;
         this.WPF = WPF;
     }
@@ -108,7 +108,7 @@ public class GlobalBuildingVariables implements ElementFile {
     }
 
     @Override
-    public void build(String rootPath, WPFile workspaceFile, String rootResPackPath,
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         // #region Language support
         Langs.add("en_US"); // currently, only english support
