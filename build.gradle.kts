@@ -65,6 +65,8 @@ tasks.jpackage {
     mainJar.set("bedrockR-$version.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
+    
+
     windows {
         type.set(org.panteleyev.jpackage.ImageType.MSI)
         //delegate.winConsole = true
@@ -72,9 +74,11 @@ tasks.jpackage {
         winShortcutPrompt = true
         winPerUserInstall = true
         winDirChooser = true
+        icon = layout.projectDirectory.file("/src/main/resources/iconWin.ico")
     }
 
     linux {
+        icon = layout.projectDirectory.file("/src/main/resources/ui/icon_256.png")
         type.set(org.panteleyev.jpackage.ImageType.DEB)
         linuxPackageName = "bedrockr"
         linuxShortcut = true
@@ -91,6 +95,14 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
     vendor.set("_FN10_")
     mainJar.set("bedrockR-$version.jar")
     mainClass.set("fn10.bedrockr.Launcher")
+
+    windows {
+        icon = layout.projectDirectory.file("/src/main/resources/iconWin.ico")
+    }
+
+    linux {
+        icon = layout.projectDirectory.file("/src/main/resources/ui/icon_256.png")
+    }
 
     type = org.panteleyev.jpackage.ImageType.APP_IMAGE
 }
