@@ -83,7 +83,7 @@ public class RCraftingGridValue extends JPanel {
                 if (copied != null) {
                     if (copied.Texture != null) {
                         building.setFont(building.getFont().deriveFont(16f));
-                        building.setIcon(copied.Texture);
+                        building.setIcon(new ImageIcon(copied.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
                         building.setText("");
                     } else {
                         building.setFont(building.getFont().deriveFont(8f));
@@ -98,7 +98,6 @@ public class RCraftingGridValue extends JPanel {
             });
             copy.addActionListener(ac -> {
                 copied = gson.fromJson(building.getName(), ReturnItemInfo.class);
-                System.out.println(building.getName());
                 paste.setEnabled(copied != null);
             });
 
@@ -121,7 +120,7 @@ public class RCraftingGridValue extends JPanel {
                     if (itemInfo != null) {
                         if (itemInfo.Texture != null) {
                             building.setFont(building.getFont().deriveFont(16f));
-                            building.setIcon(itemInfo.Texture);
+                            building.setIcon(new ImageIcon(itemInfo.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
                             building.setText("");
                         } else {
                             building.setFont(building.getFont().deriveFont(8f));
