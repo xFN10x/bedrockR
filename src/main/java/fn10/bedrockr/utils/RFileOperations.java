@@ -3,7 +3,6 @@ package fn10.bedrockr.utils;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.List;
-import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -237,13 +236,6 @@ public class RFileOperations {
         var workspaceView = new RWorkspace(WPF);
         // get items ready for use
         RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
-        // TODO: remove after testing
-        try {
-            RItemSelector.openSelector(doingThis, WPF.workspaceName());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
         SwingUtilities.invokeLater(() -> {
             if (doingThis != null)

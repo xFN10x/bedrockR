@@ -2,24 +2,18 @@ package fn10.bedrockr.addons.addon.jsonClasses;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.addons.RMapElement;
-
 public class SharedJSONClasses {
 
+    @Deprecated(forRemoval = true)
     public static class StrictMapSerilizer implements JsonSerializer<Map<String, Object>> {
 
         @Override
@@ -49,43 +43,8 @@ public class SharedJSONClasses {
             }
             return jsonObject;
         }
-
     }
 
-    @Deprecated
-    public static class ComponentMapDeserilizer implements JsonDeserializer<Map<RMapElement, Object>> {
-        @Override
-        public Map<RMapElement, Object> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            Map<RMapElement, Object> toBuild = new HashMap<RMapElement, Object>();
-            for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
-                RMapElement lookupResault = RMapElement.LookupMap.get(entry.getKey());
-
-                Object value;
-                JsonElement Value = entry.getValue();
-
-                JsonPrimitive primitive = Value.getAsJsonPrimitive();
-
-                if (primitive.isJsonPrimitive()) {
-                    if (primitive.isBoolean()) {
-                        value = primitive.getAsBoolean();
-                    } else if (primitive.isString()) {
-                        value = primitive.getAsString();
-                    } else if (primitive.isNumber()) {
-                        value = primitive.getAsNumber();
-                    } else {
-                        value = null;
-                    }
-                } else {
-                    value = context.deserialize(Value, Value.getClass());
-                }
-
-                toBuild.put(lookupResault, value);
-            }
-            return toBuild;
-        }
-
-    }
 
     public static class minecraftDamage {
         @SerializedName("minecraft:damage")

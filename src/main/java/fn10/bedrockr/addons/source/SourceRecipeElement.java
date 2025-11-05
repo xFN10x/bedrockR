@@ -14,6 +14,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
+import fn10.bedrockr.windows.componets.RCraftingGridValue;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
@@ -79,21 +80,9 @@ public class SourceRecipeElement implements ElementSource {
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
         var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
-                RElementEditingScreen.SPECIAL_AREA_STYLE);
+                RElementEditingScreen.DEFAULT_STYLE);
 
-        try {
-            Field field1 = getSerilizedClass().getField("testList");
-            frame.addField(
-                    new RElementValue(Parent, field1.getType(), null, field1.getName(), "Test Field 1", false,
-                            getSerilizedClass(), serilized, Workspace));
-            Field field2 = getSerilizedClass().getField("testArray");
-            frame.addField(
-                    new RElementValue(Parent, field2.getType(), null, field2.getName(), "Test Field 2", false,
-                            getSerilizedClass(), serilized, Workspace));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
+        frame.InnerPane.add(new RCraftingGridValue(Workspace));
 
         return frame;
     }

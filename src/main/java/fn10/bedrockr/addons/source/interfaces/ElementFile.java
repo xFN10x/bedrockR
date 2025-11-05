@@ -7,10 +7,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
 
-import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
+import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
 
 public interface ElementFile { // mostly for making functions better to read
 
@@ -20,7 +20,7 @@ public interface ElementFile { // mostly for making functions better to read
             .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
             .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
             }.getClass(),
-                    new SharedJSONClasses.StrictMapSerilizer())
+                    new StrictMapSerilizer())
             .create();
 
     Class<? extends ElementSource> getSourceClass();
