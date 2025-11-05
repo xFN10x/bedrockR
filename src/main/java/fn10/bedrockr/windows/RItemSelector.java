@@ -22,17 +22,26 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.elementFiles.BlockFile;
+import fn10.bedrockr.addons.source.elementFiles.ItemFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public class ItemJsonEntry {
+    public class ItemJsonEntry implements Comparable<ItemJsonEntry> {
         public int id;
         public int stackSize;
         public String name;
         public String displayName;
+
+        @Override
+        public int compareTo(ItemJsonEntry o) {
+            return name.compareTo(o.name);
+        }
     }
 
     public class DataPathsJson {
@@ -123,7 +132,7 @@ public class RItemSelector extends RDialog {
         Lay.putConstraint(SpringLayout.SOUTH, selector, -5, SpringLayout.NORTH, addButton);
         Lay.putConstraint(SpringLayout.NORTH, selector, 5, SpringLayout.NORTH, getContentPane());
 
-        InnerPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        InnerPanel.setLayout(new GridLayout(0, 4, 3, 3));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
         for (ItemJsonEntry item : vanillaItems) {
@@ -133,8 +142,9 @@ public class RItemSelector extends RDialog {
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setName("");
+                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
                 ToAdd.setText(item.displayName);
-                ToAdd.setToolTipText(item.displayName + " (" + item.id +
+                ToAdd.setToolTipText(item.displayName + " (" + item.name +
                         ")");
                 ToAdd.addActionListener(e -> {
                     selected = ((JButton) e.getSource());
@@ -143,6 +153,24 @@ public class RItemSelector extends RDialog {
 
             } catch (Exception e1) {
                 e1.printStackTrace();
+            }
+        }
+
+        for (ElementFile element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
+            if (element instanceof ItemFile || element instanceof BlockFile) {
+                JButton ToAdd = new JButton();
+                Dimension size = new Dimension(48, 48);
+                ToAdd.setMinimumSize(size);
+                ToAdd.setPreferredSize(size);
+                ToAdd.setName("");
+                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
+                ToAdd.setText(item.displayName);
+                ToAdd.setToolTipText(item.displayName + " (" + item.name +
+                        ")");
+                ToAdd.addActionListener(e -> {
+                    selected = ((JButton) e.getSource());
+                });
+                InnerPanel.add(ToAdd);
             }
         }
 
