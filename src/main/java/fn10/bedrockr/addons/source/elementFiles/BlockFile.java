@@ -1,11 +1,15 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 
@@ -18,8 +22,11 @@ import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
+import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.MapUtilities;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -30,7 +37,7 @@ import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
-public class BlockFile implements ElementFile {
+public class BlockFile implements ElementFile, ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
@@ -180,5 +187,28 @@ public class BlockFile implements ElementFile {
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);
+    }
+
+    @Override
+    public Image getTexture(WorkspaceFile workspace) {
+        try {
+            ResourceFile resFile = RFileOperations.getResources(null, workspace.WorkspaceName).Serilized;
+            BufferedImage img = ImageIO.read(resFile.getResourceFile(null, workspace.WorkspaceName, MapUtilities
+                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.BLOCK_TEXTURE));
+            return img;
+        } catch (IllegalAccessError | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String getItemId() {
+        return ID;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return Name;
     }
 }
