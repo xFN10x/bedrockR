@@ -22,7 +22,7 @@ public class ImageIconSerilizer implements JsonSerializer<ImageIcon>, JsonDeseri
     public ImageIcon deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
         try {
-            return new ImageIcon(ImageIO.read(new ByteArrayInputStream(context.deserialize(json, byte[].class))));
+            return new ImageIcon(ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(json.getAsString()))));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
