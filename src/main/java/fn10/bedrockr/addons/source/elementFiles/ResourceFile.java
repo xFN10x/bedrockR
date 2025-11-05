@@ -24,7 +24,15 @@ import fn10.bedrockr.windows.RWorkspace;
 
 public class ResourceFile implements ElementFile {
 
+    /**
+     * Key is the file name.
+     * Value is the type
+     */
     public Map<String, Integer> ResourceTypes = new HashMap<String, Integer>();
+    /**
+     * Key is the file name.
+     * Value is the UUID.
+     */
     public Map<String, String> ResourceIDs = new HashMap<String, String>();
 
     public static RWorkspace ActiveWorkspace = null;
