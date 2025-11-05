@@ -98,9 +98,6 @@ public class RItemSelector extends RDialog {
             ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
             vanillaItems = itemEntrys;
             Arrays.sort(vanillaItems);
-            for (ItemJsonEntry itemJsonEntry : itemEntrys) {
-                System.out.println(itemJsonEntry.displayName);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,8 +160,9 @@ public class RItemSelector extends RDialog {
                     building.Id = ((ItemLikeElement) element).getItemId();
                     building.Name = ((ItemLikeElement) element).getDisplayName();
                     try {
-                        building.Prefix = ((WorkspaceFile)new SourceWorkspaceFile(Files.readString(RFileOperations.getFileFromWorkspace(parent, Workspace, RFileOperations.WPFFILENAME,true).toPath())).getSerilized()).Prefix;
+                        building.Prefix = ((WorkspaceFile)new SourceWorkspaceFile(Files.readString(RFileOperations.getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME,true).toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
+                        e1.printStackTrace();
                         building.Prefix = "error";
                     }
                     building.Texture = icon;

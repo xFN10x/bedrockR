@@ -12,6 +12,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SpringLayout;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,7 +24,8 @@ import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 
 public class RCraftingGridValue extends JPanel {
 
-    private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer()).create();
+    private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
+            .create();
     private static final Dimension SIZE = new Dimension(200, 200);
     private static final ImageIcon bg = new ImageIcon(RCraftingGridValue.class.getResource("/ui/CraftingGrid.png"));
 
@@ -49,12 +53,31 @@ public class RCraftingGridValue extends JPanel {
             building.setName("");
 
             JPopupMenu buttonPopup = new JPopupMenu();
+
             JMenuItem copy = buttonPopup.add("Copy");
             copy.setEnabled(!building.getName().isBlank());
-            copy.addActionListener(ac -> {
-                copied = gson.fromJson(building.getName(), ReturnItemInfo.class);
-            });
+
             JMenuItem paste = buttonPopup.add("Paste");
+
+            buttonPopup.addSeparator();
+            buttonPopup.addPopupMenuListener(new PopupMenuListener() {
+
+                @Override
+                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                    copy.setEnabled(!building.getName().isBlank());
+                    paste.setEnabled(copied != null);
+                }
+
+                @Override
+                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                }
+
+                @Override
+                public void popupMenuCanceled(PopupMenuEvent e) {
+                }
+
+            });
+
             paste.setEnabled(copied != null);
             paste.addActionListener(ac -> {
                 if (copied != null) {
@@ -73,6 +96,12 @@ public class RCraftingGridValue extends JPanel {
                     paste.setEnabled(copied != null);
                 }
             });
+            copy.addActionListener(ac -> {
+                copied = gson.fromJson(building.getName(), ReturnItemInfo.class);
+                System.out.println(building.getName());
+                paste.setEnabled(copied != null);
+            });
+
             JMenuItem remove = buttonPopup.add("Remove");
             remove.addActionListener(ac -> {
                 building.setIcon(null);
@@ -83,7 +112,6 @@ public class RCraftingGridValue extends JPanel {
                 paste.setEnabled(copied != null);
             });
 
-            
             building.setComponentPopupMenu(buttonPopup);
             building.setBorderPainted(false);
             building.setMargin(new Insets(1, 1, 1, 1));
@@ -101,7 +129,7 @@ public class RCraftingGridValue extends JPanel {
                             building.setIcon(null);
                         }
                         building.setToolTipText(itemInfo.Name + " (" + itemInfo.Id + ")");
-                        building.setName(gson.toJson(copied));
+                        building.setName(gson.toJson(itemInfo));
                         copy.setEnabled(!building.getName().isBlank());
                         paste.setEnabled(copied != null);
                     }
