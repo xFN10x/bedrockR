@@ -3,6 +3,7 @@ package fn10.bedrockr.utils;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.List;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -234,9 +235,9 @@ public class RFileOperations {
 
     public static void openWorkspace(Frame doingThis, SourceWorkspaceFile WPF) {
         var workspaceView = new RWorkspace(WPF);
-        //get items ready for use
+        // get items ready for use
         RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
-        //TODO: remove after testing
+        // TODO: remove after testing
         try {
             RItemSelector.openSelector(doingThis, WPF.workspaceName());
         } catch (InterruptedException e) {
@@ -245,7 +246,8 @@ public class RFileOperations {
         }
 
         SwingUtilities.invokeLater(() -> {
-            doingThis.dispose();
+            if (doingThis != null)
+                doingThis.dispose();
             workspaceView.setVisible(true);
             if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
                 var ask = JOptionPane.showConfirmDialog(doingThis,

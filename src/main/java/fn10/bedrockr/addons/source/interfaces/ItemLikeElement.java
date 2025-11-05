@@ -11,7 +11,7 @@ import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
  * has an item form (like a block), that can be used in recipes.
  */
 public interface ItemLikeElement {
-    Image getTexture(WorkspaceFile workspace);
+    Image getTexture(String workspaceName);
 
     String getItemId();
 

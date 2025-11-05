@@ -65,7 +65,7 @@ tasks.jpackage {
     mainJar.set("bedrockR-$version.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
-    
+    fileAssociations = project.files("fileAsso.properties")
 
     windows {
         type.set(org.panteleyev.jpackage.ImageType.MSI)
