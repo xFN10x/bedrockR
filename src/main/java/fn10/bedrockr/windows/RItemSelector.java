@@ -1,15 +1,15 @@
 package fn10.bedrockr.windows;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,10 +22,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.source.elementFiles.BlockFile;
-import fn10.bedrockr.addons.source.elementFiles.ItemFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 
@@ -44,6 +44,13 @@ public class RItemSelector extends RDialog {
         }
     }
 
+    public class ReturnItemInfo {
+        public String Id;
+        public String Name;
+        public ImageIcon Texture;
+        public String Prefix;
+    }
+
     public class DataPathsJson {
         public HashMap<String, HashMap<String, String>> pc;
         public HashMap<String, HashMap<String, String>> bedrock;
@@ -55,7 +62,7 @@ public class RItemSelector extends RDialog {
     private final JButton addButton = new JButton("Add");
     private final JButton cancelButton = new JButton("Cancel");
 
-    protected JButton selected = null;
+    protected ReturnItemInfo selected = null;
 
     public static final int OK_CHOICE = 1;
     public static final int CANCEL_CHOICE = 0;
@@ -135,42 +142,60 @@ public class RItemSelector extends RDialog {
         InnerPanel.setLayout(new GridLayout(0, 4, 3, 3));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
+        for (ElementFile element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
+            if (element instanceof ItemLikeElement) {
+                JButton ToAdd = new JButton();
+                Dimension size = new Dimension(48, 48);
+                ToAdd.setMinimumSize(size);
+                ToAdd.setPreferredSize(size);
+                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
+                Image image = ((ItemLikeElement) element).getTexture(Workspace);
+                ImageIcon icon = new ImageIcon(image);
+                if (image != null)
+                    ToAdd.setIcon(icon);
+                else
+                    ToAdd.setText(((ItemLikeElement) element).getDisplayName());
+                ToAdd.setToolTipText(
+                        ((ItemLikeElement) element).getDisplayName() + " (" + ((ItemLikeElement) element).getItemId() +
+                                ")");
+                ToAdd.addActionListener(e -> {
+                    ReturnItemInfo building = new ReturnItemInfo();
+                    building.Id = ((ItemLikeElement) element).getItemId();
+                    building.Name = ((ItemLikeElement) element).getDisplayName();
+                    try {
+                        building.Prefix = ((WorkspaceFile)new SourceWorkspaceFile(Files.readString(RFileOperations.getFileFromWorkspace(parent, Workspace, RFileOperations.WPFFILENAME,true).toPath())).getSerilized()).Prefix;
+                    } catch (IOException e1) {
+                        building.Prefix = "error";
+                    }
+                    building.Texture = icon;
+                    selected = building;
+                });
+                InnerPanel.add(ToAdd);
+            }
+        }
+
         for (ItemJsonEntry item : vanillaItems) {
             try {
                 JButton ToAdd = new JButton();
                 Dimension size = new Dimension(48, 48);
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
-                ToAdd.setName("");
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
                 ToAdd.setText(item.displayName);
                 ToAdd.setToolTipText(item.displayName + " (" + item.name +
                         ")");
                 ToAdd.addActionListener(e -> {
-                    selected = ((JButton) e.getSource());
+                    ReturnItemInfo building = new ReturnItemInfo();
+                    building.Id = item.name;
+                    building.Name = item.displayName;
+                    building.Prefix = "minecraft";
+                    building.Texture = null;
+                    selected = building;
                 });
                 InnerPanel.add(ToAdd);
 
             } catch (Exception e1) {
                 e1.printStackTrace();
-            }
-        }
-
-        for (ElementFile element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
-            if (element instanceof ItemFile || element instanceof BlockFile) {
-                JButton ToAdd = new JButton();
-                Dimension size = new Dimension(48, 48);
-                ToAdd.setMinimumSize(size);
-                ToAdd.setPreferredSize(size);
-                ToAdd.setName("");
-                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                ToAdd.setText(item.displayName);
-                ToAdd.setToolTipText(item.displayName + " (" + item.name +
-                        ")");
-                ToAdd.addActionListener(e -> {
-                    selected = ((JButton) e.getSource());
-                });
-                InnerPanel.add(ToAdd);
             }
         }
 
@@ -189,11 +214,11 @@ public class RItemSelector extends RDialog {
      * @return A map entry, in of which, the key is the UUID, and the value is the
      *         image to be displayed.
      */
-    public ItemJsonEntry getSelected() {
-        throw new UnsupportedOperationException();
+    public ReturnItemInfo getSelected() {
+        return selected;
     }
 
-    public static ItemJsonEntry openSelector(Frame parent, String Workspace)
+    public static ReturnItemInfo openSelector(Frame parent, String Workspace)
             throws InterruptedException {
         var thiS = new RItemSelector(parent, Workspace);
 

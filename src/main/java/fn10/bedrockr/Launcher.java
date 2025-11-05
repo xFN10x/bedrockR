@@ -3,14 +3,13 @@
  */
 package fn10.bedrockr;
 
-import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.http.Format1Latest;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
-import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.laf.BedrockrDark;
@@ -27,6 +26,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,6 +163,20 @@ public class Launcher {
             e.printStackTrace();
         }
 
+        if (args.length >= 1) {
+            File file;
+            if ((file = Path.of(args[0]).toFile()).exists()) {
+                if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
+                    try {
+                        RFileOperations.openWorkspace(loading, new SourceWorkspaceFile(Files.readString(file.toPath())));
+                        return;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(loading,"Couldn't open up that WPF file!");
+                    }
+                }
+            }
+        }
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
