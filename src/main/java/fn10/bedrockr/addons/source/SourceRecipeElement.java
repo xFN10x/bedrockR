@@ -2,11 +2,13 @@ package fn10.bedrockr.addons.source;
 
 import java.awt.Frame;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
@@ -81,27 +83,63 @@ public class SourceRecipeElement implements ElementSource {
 
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
-        RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
-                RElementEditingScreen.DEFAULT_STYLE);
+        try {
+            RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
+                    RElementEditingScreen.DEFAULT_STYLE);
 
-        SpringLayout Layout = new SpringLayout();
+            SpringLayout Layout = new SpringLayout();
 
-        frame.InnerPane.setLayout(Layout);
-        RCraftingGridValue grid = new RCraftingGridValue(Workspace);
+            RElementValue ElementName = new RElementValue(Parent, String.class,
+                    new FieldFilters.FileNameLikeStringFilter(),
+                    "ElementName", "Element Name", false, getSerilizedClass(), Workspace);
 
-        Layout.putConstraint(SpringLayout.VERTICAL_CENTER, grid, 0, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
+            RElementValue RecipeID = new RElementValue(Parent, String.class,
+                    new FieldFilters.IDStringFilter(),
+                    "RecipeID", "Recipe ID", false, getSerilizedClass(), Workspace);
 
-        frame.setCustomCreateFunction(new CustomCreateFunction() {
+            frame.InnerPane.setLayout(Layout);
+            RCraftingGridValue grid = new RCraftingGridValue(Workspace);
 
-            @Override
-            public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
-                System.out.println(gson.toJson(grid.getShapedRecipe()));
-            }
+            JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
 
-        });
+            JPanel lowerFields = new JPanel();
+            BoxLayout lowerLayout = new BoxLayout(lowerFields, BoxLayout.X_AXIS);
+            lowerFields.setLayout(lowerLayout);
 
-        frame.InnerPane.add(grid);
+            lowerFields.add(ElementName);
+            lowerFields.add(RecipeID);
 
-        return frame;
+            Layout.putConstraint(SpringLayout.EAST, lowerFields, 0, SpringLayout.EAST, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.WEST, lowerFields, 0, SpringLayout.WEST, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.SOUTH, lowerFields, 0, SpringLayout.SOUTH, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.NORTH, lowerFields, 40, SpringLayout.SOUTH, grid);
+
+            Layout.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, 0, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, 0, SpringLayout.HORIZONTAL_CENTER,
+                    frame.InnerPane);
+
+            Layout.putConstraint(SpringLayout.VERTICAL_CENTER, grid, 0, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
+            // Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, grid, 0,
+            // SpringLayout.HORIZONTAL_CENTER, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.EAST, grid, -20, SpringLayout.WEST, arrow);
+
+            frame.setCustomCreateFunction(new CustomCreateFunction() {
+
+                @Override
+                public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
+                    System.out.println(gson.toJson(grid.getShapedRecipe()));
+                }
+
+            });
+
+            frame.InnerPane.add(grid);
+            frame.InnerPane.add(arrow);
+            frame.InnerPane.add(lowerFields);
+
+            return frame;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
