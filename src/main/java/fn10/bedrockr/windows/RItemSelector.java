@@ -49,6 +49,10 @@ public class RItemSelector extends RDialog {
         public String Name;
         public ImageIcon Texture;
         public String Prefix;
+
+        public boolean equals(ReturnItemInfo other) {
+            return other.Id.equals(Id);
+        }
     }
 
     public class DataPathsJson {

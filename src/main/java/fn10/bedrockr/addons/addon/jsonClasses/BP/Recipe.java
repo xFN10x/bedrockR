@@ -34,6 +34,13 @@ public class Recipe {
         public int priority;
     }
 
+    /**
+     * An item referance for recipes.
+     * 
+     * {@code count} isn't used in the ingrediants of a shaped recipe, and in
+     * shapeless, its used to signifiy that it is in the grid multiple times in
+     * different places. Not one stack
+     */
     public static class Item {
         public String item;
         public int data;
