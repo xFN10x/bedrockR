@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
 import javax.swing.ImageIcon;
+import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
@@ -82,7 +83,14 @@ public class SourceRecipeElement implements ElementSource {
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
         RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
                 RElementEditingScreen.DEFAULT_STYLE);
+
+        SpringLayout Layout = new SpringLayout();
+
+        frame.InnerPane.setLayout(Layout);
         RCraftingGridValue grid = new RCraftingGridValue(Workspace);
+
+        Layout.putConstraint(SpringLayout.VERTICAL_CENTER, grid, 0, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
+
         frame.setCustomCreateFunction(new CustomCreateFunction() {
 
             @Override
