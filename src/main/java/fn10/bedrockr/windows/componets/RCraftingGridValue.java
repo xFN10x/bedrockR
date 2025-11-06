@@ -4,6 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +30,16 @@ import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 
 public class RCraftingGridValue extends JPanel {
 
+    public static class ShapedOutput {
+        /**
+         * key is the pattern letter
+         * 
+         * value is the item id
+         */
+        public Map<String, String> key = new HashMap<String, String>();
+        public String[] pattern;
+    }
+
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
             .create();
     private static final Dimension SIZE = new Dimension(200, 200);
@@ -36,7 +52,60 @@ public class RCraftingGridValue extends JPanel {
 
     public final JPanel ButtonGrid = new JPanel(ButtonLayout);
 
+    public final Vector<JButton> buttons = new Vector<JButton>(9);
+
     public static ReturnItemInfo copied = null;
+
+    public ShapedOutput getShapedRecipe() {
+        ShapedOutput output = new ShapedOutput();
+        String[] patternKeys = new String[] {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I"
+        };
+        int currentKey = 0;
+        /**
+         * key is prefix:id
+         * 
+         * value is the letter
+         */
+        HashMap<String, String> patternKey = new HashMap<String, String>();
+
+        List<String> patternRows = new ArrayList<String>();
+
+        for (int i = 0; i < 3; i++) { // go for each vertical row
+            StringBuilder string = new StringBuilder();
+            for (int j = 0; j < 3; j++) { // go for the 3 buttons to make the string
+                JButton button = buttons.get((i * 3) + j); // times the vertical row by 3 to get the buttons (e.g., row
+                                                           // 0, button 0 is button 1, row 2 gbutton 0 is 7.)
+                if (button.getName().isBlank()) {
+                    string.append(' ');
+                    continue;
+                }
+                ReturnItemInfo info = gson.fromJson(button.getName(), ReturnItemInfo.class);
+                if (!patternKey.containsKey(info.Prefix + ":" + info.Id)) { // if this item doesnt already has a pattern key
+                    patternKey.put(info.Prefix + ":" + info.Id, patternKeys[currentKey]);
+                    currentKey++;
+                }
+                // get the pattern key
+                string.append(patternKey.get(info.Prefix + ":" + info.Id));
+            }
+            patternRows.add(string.toString());
+        }
+        System.out.println(patternRows.toArray());
+
+        for (Entry<String,String> set : patternKey.entrySet()) {
+            output.key.put(set.getValue(), set.getKey());
+        }
+        output.pattern = patternRows.toArray(new String[] {});
+        return output;
+    }
 
     public RCraftingGridValue(String WorkspaceName) {
         super();
@@ -51,6 +120,7 @@ public class RCraftingGridValue extends JPanel {
 
             JButton building = new JButton("");
             building.setName("");
+            buttons.add(i, building);
 
             JPopupMenu buttonPopup = new JPopupMenu();
 
@@ -83,7 +153,8 @@ public class RCraftingGridValue extends JPanel {
                 if (copied != null) {
                     if (copied.Texture != null) {
                         building.setFont(building.getFont().deriveFont(16f));
-                        building.setIcon(new ImageIcon(copied.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
+                        building.setIcon(new ImageIcon(
+                                copied.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
                         building.setText("");
                     } else {
                         building.setFont(building.getFont().deriveFont(8f));
@@ -120,7 +191,8 @@ public class RCraftingGridValue extends JPanel {
                     if (itemInfo != null) {
                         if (itemInfo.Texture != null) {
                             building.setFont(building.getFont().deriveFont(16f));
-                            building.setIcon(new ImageIcon(itemInfo.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
+                            building.setIcon(new ImageIcon(itemInfo.Texture.getImage().getScaledInstance(48, 48,
+                                    java.awt.Image.SCALE_SMOOTH)));
                             building.setText("");
                         } else {
                             building.setFont(building.getFont().deriveFont(8f));

@@ -14,6 +14,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
+import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RCraftingGridValue;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
@@ -79,10 +80,19 @@ public class SourceRecipeElement implements ElementSource {
 
     @Override
     public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
-        var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
+        RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
                 RElementEditingScreen.DEFAULT_STYLE);
+        RCraftingGridValue grid = new RCraftingGridValue(Workspace);
+        frame.setCustomCreateFunction(new CustomCreateFunction() {
 
-        frame.InnerPane.add(new RCraftingGridValue(Workspace));
+            @Override
+            public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
+                System.out.println(gson.toJson(grid.getShapedRecipe()));
+            }
+
+        });
+
+        frame.InnerPane.add(grid);
 
         return frame;
     }
