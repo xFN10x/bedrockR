@@ -21,6 +21,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -29,6 +30,12 @@ import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 
 public class RCraftingGridValue extends JPanel {
+
+    public static enum Type {
+        CraftingTable,
+        Single
+    }
+    
 
     public static class ShapedOutput {
         /**
@@ -43,6 +50,7 @@ public class RCraftingGridValue extends JPanel {
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
             .create();
     private static final Dimension SIZE = new Dimension(200, 200);
+    private static final Dimension SIZE_SINGLE = new Dimension(48, 48);
     private static final ImageIcon bg = new ImageIcon(RCraftingGridValue.class.getResource("/ui/CraftingGrid.png"));
 
     public final JLabel Background = new JLabel(bg);
@@ -89,7 +97,8 @@ public class RCraftingGridValue extends JPanel {
                     continue;
                 }
                 ReturnItemInfo info = gson.fromJson(button.getName(), ReturnItemInfo.class);
-                if (!patternKey.containsKey(info.Prefix + ":" + info.Id)) { // if this item doesnt already has a pattern key
+                if (!patternKey.containsKey(info.Prefix + ":" + info.Id)) { // if this item doesnt already has a pattern
+                                                                            // key
                     patternKey.put(info.Prefix + ":" + info.Id, patternKeys[currentKey]);
                     currentKey++;
                 }
@@ -100,7 +109,7 @@ public class RCraftingGridValue extends JPanel {
         }
         System.out.println(patternRows.toArray());
 
-        for (Entry<String,String> set : patternKey.entrySet()) {
+        for (Entry<String, String> set : patternKey.entrySet()) {
             output.key.put(set.getValue(), set.getKey());
         }
         output.pattern = patternRows.toArray(new String[] {});
@@ -108,12 +117,16 @@ public class RCraftingGridValue extends JPanel {
     }
 
     public RCraftingGridValue(String WorkspaceName) {
+        this(WorkspaceName, Type.CraftingTable);
+    }
+    public RCraftingGridValue(String WorkspaceName, Type type) {
         super();
 
         setLayout(Layout);
-        setBackground(Color.DARK_GRAY);
-
+        //setBackground(Color.RED);
+        setBorder(new FlatLineBorder(getInsets(), Color.RED));
         setMinimumSize(SIZE);
+        setPreferredSize(SIZE);
         setMaximumSize(SIZE);
 
         for (int i = 0; i < 9; i++) {
@@ -224,5 +237,4 @@ public class RCraftingGridValue extends JPanel {
         add(Background);
         add(ButtonGrid);
     }
-
 }

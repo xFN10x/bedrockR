@@ -65,7 +65,6 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
      * Adds RElementValues to the Fields this editing screen checks.
      *
      * 
-     * @param func - the {@code CustomCreateFunction} to use for creation.
      * @return the {@code RElementEditingScreen}
      */
     public RElementEditingScreen addCustomRElementValues(RElementValue... elementValues) {
