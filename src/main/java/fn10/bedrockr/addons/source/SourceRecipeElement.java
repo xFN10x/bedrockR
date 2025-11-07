@@ -103,6 +103,9 @@ public class SourceRecipeElement implements ElementSource {
 
             frame.InnerPane.setLayout(Layout);
             RCraftingGridValue grid = new RCraftingGridValue(Workspace, Type.CraftingTable, true);
+            if (serilized != null) {
+                grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
+            }
             RCraftingGridValue outputSlot = new RCraftingGridValue(Workspace, Type.Single, true);
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
@@ -139,7 +142,7 @@ public class SourceRecipeElement implements ElementSource {
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
                     JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
-                    
+
                     ShapedOutput shaped = grid.getShapedRecipe();
                     RecipeFile building = new RecipeFile();
 
@@ -149,13 +152,16 @@ public class SourceRecipeElement implements ElementSource {
                     building.ShapedKey = shaped.key;
 
                     building.Result = outputSlot.getItems().get(0);
-                    
 
+                    serilized = building;
+                    
                     if (isDraft) {
                         Sindow.setVisible(false);
                         Listener.onElementDraft(This);
+                    } else {
+                        Sindow.setVisible(false);
+                        Listener.onElementCreate(This);
                     }
-                    serilized = building;
                 }
 
             }).addVaildations(ElementName, RecipeID, grid, outputSlot);

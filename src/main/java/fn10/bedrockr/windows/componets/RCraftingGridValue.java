@@ -3,6 +3,7 @@ package fn10.bedrockr.windows.componets;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
+import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
+import fn10.bedrockr.utils.MapUtilities;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
@@ -45,6 +49,14 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
          */
         public Map<String, String> key = new HashMap<String, String>();
         public String[] pattern;
+
+        public ShapedOutput() {
+        }
+
+        public ShapedOutput(RecipeFile from) {
+            this.key = from.ShapedKey;
+            this.pattern = from.ShapedPattern;
+        }
     }
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
@@ -77,6 +89,42 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
             }
         }
         return building;
+    }
+
+    public void setShapedRecipe(Frame parent, ShapedOutput value, String workspace) {
+        for (int i = 0; i < value.pattern.length; i++) { // go for each vertical row
+            // 'i' is the index in the array
+            String row = value.pattern[i];
+            for (int j = 0; j < row.length(); j++) { // go for the 3 buttons to set the string
+                JButton button = buttons.get((i * 3) + j); // times the vertical row by 3 to get the buttons (e.g., row
+                                                           // 0, button 0 is button 0, row 2 button 2 is 9.)
+                String itemString = String.valueOf(row.charAt(j));
+                if (itemString.isBlank() || itemString.isEmpty()) {
+                    continue;
+                }
+                System.out.println("item string is '" + itemString + "'");
+                ReturnItemInfo item;
+                try {
+                    item = RItemSelector.getItemById(parent,
+                           value.key.get(itemString), workspace);
+                } catch (IncorrectWorkspaceException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                if (item.Texture != null) {
+                    button.setFont(button.getFont().deriveFont(16f));
+                    button.setIcon(new ImageIcon(
+                            item.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
+                    button.setText("");
+                } else {
+                    button.setFont(button.getFont().deriveFont(8f));
+                    button.setText(item.Name);
+                    button.setIcon(null);
+                }
+                button.setToolTipText(item.Name + " (" + item.Id + ")");
+                button.setName(gson.toJson(item));
+            }
+        }
     }
 
     public ShapedOutput getShapedRecipe() {
@@ -282,6 +330,7 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
 
         add(Background);
         add(ButtonGrid);
+
     }
 
     @Override
