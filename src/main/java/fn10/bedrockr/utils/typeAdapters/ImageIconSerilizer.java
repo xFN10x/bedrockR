@@ -32,7 +32,7 @@ public class ImageIconSerilizer implements JsonSerializer<ImageIcon>, JsonDeseri
     @Override
     public JsonElement serialize(ImageIcon src, Type typeOfSrc, JsonSerializationContext context) {
         try {
-            BufferedImage bi = new BufferedImage(src.getIconWidth(), src.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+            BufferedImage bi = new BufferedImage(src.getIconWidth(), src.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             bi.getGraphics().drawImage(src.getImage(), 0, 0, null);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             ImageIO.write(bi, "png", output);
