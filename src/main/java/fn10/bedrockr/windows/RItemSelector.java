@@ -1,6 +1,9 @@
 package fn10.bedrockr.windows;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -8,8 +11,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -28,6 +34,8 @@ import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.windows.RItemSelector.ItemJsonEntry;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
@@ -39,20 +47,47 @@ public class RItemSelector extends RDialog {
         public String name;
         public String displayName;
 
+        public ReturnItemInfo toReturnItemInfo() {
+            String[] splitId = name.split(":");
+            return new ReturnItemInfo(splitId[0], displayName, splitId[1]);
+        }
+
         @Override
         public int compareTo(ItemJsonEntry o) {
             return name.compareTo(o.name);
         }
     }
 
-    public class ReturnItemInfo {
+    public static class ReturnItemInfo {
         public String Id;
         public String Name;
         public ImageIcon Texture;
         public String Prefix;
 
+        public ReturnItemInfo() {
+        }
+
+        public ReturnItemInfo(String id, String name, String prefix) {
+            this(id, name, prefix, new ImageIcon());
+        }
+
+        public ReturnItemInfo(String id, String name, String prefix, Image texture) {
+            this(id, name, prefix, new ImageIcon(texture));
+        }
+
+        public ReturnItemInfo(String id, String name, String prefix, ImageIcon texture) {
+            Id = id;
+            Name = name;
+            if (texture != null) {
+                if (texture.getImage() == null) {
+                    Texture = texture;
+                }
+            }
+            Prefix = prefix;
+        }
+
         public boolean equals(ReturnItemInfo other) {
-            return other.Id.equals(Id);
+            return (other.Prefix + ":" + other.Id).equals(Prefix + ":" + Id);
         }
 
         public Item toRecipeItem() {
@@ -81,6 +116,43 @@ public class RItemSelector extends RDialog {
     protected Integer choice = CANCEL_CHOICE;
 
     public static ItemJsonEntry[] vanillaItems;
+
+    /**
+     * 
+     * @param fullID        the id of the item. 'prefix':'id'
+     * @param workspaceName the name of the workspace.
+     * @return a ReturnItemInfo with the info of the item found, or null if it
+     *         wasent found.
+     * @throws IncorrectWorkspaceException
+     */
+    public static ReturnItemInfo getItemById(Frame doing, String fullID, String workspaceName)
+            throws IncorrectWorkspaceException {
+        // check the non-vanilla items
+        for (ElementFile element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
+            if (element instanceof ItemLikeElement) {
+                String Id = ((ItemLikeElement) element).getItemId();
+                String Name = ((ItemLikeElement) element).getDisplayName();
+                String Prefix = RFileOperations.getWorkspaceFile(doing, workspaceName).Prefix;
+                Image img = ((ItemLikeElement) element).getTexture(workspaceName);
+
+                if (fullID.equals(Prefix + ":" + Id)) {
+                    return new ReturnItemInfo(Id, Name, Prefix, img);
+                }
+            }
+        }
+
+        if (fullID.startsWith("minecraft")) {
+            for (ItemJsonEntry item : vanillaItems) {
+                if (item.name.equals(fullID)) {
+                    return item.toReturnItemInfo();
+                }
+            }
+            return null;
+        } else {
+            throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
+                    + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
+        }
+    }
 
     public static void downloadVanillaItems(WorkspaceFile workspace) {
         try {
