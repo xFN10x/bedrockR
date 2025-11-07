@@ -139,17 +139,21 @@ public class SourceRecipeElement implements ElementSource {
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
                     JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
+                    
+                    ShapedOutput shaped = grid.getShapedRecipe();
                     RecipeFile building = new RecipeFile();
+
                     building.ElementName = ElementName.getValue().toString();
+                    building.RecipeID = RecipeID.getValue().toString();
+                    building.ShapedPattern = shaped.pattern;
+                    building.ShapedKey = shaped.key;
+
+                    building.Result = outputSlot.getItems().get(0);
+                    
+
                     if (isDraft) {
                         Sindow.setVisible(false);
                         Listener.onElementDraft(This);
-                    } else {
-                        building.RecipeID = RecipeID.getValue().toString();
-
-                        ShapedOutput shaped = grid.getShapedRecipe();
-                        building.ShapedPattern = shaped.pattern;
-                        building.ShapedKey = shaped.key;
                     }
                     serilized = building;
                 }
