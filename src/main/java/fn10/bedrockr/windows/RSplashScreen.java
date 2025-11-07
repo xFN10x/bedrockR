@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JWindow;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 

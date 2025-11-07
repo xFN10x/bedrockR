@@ -46,18 +46,19 @@ public class Recipe {
         public int data;
         public int count;
 
-        public Item(String name, int data, int count) {
-            this.item = name;
+        public Item(String itemFullname, int data, int count) {
+            this.item = itemFullname;
             this.data = data;
             this.count = count;
         }
 
-        public Item(String name, int count) {
-            this(name, 0, count);
+        public Item(String itemFullname, int count) {
+            this.item = itemFullname;
+            this.count = count;
         }
 
-        public Item(String name) {
-            this(name, 0);
+        public Item(String itemFullname) {
+            this.item = itemFullname;
         }
 
         public boolean equals(Item other) {

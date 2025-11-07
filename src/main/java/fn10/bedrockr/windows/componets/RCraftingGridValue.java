@@ -1,6 +1,7 @@
 package fn10.bedrockr.windows.componets;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -20,22 +21,21 @@ import javax.swing.JPopupMenu;
 import javax.swing.SpringLayout;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-
-import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
+import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
-public class RCraftingGridValue extends JPanel {
+public class RCraftingGridValue extends JPanel implements ValidatableValue {
 
     public static enum Type {
         CraftingTable,
         Single
     }
-    
 
     public static class ShapedOutput {
         /**
@@ -50,19 +50,31 @@ public class RCraftingGridValue extends JPanel {
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
             .create();
     private static final Dimension SIZE = new Dimension(200, 200);
-    private static final Dimension SIZE_SINGLE = new Dimension(48, 48);
+    private static final Dimension SIZE_SINGLE = new Dimension(69, 69);
     private static final ImageIcon bg = new ImageIcon(RCraftingGridValue.class.getResource("/ui/CraftingGrid.png"));
 
     public final JLabel Background = new JLabel(bg);
 
+    public final SpringLayout ButtonGridSingleLayout = new SpringLayout();
     public final GridLayout ButtonLayout = new GridLayout(3, 3, 6, 6);
     public final SpringLayout Layout = new SpringLayout();
 
-    public final JPanel ButtonGrid = new JPanel(ButtonLayout);
+    public final JPanel ButtonGrid = new JPanel();
 
     public final Vector<JButton> buttons = new Vector<JButton>(9);
 
     public static ReturnItemInfo copied = null;
+    private final boolean needsItems;
+
+    public ArrayList<Item> getItems() {
+        ArrayList<Item> building = new ArrayList<Item>();
+        for (Component comp : ButtonGrid.getComponents()) {
+            if (comp instanceof JButton) {
+                building.add(gson.fromJson(comp.getName(), ReturnItemInfo.class).toRecipeItem());
+            }
+        }
+        return building;
+    }
 
     public ShapedOutput getShapedRecipe() {
         ShapedOutput output = new ShapedOutput();
@@ -119,21 +131,46 @@ public class RCraftingGridValue extends JPanel {
     public RCraftingGridValue(String WorkspaceName) {
         this(WorkspaceName, Type.CraftingTable);
     }
+
     public RCraftingGridValue(String WorkspaceName, Type type) {
+        this(WorkspaceName, type, false);
+    }
+
+    public RCraftingGridValue(String WorkspaceName, Type type, boolean needsToHaveItems) {
         super();
 
-        setLayout(Layout);
-        //setBackground(Color.RED);
-        setBorder(new FlatLineBorder(getInsets(), Color.RED));
-        setMinimumSize(SIZE);
-        setPreferredSize(SIZE);
-        setMaximumSize(SIZE);
+        this.needsItems = needsToHaveItems;
 
-        for (int i = 0; i < 9; i++) {
+        setLayout(Layout);
+
+        if (type == Type.Single) {
+            setMinimumSize(SIZE_SINGLE);
+            setPreferredSize(SIZE_SINGLE);
+            setMaximumSize(SIZE_SINGLE);
+            ButtonGrid.setLayout(ButtonGridSingleLayout);
+        } else {
+            setMinimumSize(SIZE);
+            setPreferredSize(SIZE);
+            setMaximumSize(SIZE);
+            ButtonGrid.setLayout(ButtonLayout);
+        }
+
+        for (int i = 0; i < (type == Type.Single ? 1 : 9); i++) {
 
             JButton building = new JButton("");
             building.setName("");
+            building.setBackground(new Color(28, 56, 17));
             buttons.add(i, building);
+            if (type == Type.Single) {
+                ButtonGridSingleLayout.putConstraint(SpringLayout.WEST, building, 4,
+                        SpringLayout.WEST, ButtonGrid);
+                ButtonGridSingleLayout.putConstraint(SpringLayout.NORTH, building, 4,
+                        SpringLayout.NORTH, ButtonGrid);
+                ButtonGridSingleLayout.putConstraint(SpringLayout.SOUTH, building, -4,
+                        SpringLayout.SOUTH, ButtonGrid);
+                ButtonGridSingleLayout.putConstraint(SpringLayout.EAST, building, -4,
+                        SpringLayout.EAST, ButtonGrid);
+            }
 
             JPopupMenu buttonPopup = new JPopupMenu();
 
@@ -236,5 +273,37 @@ public class RCraftingGridValue extends JPanel {
 
         add(Background);
         add(ButtonGrid);
+    }
+
+    @Override
+    public boolean valid(boolean strict) {
+        if (strict) {
+            if (needsItems) {
+                if (getItems().size() >= 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean valid() {
+        return valid(true);
+    }
+
+    @Override
+    public String getProblemMessage() {
+        return "This grid needs to have items.";
+    }
+
+    @Override
+    public String getName() {
+        return "Crafting Grid";
     }
 }

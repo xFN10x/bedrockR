@@ -35,13 +35,14 @@ import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
+import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
 /**
  * The main Components for <code>RElementCreationScreen</code>.
  * This class includes lots of useful tools for making a field for a user to
  * edit, and to save certain <code>java.reflect.Field</code>s.
  */
-public class RElementValue extends JPanel {
+public class RElementValue extends JPanel implements ValidatableValue {
 
     private SpringLayout Lay = new SpringLayout();
     private JLabel Name = new JLabel();
@@ -100,7 +101,6 @@ public class RElementValue extends JPanel {
                 WorkspaceName);
     }
 
-
     @SuppressWarnings({ "unchecked", "null" })
     protected RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
@@ -143,7 +143,7 @@ public class RElementValue extends JPanel {
             if (!FromEmpty)
                 if (TargetFile.getDraft())
                     return;
-                    
+
             e.printStackTrace();
             ErrorShower.showError(parentFrame,
                     "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -1086,5 +1086,20 @@ public class RElementValue extends JPanel {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public boolean valid() {
+        return valid(true);
+    }
+
+    @Override
+    public String getProblemMessage() {
+        return Problem;
+    }
+
+    @Override
+    public String getName() {
+        return getTarget();
     }
 }

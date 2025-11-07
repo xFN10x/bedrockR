@@ -24,7 +24,6 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
-import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;

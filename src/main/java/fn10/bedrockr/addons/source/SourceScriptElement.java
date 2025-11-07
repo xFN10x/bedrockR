@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -161,7 +160,7 @@ public class SourceScriptElement implements ElementSource {
                 }
             }
 
-        }).addCustomRElementValues(elementName, scriptName);
+        }).addVaildations(elementName, scriptName);
         SpringLayout lay = new SpringLayout();
 
         lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH, frame.InnerPane);

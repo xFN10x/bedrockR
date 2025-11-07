@@ -5,6 +5,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -20,6 +21,7 @@ import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RCraftingGridValue;
 import fn10.bedrockr.windows.componets.RElementValue;
+import fn10.bedrockr.windows.componets.RCraftingGridValue.Type;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceRecipeElement implements ElementSource {
@@ -98,7 +100,8 @@ public class SourceRecipeElement implements ElementSource {
                     "RecipeID", "Recipe ID", false, getSerilizedClass(), Workspace);
 
             frame.InnerPane.setLayout(Layout);
-            RCraftingGridValue grid = new RCraftingGridValue(Workspace);
+            RCraftingGridValue grid = new RCraftingGridValue(Workspace, Type.CraftingTable, true);
+            RCraftingGridValue outputSlot = new RCraftingGridValue(Workspace, Type.Single, true);
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
 
@@ -106,8 +109,11 @@ public class SourceRecipeElement implements ElementSource {
             BoxLayout lowerLayout = new BoxLayout(lowerFields, BoxLayout.X_AXIS);
             lowerFields.setLayout(lowerLayout);
 
+            lowerFields.add(Box.createHorizontalGlue());
             lowerFields.add(ElementName);
+            lowerFields.add(Box.createHorizontalStrut(5));
             lowerFields.add(RecipeID);
+            lowerFields.add(Box.createHorizontalGlue());
 
             Layout.putConstraint(SpringLayout.EAST, lowerFields, 0, SpringLayout.EAST, frame.InnerPane);
             Layout.putConstraint(SpringLayout.WEST, lowerFields, 0, SpringLayout.WEST, frame.InnerPane);
@@ -119,20 +125,24 @@ public class SourceRecipeElement implements ElementSource {
                     frame.InnerPane);
 
             Layout.putConstraint(SpringLayout.VERTICAL_CENTER, grid, 0, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
-            // Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, grid, 0,
-            // SpringLayout.HORIZONTAL_CENTER, frame.InnerPane);
-            Layout.putConstraint(SpringLayout.EAST, grid, -20, SpringLayout.WEST, arrow);
+            Layout.putConstraint(SpringLayout.EAST, grid, -30, SpringLayout.WEST, arrow);
+
+            Layout.putConstraint(SpringLayout.VERTICAL_CENTER, outputSlot, 0, SpringLayout.VERTICAL_CENTER,
+                    frame.InnerPane);
+            Layout.putConstraint(SpringLayout.WEST, outputSlot, 30, SpringLayout.EAST, arrow);
 
             frame.setCustomCreateFunction(new CustomCreateFunction() {
 
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
-                    System.out.println(gson.toJson(grid.getShapedRecipe()));
+                    RecipeFile building = new RecipeFile();
+                    building.ElementName = ElementName.getValue().toString();
                 }
 
-            });
+            }).addVaildations(ElementName, RecipeID, grid, outputSlot);
 
             frame.InnerPane.add(grid);
+            frame.InnerPane.add(outputSlot);
             frame.InnerPane.add(arrow);
             frame.InnerPane.add(lowerFields);
 
