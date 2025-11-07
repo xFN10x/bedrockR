@@ -35,6 +35,9 @@ import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RLoadingScreen;
 import fn10.bedrockr.windows.RWorkspace;
 
+/**
+ * TODO: add javadoc to all of the functions
+ */
 public class RFileOperations {
 
     private static final String USER_DIR = System.getProperty("user.home");
@@ -313,11 +316,22 @@ public class RFileOperations {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
     }
 
+    public static WorkspaceFile getWorkspaceFile(Component windowDoingThis, String WorkspaceName) {
+        File file = getFileFromWorkspace(windowDoingThis, WorkspaceName, WPFFILENAME, true);
+        try {
+            return ((WorkspaceFile)new SourceWorkspaceFile(Files.readString(file.toPath())).getSerilized());
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
             Boolean strict) {
+        Launcher.LOG.warning("This file should start with the file seperator, or not at all! not '/'!");
         try {
-            var proposed = BaseDirectory + File.separator + "workspace" + File.separator + WorkspaceName + ToCreate;
-            var proposedFile = new File(proposed);
+            String proposed = BaseDirectory + File.separator + "workspace" + File.separator + WorkspaceName
+                    + (ToCreate.startsWith(File.separator) ? "" : File.separator) + ToCreate;
+            File proposedFile = new File(proposed);
             if (proposedFile.exists() || strict) {
                 return proposedFile;
             } else
