@@ -12,6 +12,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
+import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 /**
  * use as referance
@@ -22,6 +23,7 @@ public class RecipeFile implements ElementFile {
     public List<String> testList = new ArrayList<String>();
     public String[] testArray = new String[] {};
     @CantEditAfter
+    @VeryImportant
     @HelpMessage("The name of the element. This only shows up in the workspace view.")
     public String ElementName;
 
@@ -42,10 +44,9 @@ public class RecipeFile implements ElementFile {
     public List<Item> ShapelessIngredients;
 
     public String[] ShapedPattern;
-    public Map<String,String> ShapedKey = new HashMap<String,String>();
+    public Map<String, String> ShapedKey = new HashMap<String, String>();
 
     private boolean Draft;
-
 
     @Override
     public Class<? extends ElementSource> getSourceClass() {
@@ -70,6 +71,6 @@ public class RecipeFile implements ElementFile {
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-           
+
     }
 }

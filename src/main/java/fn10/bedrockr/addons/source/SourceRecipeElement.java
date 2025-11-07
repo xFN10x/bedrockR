@@ -21,6 +21,7 @@ import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RCraftingGridValue;
 import fn10.bedrockr.windows.componets.RElementValue;
+import fn10.bedrockr.windows.componets.RCraftingGridValue.ShapedOutput;
 import fn10.bedrockr.windows.componets.RCraftingGridValue.Type;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
@@ -93,11 +94,11 @@ public class SourceRecipeElement implements ElementSource {
 
             RElementValue ElementName = new RElementValue(Parent, String.class,
                     new FieldFilters.FileNameLikeStringFilter(),
-                    "ElementName", "Element Name", false, getSerilizedClass(), Workspace);
+                    "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
 
             RElementValue RecipeID = new RElementValue(Parent, String.class,
                     new FieldFilters.IDStringFilter(),
-                    "RecipeID", "Recipe ID", false, getSerilizedClass(), Workspace);
+                    "RecipeID", "Recipe ID", false, getSerilizedClass(), serilized, Workspace);
 
             frame.InnerPane.setLayout(Layout);
             RCraftingGridValue grid = new RCraftingGridValue(Workspace, Type.CraftingTable, true);
@@ -131,12 +132,24 @@ public class SourceRecipeElement implements ElementSource {
                     frame.InnerPane);
             Layout.putConstraint(SpringLayout.WEST, outputSlot, 30, SpringLayout.EAST, arrow);
 
+            SourceRecipeElement This = this;
             frame.setCustomCreateFunction(new CustomCreateFunction() {
 
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
                     RecipeFile building = new RecipeFile();
                     building.ElementName = ElementName.getValue().toString();
+                    if (isDraft) {
+                        Sindow.setVisible(false);
+                        Listener.onElementDraft(This);
+                    } else {
+                        building.RecipeID = RecipeID.getValue().toString();
+
+                        ShapedOutput shaped = grid.getShapedRecipe();
+                        building.ShapedPattern = shaped.pattern;
+                        building.ShapedKey = shaped.key;
+                    }
+                    serilized = building;
                 }
 
             }).addVaildations(ElementName, RecipeID, grid, outputSlot);
