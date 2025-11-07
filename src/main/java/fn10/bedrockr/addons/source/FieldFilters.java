@@ -39,7 +39,7 @@ public class FieldFilters {
         @Override
         public Boolean getValid(String subject) {
             // check if there are any spaces, or uppercases
-            if (subject.chars().anyMatch(Character::isUpperCase) || subject.chars().anyMatch(Character::isWhitespace) || subject.chars().anyMatch(Character::isAlphabetic) )
+            if (subject.chars().anyMatch(Character::isUpperCase))
                 return false;
             // check if the id is valid
             else if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
