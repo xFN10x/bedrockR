@@ -71,7 +71,8 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         for (Component comp : ButtonGrid.getComponents()) {
             if (comp instanceof JButton) {
                 ReturnItemInfo info = gson.fromJson(comp.getName(), ReturnItemInfo.class);
-                if (info == null) continue;
+                if (info == null)
+                    continue;
                 building.add(info.toRecipeItem());
             }
         }
@@ -79,6 +80,10 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
     }
 
     public ShapedOutput getShapedRecipe() {
+        return getShapedRecipe(true);
+    }
+
+    public ShapedOutput getShapedRecipe(boolean trim) {
         ShapedOutput output = new ShapedOutput();
         String[] patternKeys = new String[] {
                 "A",
@@ -119,7 +124,9 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
                 // get the pattern key
                 string.append(patternKey.get(info.Prefix + ":" + info.Id));
             }
-            patternRows.add(string.toString());
+            String str = string.toString().stripTrailing();
+            if (!str.isBlank() && !str.isEmpty())
+                patternRows.add(str.toString());
         }
         System.out.println(patternRows.toArray());
 
