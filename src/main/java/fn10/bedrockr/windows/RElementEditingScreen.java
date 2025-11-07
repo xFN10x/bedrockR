@@ -24,6 +24,7 @@ import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
 /**
  * An RDialog that provides the basic parts to make a source element builder
@@ -43,9 +44,9 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     public Class<? extends ElementSource> SourceElementClass;
     public ElementSource SourceElement;
 
-    public List<RElementValue> Fields = new ArrayList<RElementValue>();
-    public List<RElementValue> RequiredFields = new ArrayList<RElementValue>();
-    public List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
+    public List<ValidatableValue> Fields = new ArrayList<ValidatableValue>();
+    public List<ValidatableValue> RequiredFields = new ArrayList<ValidatableValue>();
+    public List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
 
     public static final Integer DEFAULT_STYLE = 0;
     public static final Integer SPECIAL_AREA_STYLE = 1;
@@ -61,14 +62,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     }
 
-    /**
-     * Adds RElementValues to the Fields this editing screen checks.
-     *
-     * 
-     * @return the {@code RElementEditingScreen}
-     */
-    public RElementEditingScreen addCustomRElementValues(RElementValue... elementValues) {
-        Fields.addAll(List.of(elementValues));
+    public RElementEditingScreen addVaildations(ValidatableValue... values) {
+        Fields.addAll(List.of(values));
         return this;
     }
 
@@ -182,13 +177,13 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             RequiredFields.add(Field);
     }
 
-    public List<RElementValue> checkForErrors(boolean strict) {
-        List<RElementValue> IncorrectFields = new ArrayList<RElementValue>();
+    public List<ValidatableValue> checkForErrors(boolean strict) {
+        List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
         var log = Launcher.LOG;
         log.info("--------------------- CHECKING FOR ERRORS-----------------------");
-        for (RElementValue rElementValue : Fields) {
-            if (!rElementValue.valid(strict))
-                IncorrectFields.add(rElementValue);
+        for (ValidatableValue validatable : Fields) {
+            if (!validatable.valid(strict))
+                IncorrectFields.add(validatable);
         }
         if (IncorrectFields.size() != 0) {
             this.IncorrectFields = IncorrectFields;
@@ -201,18 +196,22 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     private void create(boolean isDraft) {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
-            for (RElementValue rElementValue : Fields) { // add the fields
-                if (!rElementValue.getOptionallyEnabled()) // if its not enabled, continue
-                    continue;
-                else
-                    try {
-                        SourceClass.getField(rElementValue.getTarget()).set(workingClass, rElementValue.getValue());
-                        // try to set field ^
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
+            for (ValidatableValue validatable : Fields) { // add the fields
+                if (validatable instanceof RElementValue) {
+                    if (!((RElementValue) validatable).getOptionallyEnabled()) // if its not enabled, continue
+                    {
                         continue;
-                    }
+                    } else
+                        try {
+                            SourceClass.getField(((RElementValue) validatable).getTarget()).set(workingClass,
+                                    ((RElementValue) validatable).getValue());
+                            // try to set field ^
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
+                            continue;
+                        }
+                }
 
             }
 
@@ -238,8 +237,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     createFunction.onCreate(this, Listener, false);
             } else { // show errored things
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
-                for (RElementValue EV : IncorrectFields) {
-                    builder.append("<li>" + EV.getTarget() + ": " + EV.Problem + "</li>");
+                for (ValidatableValue EV : IncorrectFields) {
+                    builder.append("<li>" + EV.getName() + ": " + EV.getProblemMessage() + "</li>");
                 }
 
                 JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
@@ -255,8 +254,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 // pov: you thought something was going to complicated, but you didnt need to
                 // search anything up VVVVVVV
                 var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
-                for (RElementValue EV : IncorrectFields) {
-                    builder.append("<li>" + EV.getTarget() + ": " + EV.Problem + "</li>");
+                for (ValidatableValue EV : IncorrectFields) {
+                    builder.append("<li>" + EV.getName() + ": " + EV.getProblemMessage() + "</li>");
                 }
 
                 JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",

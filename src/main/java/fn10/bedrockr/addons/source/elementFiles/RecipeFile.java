@@ -2,9 +2,9 @@ package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
-
+import java.util.Map;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
@@ -13,6 +13,10 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 
+/**
+ * use as referance
+ * https://wiki.bedrock.dev/loot/recipes
+ */
 public class RecipeFile implements ElementFile {
 
     public List<String> testList = new ArrayList<String>();
@@ -37,7 +41,8 @@ public class RecipeFile implements ElementFile {
 
     public List<Item> ShapelessIngredients;
 
-    public Vector<Item> ShapedPattern = new Vector<>(9);
+    public String[] ShapedPattern;
+    public Map<String,String> ShapedKey = new HashMap<String,String>();
 
     private boolean Draft;
 

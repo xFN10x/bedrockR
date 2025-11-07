@@ -9,7 +9,7 @@ public class FieldFilters {
         Boolean getValid(String subject);
 
         public static boolean isEmptyString(String subject) {
-            return subject.trim().equals("");
+            return subject.isBlank();
         }
 
         public static boolean containsAnOccurance(String Target, String... chars) {

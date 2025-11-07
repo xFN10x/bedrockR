@@ -2,8 +2,6 @@ package fn10.bedrockr.addons.source.interfaces;
 
 import java.awt.Image;
 
-import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
-
 /**
  * An interface used for ItemFiles and BlockFiles.
  * 

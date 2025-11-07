@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -52,6 +53,10 @@ public class RItemSelector extends RDialog {
 
         public boolean equals(ReturnItemInfo other) {
             return other.Id.equals(Id);
+        }
+
+        public Item toRecipeItem() {
+            return new Item(Prefix + ":" + Id);
         }
     }
 
@@ -164,7 +169,9 @@ public class RItemSelector extends RDialog {
                     building.Id = ((ItemLikeElement) element).getItemId();
                     building.Name = ((ItemLikeElement) element).getDisplayName();
                     try {
-                        building.Prefix = ((WorkspaceFile)new SourceWorkspaceFile(Files.readString(RFileOperations.getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME,true).toPath())).getSerilized()).Prefix;
+                        building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(RFileOperations
+                                .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
+                                .toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
                         e1.printStackTrace();
                         building.Prefix = "error";
