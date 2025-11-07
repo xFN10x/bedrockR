@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntPredicate;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -47,15 +48,25 @@ public class RFileOperations {
         // Launcher.LOG.info(COMMOJANG);
     }
 
-    private static final String[] ILLEGAL_CHARACTERS = {
-            "<",
-            ">",
-            ":",
-            "\"",
-            "/",
-            "\\",
-            "|",
-            "?"
+    /**
+     * taken from https://stackoverflow.com/a/31976060
+     */
+    private static final char[] ILLEGAL_CHARACTERS = {
+            '<',
+            '>',
+            ':',
+            '\"',
+            '/',
+            '\\',
+            '|',
+            '?',
+            ';',
+            '*',
+            0, // NUL
+            1, // other control characters
+            2,
+            3,
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     };
     private static final Map<String, Class<? extends ElementSource>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
     static {
@@ -116,16 +127,21 @@ public class RFileOperations {
     }
 
     public static boolean validFolderName(String proposed) {
-        var bool = true;
 
-        if (proposed.length() >= 200)
-            bool = false;
-        for (String string : ILLEGAL_CHARACTERS) {
-            if (proposed.contains(string))
-                bool = false;
+        if (proposed.length() >= 150)
+            return false;
+
+        for (int cha : proposed.chars().toArray()) {
+            for (char c : ILLEGAL_CHARACTERS) {
+                if (c == cha) {
+                    Launcher.LOG.info("String: " + proposed + " had illegal folder char: " + cha);
+                    return false;
+                }
+            }
         }
+        Launcher.LOG.info("String: " + proposed + " is a legal filename.");
 
-        return bool;
+        return true;
     }
 
     public static String[] getWorkspaces(Frame doingThis) {

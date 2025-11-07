@@ -9,6 +9,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
@@ -137,6 +138,7 @@ public class SourceRecipeElement implements ElementSource {
 
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
+                    JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
                     RecipeFile building = new RecipeFile();
                     building.ElementName = ElementName.getValue().toString();
                     if (isDraft) {
