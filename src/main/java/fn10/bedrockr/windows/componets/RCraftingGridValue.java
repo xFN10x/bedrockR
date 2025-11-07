@@ -70,7 +70,9 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         ArrayList<Item> building = new ArrayList<Item>();
         for (Component comp : ButtonGrid.getComponents()) {
             if (comp instanceof JButton) {
-                building.add(gson.fromJson(comp.getName(), ReturnItemInfo.class).toRecipeItem());
+                ReturnItemInfo info = gson.fromJson(comp.getName(), ReturnItemInfo.class);
+                if (info == null) continue;
+                building.add(info.toRecipeItem());
             }
         }
         return building;

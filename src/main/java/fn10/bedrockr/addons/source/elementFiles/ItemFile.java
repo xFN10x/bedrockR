@@ -23,7 +23,7 @@ import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class ItemFile implements ElementFile,ItemLikeElement {
+public class ItemFile implements ElementFile, ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
@@ -45,13 +45,13 @@ public class ItemFile implements ElementFile,ItemLikeElement {
 
     @HelpMessage("The Creative Tab is this item on.")
     @FieldDetails(Optional = true, displayName = "Item Category", Filter = FieldFilters.CommonFilter1.class)
-    @StringDropdownField({"construction", "equipment", "items", "nature" })
+    @StringDropdownField({ "construction", "equipment", "items", "nature" })
     public String Category;
 
     @HelpMessage("The group that this item is put into. These groups ")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
-    @StringDropdownField({"itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
+    @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
             "itemGroup.name.boots", "itemGroup.name.bundles", "itemGroup.name.buttons", "itemGroup.name.candles",
             "itemGroup.name.chalkboard", "itemGroup.name.chest", "itemGroup.name.chestboat",
@@ -123,11 +123,11 @@ public class ItemFile implements ElementFile,ItemLikeElement {
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
         if (Category != null) // make sure to have null checks like this, since its optional
-            //if (!Category.equals("(none)"))
-                cata.category = Category;
+            // if (!Category.equals("(none)"))
+            cata.category = Category;
         if (Group != null)
-            //if (!Group.equals("(none)"))
-                cata.group = "minecraft:" + Group;
+            // if (!Group.equals("(none)"))
+            cata.group = "minecraft:" + Group;
 
         // description
         var desc = new Item.InnerItem.Description();
@@ -140,9 +140,9 @@ public class ItemFile implements ElementFile,ItemLikeElement {
 
         inner.components = Components;
         inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
-                    MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
+                MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
 
-        //inner.components.put(ItemComponents.Components., workspaceFile)
+        // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
         var json = gson.toJson(item);

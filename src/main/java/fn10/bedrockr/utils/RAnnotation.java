@@ -5,7 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 import jakarta.annotation.Nullable;
@@ -39,13 +38,14 @@ public class RAnnotation {
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface MapFieldSelectables {
-       Class<? extends RMapElementProvider> value();
+        Class<? extends RMapElementProvider> value();
     }
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     /**
-     * This annotation is used to mark a field for automatic builder window creations. Don't use if not doing automatic creation.
+     * This annotation is used to mark a field for automatic builder window
+     * creations. Don't use if not doing automatic creation.
      */
     public @interface UneditableByCreation {
     }
@@ -55,7 +55,7 @@ public class RAnnotation {
     public @interface CantEditAfter {
     }
 
-     @Target({ ElementType.FIELD })
+    @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface VeryImportant {
     }
@@ -69,7 +69,7 @@ public class RAnnotation {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface StringDropdownField {
 
-        String[] value(); 
+        String[] value();
     }
 
 }
