@@ -79,7 +79,7 @@ public class RItemSelector extends RDialog {
             Id = id;
             Name = name;
             if (texture != null) {
-                if (texture.getImage() == null) {
+                if (texture.getImage() != null) {
                     Texture = texture;
                 }
             }
