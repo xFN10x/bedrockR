@@ -86,6 +86,7 @@ public class RecipeFile implements ElementFile {
         shaped.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
         shaped.key = ShapedKey;
         shaped.pattern = ShapedPattern;
+        shaped.unlock = UnlockConditions.toArray(new UnlockCondition[0]);
         List<Item> fullResults = new ArrayList<Item>();
         fullResults.add(Result);
         if (!ExtraResults.isEmpty())
