@@ -27,7 +27,6 @@ import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
-import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RItemSelector;
@@ -104,8 +103,6 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         }
         button.setToolTipText(item.Name + " (" + item.Id + ")");
         button.setName(gson.toJson(item));
-        button.repaint();
-        button.revalidate();
     }
 
     public void setButtonToItem(int buttonIndex, ReturnItemInfo item) {
@@ -221,7 +218,6 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         super();
 
         this.needsItems = needsToHaveItems;
-
         setLayout(Layout);
 
         if (type == Type.Single) {
@@ -239,17 +235,18 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         for (int i = 0; i < (type == Type.Single ? 1 : 9); i++) {
 
             JButton building = new JButton("");
+            building.setBorderPainted(false);
             building.setName("");
             building.setBackground(new Color(28, 56, 17));
             buttons.add(i, building);
             if (type == Type.Single) {
-                ButtonGridSingleLayout.putConstraint(SpringLayout.WEST, building, 4,
+                ButtonGridSingleLayout.putConstraint(SpringLayout.WEST, building, 1,
                         SpringLayout.WEST, ButtonGrid);
-                ButtonGridSingleLayout.putConstraint(SpringLayout.NORTH, building, 4,
+                ButtonGridSingleLayout.putConstraint(SpringLayout.NORTH, building, 1,
                         SpringLayout.NORTH, ButtonGrid);
-                ButtonGridSingleLayout.putConstraint(SpringLayout.SOUTH, building, -4,
+                ButtonGridSingleLayout.putConstraint(SpringLayout.SOUTH, building, -1,
                         SpringLayout.SOUTH, ButtonGrid);
-                ButtonGridSingleLayout.putConstraint(SpringLayout.EAST, building, -4,
+                ButtonGridSingleLayout.putConstraint(SpringLayout.EAST, building, -1,
                         SpringLayout.EAST, ButtonGrid);
             }
 
@@ -301,7 +298,6 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
             });
 
             building.setComponentPopupMenu(buttonPopup);
-            building.setBorderPainted(false);
             building.setMargin(new Insets(1, 1, 1, 1));
             building.addActionListener(ac -> {
                 try {
@@ -315,6 +311,7 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
             });
             ButtonGrid.add(building);
         }
+        ButtonGrid.setBackground(new Color(76, 255, 0));
 
         Layout.putConstraint(SpringLayout.EAST, Background, 0, SpringLayout.EAST, this);
         Layout.putConstraint(SpringLayout.WEST, Background, 0, SpringLayout.WEST, this);
@@ -326,9 +323,9 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         Layout.putConstraint(SpringLayout.NORTH, ButtonGrid, 6, SpringLayout.NORTH, this);
         Layout.putConstraint(SpringLayout.SOUTH, ButtonGrid, -6, SpringLayout.SOUTH, this);
 
-        add(Background);
         add(ButtonGrid);
-
+        add(Background);
+        ButtonGrid.repaint();
     }
 
     @Override
