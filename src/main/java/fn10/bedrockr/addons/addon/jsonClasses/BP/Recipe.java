@@ -7,8 +7,6 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
-
 public class Recipe {
 
     public transient static final Item NULL_ITEM = new Item(
