@@ -28,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
@@ -77,8 +78,12 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
     public static ReturnItemInfo copied = null;
     private final boolean needsItems;
+    private final Type currentType;
 
-    public ArrayList<Item> getItems() {
+    public ArrayList<Item> getItems() throws WrongItemValueTypeException {
+        if (currentType == Type.ListOfItems)
+            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+                    currentType);
         ArrayList<Item> building = new ArrayList<Item>();
         for (Component comp : ButtonGrid.getComponents()) {
             if (comp instanceof JButton) {
@@ -91,7 +96,10 @@ public class RItemValue extends JPanel implements ValidatableValue {
         return building;
     }
 
-    public void setButtonToItem(JButton button, ReturnItemInfo item) {
+    public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
+        if (currentType == Type.ListOfItems)
+            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+                    currentType);
         if (item.Texture != null) {
             button.setFont(button.getFont().deriveFont(16f));
             button.setIcon(new ImageIcon(
@@ -106,11 +114,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
         button.setName(gson.toJson(item));
     }
 
-    public void setButtonToItem(int buttonIndex, ReturnItemInfo item) {
+    public void setButtonToItem(int buttonIndex, ReturnItemInfo item) throws WrongItemValueTypeException {
         setButtonToItem(buttons.get(buttonIndex), item);
     }
 
-    public void setShapedRecipe(Frame parent, ShapedOutput value, String workspace) {
+    public void setShapedRecipe(Frame parent, ShapedOutput value, String workspace) throws WrongItemValueTypeException {
+        if (currentType != Type.CraftingTable)
+            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+                    currentType);
         for (int i = 0; i < value.pattern.length; i++) { // go for each vertical row
             // 'i' is the index in the array
             String row = value.pattern[i];
@@ -133,11 +144,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
     }
 
-    public ShapedOutput getShapedRecipe() {
+    public ShapedOutput getShapedRecipe() throws WrongItemValueTypeException {
         return getShapedRecipe(true);
     }
 
-    public ShapedOutput getShapedRecipe(boolean trim) {
+    public ShapedOutput getShapedRecipe(boolean trim) throws WrongItemValueTypeException {
+        if (currentType != Type.CraftingTable)
+            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+                    currentType);
         ShapedOutput output = new ShapedOutput();
         String[] patternKeys = new String[] {
                 "A",
@@ -218,132 +232,158 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public RItemValue(String WorkspaceName, Type type, boolean needsToHaveItems) {
         super();
 
+        this.currentType = type;
         this.needsItems = needsToHaveItems;
-        setLayout(Layout);
+        switch (type) {
+            case Type.ListOfItems:
+                setMinimumSize(new Dimension(200, 300));
+                break;
+            default:
+            case Type.CraftingTable:
+            case Type.Single:
+                setLayout(Layout);
 
-        if (type == Type.Single) {
-            setMinimumSize(SIZE_SINGLE);
-            setPreferredSize(SIZE_SINGLE);
-            setMaximumSize(SIZE_SINGLE);
-            ButtonGrid.setLayout(ButtonGridSingleLayout);
-        } else {
-            setMinimumSize(SIZE);
-            setPreferredSize(SIZE);
-            setMaximumSize(SIZE);
-            ButtonGrid.setLayout(ButtonLayout);
-        }
-
-        for (int i = 0; i < (type == Type.Single ? 1 : 9); i++) {
-
-            JButton building = new JButton("");
-            building.setBorderPainted(false);
-            building.setName("");
-            building.setBackground(new Color(28, 56, 17));
-            buttons.add(i, building);
-            if (type == Type.Single) {
-                ButtonGridSingleLayout.putConstraint(SpringLayout.WEST, building, 1,
-                        SpringLayout.WEST, ButtonGrid);
-                ButtonGridSingleLayout.putConstraint(SpringLayout.NORTH, building, 1,
-                        SpringLayout.NORTH, ButtonGrid);
-                ButtonGridSingleLayout.putConstraint(SpringLayout.SOUTH, building, -1,
-                        SpringLayout.SOUTH, ButtonGrid);
-                ButtonGridSingleLayout.putConstraint(SpringLayout.EAST, building, -1,
-                        SpringLayout.EAST, ButtonGrid);
-            }
-
-            JPopupMenu buttonPopup = new JPopupMenu();
-
-            JMenuItem copy = buttonPopup.add("Copy");
-            copy.setEnabled(!building.getName().isBlank());
-
-            JMenuItem paste = buttonPopup.add("Paste");
-
-            buttonPopup.addSeparator();
-            buttonPopup.addPopupMenuListener(new PopupMenuListener() {
-
-                @Override
-                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                    copy.setEnabled(!building.getName().isBlank());
-                    paste.setEnabled(copied != null);
+                if (type == Type.Single) {
+                    setMinimumSize(SIZE_SINGLE);
+                    setPreferredSize(SIZE_SINGLE);
+                    setMaximumSize(SIZE_SINGLE);
+                    ButtonGrid.setLayout(ButtonGridSingleLayout);
+                } else {
+                    setMinimumSize(SIZE);
+                    setPreferredSize(SIZE);
+                    setMaximumSize(SIZE);
+                    ButtonGrid.setLayout(ButtonLayout);
                 }
 
-                @Override
-                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-                }
+                for (int i = 0; i < (type == Type.Single ? 1 : 9); i++) {
 
-                @Override
-                public void popupMenuCanceled(PopupMenuEvent e) {
-                }
-
-            });
-
-            paste.setEnabled(copied != null);
-            paste.addActionListener(ac -> {
-                if (copied != null) {
-                    setButtonToItem(building, copied);
-                }
-            });
-            copy.addActionListener(ac -> {
-                copied = gson.fromJson(building.getName(), ReturnItemInfo.class);
-                paste.setEnabled(copied != null);
-            });
-
-            JMenuItem remove = buttonPopup.add("Remove");
-            remove.addActionListener(ac -> {
-                building.setIcon(null);
-                building.setText("");
-                building.setToolTipText("");
-                building.setName("");
-                copy.setEnabled(!building.getName().isBlank());
-                paste.setEnabled(copied != null);
-            });
-
-            building.setComponentPopupMenu(buttonPopup);
-            building.setMargin(new Insets(1, 1, 1, 1));
-            building.addActionListener(ac -> {
-                try {
-                    ReturnItemInfo itemInfo = RItemSelector.openSelector(null, WorkspaceName);
-                    if (itemInfo != null) {
-                        setButtonToItem(building, itemInfo);
+                    JButton building = new JButton("");
+                    building.setBorderPainted(false);
+                    building.setName("");
+                    building.setBackground(new Color(28, 56, 17));
+                    buttons.add(i, building);
+                    if (type == Type.Single) {
+                        ButtonGridSingleLayout.putConstraint(SpringLayout.WEST, building, 1,
+                                SpringLayout.WEST, ButtonGrid);
+                        ButtonGridSingleLayout.putConstraint(SpringLayout.NORTH, building, 1,
+                                SpringLayout.NORTH, ButtonGrid);
+                        ButtonGridSingleLayout.putConstraint(SpringLayout.SOUTH, building, -1,
+                                SpringLayout.SOUTH, ButtonGrid);
+                        ButtonGridSingleLayout.putConstraint(SpringLayout.EAST, building, -1,
+                                SpringLayout.EAST, ButtonGrid);
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+                    JPopupMenu buttonPopup = new JPopupMenu();
+
+                    JMenuItem copy = buttonPopup.add("Copy");
+                    copy.setEnabled(!building.getName().isBlank());
+
+                    JMenuItem paste = buttonPopup.add("Paste");
+
+                    buttonPopup.addSeparator();
+                    buttonPopup.addPopupMenuListener(new PopupMenuListener() {
+
+                        @Override
+                        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                            copy.setEnabled(!building.getName().isBlank());
+                            paste.setEnabled(copied != null);
+                        }
+
+                        @Override
+                        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                        }
+
+                        @Override
+                        public void popupMenuCanceled(PopupMenuEvent e) {
+                        }
+
+                    });
+
+                    paste.setEnabled(copied != null);
+                    paste.addActionListener(ac -> {
+                        if (copied != null) {
+                            try {
+                                setButtonToItem(building, copied);
+                            } catch (WrongItemValueTypeException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    });
+                    copy.addActionListener(ac -> {
+                        copied = gson.fromJson(building.getName(), ReturnItemInfo.class);
+                        paste.setEnabled(copied != null);
+                    });
+
+                    JMenuItem remove = buttonPopup.add("Remove");
+                    remove.addActionListener(ac -> {
+                        building.setIcon(null);
+                        building.setText("");
+                        building.setToolTipText("");
+                        building.setName("");
+                        copy.setEnabled(!building.getName().isBlank());
+                        paste.setEnabled(copied != null);
+                    });
+
+                    building.setComponentPopupMenu(buttonPopup);
+                    building.setMargin(new Insets(1, 1, 1, 1));
+                    building.addActionListener(ac -> {
+                        try {
+                            ReturnItemInfo itemInfo = RItemSelector.openSelector(null, WorkspaceName);
+                            if (itemInfo != null) {
+                                setButtonToItem(building, itemInfo);
+                            }
+                        } catch (InterruptedException | WrongItemValueTypeException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    ButtonGrid.add(building);
                 }
-            });
-            ButtonGrid.add(building);
+                ButtonGrid.setBackground(new Color(76, 255, 0));
+
+                Layout.putConstraint(SpringLayout.EAST, Background, 0, SpringLayout.EAST, this);
+                Layout.putConstraint(SpringLayout.WEST, Background, 0, SpringLayout.WEST, this);
+                Layout.putConstraint(SpringLayout.NORTH, Background, 0, SpringLayout.NORTH, this);
+                Layout.putConstraint(SpringLayout.SOUTH, Background, 0, SpringLayout.SOUTH, this);
+
+                Layout.putConstraint(SpringLayout.EAST, ButtonGrid, -6, SpringLayout.EAST, this);
+                Layout.putConstraint(SpringLayout.WEST, ButtonGrid, 6, SpringLayout.WEST, this);
+                Layout.putConstraint(SpringLayout.NORTH, ButtonGrid, 6, SpringLayout.NORTH, this);
+                Layout.putConstraint(SpringLayout.SOUTH, ButtonGrid, -6, SpringLayout.SOUTH, this);
+
+                add(ButtonGrid);
+                add(Background);
+
+                break;
+
         }
-        ButtonGrid.setBackground(new Color(76, 255, 0));
-
-        Layout.putConstraint(SpringLayout.EAST, Background, 0, SpringLayout.EAST, this);
-        Layout.putConstraint(SpringLayout.WEST, Background, 0, SpringLayout.WEST, this);
-        Layout.putConstraint(SpringLayout.NORTH, Background, 0, SpringLayout.NORTH, this);
-        Layout.putConstraint(SpringLayout.SOUTH, Background, 0, SpringLayout.SOUTH, this);
-
-        Layout.putConstraint(SpringLayout.EAST, ButtonGrid, -6, SpringLayout.EAST, this);
-        Layout.putConstraint(SpringLayout.WEST, ButtonGrid, 6, SpringLayout.WEST, this);
-        Layout.putConstraint(SpringLayout.NORTH, ButtonGrid, 6, SpringLayout.NORTH, this);
-        Layout.putConstraint(SpringLayout.SOUTH, ButtonGrid, -6, SpringLayout.SOUTH, this);
-
-        add(ButtonGrid);
-        add(Background);
-        ButtonGrid.repaint();
     }
 
     @Override
     public boolean valid(boolean strict) {
-        if (strict) {
-            if (needsItems) {
-                if (getItems().size() >= 1) {
-                    return true;
+        switch (currentType) {
+            default:
+            case Type.Single:
+            case Type.CraftingTable:
+                if (strict) {
+                    if (needsItems) {
+                        try {
+                            if (getItems().size() >= 1) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } catch (WrongItemValueTypeException e) {
+
+                            e.printStackTrace();
+                        }
+                    } else {
+                        return true;
+                    }
                 } else {
-                    return false;
+                    return true;
                 }
-            } else {
-                return true;
-            }
-        } else {
-            return true;
         }
+        return true;
     }
 
     @Override
