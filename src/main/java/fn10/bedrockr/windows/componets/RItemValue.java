@@ -13,15 +13,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -73,6 +77,12 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public final SpringLayout Layout = new SpringLayout();
 
     public final JPanel ButtonGrid = new JPanel();
+
+    public final JPanel ListInnerScroll = new JPanel();
+    public final BoxLayout ListInnerLayout = new BoxLayout(ListInnerScroll, BoxLayout.Y_AXIS);
+    public final JScrollPane ListScroll = new JScrollPane(ListInnerScroll, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            public final JButton ListAddButton = new JButton(new ImageIcon())
 
     public final Vector<JButton> buttons = new Vector<JButton>(9);
 
@@ -234,14 +244,20 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
         this.currentType = type;
         this.needsItems = needsToHaveItems;
+                setLayout(Layout);
         switch (type) {
             case Type.ListOfItems:
                 setMinimumSize(new Dimension(200, 300));
+                setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY));
+                ListScroll.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY.darker()));
+
+
+
+                add(ListScroll);
                 break;
             default:
             case Type.CraftingTable:
             case Type.Single:
-                setLayout(Layout);
 
                 if (type == Type.Single) {
                     setMinimumSize(SIZE_SINGLE);
