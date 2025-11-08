@@ -52,7 +52,7 @@ public class BlockFile implements ElementFile, ItemLikeElement {
     @FieldDetails(Optional = false, displayName = "Block Idenifier", Filter = FieldFilters.IDStringFilter.class)
     public String ID;
 
-    @HelpMessage("Specfiys if this block hidden in commands.")
+    @HelpMessage("Specfies if this block hidden in commands.")
     @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
     public boolean Hidden;
 

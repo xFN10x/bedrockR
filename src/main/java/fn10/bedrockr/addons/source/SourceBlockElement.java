@@ -40,7 +40,7 @@ public class SourceBlockElement implements ElementSource {
 
     public static ElementDetails getDetails() {
         return new ElementDetails("Block",
-                "<html>A block. Can have custom drops,<br>and a custom hitbox.</html>",
+                "<html>A block. Can have a custom texture<br>and custom sounds.</html>",
                 new ImageIcon(ElementSource.class.getResource("/addons/element/Element.png")));
     }
 

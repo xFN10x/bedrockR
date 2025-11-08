@@ -37,7 +37,6 @@ import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
-import fn10.bedrockr.windows.componets.RItemValue.ListElement;
 import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
 public class RItemValue extends JPanel implements ValidatableValue {
