@@ -108,10 +108,19 @@ public class SourceRecipeElement implements ElementSource {
             if (serilized != null) {
                 grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
             }
+
             RItemValue outputSlot = new RItemValue(Workspace, Type.Single, true);
             if (serilized != null) {
                 outputSlot.setButtonToItem(0, RItemSelector.getItemById(Parent, serilized.Result.item, Workspace));
             }
+
+            RItemValue unlockItems = new RItemValue(Workspace, Type.ListOfItems, true);
+            /*
+             * if (serilized != null) {
+             * outputSlot.setButtonToItem(0, RItemSelector.getItemById(Parent,
+             * serilized.Result.item, Workspace));
+             * }
+             */
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
 
@@ -130,6 +139,11 @@ public class SourceRecipeElement implements ElementSource {
             Layout.putConstraint(SpringLayout.SOUTH, lowerFields, 0, SpringLayout.SOUTH, frame.InnerPane);
             Layout.putConstraint(SpringLayout.NORTH, lowerFields, 40, SpringLayout.SOUTH, grid);
 
+            Layout.putConstraint(SpringLayout.EAST, unlockItems, -5, SpringLayout.EAST, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.WEST, unlockItems, 5, SpringLayout.EAST, outputSlot);
+            Layout.putConstraint(SpringLayout.SOUTH, unlockItems, -5, SpringLayout.NORTH, lowerFields);
+            Layout.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.NORTH, frame.InnerPane);
+
             Layout.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, 0, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
             Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, 0, SpringLayout.HORIZONTAL_CENTER,
                     frame.InnerPane);
@@ -146,27 +160,31 @@ public class SourceRecipeElement implements ElementSource {
 
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
-                    // JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
+                    try {
+                        // JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
 
-                    ShapedOutput shaped = grid.getShapedRecipe();
-                    RecipeFile building = new RecipeFile();
+                        ShapedOutput shaped = grid.getShapedRecipe();
+                        RecipeFile building = new RecipeFile();
 
-                    building.ElementName = ElementName.getValue().toString();
-                    building.RecipeID = RecipeID.getValue().toString();
-                    building.ShapedPattern = shaped.pattern;
-                    building.ShapedKey = shaped.key;
-                    // TODO: building.ExtraResults
-                    // TODO: building.UnlockConditions
-                    building.Result = outputSlot.getItems().get(0);
-                     
-                    serilized = building;
+                        building.ElementName = ElementName.getValue().toString();
+                        building.RecipeID = RecipeID.getValue().toString();
+                        building.ShapedPattern = shaped.pattern;
+                        building.ShapedKey = shaped.key;
+                        // TODO: building.ExtraResults
+                        // TODO: building.UnlockConditions
+                        building.Result = outputSlot.getItems().get(0);
 
-                    if (isDraft) {
-                        Sindow.setVisible(false);
-                        Listener.onElementDraft(This);
-                    } else {
-                        Sindow.setVisible(false);
-                        Listener.onElementCreate(This);
+                        serilized = building;
+
+                        if (isDraft) {
+                            Sindow.setVisible(false);
+                            Listener.onElementDraft(This);
+                        } else {
+                            Sindow.setVisible(false);
+                            Listener.onElementCreate(This);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
 
@@ -176,6 +194,7 @@ public class SourceRecipeElement implements ElementSource {
             frame.InnerPane.add(outputSlot);
             frame.InnerPane.add(arrow);
             frame.InnerPane.add(lowerFields);
+            frame.InnerPane.add(unlockItems);
 
             return frame;
         } catch (Exception e) {

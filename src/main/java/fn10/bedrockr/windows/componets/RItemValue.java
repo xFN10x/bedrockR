@@ -82,7 +82,8 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public final BoxLayout ListInnerLayout = new BoxLayout(ListInnerScroll, BoxLayout.Y_AXIS);
     public final JScrollPane ListScroll = new JScrollPane(ListInnerScroll, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            public final JButton ListAddButton = new JButton(new ImageIcon())
+    public final JButton ListAddButton = new JButton(
+            new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
 
     public final Vector<JButton> buttons = new Vector<JButton>(9);
 
@@ -244,14 +245,20 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
         this.currentType = type;
         this.needsItems = needsToHaveItems;
-                setLayout(Layout);
+        setLayout(Layout);
         switch (type) {
             case Type.ListOfItems:
                 setMinimumSize(new Dimension(200, 300));
                 setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY));
                 ListScroll.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY.darker()));
 
+                Layout.putConstraint(SpringLayout.EAST, ListScroll, -2, SpringLayout.EAST, this);
+                Layout.putConstraint(SpringLayout.WEST, ListScroll, 5, SpringLayout.EAST, ListAddButton);
+                Layout.putConstraint(SpringLayout.NORTH, ListScroll, 2, SpringLayout.NORTH, this);
+                Layout.putConstraint(SpringLayout.SOUTH, ListScroll, -2, SpringLayout.SOUTH, this);
 
+                Layout.putConstraint(SpringLayout.NORTH, ListAddButton, 5, SpringLayout.NORTH, this);
+                Layout.putConstraint(SpringLayout.WEST, ListAddButton, 5, SpringLayout.WEST, this);
 
                 add(ListScroll);
                 break;
