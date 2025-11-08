@@ -8,6 +8,7 @@ import java.nio.file.StandardOpenOption;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -157,7 +158,7 @@ public class SourceRecipeElement implements ElementSource {
                     // TODO: building.ExtraResults
                     // TODO: building.UnlockConditions
                     building.Result = outputSlot.getItems().get(0);
-                    
+                     
                     serilized = building;
 
                     if (isDraft) {

@@ -1,11 +1,22 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.InnerDiscription;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShaped;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShapeless;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -37,9 +48,9 @@ public class RecipeFile implements ElementFile {
     /**
      * Only used in Shaped Recipes
      */
-    public List<Item> ExtraResults;
+    public List<Item> ExtraResults = new ArrayList<Item>();
 
-    public List<Item> ShapelessIngredients;
+    public List<Item> ShapelessIngredients = new ArrayList<Item>();
 
     public String[] ShapedPattern;
     public Map<String, String> ShapedKey = new HashMap<String, String>();
@@ -69,6 +80,27 @@ public class RecipeFile implements ElementFile {
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
+        Recipe recipe = new Recipe();
+        recipe.formatVersion = "1.21.50";
+        // RecipeShapeless shapeless = new RecipeShapeless(); TODO: for now, you can
+        // only do shaped
+        RecipeShaped shaped = new RecipeShaped();
+        shaped.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
+        shaped.key = ShapedKey;
+        shaped.pattern = ShapedPattern;
+        List<Item> fullResults = new ArrayList<Item>();
+        fullResults.add(Result);
+        if (!ExtraResults.isEmpty())
+            fullResults.addAll(ExtraResults);
+        shaped.result = fullResults.toArray(new Item[0]);
+        
+        recipe.mcRecipeShaped = shaped;
 
+        // build file
+        String json = gson.toJson(recipe);
+        Path path = Path.of(rootPath, "recipes", RecipeID + ".json");
+        FileUtils.createParentDirectories(path.toFile());
+        Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+                StandardOpenOption.WRITE);
     }
 }
