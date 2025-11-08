@@ -37,6 +37,7 @@ import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
+import fn10.bedrockr.windows.componets.RItemValue.ListElement;
 import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
 public class RItemValue extends JPanel implements ValidatableValue {
@@ -193,7 +194,8 @@ public class RItemValue extends JPanel implements ValidatableValue {
         setButtonToItem(buttons.get(buttonIndex), item);
     }
 
-    public void setShapedRecipe(Window parent, ShapedOutput value, String workspace) throws WrongItemValueTypeException {
+    public void setShapedRecipe(Window parent, ShapedOutput value, String workspace)
+            throws WrongItemValueTypeException {
         if (currentType != Type.CraftingTable)
             throw new WrongItemValueTypeException("Can't set shaped recipe from this item value!", Type.CraftingTable,
                     currentType);
@@ -457,7 +459,16 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public boolean valid(boolean strict) {
         switch (currentType) {
             case Type.ListOfItems:
-
+                try {
+                    for (ListElement ele : getListElements()) {
+                        if (ele.ItemVal.valid(strict))
+                            continue;
+                        else
+                            return false;
+                    }
+                } catch (WrongItemValueTypeException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
             case Type.Single:
@@ -496,6 +507,6 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
     @Override
     public String getName() {
-        return "Crafting Grid";
+        return "Item Selector";
     }
 }

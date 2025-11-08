@@ -186,7 +186,7 @@ public class SourceRecipeElement implements ElementSource {
                     }
                 }
 
-            }).addVaildations(ElementName, RecipeID, grid, outputSlot);
+            }).addVaildations(ElementName, RecipeID, grid, outputSlot,unlockItems);
 
             frame.InnerPane.add(grid);
             frame.InnerPane.add(outputSlot);
