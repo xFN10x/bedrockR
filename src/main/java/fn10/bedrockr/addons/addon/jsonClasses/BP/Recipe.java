@@ -1,5 +1,7 @@
 package fn10.bedrockr.addons.addon.jsonClasses.BP;
 
+import java.util.Map;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Recipe {
@@ -10,11 +12,15 @@ public class Recipe {
     // classes
     public static class InnerDiscription {
         public String identifier;
+
+        public InnerDiscription(String id) {
+            identifier = id;
+        }
     }
 
     public static class UnlockCondition {
         public String item;
-        public int data;
+        public Integer data;
     }
 
     /**
@@ -31,7 +37,7 @@ public class Recipe {
 
     public static class CraftingRecipeType extends RecipeType {
         public String group;
-        public int priority;
+        public Integer priority;
     }
 
     /**
@@ -71,11 +77,20 @@ public class Recipe {
         public Item result;
     }
 
-    // actuall values
+    public static class RecipeShaped extends CraftingRecipeType {
+        public Map<String, String> key;
+        public String[] pattern;
+        public Item[] result;
+    }
+
+    // actual values
 
     @SerializedName("format_version")
     public String formatVersion;
 
     @SerializedName("minecraft:recipe_shapeless")
     public RecipeShapeless mcRecipeShapeless;
+
+    @SerializedName("minecraft:recipe_shaped")
+    public RecipeShaped mcRecipeShaped;
 }
