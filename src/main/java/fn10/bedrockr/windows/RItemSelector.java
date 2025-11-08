@@ -12,8 +12,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -27,12 +31,14 @@ import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
@@ -85,6 +91,22 @@ public class RItemSelector extends RDialog {
 
         public boolean equals(ReturnItemInfo other) {
             return (other.Prefix + ":" + other.Id).equals(Prefix + ":" + Id);
+        }
+
+        public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace) {
+            try {
+                return RItemSelector.getItemById(null, con.item, workspace);
+            } catch (IncorrectWorkspaceException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        public static List<ReturnItemInfo> fromUnlockCondition(Collection<? extends UnlockCondition> list, String workspace) {
+            ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
+            for (UnlockCondition info : list) {
+                building.add(ReturnItemInfo.fromUnlockCondition(info, workspace));
+            }
+            return building;
         }
 
         public Item toRecipeItem() {

@@ -20,6 +20,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RItemSelector;
+import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RItemValue;
 import fn10.bedrockr.windows.componets.RElementValue;
@@ -114,12 +115,10 @@ public class SourceRecipeElement implements ElementSource {
             }
 
             RItemValue unlockItems = new RItemValue(Workspace, Type.ListOfItems, true);
-            /*
-             * if (serilized != null) {
-             * outputSlot.setButtonToItem(0, RItemSelector.getItemById(Parent,
-             * serilized.Result.item, Workspace));
-             * }
-             */
+            if (serilized != null) {
+                unlockItems.addListElements(Workspace, ReturnItemInfo
+                        .fromUnlockCondition(serilized.UnlockConditions, Workspace).toArray(new ReturnItemInfo[0]));
+            }
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
 
@@ -187,7 +186,7 @@ public class SourceRecipeElement implements ElementSource {
                     }
                 }
 
-            }).addVaildations(ElementName, RecipeID, grid, outputSlot,unlockItems);
+            }).addVaildations(ElementName, RecipeID, grid, outputSlot, unlockItems);
 
             frame.InnerPane.add(grid);
             frame.InnerPane.add(outputSlot);
