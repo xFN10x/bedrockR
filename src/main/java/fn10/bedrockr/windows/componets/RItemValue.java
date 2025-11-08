@@ -79,6 +79,15 @@ public class RItemValue extends JPanel implements ValidatableValue {
             add(RemoveButton);
         }
 
+        public ListElement setItem(ReturnItemInfo info) {
+            try {
+                ItemVal.setButtonToItem(0, info);
+            } catch (WrongItemValueTypeException e) {
+                e.printStackTrace();
+            }
+            return this;
+        }
+
         public ArrayList<Item> getItems() {
             try {
                 return ItemVal.getItems();
@@ -133,6 +142,19 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public static ReturnItemInfo copied = null;
     private final boolean needsItems;
     private final Type currentType;
+
+    public void addListElements(String workspace, ReturnItemInfo... item) throws WrongItemValueTypeException {
+        if (currentType != Type.ListOfItems) {
+            throw new WrongItemValueTypeException("Can't set list elements from this type!", Type.ListOfItems,
+                    currentType);
+        }
+        ListInnerScroll.removeAll();
+        for (ReturnItemInfo ite : item) {
+            ListInnerScroll.add(new ListElement(ListInnerScroll, workspace).setItem(ite));
+        }
+        ListInnerScroll.revalidate();
+        ListInnerScroll.repaint();
+    }
 
     public ArrayList<ListElement> getListElements() throws WrongItemValueTypeException {
         if (currentType != Type.ListOfItems) {
