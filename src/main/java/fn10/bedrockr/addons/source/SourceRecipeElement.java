@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -169,7 +170,7 @@ public class SourceRecipeElement implements ElementSource {
                         building.ShapedPattern = shaped.pattern;
                         building.ShapedKey = shaped.key;
                         // TODO: building.ExtraResults
-                        // TODO: building.UnlockConditions
+                        building.UnlockConditions = UnlockCondition.fromRecipeItem(unlockItems.getItems());
                         building.Result = outputSlot.getItems().get(0);
 
                         serilized = building;

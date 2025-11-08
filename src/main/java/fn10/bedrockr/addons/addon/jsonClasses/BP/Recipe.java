@@ -1,8 +1,13 @@
 package fn10.bedrockr.addons.addon.jsonClasses.BP;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
+
+import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 
 public class Recipe {
 
@@ -21,6 +26,31 @@ public class Recipe {
     public static class UnlockCondition {
         public String item;
         public Integer data;
+
+        public UnlockCondition() {
+        }
+
+        public UnlockCondition(String item) {
+            this(item, null);
+        }
+
+        public UnlockCondition(String item, Integer data) {
+            this.item = item;
+            if (data != null)
+                this.data = data;
+        }
+
+        public static UnlockCondition fromRecipeItem(Item item) {
+            return new UnlockCondition(item.item);
+        }
+
+        public static List<UnlockCondition> fromRecipeItem(Collection<? extends Item> item) {
+            ArrayList<UnlockCondition> list = new ArrayList<UnlockCondition>();
+            for (Item info : item) {
+                list.add(fromRecipeItem(info));
+            }
+            return list;
+        }
     }
 
     /**
