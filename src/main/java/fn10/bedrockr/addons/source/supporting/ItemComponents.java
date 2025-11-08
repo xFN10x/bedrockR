@@ -4,6 +4,9 @@ import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 
+/**
+ * https://wiki.bedrock.dev/items/item-components
+ */
 public class ItemComponents implements RMapElementProvider {
 
     public static class minecraftIcon {
