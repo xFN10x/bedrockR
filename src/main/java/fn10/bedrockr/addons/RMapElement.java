@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
 import fn10.bedrockr.addons.source.supporting.ItemComponents;
@@ -17,6 +16,10 @@ public class RMapElement {
     public String DisplayName;
     public String HelpDescription;
     public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
+
+    public static interface DropdownType<T> {
+        T[] getChoices();
+    }
 
     public static enum MapValueFilter {
         NotNegitive, Between0And1
