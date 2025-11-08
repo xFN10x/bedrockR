@@ -1,7 +1,7 @@
 package fn10.bedrockr.addons.source;
 
 import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -64,7 +64,7 @@ public class SourceScriptElement implements ElementSource {
     }
 
     @Override
-    public File buildJSONFile(Frame doingThis, String workspace) {
+    public File buildJSONFile(Window doingThis, String workspace) {
         String string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
                 Location + serilized.ElementName + ".scriptref");
@@ -88,7 +88,7 @@ public class SourceScriptElement implements ElementSource {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
 
         ElementSource This = this;
 

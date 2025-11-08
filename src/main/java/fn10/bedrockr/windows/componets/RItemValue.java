@@ -3,9 +3,9 @@ package fn10.bedrockr.windows.componets;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -44,6 +45,48 @@ public class RItemValue extends JPanel implements ValidatableValue {
         CraftingTable,
         Single,
         ListOfItems
+    }
+
+    protected static class ListElement extends JPanel {
+        private final JButton RemoveButton = new JButton("-");
+        private final RItemValue ItemVal;
+        private final SpringLayout lay = new SpringLayout();
+
+        private final static Dimension size = new Dimension(150, 75);
+
+        public ListElement(JComponent parent, String workspace) {
+            this.ItemVal = new RItemValue(workspace, Type.Single, true);
+
+            setMinimumSize(size);
+            setPreferredSize(size);
+            setMaximumSize(size);
+
+            setLayout(lay);
+            setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY));
+
+            RemoveButton.addActionListener(act -> {
+                parent.remove(this);
+                parent.revalidate();
+                parent.repaint();
+            });
+
+            lay.putConstraint(SpringLayout.EAST, ItemVal, -5, SpringLayout.EAST, this);
+
+            lay.putConstraint(SpringLayout.WEST, RemoveButton, 5, SpringLayout.WEST, this);
+            lay.putConstraint(SpringLayout.SOUTH, RemoveButton, -5, SpringLayout.SOUTH, this);
+
+            add(ItemVal);
+            add(RemoveButton);
+        }
+
+        public ArrayList<Item> getItems() {
+            try {
+                return ItemVal.getItems();
+            } catch (WrongItemValueTypeException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     public static class ShapedOutput {
@@ -91,25 +134,46 @@ public class RItemValue extends JPanel implements ValidatableValue {
     private final boolean needsItems;
     private final Type currentType;
 
-    public ArrayList<Item> getItems() throws WrongItemValueTypeException {
-        if (currentType == Type.ListOfItems)
-            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+    public ArrayList<ListElement> getListElements() throws WrongItemValueTypeException {
+        if (currentType != Type.ListOfItems) {
+            throw new WrongItemValueTypeException("Can't get list elements from this type!", Type.ListOfItems,
                     currentType);
-        ArrayList<Item> building = new ArrayList<Item>();
-        for (Component comp : ButtonGrid.getComponents()) {
-            if (comp instanceof JButton) {
-                ReturnItemInfo info = gson.fromJson(comp.getName(), ReturnItemInfo.class);
-                if (info == null)
-                    continue;
-                building.add(info.toRecipeItem());
+        }
+        ArrayList<ListElement> building = new ArrayList<ListElement>();
+        for (Component comp : ListInnerScroll.getComponents()) {
+            if (comp instanceof ListElement) {
+                building.add((ListElement) comp);
             }
         }
         return building;
     }
 
+    public ArrayList<Item> getItems() throws WrongItemValueTypeException {
+        if (currentType == Type.ListOfItems) {
+            ArrayList<Item> building = new ArrayList<Item>();
+            for (ListElement ele : getListElements()) {
+                if (!ele.getItems().isEmpty()) {
+                    building.addAll(ele.getItems());
+                }
+            }
+            return building;
+        } else {
+            ArrayList<Item> building = new ArrayList<Item>();
+            for (Component comp : ButtonGrid.getComponents()) {
+                if (comp instanceof JButton) {
+                    ReturnItemInfo info = gson.fromJson(comp.getName(), ReturnItemInfo.class);
+                    if (info == null)
+                        continue;
+                    building.add(info.toRecipeItem());
+                }
+            }
+            return building;
+        }
+    }
+
     public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
         if (currentType == Type.ListOfItems)
-            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+            throw new WrongItemValueTypeException("Can't set a single button from this item value!", Type.CraftingTable,
                     currentType);
         if (item.Texture != null) {
             button.setFont(button.getFont().deriveFont(16f));
@@ -129,9 +193,9 @@ public class RItemValue extends JPanel implements ValidatableValue {
         setButtonToItem(buttons.get(buttonIndex), item);
     }
 
-    public void setShapedRecipe(Frame parent, ShapedOutput value, String workspace) throws WrongItemValueTypeException {
+    public void setShapedRecipe(Window parent, ShapedOutput value, String workspace) throws WrongItemValueTypeException {
         if (currentType != Type.CraftingTable)
-            throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
+            throw new WrongItemValueTypeException("Can't set shaped recipe from this item value!", Type.CraftingTable,
                     currentType);
         for (int i = 0; i < value.pattern.length; i++) { // go for each vertical row
             // 'i' is the index in the array
@@ -251,6 +315,13 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 setMinimumSize(new Dimension(200, 300));
                 setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY));
                 ListScroll.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY.darker()));
+                ListInnerScroll.setLayout(ListInnerLayout);
+
+                ListAddButton.addActionListener(ac -> {
+                    ListInnerScroll.add(new ListElement(ListInnerScroll, WorkspaceName));
+                    ListInnerScroll.revalidate();
+                    ListInnerScroll.repaint();
+                });
 
                 Layout.putConstraint(SpringLayout.EAST, ListScroll, -2, SpringLayout.EAST, this);
                 Layout.putConstraint(SpringLayout.WEST, ListScroll, 5, SpringLayout.EAST, ListAddButton);
@@ -261,6 +332,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 Layout.putConstraint(SpringLayout.WEST, ListAddButton, 5, SpringLayout.WEST, this);
 
                 add(ListScroll);
+                add(ListAddButton);
                 break;
             default:
             case Type.CraftingTable:
@@ -384,6 +456,9 @@ public class RItemValue extends JPanel implements ValidatableValue {
     @Override
     public boolean valid(boolean strict) {
         switch (currentType) {
+            case Type.ListOfItems:
+
+                break;
             default:
             case Type.Single:
             case Type.CraftingTable:

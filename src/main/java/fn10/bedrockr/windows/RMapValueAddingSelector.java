@@ -28,7 +28,7 @@ public class RMapValueAddingSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    protected RMapValueAddingSelector(Frame parent, RMapElement[] AvailableComponents,
+    protected RMapValueAddingSelector(Window parent, RMapElement[] AvailableComponents,
             java.util.List<RMapElement> UnavailableComponents) {
         super(
                 parent,
@@ -114,7 +114,7 @@ public class RMapValueAddingSelector extends RDialog {
         return null;
     }
 
-    public static RMapElement openSelector(Frame parent, RMapElement[] AvailableComponents,
+    public static RMapElement openSelector(Window parent, RMapElement[] AvailableComponents,
             java.util.List<RMapElement> UnavailableComponents)
             throws InterruptedException {
         var thiS = new RMapValueAddingSelector(parent, AvailableComponents, UnavailableComponents);

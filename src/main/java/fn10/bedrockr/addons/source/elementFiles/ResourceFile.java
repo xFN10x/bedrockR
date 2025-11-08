@@ -1,6 +1,6 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import java.awt.Frame;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class ResourceFile implements ElementFile {
     public static final int ITEM_TEXTURE = 0;
     public static final int BLOCK_TEXTURE = 1;
 
-    public File getResourceFile(Frame doingThis, String workspaceName, String file, int resourceType)
+    public File getResourceFile(Window doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
                 RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
@@ -70,7 +70,7 @@ public class ResourceFile implements ElementFile {
      * @throws IllegalAccessError    If the requested doesnt match the resource
      *                               type.
      */
-    public String getResource(Frame doingThis, String workspaceName, String file, int resourceType)
+    public String getResource(java.awt.Window doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
                 RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
@@ -89,7 +89,7 @@ public class ResourceFile implements ElementFile {
 
     }
 
-    public boolean importTexture(Frame doingThis, int Type, String workspaceName) {
+    public boolean importTexture(Window doingThis, int Type, String workspaceName) {
         var file = new JFileChooser();
         file.setFileSelectionMode(JFileChooser.FILES_ONLY);
         file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
@@ -99,7 +99,7 @@ public class ResourceFile implements ElementFile {
         return addTexture(doingThis, file.getSelectedFile(), Type, workspaceName);
     }
 
-    public boolean addTexture(Frame doingThis, File filePNG, int type, String workspaceName) {
+    public boolean addTexture(Window doingThis, File filePNG, int type, String workspaceName) {
         try {
             Object input = JOptionPane.showInputDialog(doingThis,
                     "What do you want to name this texture? (" + filePNG.getName() + ")",

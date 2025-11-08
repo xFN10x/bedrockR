@@ -55,9 +55,11 @@ public class Launcher {
         if (ver.startsWith("1.")) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
                     + "\n Required version: 21.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
+            return;
         } else if (Integer.parseInt(ver.substring(0, 2)) < 21) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
                     + "\n Required version: 21.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         RSplashScreen loading = new RSplashScreen();
@@ -168,11 +170,12 @@ public class Launcher {
             if ((file = Path.of(args[0]).toFile()).exists()) {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
-                        RFileOperations.openWorkspace(loading, new SourceWorkspaceFile(Files.readString(file.toPath())));
+                        RFileOperations.openWorkspace(loading,
+                                new SourceWorkspaceFile(Files.readString(file.toPath())));
                         return;
                     } catch (IOException e) {
                         e.printStackTrace();
-                        JOptionPane.showMessageDialog(loading,"Couldn't open up that WPF file!");
+                        JOptionPane.showMessageDialog(loading, "Couldn't open up that WPF file!");
                     }
                 }
             }

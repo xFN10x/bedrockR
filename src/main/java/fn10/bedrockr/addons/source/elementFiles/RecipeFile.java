@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +15,6 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.InnerDiscription;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShaped;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShapeless;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;

@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
+import java.awt.Window;
 import java.util.AbstractMap;
 import java.util.Map;
 import javax.swing.JButton;
@@ -40,11 +40,11 @@ public class RElementMapValue extends JPanel {
     protected Component InputField = null;
 
     public final RMapElement rMapElement;
-    protected final Frame Ancestor;
+    protected final Window Ancestor;
 
     protected final SpringLayout Lay = new SpringLayout();
 
-    public RElementMapValue(Frame Ancestor, RMapElement RME) {
+    public RElementMapValue(Window Ancestor, RMapElement RME) {
 
         this.rMapElement = RME;
         this.Ancestor = Ancestor;
@@ -98,7 +98,7 @@ public class RElementMapValue extends JPanel {
         InputField.setMinimumSize(new Dimension(0, 70));
 
         HelpButton.addActionListener(
-                (e) -> JOptionPane.showMessageDialog(Ancestor, RME.HelpDescription, "Help for: " + RME.DisplayName,
+                (e) -> JOptionPane.showMessageDialog(this, RME.HelpDescription, "Help for: " + RME.DisplayName,
                         JOptionPane.INFORMATION_MESSAGE));
 
         Lay.putConstraint(SpringLayout.WEST, InputField, 5, SpringLayout.WEST, this);
@@ -162,7 +162,7 @@ public class RElementMapValue extends JPanel {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorShower.showError(Ancestor, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
+            ErrorShower.showError(this, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
         }
     }
     
@@ -199,7 +199,7 @@ public class RElementMapValue extends JPanel {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorShower.showError(Ancestor, "Failed to get value of Map Entry.", e.getMessage(), e);
+            ErrorShower.showError(this, "Failed to get value of Map Entry.", e.getMessage(), e);
             return null;
         }
         return new AbstractMap.SimpleEntry<>(rMapElement.ID, val);

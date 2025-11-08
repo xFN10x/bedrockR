@@ -24,7 +24,7 @@ public class SettingsFile {
     public java.util.List<String> currentRPSynced = new ArrayList<String>();
     public java.util.List<String> ignored = new ArrayList<String>();
 
-    public void buildFile(Frame doingThis) {
+    public void buildFile(Window doingThis) {
 
         var json = gson.toJson(this);
         var path = new File(RFileOperations.getBaseDirectory(doingThis).getPath() +File.separator+"settings.json").toPath();
@@ -38,7 +38,7 @@ public class SettingsFile {
 
     }
 
-    public static SettingsFile getSettings(Frame doingThis) {
+    public static SettingsFile getSettings(Window doingThis) {
         var file = new File(RFileOperations.getBaseDirectory(doingThis).getPath() +File.separator+"settings.json").toPath();
         try {
             if (!file.toFile().exists()) {

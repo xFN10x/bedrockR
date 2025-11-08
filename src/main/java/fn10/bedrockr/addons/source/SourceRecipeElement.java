@@ -1,6 +1,6 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Frame;
+import java.awt.Window;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -8,9 +8,7 @@ import java.nio.file.StandardOpenOption;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
@@ -64,7 +62,7 @@ public class SourceRecipeElement implements ElementSource {
     }
 
     @Override
-    public File buildJSONFile(Frame doingThis, String workspace) {
+    public File buildJSONFile(Window doingThis, String workspace) {
         String string = getJSONString();
         File file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
                 Location + serilized.ElementName + ".reciperef");
@@ -88,7 +86,7 @@ public class SourceRecipeElement implements ElementSource {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent2, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
         try {
             RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
                     RElementEditingScreen.DEFAULT_STYLE);
@@ -140,7 +138,7 @@ public class SourceRecipeElement implements ElementSource {
             Layout.putConstraint(SpringLayout.NORTH, lowerFields, 40, SpringLayout.SOUTH, grid);
 
             Layout.putConstraint(SpringLayout.EAST, unlockItems, -5, SpringLayout.EAST, frame.InnerPane);
-            Layout.putConstraint(SpringLayout.WEST, unlockItems, 5, SpringLayout.EAST, outputSlot);
+            Layout.putConstraint(SpringLayout.WEST, unlockItems, 10, SpringLayout.EAST, outputSlot);
             Layout.putConstraint(SpringLayout.SOUTH, unlockItems, -5, SpringLayout.NORTH, lowerFields);
             Layout.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.NORTH, frame.InnerPane);
 

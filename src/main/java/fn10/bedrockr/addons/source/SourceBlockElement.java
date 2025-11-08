@@ -1,6 +1,6 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Frame;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
@@ -61,7 +61,7 @@ public class SourceBlockElement implements ElementSource {
 
     @Override
     @Nullable
-    public File buildJSONFile(Frame doingThis, String workspace) {
+    public File buildJSONFile(Window doingThis, String workspace) {
         var string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
                 Location + serilized.ElementName + ".blockref");
@@ -83,7 +83,7 @@ public class SourceBlockElement implements ElementSource {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
         var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent,
                 RElementEditingScreen.SPECIAL_AREA_STYLE);
 

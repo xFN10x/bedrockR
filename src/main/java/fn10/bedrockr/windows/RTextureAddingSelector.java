@@ -33,7 +33,7 @@ public class RTextureAddingSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    protected RTextureAddingSelector(Frame parent, Integer TextureType, String Workspace) {
+    protected RTextureAddingSelector(Window parent, Integer TextureType, String Workspace) {
         super(
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
@@ -137,7 +137,7 @@ public class RTextureAddingSelector extends RDialog {
             return null;
     }
 
-    public static Map.Entry<String, ImageIcon> openSelector(Frame parent, Integer TextureType, String Workspace)
+    public static Map.Entry<String, ImageIcon> openSelector(Window parent, Integer TextureType, String Workspace)
             throws InterruptedException {
         var thiS = new RTextureAddingSelector(parent, TextureType, Workspace);
 

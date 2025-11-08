@@ -4,14 +4,14 @@ import java.awt.Dimension;
 import java.time.LocalTime;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JWindow;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.utils.ImageUtilites;
 
-public class RSplashScreen extends JFrame {
+public class RSplashScreen extends JWindow {
 
     private final JLabel image = new JLabel();
     // private final JProgressBar prog = new JProgressBar(JProgressBar.VERTICAL);
@@ -21,7 +21,8 @@ public class RSplashScreen extends JFrame {
     public RSplashScreen() {
 
         setAlwaysOnTop(true);
-        setUndecorated(true);
+        //setUndecorated(true);
+        //setIconImage(Launcher.ICON);
 
         LocalTime now = LocalTime.now();
         LocalTime sunset = LocalTime.of(7, 0);

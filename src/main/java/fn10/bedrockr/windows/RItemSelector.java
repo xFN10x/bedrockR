@@ -2,6 +2,7 @@ package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.IOException;
@@ -11,11 +12,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -35,7 +33,6 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.windows.RItemSelector.ItemJsonEntry;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
@@ -125,7 +122,7 @@ public class RItemSelector extends RDialog {
      *         wasent found.
      * @throws IncorrectWorkspaceException
      */
-    public static ReturnItemInfo getItemById(Frame doing, String fullID, String workspaceName)
+    public static ReturnItemInfo getItemById(Window doing, String fullID, String workspaceName)
             throws IncorrectWorkspaceException {
         // check the non-vanilla items
         for (ElementFile element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
