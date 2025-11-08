@@ -3,6 +3,7 @@ package fn10.bedrockr.windows;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -78,13 +79,13 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         return this;
     }
 
-    public RElementEditingScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
+    public RElementEditingScreen(Window Parent, String elementName, ElementSource sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier) {
         this(Parent, elementName, sourceElementClass, sourceClass, listenier, DEFAULT_STYLE);
     }
 
-    public RElementEditingScreen(Frame Parent, String elementName, ElementSource sourceElementClass,
+    public RElementEditingScreen(Window Parent, String elementName, ElementSource sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier, Integer layout) {
         super(

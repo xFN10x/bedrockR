@@ -3,6 +3,7 @@ package fn10.bedrockr.utils;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.List;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntPredicate;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -90,7 +90,7 @@ public class RFileOperations {
      * @param fileExtension
      * @return
      */
-    public static Class<? extends ElementSource> getElementSourceClassFromFileExtension(Frame doingThis,
+    public static Class<? extends ElementSource> getElementSourceClassFromFileExtension(java.awt.Window doingThis,
             String fileExtension) {
         try {
             return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
@@ -109,7 +109,7 @@ public class RFileOperations {
      * @param fileExtension
      * @return
      */
-    public static ElementSource getElementSourceFromFileExtension(Frame doingThis,
+    public static ElementSource getElementSourceFromFileExtension(java.awt.Window doingThis,
             String fileExtension) {
         try {
             return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
@@ -147,7 +147,7 @@ public class RFileOperations {
         return true;
     }
 
-    public static String[] getWorkspaces(Frame doingThis) {
+    public static String[] getWorkspaces(java.awt.Window doingThis) {
         var folder = new File(
                 getBaseDirectory(doingThis).getAbsolutePath() + File.separator + "workspace" + File.separator).toPath();
         if (!folder.toFile().exists()) {
@@ -175,7 +175,7 @@ public class RFileOperations {
         }
     }
 
-    public static SourceResourceElement getResources(Frame doingThis, String workspaceName) {
+    public static SourceResourceElement getResources(Window doingThis, String workspaceName) {
 
         var file = getFileFromWorkspace(doingThis, workspaceName,
                 File.separator + "resources" + File.separator + RESOURCE_FILE_NAME, true);
@@ -195,7 +195,7 @@ public class RFileOperations {
         }
     }
 
-    public static void showMCSyncPopup(Frame doingThis, SourceWorkspaceFile WPF) {
+    public static void showMCSyncPopup(Window doingThis, SourceWorkspaceFile WPF) {
         ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
         WPF.buildJSONFile(doingThis, // rebuild
                 ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
@@ -251,7 +251,7 @@ public class RFileOperations {
         }
     }
 
-    public static void openWorkspace(Frame doingThis, SourceWorkspaceFile WPF) {
+    public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
         var workspaceView = new RWorkspace(WPF);
         // get items ready for use
         RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
@@ -280,11 +280,11 @@ public class RFileOperations {
         });
     }
 
-    public static File getBaseDirectory(Frame doingThis, String... Folders) {
+    public static File getBaseDirectory(Window doingThis, String... Folders) {
         return getBaseDirectory(doingThis, false, Folders);
     }
 
-    public static File getBaseDirectory(Frame doingThis, Boolean strict, String... Folders) {
+    public static File getBaseDirectory(Window doingThis, Boolean strict, String... Folders) {
         File file = Path.of(BASE_PATH, Folders).toFile();
         try {
             if (!file.exists() && !strict) {
@@ -298,7 +298,7 @@ public class RFileOperations {
         return BaseDirectory;
     }
 
-    public static File getBaseDirectory(Frame doingThis) {
+    public static File getBaseDirectory(Window doingThis) {
         try {
             // Launcher.LOG.info(BaseDirectory.toPath());
             if (!BaseDirectory.exists()) {
@@ -312,7 +312,7 @@ public class RFileOperations {
         return BaseDirectory;
     }
 
-    public static File getFileFromWorkspace(Frame windowDoingThis, String WorkspaceName, String ToCreate) {
+    public static File getFileFromWorkspace(Window windowDoingThis, String WorkspaceName, String ToCreate) {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
     }
 
@@ -348,7 +348,7 @@ public class RFileOperations {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, File.separator, true);
     }
 
-    public static void mcSync(Frame doingThis) {
+    public static void mcSync(java.awt.Window doingThis) {
         SettingsFile settings = SettingsFile.getSettings(doingThis);
         try {
             String bpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "BP"
@@ -577,7 +577,7 @@ public class RFileOperations {
 
     }
 
-    public static Path getFileFromElementFile(Frame doingThis, String workspace, ElementFile elementFile) {
+    public static Path getFileFromElementFile(java.awt.Window doingThis, String workspace, ElementFile elementFile) {
         Path proposed = Path.of(RFileOperations
                 .getFileFromWorkspace(doingThis, workspace,
                         File.separator + "elements" + File.separator)
@@ -588,7 +588,7 @@ public class RFileOperations {
         return proposed;
     }
 
-    public static ElementFile[] getElementsFromWorkspace(Frame doingThis, String workspace) {
+    public static ElementFile[] getElementsFromWorkspace(java.awt.Window doingThis, String workspace) {
         java.util.List<ElementFile> building = new ArrayList<>();
         for (File file : RFileOperations
                 .getFileFromWorkspace(doingThis, workspace,

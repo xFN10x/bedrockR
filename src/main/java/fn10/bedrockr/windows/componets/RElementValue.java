@@ -71,7 +71,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private JButton SelectButtonItem;
     private JLabel IconItem;
 
-    public Frame parentFrame;
+    public Window parentFrame;
 
     protected JPanel HashMapInnerPane = new JPanel();
     protected JButton HashMapAdd = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
@@ -79,7 +79,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public boolean Required = false;
     public String Problem = "No problem here!";
 
-    public RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    public RElementValue(Window parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> ElementFileClass,
@@ -90,7 +90,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 WorkspaceName);
     }
 
-    public RElementValue(Frame frame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    public RElementValue(Window frame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
@@ -102,7 +102,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     }
 
     @SuppressWarnings({ "unchecked", "null" })
-    protected RElementValue(Frame parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    protected RElementValue(Window parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,

@@ -14,11 +14,11 @@ public class RDialog extends JDialog {
     // this(Parent,CloseOperation, WindowTitle, Size);
     // }
 
-    public RDialog(Frame Parent, int CloseOperation, String WindowTitle, Dimension Size) {
+    public RDialog(Window Parent, int CloseOperation, String WindowTitle, Dimension Size) {
         this(Parent, CloseOperation, WindowTitle, Size, true);
     }
 
-    public RDialog(Frame Parent, int CloseOperation, String WindowTitle, Dimension Size,
+    public RDialog(Window Parent, int CloseOperation, String WindowTitle, Dimension Size,
             Boolean IDKWhatToCallItSoItsNameIsWeridNameBit) {
         super(Parent, WindowTitle + (IDKWhatToCallItSoItsNameIsWeridNameBit ? " - bedrockR" : ""));
         JPanel bottomBar = new JPanel();

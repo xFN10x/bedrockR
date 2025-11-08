@@ -1,7 +1,7 @@
 package fn10.bedrockr.addons.source.interfaces;
 
 import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.Window;
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -36,7 +36,7 @@ public interface ElementSource {
      */
     abstract ElementFile getFromJSON(String jsonString);
 
-    abstract File buildJSONFile(Frame doingThis, String workspace);
+    abstract File buildJSONFile(Window doingThis, String workspace);
 
     abstract Class<?> getSerilizedClass();
 
@@ -46,7 +46,7 @@ public interface ElementSource {
      */
     abstract ElementFile getSerilized();
 
-    abstract RElementEditingScreen getBuilderWindow(Frame Parent, ElementCreationListener parent, String Workspace);
+    abstract RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace);
 
     /**
      * You should use this instad of toString()
