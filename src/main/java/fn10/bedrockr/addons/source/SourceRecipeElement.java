@@ -19,6 +19,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
+import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RCraftingGridValue;
 import fn10.bedrockr.windows.componets.RElementValue;
@@ -107,6 +108,9 @@ public class SourceRecipeElement implements ElementSource {
                 grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
             }
             RCraftingGridValue outputSlot = new RCraftingGridValue(Workspace, Type.Single, true);
+            if (serilized != null) {
+                outputSlot.setButtonToItem(0, RItemSelector.getItemById(Parent, serilized.Result.item, Workspace));
+            }
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
 
@@ -116,7 +120,7 @@ public class SourceRecipeElement implements ElementSource {
 
             lowerFields.add(Box.createHorizontalGlue());
             lowerFields.add(ElementName);
-            lowerFields.add(Box.createHorizontalStrut(5));
+            lowerFields.add(Box.createHorizontalStrut(10));
             lowerFields.add(RecipeID);
             lowerFields.add(Box.createHorizontalGlue());
 
@@ -141,7 +145,7 @@ public class SourceRecipeElement implements ElementSource {
 
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
-                    JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
+                    // JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
 
                     ShapedOutput shaped = grid.getShapedRecipe();
                     RecipeFile building = new RecipeFile();
@@ -150,11 +154,12 @@ public class SourceRecipeElement implements ElementSource {
                     building.RecipeID = RecipeID.getValue().toString();
                     building.ShapedPattern = shaped.pattern;
                     building.ShapedKey = shaped.key;
-
+                    // TODO: building.ExtraResults
+                    // TODO: building.UnlockConditions
                     building.Result = outputSlot.getItems().get(0);
-
-                    serilized = building;
                     
+                    serilized = building;
+
                     if (isDraft) {
                         Sindow.setVisible(false);
                         Listener.onElementDraft(This);
