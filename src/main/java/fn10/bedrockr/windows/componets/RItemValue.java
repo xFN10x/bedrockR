@@ -33,11 +33,12 @@ import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
-public class RCraftingGridValue extends JPanel implements ValidatableValue {
+public class RItemValue extends JPanel implements ValidatableValue {
 
     public static enum Type {
         CraftingTable,
-        Single
+        Single,
+        ListOfItems
     }
 
     public static class ShapedOutput {
@@ -62,7 +63,7 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
             .create();
     private static final Dimension SIZE = new Dimension(200, 200);
     private static final Dimension SIZE_SINGLE = new Dimension(69, 69);
-    private static final ImageIcon bg = new ImageIcon(RCraftingGridValue.class.getResource("/ui/CraftingGrid.png"));
+    private static final ImageIcon bg = new ImageIcon(RItemValue.class.getResource("/ui/CraftingGrid.png"));
 
     public final JLabel Background = new JLabel(bg);
 
@@ -206,15 +207,15 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         return output;
     }
 
-    public RCraftingGridValue(String WorkspaceName) {
+    public RItemValue(String WorkspaceName) {
         this(WorkspaceName, Type.CraftingTable);
     }
 
-    public RCraftingGridValue(String WorkspaceName, Type type) {
+    public RItemValue(String WorkspaceName, Type type) {
         this(WorkspaceName, type, false);
     }
 
-    public RCraftingGridValue(String WorkspaceName, Type type, boolean needsToHaveItems) {
+    public RItemValue(String WorkspaceName, Type type, boolean needsToHaveItems) {
         super();
 
         this.needsItems = needsToHaveItems;
