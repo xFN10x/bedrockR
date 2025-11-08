@@ -43,8 +43,8 @@ public class Recipe {
      */
     public static class Item {
         public String item;
-        public int data;
-        public int count;
+        public Integer data = null;
+        public Integer count = null;
 
         public Item(String itemFullname, int data, int count) {
             this.item = itemFullname;
