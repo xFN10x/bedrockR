@@ -91,13 +91,32 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
         return building;
     }
 
+    public void setButtonToItem(JButton button, ReturnItemInfo item) {
+        if (item.Texture != null) {
+            button.setFont(button.getFont().deriveFont(16f));
+            button.setIcon(new ImageIcon(
+                    item.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
+            button.setText("");
+        } else {
+            button.setFont(button.getFont().deriveFont(8f));
+            button.setText(item.Name);
+            button.setIcon(null);
+        }
+        button.setToolTipText(item.Name + " (" + item.Id + ")");
+        button.setName(gson.toJson(item));
+        button.repaint();
+        button.revalidate();
+    }
+
+    public void setButtonToItem(int buttonIndex, ReturnItemInfo item) {
+        setButtonToItem(buttons.get(buttonIndex), item);
+    }
+
     public void setShapedRecipe(Frame parent, ShapedOutput value, String workspace) {
         for (int i = 0; i < value.pattern.length; i++) { // go for each vertical row
             // 'i' is the index in the array
             String row = value.pattern[i];
             for (int j = 0; j < row.length(); j++) { // go for the 3 buttons to set the string
-                JButton button = buttons.get((i * 3) + j); // times the vertical row by 3 to get the buttons (e.g., row
-                                                           // 0, button 0 is button 0, row 2 button 2 is 9.)
                 String itemString = String.valueOf(row.charAt(j));
                 if (itemString.isBlank() || itemString.isEmpty()) {
                     continue;
@@ -106,23 +125,12 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
                 ReturnItemInfo item;
                 try {
                     item = RItemSelector.getItemById(parent,
-                           value.key.get(itemString), workspace);
+                            value.key.get(itemString), workspace);
                 } catch (IncorrectWorkspaceException e) {
                     e.printStackTrace();
                     continue;
                 }
-                if (item.Texture != null) {
-                    button.setFont(button.getFont().deriveFont(16f));
-                    button.setIcon(new ImageIcon(
-                            item.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
-                    button.setText("");
-                } else {
-                    button.setFont(button.getFont().deriveFont(8f));
-                    button.setText(item.Name);
-                    button.setIcon(null);
-                }
-                button.setToolTipText(item.Name + " (" + item.Id + ")");
-                button.setName(gson.toJson(item));
+                setButtonToItem((i * 3) + j, item);
             }
         }
     }
@@ -173,10 +181,26 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
                 string.append(patternKey.get(info.Prefix + ":" + info.Id));
             }
             String str = string.toString().stripTrailing();
-            if (!str.isBlank() && !str.isEmpty())
+            if ((!str.isBlank() && !str.isEmpty()) || i == 1) {
                 patternRows.add(str.toString());
+            }
         }
-        System.out.println(patternRows.toArray());
+        if (patternRows.size() >= 3) { // if there are 3 rows
+            if (!patternRows.get(2).isBlank() && !patternRows.get(2).isBlank()) {
+                // if row 1 and 3 have something in it, dont get rid of middle
+            } else {
+                // if one has nothing, get rid of it
+                patternRows.remove(1);
+            }
+        } else if (patternRows.size() == 2) { // if the last, or the first is gone, then get rid of all of the blank
+                                              // ones (idk which one is the last index 1; 0, or 1)
+            ArrayList<String> building = new ArrayList<String>();
+            for (String string : patternRows) {
+                if (!string.isBlank())
+                    building.add(string);
+            }
+            patternRows = building;
+        }
 
         for (Entry<String, String> set : patternKey.entrySet()) {
             output.key.put(set.getValue(), set.getKey());
@@ -258,20 +282,7 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
             paste.setEnabled(copied != null);
             paste.addActionListener(ac -> {
                 if (copied != null) {
-                    if (copied.Texture != null) {
-                        building.setFont(building.getFont().deriveFont(16f));
-                        building.setIcon(new ImageIcon(
-                                copied.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
-                        building.setText("");
-                    } else {
-                        building.setFont(building.getFont().deriveFont(8f));
-                        building.setText(copied.Name);
-                        building.setIcon(null);
-                    }
-                    building.setToolTipText(copied.Name + " (" + copied.Id + ")");
-                    building.setName(gson.toJson(copied));
-                    copy.setEnabled(!building.getName().isBlank());
-                    paste.setEnabled(copied != null);
+                    setButtonToItem(building, copied);
                 }
             });
             copy.addActionListener(ac -> {
@@ -296,20 +307,7 @@ public class RCraftingGridValue extends JPanel implements ValidatableValue {
                 try {
                     ReturnItemInfo itemInfo = RItemSelector.openSelector(null, WorkspaceName);
                     if (itemInfo != null) {
-                        if (itemInfo.Texture != null) {
-                            building.setFont(building.getFont().deriveFont(16f));
-                            building.setIcon(new ImageIcon(itemInfo.Texture.getImage().getScaledInstance(48, 48,
-                                    java.awt.Image.SCALE_SMOOTH)));
-                            building.setText("");
-                        } else {
-                            building.setFont(building.getFont().deriveFont(8f));
-                            building.setText(itemInfo.Name);
-                            building.setIcon(null);
-                        }
-                        building.setToolTipText(itemInfo.Name + " (" + itemInfo.Id + ")");
-                        building.setName(gson.toJson(itemInfo));
-                        copy.setEnabled(!building.getName().isBlank());
-                        paste.setEnabled(copied != null);
+                        setButtonToItem(building, itemInfo);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
