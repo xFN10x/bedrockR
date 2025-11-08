@@ -22,10 +22,10 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
-import fn10.bedrockr.windows.componets.RCraftingGridValue;
+import fn10.bedrockr.windows.componets.RItemValue;
 import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.componets.RCraftingGridValue.ShapedOutput;
-import fn10.bedrockr.windows.componets.RCraftingGridValue.Type;
+import fn10.bedrockr.windows.componets.RItemValue.ShapedOutput;
+import fn10.bedrockr.windows.componets.RItemValue.Type;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceRecipeElement implements ElementSource {
@@ -104,11 +104,11 @@ public class SourceRecipeElement implements ElementSource {
                     "RecipeID", "Recipe ID", false, getSerilizedClass(), serilized, Workspace);
 
             frame.InnerPane.setLayout(Layout);
-            RCraftingGridValue grid = new RCraftingGridValue(Workspace, Type.CraftingTable, true);
+            RItemValue grid = new RItemValue(Workspace, Type.CraftingTable, true);
             if (serilized != null) {
                 grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
             }
-            RCraftingGridValue outputSlot = new RCraftingGridValue(Workspace, Type.Single, true);
+            RItemValue outputSlot = new RItemValue(Workspace, Type.Single, true);
             if (serilized != null) {
                 outputSlot.setButtonToItem(0, RItemSelector.getItemById(Parent, serilized.Result.item, Workspace));
             }
