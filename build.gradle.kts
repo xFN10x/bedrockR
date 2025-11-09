@@ -74,11 +74,11 @@ tasks.jpackage {
         winShortcutPrompt = true
         winPerUserInstall = true
         winDirChooser = true
-        icon = layout.projectDirectory.file("/src/main/resources/iconWin.ico")
+        icon = layout.projectDirectory.file("iconWin.ico")
     }
 
     linux {
-        icon = layout.projectDirectory.file("src/main/resources/ui/icon_256.png")
+        icon = layout.projectDirectory.file("iconLinux.png")
         type.set(org.panteleyev.jpackage.ImageType.DEB)
         linuxPackageName = "bedrockr"
         linuxShortcut = true
@@ -97,11 +97,11 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
     mainClass.set("fn10.bedrockr.Launcher")
 
     windows {
-        icon = layout.projectDirectory.file("/src/main/resources/iconWin.ico")
+        icon = layout.projectDirectory.file("iconWin.ico")
     }
 
     linux {
-        icon = layout.projectDirectory.file("src/main/resources/iconLinux.png")
+        icon = layout.projectDirectory.file("iconLinux.png")
     }
 
     type = org.panteleyev.jpackage.ImageType.APP_IMAGE
