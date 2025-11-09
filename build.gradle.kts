@@ -56,6 +56,7 @@ tasks.test {
 }
 
 tasks.jpackage {
+    dependsOn("shadowJar")
     input.set(project.layout.buildDirectory.dir("builtJars"))
     destination.set(project.layout.buildDirectory.dir("builtDist"))
     appVersion.set(winver)
@@ -87,6 +88,7 @@ tasks.jpackage {
 
 
 tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
+    dependsOn("shadowJar")
     input.set(project.layout.buildDirectory.dir("builtJars"))
     destination.set(project.layout.buildDirectory.dir("builtDist"))
     appVersion.set(winver)
