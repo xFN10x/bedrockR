@@ -154,7 +154,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         });
         helpMenu.add("bedrockR on Summer Of Making").addActionListener(ac -> {
             try {
-                desk.browse(new URI("https://github.com/xFN10x/bedrockR"));
+                desk.browse(new URI("https://summer.hackclub.com/projects/703"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        helpMenu.add("bedrockR on Siege").addActionListener(ac -> {
+            try {
+                desk.browse(new URI("https://siege.hackclub.com/armory/1682"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
