@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -233,7 +234,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 try {
                     item = RItemSelector.getItemById(parent,
                             value.key.get(itemString), workspace);
-                } catch (IncorrectWorkspaceException e) {
+                } catch (IncorrectWorkspaceException | NameNotFoundException e) {
                     e.printStackTrace();
                     continue;
                 }
