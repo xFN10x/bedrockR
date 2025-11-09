@@ -61,6 +61,15 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         // newprojectbutton.addActionListener(this);
         JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
         newaddonButton.addActionListener(this);
+        JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
+        siegeButton.addActionListener(ac -> {
+            try {
+                desk.browse(URI.create("https://siege.hackclub.com/armory/1682"));
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        });
         JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
         somButton.addActionListener(ac -> {
             try {
@@ -94,6 +103,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         helpMenu.add(helpButton);
         helpMenu.add(gitButton);
         helpMenu.add(somButton);
+        helpMenu.add(siegeButton);
 
         menuBar.add(addonsMenu);
         menuBar.add(helpMenu);

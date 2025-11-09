@@ -23,8 +23,8 @@ public class RFrame extends JFrame {
 
     public static final JLabel verText = new JLabel(Launcher.VERSION);
 
-    public final JButton somButton = new JButton(
-            ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/som.png")), 32, 32));
+    public final JButton siegeButton = new JButton(
+            ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/siege.png")), 32, 32));
     public final JButton ghButton = new JButton(
             ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/gh.png")), 32, 32));
 
@@ -57,26 +57,26 @@ public class RFrame extends JFrame {
         Lay2.putConstraint(SpringLayout.WEST, titleImg, 5, SpringLayout.WEST, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, titleImg, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, ghButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
-        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, somButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
+        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, siegeButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
 
-        Lay2.putConstraint(SpringLayout.EAST, somButton, -5, SpringLayout.EAST, BottomBar);
-        Lay2.putConstraint(SpringLayout.EAST, ghButton, -5, SpringLayout.WEST, somButton);
+        Lay2.putConstraint(SpringLayout.EAST, siegeButton, -5, SpringLayout.EAST, BottomBar);
+        Lay2.putConstraint(SpringLayout.EAST, ghButton, -5, SpringLayout.WEST, siegeButton);
 
         Lay2.putConstraint(SpringLayout.SOUTH, verText, 0, SpringLayout.SOUTH, titleImg);
-        Lay2.putConstraint(SpringLayout.WEST, verText, -5, SpringLayout.EAST, somButton);
+        Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, ghButton);
 
-        somButton.setMaximumSize(new Dimension(32, 32));
+        siegeButton.setMaximumSize(new Dimension(32, 32));
         ghButton.setMaximumSize(new Dimension(32, 32));
 
-        somButton.setBackground(Color.white);
+        siegeButton.setBackground(Color.white);
         ghButton.setBackground(Color.white);
 
-        somButton.setToolTipText("bedrockR's Summer of Making Page");
+        siegeButton.setToolTipText("bedrockR's Siege Page");
         ghButton.setToolTipText("bedrockR's Github Repository");
 
-        somButton.addActionListener(e -> {
+        siegeButton.addActionListener(e -> {
             try {
-                Desktop.getDesktop().browse(new URI("https://summer.hackclub.com/projects/703"));
+                Desktop.getDesktop().browse(new URI("https://siege.hackclub.com/armory/1682"));
             } catch (IOException e1) {
 
                 e1.printStackTrace();
@@ -98,7 +98,7 @@ public class RFrame extends JFrame {
             }
         });
 
-        somButton.setBorder(new LineBorder(Color.green.darker(), 3));
+        siegeButton.setBorder(new LineBorder(Color.green.darker(), 3));
         ghButton.setBorder(new LineBorder(Color.green.darker(), 3));
 
         verText.setForeground(Color.white);
@@ -106,7 +106,7 @@ public class RFrame extends JFrame {
         if (hasBottomBar)
             add(BottomBar);
 
-        BottomBar.add(somButton);
+        BottomBar.add(siegeButton);
         BottomBar.add(ghButton);
         BottomBar.add(verText);
 
