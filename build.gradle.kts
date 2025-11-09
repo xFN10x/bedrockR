@@ -78,7 +78,7 @@ tasks.jpackage {
     }
 
     linux {
-        icon = layout.projectDirectory.file("/src/main/resources/ui/icon_256.png")
+        icon = layout.projectDirectory.file("src/main/resources/ui/icon_256.png")
         type.set(org.panteleyev.jpackage.ImageType.DEB)
         linuxPackageName = "bedrockr"
         linuxShortcut = true
@@ -101,7 +101,7 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
     }
 
     linux {
-        icon = layout.projectDirectory.file("/src/main/resources/iconLinux.png")
+        icon = layout.projectDirectory.file("src/main/resources/iconLinux.png")
     }
 
     type = org.panteleyev.jpackage.ImageType.APP_IMAGE
