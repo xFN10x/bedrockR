@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Window;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -26,7 +27,6 @@ import fn10.bedrockr.utils.SpringUtilities;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
-import javafx.stage.Window;
 
 public class RNewElement extends RDialog implements ActionListener {
 
