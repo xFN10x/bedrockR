@@ -101,7 +101,7 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
     }
 
     linux {
-        icon = layout.projectDirectory.file("/src/main/resources/ui/icon_256.png")
+        icon = layout.projectDirectory.file("/src/main/resources/ui/Icon_256.png")
     }
 
     type = org.panteleyev.jpackage.ImageType.APP_IMAGE
