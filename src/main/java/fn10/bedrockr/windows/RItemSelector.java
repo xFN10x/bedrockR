@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,7 +39,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
+import fn10.bedrockr.windows.RItemSelector.ItemJsonEntry;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
@@ -96,12 +97,14 @@ public class RItemSelector extends RDialog {
         public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace) {
             try {
                 return RItemSelector.getItemById(null, con.item, workspace);
-            } catch (IncorrectWorkspaceException e) {
+            } catch (IncorrectWorkspaceException | NameNotFoundException e) {
                 e.printStackTrace();
                 return null;
             }
         }
-        public static List<ReturnItemInfo> fromUnlockCondition(Collection<? extends UnlockCondition> list, String workspace) {
+
+        public static List<ReturnItemInfo> fromUnlockCondition(Collection<? extends UnlockCondition> list,
+                String workspace) {
             ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
             for (UnlockCondition info : list) {
                 building.add(ReturnItemInfo.fromUnlockCondition(info, workspace));
@@ -142,10 +145,12 @@ public class RItemSelector extends RDialog {
      * @param workspaceName the name of the workspace.
      * @return a ReturnItemInfo with the info of the item found, or null if it
      *         wasent found.
-     * @throws IncorrectWorkspaceException
+     * @throws IncorrectWorkspaceException if the prefix of the fullID isnt used in
+     *                                     the workspace
+     * @throws NameNotFoundException       if the item isnt found
      */
     public static ReturnItemInfo getItemById(Window doing, String fullID, String workspaceName)
-            throws IncorrectWorkspaceException {
+            throws IncorrectWorkspaceException, NameNotFoundException {
         // check the non-vanilla items
         for (ElementFile element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
             if (element instanceof ItemLikeElement) {
@@ -166,11 +171,11 @@ public class RItemSelector extends RDialog {
                     return item.toReturnItemInfo();
                 }
             }
-            return null;
         } else {
             throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
                     + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
         }
+        throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist.");
     }
 
     public static void downloadVanillaItems(WorkspaceFile workspace) {
@@ -196,6 +201,9 @@ public class RItemSelector extends RDialog {
 
             HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
             ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
+            for (ItemJsonEntry entry : itemEntrys) {
+                entry.name = "minecraft:" + entry.name;
+            }
             vanillaItems = itemEntrys;
             Arrays.sort(vanillaItems);
         } catch (Exception e) {
