@@ -1,6 +1,5 @@
 package fn10.bedrockr.windows.componets;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -79,7 +78,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public boolean Required = false;
     public String Problem = "No problem here!";
 
-    public RElementValue(Window parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    public RElementValue(Window parentFrame, Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> ElementFileClass,
@@ -90,7 +89,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 WorkspaceName);
     }
 
-    public RElementValue(Window frame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    public RElementValue(Window frame, Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
@@ -102,7 +101,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     }
 
     @SuppressWarnings({ "unchecked", "null" })
-    protected RElementValue(Window parentFrame, @Nonnull Class<?> InputType, FieldFilter Filter, String TargetField,
+    protected RElementValue(Window parentFrame, Class<?> InputType, FieldFilter Filter, String TargetField,
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,

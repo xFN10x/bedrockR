@@ -1,7 +1,6 @@
 package fn10.bedrockr.windows.componets;
 
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
