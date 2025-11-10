@@ -9,9 +9,11 @@ A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 ## Why?
 
-Minecraft Bedrock Addons are experimental and very hard to create compared to Java mods. With this tool, you will be able to create addons that fully showcase MCPE's addon capabilities, and unlike other tools, such as MCreator, this will be updated alongside Minecraft, and it will let you *live* test your mods, using Minecraft's built-in tools.
+Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavliy inspired by MCreator, and how it doesn't have the best Bedrock modding in it. 
 
-**A bedrockR tutorial is [here](https://github.com/xFN10x/bedrockR/wiki)**
+**bedrockR is still in alpha, things can change and feedback is greatly appreciated!**
+
+**(A bedrockR tutorial is [here](https://github.com/xFN10x/bedrockR/wiki))**
 
 #### Tip: Using the Jar
 
