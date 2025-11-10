@@ -32,7 +32,7 @@ dependencies {
 
     implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.2.2")
 
-    implementation("commons-io:commons-io:2.19.0")
+    implementation("commons-io:commons-io:2.21.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
