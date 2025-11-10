@@ -21,21 +21,12 @@ Go [here](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21) fo
 
 ## Source Code
 
-This app was made with Visual Studio Code, and it is fully setup to be used with it.
 
 bedrockR is made with Java 21, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
 
 ### Debugging/Contributing
 
-It is recommended to use Visual Studio Code to make edits. Here are the extensions I recommend:
-
-- [Debugger for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug)
-- [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
-- [Gradle for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-gradle)
-- [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency), and
-- [Language Support for Java](https://marketplace.visualstudio.com/items?itemName=redhat.java)
-
-These extensions are useful if you are adding a lot of new things.
+bedrockR is made with Java 21, and uses Gradle, with its Koltin DSL.
 
 ### Building
 
