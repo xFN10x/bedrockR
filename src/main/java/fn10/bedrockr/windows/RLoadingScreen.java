@@ -67,7 +67,7 @@ public class RLoadingScreen extends RDialog {
         // setUndecorated(true);
 
         int titleImgW = 374;
-        int titleImageH = 74;
+        int titleImageH = 80;
 
         var BG = new JLabel(ImageUtilites.ResizeImageByURL(getClass().getResource("/ui/BG.png"), 600, 600));
 

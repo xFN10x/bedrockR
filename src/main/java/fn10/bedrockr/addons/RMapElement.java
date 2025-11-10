@@ -17,10 +17,6 @@ public class RMapElement {
     public String HelpDescription;
     public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
 
-    public static interface DropdownType<T> {
-        T[] getChoices();
-    }
-
     public static enum MapValueFilter {
         NotNegitive, Between0And1
     }

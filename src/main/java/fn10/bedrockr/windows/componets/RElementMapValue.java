@@ -22,6 +22,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
 import fn10.bedrockr.utils.ErrorShower;
@@ -55,7 +56,11 @@ public class RElementMapValue extends JPanel {
         IDNameLabel.setText(RME.ID);
         IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - (RME.DisplayName.length() / 10)));
 
-        if (RME.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
+        // check for custom ones first
+        if (RME instanceof RStringDropdownMapElement) {
+            String[] ars = ((RStringDropdownMapElement) RME).getChoices();
+            InputField = new JComboBox<String>(ars);
+        } else if (RME.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
             InputField = new JSpinner();
         } else if (RME.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:damage
             if (RME.Filters.contains(MapValueFilter.Between0And1))
@@ -93,6 +98,7 @@ public class RElementMapValue extends JPanel {
                 InputField = new JLabel("Unknown input type: " + RME.Type.getName());
                 ((JLabel) InputField).setToolTipText("Unknown input type: " + RME.Type.getName());
             }
+
         }
 
         InputField.setMinimumSize(new Dimension(0, 70));
@@ -136,6 +142,12 @@ public class RElementMapValue extends JPanel {
     public void setVal(Object val) {
         try {
             Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
+
+            if (rMapElement instanceof RStringDropdownMapElement) {
+                ((JComboBox<String>) InputField).setSelectedItem(val);
+                return;
+            }
+
             if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
                 ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
@@ -171,30 +183,35 @@ public class RElementMapValue extends JPanel {
         Object val = null;
         try {
             Launcher.LOG.info(rMapElement.Type.getName());
-            if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
-                val = new SharedJSONClasses.minecraftDamage();
-                ((SharedJSONClasses.minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
+            if (rMapElement instanceof RStringDropdownMapElement) {
+                val = ((JComboBox<String>) InputField).getSelectedItem();
             }
-            if (rMapElement.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
-                val = new SharedJSONClasses.minecraftDestructibleByMining();
-                ((SharedJSONClasses.minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
-                        .getValue()).floatValue();
-            } else if (rMapElement.Type == String.class) { // string
-                val = ((JTextField) InputField).getText();
-            } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
-                    || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
-                val = ((JSpinner) InputField).getValue();
-            } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
-                val = ((JSpinner) InputField).getValue();
-            } else if (rMapElement.Type.isArray()) { // array
 
-            } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
-                val = (((JComboBox<String>) InputField).getSelectedIndex() == 0);
-            } else { // else
-                if (rMapElement.Type == null) {
-                    InputField = new JLabel("Input type is null.");
-                } else {
-                    InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
+            if (rMapElement.Type != null) {
+                if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
+                    val = new SharedJSONClasses.minecraftDamage();
+                    ((SharedJSONClasses.minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
+                } else if (rMapElement.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
+                    val = new SharedJSONClasses.minecraftDestructibleByMining();
+                    ((SharedJSONClasses.minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
+                            .getValue()).floatValue();
+                } else if (rMapElement.Type == String.class) { // string
+                    val = ((JTextField) InputField).getText();
+                } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
+                        || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
+                    val = ((JSpinner) InputField).getValue();
+                } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
+                    val = ((JSpinner) InputField).getValue();
+                } else if (rMapElement.Type.isArray()) { // array
+
+                } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
+                    val = (((JComboBox<String>) InputField).getSelectedIndex() == 0);
+                } else { // else
+                    if (rMapElement.Type == null) {
+                        InputField = new JLabel("Input type is null.");
+                    } else {
+                        InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
+                    }
                 }
             }
         } catch (Exception e) {
