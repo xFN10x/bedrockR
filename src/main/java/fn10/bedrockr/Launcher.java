@@ -41,8 +41,8 @@ import com.google.gson.Gson;
 
 public class Launcher {
 
-    public static String VERSION = "a1.3";
-    public static int CHECKVERSION = 4;
+    public static String VERSION = "a1.3.1";
+    public static int CHECKVERSION = 5;
     public static Image ICON;
 
     public static List<Image> ICONS = new ArrayList<Image>();

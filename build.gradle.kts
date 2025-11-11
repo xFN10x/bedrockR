@@ -48,8 +48,8 @@ application {
     mainClass = "fn10.bedrockr.Launcher"
 }
 
-val version = "a1.3"
-val winver = "0.4.0"
+val version = "a1.3.1"
+val winver = "0.4.1"
 
 tasks.test {
     failOnNoDiscoveredTests = false
