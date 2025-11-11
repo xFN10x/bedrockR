@@ -222,10 +222,15 @@ public class RItemSelector extends RDialog {
 
             HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
             ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
+            ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
             for (ItemJsonEntry entry : itemEntrys) {
-                entry.name = "minecraft:" + entry.name;
+                ItemJsonEntry building = entry;
+                //if (!building.name.startsWith("minecraft:")) 
+                    //building.name = "minecraft:" + entry.name;
+                
+                parsedEntrys.add(building);
             }
-            vanillaItems = itemEntrys;
+            vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
             Arrays.sort(vanillaItems);
         } catch (Exception e) {
             e.printStackTrace();

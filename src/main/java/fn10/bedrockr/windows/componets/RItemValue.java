@@ -195,6 +195,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
+        if (item == null) return;
         if (currentType == Type.ListOfItems)
             throw new WrongItemValueTypeException("Can't set a single button from this item value!", Type.CraftingTable,
                     currentType);
