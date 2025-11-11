@@ -18,6 +18,13 @@ public class ItemComponents implements RMapElementProvider {
                 }
         }
 
+        public static class minecraftBlockPlacer {
+                /**
+                 * The block that this item places
+                 */
+                public String block;
+        }
+
         /*
          * TODO: add;
          * https://wiki.bedrock.dev/items/item-components#block-placer
@@ -75,7 +82,8 @@ public class ItemComponents implements RMapElementProvider {
                                 new RStringDropdownMapElement("Rarity", "minecraft:rarity",
                                                 "Basicly \"Name Colour\", but the colour changes if its enchanted ((un)common -> rare, rare -> epic)\n\nThis is overwritten if Name Colour is specified.",
                                                 "common", "uncommon", "rare", "epic"),
-
+                                new RMapElement("Block Placer", "minecraft:block_placer", minecraftBlockPlacer.class,
+                                                "Specifes if this item places a block when used on another. Like a bucket; but its infinite use."),
                 };
         }
 }
