@@ -53,7 +53,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
         private final RItemValue ItemVal;
         private final SpringLayout lay = new SpringLayout();
 
-        private final static Dimension size = new Dimension(150, 75);
+        private final static Dimension size = new Dimension(115, 75);
 
         public ListElement(JComponent parent, String workspace) {
             this.ItemVal = new RItemValue(workspace, Type.Single, true);
@@ -481,6 +481,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public boolean valid(boolean strict) {
         switch (currentType) {
             case Type.ListOfItems:
+                if (needsItems) {
+                    try {
+                        if (getListElements().isEmpty())
+                            return false;
+                    } catch (WrongItemValueTypeException e) {
+                        e.printStackTrace();
+                    }
+                }
                 try {
                     for (ListElement ele : getListElements()) {
                         if (ele.ItemVal.valid(strict))
