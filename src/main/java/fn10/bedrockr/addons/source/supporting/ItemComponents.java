@@ -18,6 +18,28 @@ public class ItemComponents implements RMapElementProvider {
                 }
         }
 
+        /*
+         * TODO: add;
+         * https://wiki.bedrock.dev/items/item-components#block-placer
+         * https://wiki.bedrock.dev/items/item-components#bundle-interaction
+         * https://wiki.bedrock.dev/items/item-components#compostable
+         * https://wiki.bedrock.dev/items/item-components#cooldown
+         * https://wiki.bedrock.dev/items/item-components#damage-absorption
+         * (seperate element) https://wiki.bedrock.dev/items/item-components#digger &
+         * https://wiki.bedrock.dev/items/item-components#durability &
+         * https://wiki.bedrock.dev/items/item-components#durability-sensor
+         * https://wiki.bedrock.dev/items/item-components#dyeable
+         * (seperate) https://wiki.bedrock.dev/items/item-components#enchantable
+         * https://wiki.bedrock.dev/items/item-components#entity-placer
+         * https://wiki.bedrock.dev/items/item-components#fire-resistant
+         * (seperate) https://wiki.bedrock.dev/items/item-components#food &
+         * https://wiki.bedrock.dev/items/custom-food
+         * https://wiki.bedrock.dev/items/item-components#fuel
+         * https://wiki.bedrock.dev/items/item-components#repairable
+         * (seperate) https://wiki.bedrock.dev/items/item-components#shooter
+         * https://wiki.bedrock.dev/items/item-components#storage-weight-modifier
+         * https://wiki.bedrock.dev/items/item-components#swing-duration
+         */
         public RMapElement[] getPickable() {
                 return new RMapElement[] {
                                 new RMapElement("Allow Off Hand", "minecraft:allow_off_hand", Boolean.class,
@@ -45,23 +67,15 @@ public class ItemComponents implements RMapElementProvider {
                                                 "material_amethyst", "material_resin"),
                                 new RMapElement("Interact Text", "minecraft:interact_button", String.class,
                                                 "The text that is shown when holding the item with controller tips on. \nDefault: \"Use Item\""),
-                                // new RMapElement("minecraft:liquid_clipped", Boolean.class, "This component
-                                // was not tested. Use at your own risk"),
                                 new RMapElement("Max Stack Size", "minecraft:max_stack_size", Integer.class,
                                                 "How many of this item can be held in an inventory slot",
                                                 MapValueFilter.NotNegitive),
-                                // new RMapElement("minecraft:rarity", String.class, "This component was not
-                                // tested. Use at your own risk"),
                                 new RMapElement("Item Despawning", "minecraft:should_despawn", Boolean.class,
                                                 "Determines if this item despawns on the ground after 5 minutes."),
-                                // new RMapElement("minecraft:stacked_by_data", Boolean.class, "This component
-                                // was not tested. Use at your own risk"),
-                                // new RMapElement("minecraft:storage_weight_limit", Integer.class, "This
-                                // component was not tested. Use at your own risk"),
-                                // new RMapElement("minecraft:storage_weight_modifier", Integer.class, "This
-                                // component was not tested. Use at your own risk"),
-                                // new RMapElement("minecraft:use_animation", String.class, "This component was
-                                // not tested. Use at your own risk")
+                                new RStringDropdownMapElement("Rarity", "minecraft:rarity",
+                                                "Basicly \"Name Colour\", but the colour changes if its enchanted ((un)common -> rare, rare -> epic)\n\nThis is overwritten if Name Colour is specified.",
+                                                "common", "uncommon", "rare", "epic"),
+
                 };
         }
 }
