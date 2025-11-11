@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
@@ -139,14 +137,7 @@ public class RAddon extends JPanel implements MouseListener {
         Div.setPreferredSize(new Dimension(80, 3));
         Div.setForeground(Color.white);
 
-        Version = new JLabel(WPF.MinimumEngineVersion) {
-            @Override
-            public void paintComponent(Graphics g) {
-                Graphics2D gx = (Graphics2D) g;
-                gx.rotate(-1.5708, getX() + getWidth() / 2, getY() + getHeight() / 2);
-                super.paintComponent(g);
-            }
-        };
+        Version = new VerticalLabel(WPF.MinimumEngineVersion);
         Version.setPreferredSize(new Dimension(150, 150));
 
         LoadText = new JLabel("Load this?");

@@ -114,6 +114,28 @@ public class RItemSelector extends RDialog {
         public Item toRecipeItem() {
             return new Item(Prefix + ":" + Id);
         }
+
+        public static ReturnItemInfo fromRecipeItem(Item con, String workspace) {
+            try {
+                return RItemSelector.getItemById(null, con.item, workspace);
+            } catch (IncorrectWorkspaceException | NameNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        public static List<ReturnItemInfo> fromRecipeItem(Collection<? extends Item> list,
+                String workspace) {
+            ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
+            for (Item item : list) {
+                try {
+                    building.add(RItemSelector.getItemById(null, item.item, workspace));
+                } catch (NameNotFoundException | IncorrectWorkspaceException e) {
+                    e.printStackTrace();
+                }
+            }
+            return building;
+        }
     }
 
     public class DataPathsJson {
