@@ -295,11 +295,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 refreshAll();
                 GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WorkspaceFile) SWPF.getSerilized(),
                         RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
-                List<ElementFile<?>> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
+                List<ElementFile<?>> ToBuild = List
+                        .of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
 
                 progress.Steps = ToBuild.size() + 1;
 
-                ((WorkspaceFile)SWPF.getSerilized()).reset();
+                ((WorkspaceFile) SWPF.getSerilized()).reset();
 
                 // build rest
                 for (ElementFile<?> elementFile : ToBuild) {
