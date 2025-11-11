@@ -30,17 +30,17 @@ public class RElement extends JPanel implements MouseListener {
     private Runnable func;
     protected boolean selected;
     protected Color outlineColour = Color.green;
-    private Class<? extends ElementSource> clasz;
+    private Class<? extends ElementSource<?>> clasz;
     private ElementDetails details;
     public boolean CanBeSelected = true;
 
-    public RElement(Class<? extends ElementSource> clazz, Runnable selectedFunction)
+    public RElement(Class<? extends ElementSource<?>> clazz, Runnable selectedFunction)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         this(clazz, selectedFunction, Color.green);
     }
 
-    public RElement(@Nullable Class<? extends ElementSource> clazz, Runnable selectedFunction, Color borderColour)
+    public RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         this(clazz, selectedFunction, borderColour, true);
     }
@@ -63,7 +63,7 @@ public class RElement extends JPanel implements MouseListener {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
-    protected RElement(@Nullable Class<? extends ElementSource> clazz, Runnable selectedFunction, Color borderColour,
+    protected RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour,
             boolean icon)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         super();
@@ -133,7 +133,7 @@ public class RElement extends JPanel implements MouseListener {
         this.selected = false;
     }
 
-    public Class<? extends ElementSource> getElement() {
+    public Class<? extends ElementSource<?>> getElement() {
         return clasz;
     }
 

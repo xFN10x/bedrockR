@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.InnerDiscription;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
@@ -18,7 +17,6 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShaped;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
@@ -27,7 +25,7 @@ import fn10.bedrockr.utils.RAnnotation.VeryImportant;
  * use as referance
  * https://wiki.bedrock.dev/loot/recipes
  */
-public class RecipeFile implements ElementFile {
+public class RecipeFile implements  ElementFile<SourceRecipeElement> {
 
     @CantEditAfter
     @VeryImportant
@@ -56,7 +54,7 @@ public class RecipeFile implements ElementFile {
     private boolean Draft;
 
     @Override
-    public Class<? extends ElementSource> getSourceClass() {
+    public Class<SourceRecipeElement> getSourceClass() {
         return SourceRecipeElement.class;
     }
 

@@ -2,7 +2,6 @@ package fn10.bedrockr.utils;
 
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.List;
 import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -27,7 +27,6 @@ import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
-import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -42,7 +41,8 @@ public class RFileOperations {
 
     private static final String USER_DIR = System.getProperty("user.home");
     private static final String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
-    private static final File BaseDirectory = new File(BASE_PATH);
+    private static final File BASE_DIRECTORY = new File(BASE_PATH);
+    private static WorkspaceFile CURRENT_WORKSPACE = null;
     @SuppressWarnings("unused")
     private static String COMMOJANG = null;
     static {
@@ -71,7 +71,7 @@ public class RFileOperations {
             3,
             4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     };
-    private static final Map<String, Class<? extends ElementSource>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
+    private static final Map<String, Class<? extends ElementSource<?>>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
@@ -90,7 +90,7 @@ public class RFileOperations {
      * @param fileExtension
      * @return
      */
-    public static Class<? extends ElementSource> getElementSourceClassFromFileExtension(java.awt.Window doingThis,
+    public static Class<? extends ElementSource<?>> getElementSourceClassFromFileExtension(java.awt.Window doingThis,
             String fileExtension) {
         try {
             return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
@@ -109,7 +109,7 @@ public class RFileOperations {
      * @param fileExtension
      * @return
      */
-    public static ElementSource getElementSourceFromFileExtension(java.awt.Window doingThis,
+    public static ElementSource<?> getElementSourceFromFileExtension(java.awt.Window doingThis,
             String fileExtension) {
         try {
             return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
@@ -161,14 +161,14 @@ public class RFileOperations {
             if (!folder.toFile().exists()) {
                 Files.createDirectories(folder);
             }
-            var list = new List();
+            List<String> list = new ArrayList<String>();
             for (Path path : stream) {
                 if (Files.isDirectory(path)) {
                     // Launcher.LOG.info(path.getFileName().toString());
                     list.add(path.getFileName().toString());
                 }
             }
-            return list.getItems();
+            return list.toArray(new String[0]);
         } catch (IOException e) {
             ErrorShower.showError(doingThis, "IO Error", BASE_PATH, e);
             return null;
@@ -277,7 +277,12 @@ public class RFileOperations {
                     ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
                 }
             }
+            CURRENT_WORKSPACE = WPF.getSerilized();
         });
+    }
+
+    public static WorkspaceFile getCurrentWorkspace() {
+        return CURRENT_WORKSPACE;
     }
 
     public static File getBaseDirectory(Window doingThis, String... Folders) {
@@ -295,21 +300,21 @@ public class RFileOperations {
             e.printStackTrace();
             ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
         }
-        return BaseDirectory;
+        return BASE_DIRECTORY;
     }
 
     public static File getBaseDirectory(Window doingThis) {
         try {
             // Launcher.LOG.info(BaseDirectory.toPath());
-            if (!BaseDirectory.exists()) {
-                return Files.createDirectories(BaseDirectory.toPath()).toFile();
+            if (!BASE_DIRECTORY.exists()) {
+                return Files.createDirectories(BASE_DIRECTORY.toPath()).toFile();
             } else
-                return BaseDirectory;
+                return BASE_DIRECTORY;
         } catch (Exception e) {
             ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
             e.printStackTrace();
         }
-        return BaseDirectory;
+        return BASE_DIRECTORY;
     }
 
     public static File getFileFromWorkspace(Window windowDoingThis, String WorkspaceName, String ToCreate) {
@@ -319,7 +324,7 @@ public class RFileOperations {
     public static WorkspaceFile getWorkspaceFile(Component windowDoingThis, String WorkspaceName) {
         File file = getFileFromWorkspace(windowDoingThis, WorkspaceName, WPFFILENAME, true);
         try {
-            return ((WorkspaceFile)new SourceWorkspaceFile(Files.readString(file.toPath())).getSerilized());
+            return ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(file.toPath())).getSerilized());
         } catch (IOException e) {
             return null;
         }
@@ -329,7 +334,7 @@ public class RFileOperations {
             Boolean strict) {
         Launcher.LOG.warning("This file should start with the file seperator, or not at all! not '/'!");
         try {
-            String proposed = BaseDirectory + File.separator + "workspace" + File.separator + WorkspaceName
+            String proposed = BASE_DIRECTORY + File.separator + "workspace" + File.separator + WorkspaceName
                     + (ToCreate.startsWith(File.separator) ? "" : File.separator) + ToCreate;
             File proposedFile = new File(proposed);
             if (proposedFile.exists() || strict) {
@@ -577,7 +582,7 @@ public class RFileOperations {
 
     }
 
-    public static Path getFileFromElementFile(java.awt.Window doingThis, String workspace, ElementFile elementFile) {
+    public static Path getFileFromElementFile(java.awt.Window doingThis, String workspace, ElementFile<?> elementFile) {
         Path proposed = Path.of(RFileOperations
                 .getFileFromWorkspace(doingThis, workspace,
                         File.separator + "elements" + File.separator)
@@ -588,14 +593,14 @@ public class RFileOperations {
         return proposed;
     }
 
-    public static ElementFile[] getElementsFromWorkspace(java.awt.Window doingThis, String workspace) {
-        java.util.List<ElementFile> building = new ArrayList<>();
+    public static ElementFile<?>[] getElementsFromWorkspace(java.awt.Window doingThis, String workspace) {
+        List<ElementFile<?>> building = new ArrayList<>();
         for (File file : RFileOperations
                 .getFileFromWorkspace(doingThis, workspace,
                         File.separator + "elements" + File.separator)
                 .listFiles()) {
             try {
-                ElementSource source = getElementSourceFromFileExtension(doingThis,
+                ElementSource<?> source = getElementSourceFromFileExtension(doingThis,
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
 
                 building.add(source.getFromJSON(Files.readString(file.toPath())));

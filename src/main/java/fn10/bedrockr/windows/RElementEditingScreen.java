@@ -42,8 +42,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     public BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
 
     public Class<?> SourceClass;
-    public Class<? extends ElementSource> SourceElementClass;
-    public ElementSource SourceElement;
+    public Class<? extends ElementSource<?>> SourceElementClass;
+    public ElementSource<?> SourceElement;
 
     public List<ValidatableValue> Fields = new ArrayList<ValidatableValue>();
     public List<ValidatableValue> RequiredFields = new ArrayList<ValidatableValue>();
@@ -79,13 +79,14 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         return this;
     }
 
-    public RElementEditingScreen(Window Parent, String elementName, ElementSource sourceElementClass,
+    public RElementEditingScreen(Window Parent, String elementName, ElementSource<?> sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier) {
         this(Parent, elementName, sourceElementClass, sourceClass, listenier, DEFAULT_STYLE);
     }
 
-    public RElementEditingScreen(Window Parent, String elementName, ElementSource sourceElementClass,
+    @SuppressWarnings("unchecked")
+    public RElementEditingScreen(Window Parent, String elementName, ElementSource<?> sourceElementClass,
             Class<?> sourceClass,
             ElementCreationListener listenier, Integer layout) {
         super(
@@ -96,7 +97,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
         this.Listener = listenier;
         this.SourceClass = sourceClass;
-        this.SourceElementClass = sourceElementClass.getClass();
+        this.SourceElementClass = (Class<? extends ElementSource<?>>) sourceElementClass.getClass();
 
         CreateButton.setActionCommand("create");
         CreateButton.addActionListener(this);
@@ -196,7 +197,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     private void create(boolean isDraft) {
         try { // handle if there is no constructor
-            var workingClass = ((ElementFile) SourceClass.getConstructor().newInstance()); // make new elementfile
+            var workingClass = ((ElementFile<?>) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (ValidatableValue validatable : Fields) { // add the fields
                 if (validatable instanceof RElementValue) {
                     if (!((RElementValue) validatable).getOptionallyEnabled()) // if its not enabled, continue

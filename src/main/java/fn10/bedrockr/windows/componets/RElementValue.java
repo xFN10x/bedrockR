@@ -85,7 +85,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             String WorkspaceName) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, ElementFileClass,
-                ElementFileClass != null ? ((ElementFile) ElementFileClass.getConstructor().newInstance()) : null, true,
+                ElementFileClass != null ? ((ElementFile<?>) ElementFileClass.getConstructor().newInstance()) : null, true,
                 WorkspaceName);
     }
 
@@ -93,7 +93,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
-            ElementFile TargetFile,
+            ElementFile<?> TargetFile,
             String WorkspaceName) {
         this(frame, InputType, Filter, TargetField, DisplayName, Optional, SourceFileClass, TargetFile,
                 TargetFile == null,
@@ -105,7 +105,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             String DisplayName,
             Boolean Optional,
             Class<?> SourceFileClass,
-            ElementFile TargetFile,
+            ElementFile<?> TargetFile,
             boolean FromEmpty,
             String WorkspaceName) {
         super();

@@ -3,19 +3,8 @@ package fn10.bedrockr.addons.addon.jsonClasses;
 import java.util.Arrays;
 import java.util.Vector;
 
-import com.google.gson.annotations.SerializedName;
-
 public class SharedJSONClasses {
-
-    public static class minecraftDamage {
-        @SerializedName("minecraft:damage")
-        public int damage;
-    }
-
-    public static class minecraftDestructibleByMining {
-        public float seconds_to_destroy;
-    }
-
+    
     public static class VersionVector {
 
         public static Vector<Integer> fromString(String fromThis) {

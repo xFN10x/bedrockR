@@ -45,13 +45,13 @@ import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
-import fn10.bedrockr.addons.source.elementFiles.SettingsFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
@@ -295,14 +295,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 refreshAll();
                 GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WorkspaceFile) SWPF.getSerilized(),
                         RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
-                List<ElementFile> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
+                List<ElementFile<?>> ToBuild = List.of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
 
                 progress.Steps = ToBuild.size() + 1;
 
                 ((WorkspaceFile)SWPF.getSerilized()).reset();
 
                 // build rest
-                for (ElementFile elementFile : ToBuild) {
+                for (ElementFile<?> elementFile : ToBuild) {
                     if (elementFile.getDraft())
                         continue;
                     // build a element, then incrament the counter
@@ -451,7 +451,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void refreshElements() {
         SwingUtilities.invokeLater(() -> {
             ElementInnerPanelView.removeAll();
-            for (ElementFile file : RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName())) {
+            for (ElementFile<?> file : RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName())) {
                 try {
                     ElementInnerPanelView
                             .add(new RElementFile(this, file, RFileOperations
@@ -528,7 +528,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     @Override
-    public void onElementDraft(ElementSource element) {
+    public void onElementDraft(ElementSource<?> element) {
         element.buildJSONFile(this, (((WorkspaceFile) SWPF.getSerilized()).WorkspaceName));
         refreshAll();
     }
@@ -539,7 +539,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     @Override
-    public void onElementCreate(ElementSource element) {
+    public void onElementCreate(ElementSource<?> element) {
         element.buildJSONFile(this, (((WorkspaceFile) SWPF.getSerilized()).WorkspaceName));
         refreshAll();
     }

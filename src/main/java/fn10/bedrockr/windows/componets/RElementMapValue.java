@@ -24,9 +24,12 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
-import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses;
+import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
+import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
+import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFonts;
+import fn10.bedrockr.windows.componets.RItemValue.Type;
 
 public class RElementMapValue extends JPanel {
 
@@ -60,13 +63,15 @@ public class RElementMapValue extends JPanel {
         if (RME instanceof RStringDropdownMapElement) {
             String[] ars = ((RStringDropdownMapElement) RME).getChoices();
             InputField = new JComboBox<String>(ars);
-        } else if (RME.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
+        } else if (RME.Type == minecraftDamage.class) { // minecraft:damage
             InputField = new JSpinner();
-        } else if (RME.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:damage
+        } else if (RME.Type == minecraftDestructibleByMining.class) { // minecraft:damage
             if (RME.Filters.contains(MapValueFilter.Between0And1))
                 InputField = new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.1));
             else
                 InputField = new JSpinner(new SpinnerNumberModel(0, -2147483648f, 2147483647f, 0.1));
+        } else if (RME.Type == minecraftBlockPlacer.class) {
+            InputField = new RItemValue(null, Type.Single, getFocusTraversalKeysEnabled());
         }
         // set input field to whatever is nessesary
         else if (RME.Type == String.class) { // string
@@ -148,9 +153,9 @@ public class RElementMapValue extends JPanel {
                 return;
             }
 
-            if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
+            if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                 ((JSpinner) InputField).setValue(val);
-            } else if (rMapElement.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
+            } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
                 ((JSpinner) InputField)
                         .setValue(((LinkedTreeMap<String, LazilyParsedNumber>) val).get("seconds_to_destroy")
                                 .doubleValue());
@@ -188,12 +193,12 @@ public class RElementMapValue extends JPanel {
             }
 
             if (rMapElement.Type != null) {
-                if (rMapElement.Type == SharedJSONClasses.minecraftDamage.class) { // minecraft:damage
-                    val = new SharedJSONClasses.minecraftDamage();
-                    ((SharedJSONClasses.minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
-                } else if (rMapElement.Type == SharedJSONClasses.minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
-                    val = new SharedJSONClasses.minecraftDestructibleByMining();
-                    ((SharedJSONClasses.minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
+                if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
+                    val = new minecraftDamage();
+                    ((minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
+                } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
+                    val = new minecraftDestructibleByMining();
+                    ((minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
                             .getValue()).floatValue();
                 } else if (rMapElement.Type == String.class) { // string
                     val = ((JTextField) InputField).getText();

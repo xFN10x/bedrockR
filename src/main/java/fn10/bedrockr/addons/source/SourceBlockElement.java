@@ -11,7 +11,6 @@ import javax.swing.ImageIcon;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
@@ -21,7 +20,7 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import jakarta.annotation.Nullable;
 
-public class SourceBlockElement implements ElementSource {
+public class SourceBlockElement implements ElementSource<BlockFile> {
     private final String Location = File.separator + "elements" + File.separator;
     private Class<BlockFile> serilizedClass = BlockFile.class;
     private BlockFile serilized;
@@ -50,12 +49,12 @@ public class SourceBlockElement implements ElementSource {
     }
 
     @Override
-    public Class<?> getSerilizedClass() {
+    public Class<BlockFile> getSerilizedClass() {
         return this.serilizedClass;
     }
 
     @Override
-    public ElementFile getFromJSON(String jsonString) {
+    public BlockFile getFromJSON(String jsonString) {
         return gson.fromJson(jsonString, serilizedClass);
     }
 
@@ -78,7 +77,7 @@ public class SourceBlockElement implements ElementSource {
     }
 
     @Override
-    public ElementFile getSerilized() {
+    public BlockFile getSerilized() {
         return this.serilized;
     }
 

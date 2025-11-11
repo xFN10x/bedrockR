@@ -18,7 +18,6 @@ import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
@@ -30,7 +29,7 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import javafx.application.Platform;
 
-public class SourceScriptElement implements ElementSource {
+public class SourceScriptElement implements ElementSource<ScriptFile> {
 
     private final String Location = File.separator + "elements" + File.separator;
     private ScriptFile serilized;
@@ -53,7 +52,7 @@ public class SourceScriptElement implements ElementSource {
     }
 
     @Override
-    public ElementFile getFromJSON(String jsonString) {
+    public ScriptFile getFromJSON(String jsonString) {
         return gson.fromJson(jsonString, ScriptFile.class);
     }
 
@@ -78,19 +77,19 @@ public class SourceScriptElement implements ElementSource {
     }
 
     @Override
-    public Class<?> getSerilizedClass() {
+    public Class<ScriptFile> getSerilizedClass() {
         return ScriptFile.class;
     }
 
     @Override
-    public ElementFile getSerilized() {
+    public ScriptFile getSerilized() {
         return serilized;
     }
 
     @Override
     public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
 
-        ElementSource This = this;
+        ElementSource<ScriptFile> This = this;
 
         RElementValue elementName = new RElementValue(Parent, String.class, new FieldFilters.FileNameLikeStringFilter(),
                 "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);

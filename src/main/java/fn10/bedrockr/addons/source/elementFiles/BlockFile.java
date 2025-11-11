@@ -21,7 +21,6 @@ import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
 import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
 import fn10.bedrockr.utils.MapUtilities;
@@ -36,7 +35,7 @@ import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
-public class BlockFile implements ElementFile, ItemLikeElement {
+public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
@@ -126,7 +125,7 @@ public class BlockFile implements ElementFile, ItemLikeElement {
     public Boolean isDraft = Boolean.FALSE;
 
     @Override
-    public Class<? extends ElementSource> getSourceClass() {
+    public Class<SourceBlockElement> getSourceClass() {
         return SourceBlockElement.class;
     }
 

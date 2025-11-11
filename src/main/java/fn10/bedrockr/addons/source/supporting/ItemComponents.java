@@ -1,5 +1,7 @@
 package fn10.bedrockr.addons.source.supporting;
 
+import com.google.gson.annotations.SerializedName;
+
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
@@ -10,12 +12,13 @@ import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
  */
 public class ItemComponents implements RMapElementProvider {
 
-        public static class minecraftIcon {
-                public String texture;
+        public static class minecraftDamage {
+                @SerializedName("minecraft:damage")
+                public int damage;
+        }
 
-                public minecraftIcon(String tex) {
-                        this.texture = tex;
-                }
+        public static class minecraftDestructibleByMining {
+                public float seconds_to_destroy;
         }
 
         public static class minecraftBlockPlacer {

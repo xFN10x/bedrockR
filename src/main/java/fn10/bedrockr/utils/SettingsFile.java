@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.source.elementFiles;
+package fn10.bedrockr.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +11,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import java.awt.*;
-
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.RFileOperations;
 
 public class SettingsFile {
 

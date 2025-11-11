@@ -173,7 +173,7 @@ public class RItemSelector extends RDialog {
     public static ReturnItemInfo getItemById(Window doing, String fullID, String workspaceName)
             throws IncorrectWorkspaceException, NameNotFoundException {
         // check the non-vanilla items
-        for (ElementFile element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
+        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
             if (element instanceof ItemLikeElement) {
                 String Id = ((ItemLikeElement) element).getItemId();
                 String Name = ((ItemLikeElement) element).getDisplayName();
@@ -273,7 +273,7 @@ public class RItemSelector extends RDialog {
         InnerPanel.setLayout(new GridLayout(0, 4, 3, 3));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        for (ElementFile element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
+        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
             if (element instanceof ItemLikeElement) {
                 JButton ToAdd = new JButton();
                 Dimension size = new Dimension(48, 48);

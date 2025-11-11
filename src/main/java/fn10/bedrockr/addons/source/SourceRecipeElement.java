@@ -15,7 +15,6 @@ import javax.swing.SpringLayout;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
@@ -28,7 +27,7 @@ import fn10.bedrockr.windows.componets.RItemValue.ShapedOutput;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class SourceRecipeElement implements ElementSource {
+public class SourceRecipeElement implements ElementSource<RecipeFile> {
 
     private final String Location = File.separator + "elements" + File.separator;
     private RecipeFile serilized;
@@ -51,7 +50,7 @@ public class SourceRecipeElement implements ElementSource {
     }
 
     @Override
-    public ElementFile getFromJSON(String jsonString) {
+    public RecipeFile getFromJSON(String jsonString) {
         return gson.fromJson(jsonString, RecipeFile.class);
     }
 
@@ -78,12 +77,12 @@ public class SourceRecipeElement implements ElementSource {
     }
 
     @Override
-    public Class<?> getSerilizedClass() {
+    public Class<RecipeFile> getSerilizedClass() {
         return RecipeFile.class;
     }
 
     @Override
-    public ElementFile getSerilized() {
+    public RecipeFile getSerilized() {
         return serilized;
     }
 
