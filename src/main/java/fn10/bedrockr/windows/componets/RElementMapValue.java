@@ -17,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
+
+import com.google.gson.Gson;
 import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -24,14 +26,20 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
+import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
 
 public class RElementMapValue extends JPanel {
+
+    private final static Gson gson = SourcelessElementFile.gson;
 
     private final Dimension Size = new Dimension(240, 80);
 
@@ -71,7 +79,7 @@ public class RElementMapValue extends JPanel {
             else
                 InputField = new JSpinner(new SpinnerNumberModel(0, -2147483648f, 2147483647f, 0.1));
         } else if (RME.Type == minecraftBlockPlacer.class) {
-            InputField = new RItemValue(null, Type.Single, getFocusTraversalKeysEnabled());
+            InputField = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName, Type.Single, true);
         }
         // set input field to whatever is nessesary
         else if (RME.Type == String.class) { // string
@@ -105,16 +113,16 @@ public class RElementMapValue extends JPanel {
             }
 
         }
-
-        InputField.setMinimumSize(new Dimension(0, 70));
+        if (!(InputField instanceof RItemValue)) {
+            InputField.setMinimumSize(new Dimension(0, 70));
+            Lay.putConstraint(SpringLayout.WEST, InputField, 5, SpringLayout.WEST, this);
+            Lay.putConstraint(SpringLayout.EAST, InputField, -5, SpringLayout.EAST, this);
+            Lay.putConstraint(SpringLayout.SOUTH, InputField, -5, SpringLayout.SOUTH, this);
+        }
 
         HelpButton.addActionListener(
                 (e) -> JOptionPane.showMessageDialog(this, RME.HelpDescription, "Help for: " + RME.DisplayName,
                         JOptionPane.INFORMATION_MESSAGE));
-
-        Lay.putConstraint(SpringLayout.WEST, InputField, 5, SpringLayout.WEST, this);
-        Lay.putConstraint(SpringLayout.EAST, InputField, -5, SpringLayout.EAST, this);
-        Lay.putConstraint(SpringLayout.SOUTH, InputField, -5, SpringLayout.SOUTH, this);
 
         Lay.putConstraint(SpringLayout.NORTH, DisplayNameLabel, 5, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.WEST, DisplayNameLabel, 5, SpringLayout.WEST, this);
@@ -156,9 +164,17 @@ public class RElementMapValue extends JPanel {
             if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                 ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
+                if (val instanceof LinkedTreeMap) {
+                    val = gson.fromJson(gson.toJsonTree(val), minecraftBlockPlacer.class);
+                }
                 ((JSpinner) InputField)
-                        .setValue(((LinkedTreeMap<String, LazilyParsedNumber>) val).get("seconds_to_destroy")
-                                .doubleValue());
+                        .setValue(((minecraftDestructibleByMining) val).seconds_to_destroy);
+            } else if (rMapElement.Type == minecraftBlockPlacer.class) {// minecraft:block_placer
+                if (val instanceof LinkedTreeMap) {
+                    val = gson.fromJson(gson.toJsonTree(val), minecraftBlockPlacer.class);
+                }
+                ((RItemValue) InputField).setButtonToItem(0, RItemSelector.getItemById(Ancestor,
+                        ((minecraftBlockPlacer) val).block, RFileOperations.getCurrentWorkspace().WorkspaceName));
             } else if (rMapElement.Type == String.class) { // string
                 ((JTextField) InputField).setText(((String) val));
             } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
@@ -200,6 +216,12 @@ public class RElementMapValue extends JPanel {
                     val = new minecraftDestructibleByMining();
                     ((minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
                             .getValue()).floatValue();
+                } else if (rMapElement.Type == minecraftBlockPlacer.class) {
+                    val = new minecraftBlockPlacer();
+                    if (((RItemValue) InputField).getItems().isEmpty())
+                        ((minecraftBlockPlacer) val).block = "minecraft:air";
+                    else
+                        ((minecraftBlockPlacer) val).block = ((RItemValue) InputField).getItems().get(0).item;
                 } else if (rMapElement.Type == String.class) { // string
                     val = ((JTextField) InputField).getText();
                 } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
