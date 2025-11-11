@@ -10,7 +10,6 @@ import javax.swing.ImageIcon;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.ItemFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
@@ -20,7 +19,7 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import jakarta.annotation.Nullable;
 
-public class SourceItemElement implements ElementSource {
+public class SourceItemElement implements ElementSource<ItemFile> {
     private final String Location = File.separator + "elements" + File.separator;
     private Class<ItemFile> serilizedClass = ItemFile.class;
     private ItemFile serilized;
@@ -49,12 +48,12 @@ public class SourceItemElement implements ElementSource {
     }
 
     @Override
-    public Class<?> getSerilizedClass() {
-        return this.serilizedClass;
+    public Class<ItemFile> getSerilizedClass() {
+        return ItemFile.class;
     }
 
     @Override
-    public ElementFile getFromJSON(String jsonString) {
+    public ItemFile getFromJSON(String jsonString) {
         return gson.fromJson(jsonString, serilizedClass);
     }
 
@@ -77,7 +76,7 @@ public class SourceItemElement implements ElementSource {
     }
 
     @Override
-    public ElementFile getSerilized() {
+    public ItemFile getSerilized() {
         return this.serilized;
     }
 

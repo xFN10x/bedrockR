@@ -22,14 +22,13 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Module;
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses.VersionVector;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
 /**********************
  * The WPFile, is an ElementFile that handles workspace varibles, and building
  * manifests, and other base stuff for both packs.
  */
-public class WorkspaceFile implements ElementFile {
+public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
 
     public int Format;
     public String WorkspaceName;
@@ -63,7 +62,7 @@ public class WorkspaceFile implements ElementFile {
     }
 
     @Override
-    public Class<? extends ElementSource> getSourceClass() {
+    public Class<SourceWorkspaceFile> getSourceClass() {
         return SourceWorkspaceFile.class;
     }
 
@@ -102,7 +101,6 @@ public class WorkspaceFile implements ElementFile {
      * @return the path the file can be written to.
      */
     public Path addScript(String rootPath, String name) {
-        // i still dont know how this is null, so just check here
         if (Scripts == null) {
             Scripts = new HashMap<UUID, String>();
         }

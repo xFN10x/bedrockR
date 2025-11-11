@@ -9,16 +9,14 @@ import javax.swing.ImageIcon;
 
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import jakarta.annotation.Nullable;
 
-public class SourceWorkspaceFile implements ElementSource {
+public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
-    private Class<WorkspaceFile> serilizedClass = WorkspaceFile.class;
     private WorkspaceFile serilized;
 
     public String workspaceName() {
@@ -49,13 +47,13 @@ public class SourceWorkspaceFile implements ElementSource {
     }
 
     @Override
-    public Class<?> getSerilizedClass() {
-        return this.serilizedClass;
+    public Class<WorkspaceFile> getSerilizedClass() {
+        return WorkspaceFile.class;
     }
 
     @Override
-    public ElementFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, serilizedClass);
+    public WorkspaceFile getFromJSON(String jsonString) {
+        return gson.fromJson(jsonString, getSerilizedClass());
     }
 
     @Override
@@ -76,7 +74,7 @@ public class SourceWorkspaceFile implements ElementSource {
     }
 
     @Override
-    public ElementFile getSerilized() {
+    public WorkspaceFile getSerilized() {
         return this.serilized;
     }
 

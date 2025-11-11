@@ -23,11 +23,11 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class RElementFile extends RElement implements ActionListener {
 
-    protected ElementFile file;
+    protected ElementFile<?> file;
     protected String filePath;
     protected RWorkspace wksp;
 
-    public RElementFile(RWorkspace Workspace, ElementFile File, String FilePath)
+    public RElementFile(RWorkspace Workspace, ElementFile<?> File, String FilePath)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         super(File.getSourceClass(), null, (File.getDraft() ? Color.gray : Color.green));
@@ -73,8 +73,8 @@ public class RElementFile extends RElement implements ActionListener {
 
     protected void openWindow() {
         try {
-            Class<? extends ElementSource> srczz = file.getSourceClass();
-            ElementSource newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
+            Class<? extends ElementSource<?>> srczz = file.getSourceClass();
+            ElementSource<?> newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
             ((RElementEditingScreen) srczz
                     .getMethod("getBuilderWindow", Window.class, ElementCreationListener.class, String.class)
                     .invoke(newsrc, wksp, wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
@@ -89,7 +89,7 @@ public class RElementFile extends RElement implements ActionListener {
      * 
      * @return The corrisponding {@code ElementFile}
      */
-    public ElementFile getFile() {
+    public ElementFile<?> getFile() {
         return file;
     }
 
@@ -117,7 +117,7 @@ public class RElementFile extends RElement implements ActionListener {
         } else if (ac.equals("draft")) {
             try {
                 file.setDraft(true);
-                ElementSource src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
+                ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
                 src.buildJSONFile(wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
@@ -128,7 +128,7 @@ public class RElementFile extends RElement implements ActionListener {
         } else if (ac.equals("undraft")) {
             try {
                 file.setDraft(false);
-                ElementSource src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
+                ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
                 src.buildJSONFile(wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {

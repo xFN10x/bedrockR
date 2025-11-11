@@ -17,12 +17,11 @@ import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RWorkspace;
 
-public class ResourceFile implements ElementFile {
+public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     /**
      * Key is the file name.
@@ -128,26 +127,6 @@ public class ResourceFile implements ElementFile {
     }
 
     @Override
-    public Class<? extends ElementSource> getSourceClass() {
-        return null;
-    }
-
-    @Override
-    public String getElementName() {
-        return "Resource(s)";
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-        return;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return false;
-    }
-
-    @Override
     /**
      * NOTE!!!!!!!!!
      * rootPath is the workspace name!
@@ -160,6 +139,26 @@ public class ResourceFile implements ElementFile {
 
         var source = new SourceResourceElement(this);
         source.buildJSONFile(null, rootPath);
+    }
+
+    @Override
+    public Class<SourceResourceElement> getSourceClass() {
+        return SourceResourceElement.class;
+    }
+
+    @Override
+    public String getElementName() {
+        return "Resouces";
+    }
+
+    @Override
+    public void setDraft(Boolean draft) {
+        return;
+    }
+
+    @Override
+    public Boolean getDraft() {
+        return false;
     }
 
 }

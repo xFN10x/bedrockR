@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileWriter;
 
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
-public class SourceResourceElement implements ElementSource {
+public class SourceResourceElement implements ElementSource<ResourceFile> {
 
     public ResourceFile Serilized;
 
@@ -33,7 +32,7 @@ public class SourceResourceElement implements ElementSource {
     }
 
     @Override
-    public ElementFile getFromJSON(String jsonString) {
+    public ResourceFile getFromJSON(String jsonString) {
         return gson.fromJson(jsonString, ResourceFile.class);
     }
 
@@ -55,12 +54,12 @@ public class SourceResourceElement implements ElementSource {
     }
 
     @Override
-    public Class<?> getSerilizedClass() {
+    public Class<ResourceFile> getSerilizedClass() {
         return ResourceFile.class;
     }
 
     @Override
-    public ElementFile getSerilized() {
+    public ResourceFile getSerilized() {
         return this.Serilized;
     }
 

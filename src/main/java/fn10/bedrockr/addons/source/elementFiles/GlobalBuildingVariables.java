@@ -23,15 +23,14 @@ import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockTexture;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture.TextureData;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds
  * things like language texts, and textures. This should ALWAYS be built last.
  */
 
-public class GlobalBuildingVariables implements ElementFile {
+public class GlobalBuildingVariables implements SourcelessElementFile {
 
     public List<String> Langs = new ArrayList<String>();
     public Map<String, String> EnglishTexts = new HashMap<String, String>();
@@ -85,26 +84,6 @@ public class GlobalBuildingVariables implements ElementFile {
             BlockTexturesFile.texture_data.put(plannedkey, new BlockTexture.TextureData(textureName));
         BlockTextures.add(Resource.getResourceFile(null, WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
         return plannedkey;
-    }
-
-    @Override
-    public Class<? extends ElementSource> getSourceClass() {
-        return null;
-    }
-
-    @Override
-    public String getElementName() {
-        return null;
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-        return;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return null;
     }
 
     @Override

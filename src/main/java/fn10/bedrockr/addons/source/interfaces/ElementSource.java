@@ -14,7 +14,7 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
  * 
  * @apiNote You should add the method, {@code public static ElementDetails getDetails()} if making a ElementSource that is meant to be added as a workspace element.
  */
-public interface ElementSource {
+public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
 
     public static final Gson gson = ElementFile.gson;
 
@@ -34,17 +34,17 @@ public interface ElementSource {
      * @param jsonString the string, which is a json, that is serilized
      * @return the ElementFile.
      */
-    abstract ElementFile getFromJSON(String jsonString);
+    abstract T getFromJSON(String jsonString);
 
     abstract File buildJSONFile(Window doingThis, String workspace);
 
-    abstract Class<?> getSerilizedClass();
+    abstract Class<T> getSerilizedClass();
 
     /**
      * Gets the ElementFile linked to this ElementSource object.
      * @return the ElementFile
      */
-    abstract ElementFile getSerilized();
+    abstract T getSerilized();
 
     abstract RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace);
 

@@ -38,7 +38,7 @@ public class RNewElement extends RDialog implements ActionListener {
     private String workspaceName;
 
     @SuppressWarnings("unchecked")
-    public static final Class<? extends ElementSource>[] ELEMENTS = new Class[] {
+    public static final Class<? extends ElementSource<?>>[] ELEMENTS = new Class[] {
             SourceItemElement.class,
             SourceBlockElement.class,
             SourceScriptElement.class,
@@ -56,7 +56,7 @@ public class RNewElement extends RDialog implements ActionListener {
         this.Parent = Parent;
         this.workspaceName = WorkspaceName;
 
-        for (Class<? extends ElementSource> class1 : ELEMENTS) {
+        for (Class<? extends ElementSource<?>> class1 : ELEMENTS) {
             try {
                 MainPane.add(new RElement(class1, () -> {
                     for (Component c : MainPane.getComponents()) {
@@ -92,7 +92,7 @@ public class RNewElement extends RDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "create") {
-            Class<? extends ElementSource> Creating = null;
+            Class<? extends ElementSource<?>> Creating = null;
 
             for (Component component : MainPane.getComponents()) { // for loop to check what is selected, then breaking
                 if (((RElement) component).getSelected()) {
@@ -105,7 +105,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 return;
 
             if (Creating == SourceScriptElement.class) {
-                for (ElementFile elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(Parent,
+                for (ElementFile<?> elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(Parent,
                         workspaceName)) {
                     if (elementsFromWorkspace.getClass() == ScriptFile.class) {
                         JOptionPane.showMessageDialog(Parent, "As of a1.2, you can only make 1 script in your addon.",
@@ -116,7 +116,7 @@ public class RNewElement extends RDialog implements ActionListener {
             }
 
             try {
-                ElementSource instance = Creating.getDeclaredConstructor().newInstance();
+                ElementSource<?> instance = Creating.getDeclaredConstructor().newInstance();
 
                 RElementEditingScreen screen = (RElementEditingScreen) Creating
                         .getMethod("getBuilderWindow", Window.class, ElementCreationListener.class, String.class)

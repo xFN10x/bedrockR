@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -26,7 +25,7 @@ import javafx.concurrent.Worker;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
 
-public class ScriptFile implements ElementFile {
+public class ScriptFile implements ElementFile<SourceScriptElement> {
 
     @UneditableByCreation
     @CantEditAfter
@@ -65,7 +64,7 @@ public class ScriptFile implements ElementFile {
             "\r\n";
 
     @Override
-    public Class<? extends ElementSource> getSourceClass() {
+    public Class<SourceScriptElement> getSourceClass() {
         return SourceScriptElement.class;
     }
 

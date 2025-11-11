@@ -16,14 +16,13 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.source.supporting.ItemComponents;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class ItemFile implements ElementFile, ItemLikeElement {
+public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
@@ -92,7 +91,7 @@ public class ItemFile implements ElementFile, ItemLikeElement {
     public Boolean isDraft = Boolean.FALSE;
 
     @Override
-    public Class<? extends ElementSource> getSourceClass() {
+    public Class<SourceItemElement> getSourceClass() {
         return SourceItemElement.class;
     }
 
