@@ -122,7 +122,8 @@ public class SourceRecipeElement implements ElementSource {
 
             RItemValue extraResults = new RItemValue(Workspace, Type.ListOfItems, false);
             if (serilized != null) {
-                extraResults.addListElements(Workspace, ReturnItemInfo.fromRecipeItem(serilized.ExtraResults, Workspace).toArray(new ReturnItemInfo[0]));
+                extraResults.addListElements(Workspace, ReturnItemInfo.fromRecipeItem(serilized.ExtraResults, Workspace)
+                        .toArray(new ReturnItemInfo[0]));
             }
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
@@ -146,12 +147,13 @@ public class SourceRecipeElement implements ElementSource {
             Layout.putConstraint(SpringLayout.SOUTH, unlockItems, -5, SpringLayout.NORTH, lowerFields);
             Layout.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.NORTH, frame.InnerPane);
 
-            Layout.putConstraint(SpringLayout.EAST, extraResults, 0, SpringLayout.EAST,outputSlot);
+            Layout.putConstraint(SpringLayout.EAST, extraResults, 0, SpringLayout.EAST, outputSlot);
             Layout.putConstraint(SpringLayout.WEST, extraResults, 0, SpringLayout.WEST, arrow);
             Layout.putConstraint(SpringLayout.SOUTH, extraResults, -5, SpringLayout.NORTH, lowerFields);
             Layout.putConstraint(SpringLayout.NORTH, extraResults, 5, SpringLayout.SOUTH, outputSlot);
 
-            Layout.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, -70, SpringLayout.VERTICAL_CENTER, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, -70, SpringLayout.VERTICAL_CENTER,
+                    frame.InnerPane);
             Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, -50, SpringLayout.HORIZONTAL_CENTER,
                     frame.InnerPane);
 
@@ -177,7 +179,8 @@ public class SourceRecipeElement implements ElementSource {
                         building.RecipeID = RecipeID.getValue().toString();
                         building.ShapedPattern = shaped.pattern;
                         building.ShapedKey = shaped.key;
-                        // TODO: building.ExtraResults
+                        if (!extraResults.getItems().isEmpty())
+                            building.ExtraResults = extraResults.getItems();
                         building.UnlockConditions = UnlockCondition.fromRecipeItem(unlockItems.getItems());
                         building.Result = outputSlot.getItems().get(0);
 
