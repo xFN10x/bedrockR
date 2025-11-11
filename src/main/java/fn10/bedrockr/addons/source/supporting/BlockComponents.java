@@ -7,6 +7,22 @@ import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 
 public class BlockComponents implements RMapElementProvider {
 
+        /*
+         * TODO: add;
+         * https://wiki.bedrock.dev/blocks/block-components#crafting-table
+         * https://wiki.bedrock.dev/blocks/block-components#destruction-particles
+         * https://wiki.bedrock.dev/blocks/block-components#flower-pottable
+         * (add with custom models) https://wiki.bedrock.dev/blocks/block-components#geometry
+         * https://wiki.bedrock.dev/blocks/block-components#item-visual
+         * https://wiki.bedrock.dev/blocks/block-components#light-dampening
+         * https://wiki.bedrock.dev/blocks/block-components#light-emission
+         * (add with custom loot) https://wiki.bedrock.dev/blocks/block-components#loot
+         * https://wiki.bedrock.dev/blocks/block-components#map-color
+         * https://wiki.bedrock.dev/blocks/block-components#movable
+         * https://wiki.bedrock.dev/blocks/block-components#redstone-conductivity
+         * https://wiki.bedrock.dev/blocks/block-components#redstone-producer
+         * https://wiki.bedrock.dev/blocks/block-components#replaceable
+         */
     public RMapElement[] getPickable() {
         return new RMapElement[] {
                 new RMapElement("Broken from Explosions", "minecraft:destructible_by_explosion",
