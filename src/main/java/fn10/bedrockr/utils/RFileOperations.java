@@ -121,6 +121,12 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Reads the resource at the path specified
+     * 
+     * @param resource - the path of the resource
+     * @return the string of the file read
+     */
     public static String readResourceAsString(String resource) {
         try {
             return Files.readString(Path.of(RFileOperations.class.getResource(resource).toURI()));
@@ -130,6 +136,12 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Checks if a string can be used in a legal file name for windows, and linux.
+     * 
+     * @param proposed - The string to check
+     * @return a bool declaring if the string can be used
+     */
     public static boolean validFolderName(String proposed) {
 
         if (proposed.length() >= 150)
@@ -148,6 +160,12 @@ public class RFileOperations {
         return true;
     }
 
+    /**
+     * Gets the workspaces that the user currently has.
+     * 
+     * @param doingThis - the window to be used to parent errors to.
+     * @return an array of strings, being the names of the workspaces
+     */
     public static String[] getWorkspaces(java.awt.Window doingThis) {
         var folder = new File(
                 getBaseDirectory(doingThis).getAbsolutePath() + File.separator + "workspace" + File.separator).toPath();
@@ -176,6 +194,13 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Gets source resources that exist on disk from a workspace.
+     * 
+     * @param doingThis     - the window to be used to parent errors to.
+     * @param workspaceName - the workspace to get the resources from
+     * @return a {@code SourceResourceElement}, containing the resources
+     */
     public static SourceResourceElement getResources(Window doingThis, String workspaceName) {
 
         var file = getFileFromWorkspace(doingThis, workspaceName,
@@ -196,6 +221,13 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Shows a popup asking the user to enable Minecraft Sync, overriding it if they
+     * already have it.
+     * 
+     * @param doingThis - the window to parent too
+     * @param WPF       - the workspace that is having mc sync enabled
+     */
     public static void showMCSyncPopup(Window doingThis, SourceWorkspaceFile WPF) {
         ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
         WPF.buildJSONFile(doingThis, // rebuild
@@ -252,6 +284,13 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Opens a workspace, showing the window, and doing all other nessesary steps
+     * too have a person be able to work on one
+     * 
+     * @param doingThis - the window to parent to, and hide once the window appears
+     * @param WPF       - The workspace to open
+     */
     public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
         var workspaceView = new RWorkspace(WPF);
         // get items ready for use
@@ -283,14 +322,34 @@ public class RFileOperations {
         });
     }
 
+    /**
+     * Gets the last opened workspace
+     * 
+     * @return the workspace file.
+     */
     public static WorkspaceFile getCurrentWorkspace() {
         return CURRENT_WORKSPACE;
     }
 
+    /**
+     * Gets a directory from {@coce .bedrockr}
+     * 
+     * @param doingThis - the window to use for debugging
+     * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
+     * @return the file, being the directory that you specified,
+     */
     public static File getBaseDirectory(Window doingThis, String... Folders) {
         return getBaseDirectory(doingThis, false, Folders);
     }
 
+    /**
+     * Gets a directory from {@coce .bedrockr}
+     * 
+     * @param doingThis - the window to use for debugging
+     * @param strict    - if strict, it doesn't make the directory you specify
+     * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
+     * @return the file, being the directory that you specified,
+     */
     public static File getBaseDirectory(Window doingThis, Boolean strict, String... Folders) {
         File file = Path.of(BASE_PATH, Folders).toFile();
         try {
@@ -305,6 +364,12 @@ public class RFileOperations {
         return BASE_DIRECTORY;
     }
 
+    /**
+     * Gets the {@coce .bedrockr} directory
+     * 
+     * @param doingThis - the window to use for debugging
+     * @return the file, being the directory that you specified,
+     */
     public static File getBaseDirectory(Window doingThis) {
         try {
             // Launcher.LOG.info(BaseDirectory.toPath());
@@ -319,7 +384,16 @@ public class RFileOperations {
         return BASE_DIRECTORY;
     }
 
-    public static File getFileFromWorkspace(Window windowDoingThis, String WorkspaceName, String ToCreate) {
+    /**
+     * Get a file from a workspace
+     * 
+     * @param windowDoingThis - the window to use for debugging
+     * @param WorkspaceName   - the name of the target workspace
+     * @param ToCreate        - the file to get, creating it if it doesnt exist.
+     *                        e.g. {@code icon.jpg}
+     * @return the file
+     */
+    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate) {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
     }
 
@@ -332,6 +406,16 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Get a file from a workspace
+     * 
+     * @param windowDoingThis - the Component to use for debugging
+     * @param WorkspaceName   - the name of the target workspace
+     * @param ToCreate        - the file to get, creating it if it doesnt exist.
+     *                        e.g. {@code icon.jpg}
+     * @param strict          - if true, it doesnt create the file, and returns null
+     * @return the file
+     */
     public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
             Boolean strict) {
         Launcher.LOG.warning("This file should start with the file seperator, or not at all! not '/'!");
@@ -351,10 +435,22 @@ public class RFileOperations {
 
     }
 
+    /**
+     * Get a workspace's folder
+     * 
+     * @param windowDoingThis - the component to use for debugging
+     * @param WorkspaceName   - the target workspace
+     * @return a File, being the directory of the workspace
+     */
     public static File getWorkspace(Component windowDoingThis, String WorkspaceName) {
         return getFileFromWorkspace(windowDoingThis, WorkspaceName, File.separator, true);
     }
 
+    /**
+     * Syncs all built RP and BP to com.mojang
+     * 
+     * @param doingThis - the window to be used for debugging
+     */
     public static void mcSync(java.awt.Window doingThis) {
         SettingsFile settings = SettingsFile.getSettings(doingThis);
         try {
@@ -520,10 +616,18 @@ public class RFileOperations {
         }
     }
 
+    /**
+     * Creates a workspace's folder to disk
+     * 
+     * @param loading   - the loading screen to be used
+     * @param wpf       - the workspace file to use
+     * @param addonIcon - the icon to be written to disk
+     * @return the new {@code SourceWorkspaceFile}
+     * @throws IOException if the folder already exists
+     */
     public static SourceWorkspaceFile createWorkspace(RLoadingScreen loading, // String workspaceName, String
                                                                               // minimumVersion)
-            WorkspaceFile wpf, File addonIcon)
-            throws Exception {
+            WorkspaceFile wpf, File addonIcon) throws IOException {
 
         String[] wsFolders = {
                 File.separator + "elements" + File.separator,
@@ -536,7 +640,7 @@ public class RFileOperations {
                 + wpf.WorkspaceName + File.separator);
 
         if (wsFolder.exists()) { // throw if folder is already here
-            var e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
+            IOException e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
             ErrorShower.showError((Frame) loading.getParent(),
                     "Failed to make folder; Folder" + wsFolder.getAbsolutePath() + " already exists.",
                     "Failure!", e);
@@ -584,6 +688,14 @@ public class RFileOperations {
 
     }
 
+    /**
+     * Gets the ElementFile's equivilant file on disk.
+     * 
+     * @param doingThis   - the window to use for parenting
+     * @param workspace   - the workspace the file is in
+     * @param elementFile - the ElementFile to search for on disk
+     * @return
+     */
     public static Path getFileFromElementFile(java.awt.Window doingThis, String workspace, ElementFile<?> elementFile) {
         Path proposed = Path.of(RFileOperations
                 .getFileFromWorkspace(doingThis, workspace,
@@ -595,6 +707,13 @@ public class RFileOperations {
         return proposed;
     }
 
+    /**
+     * Gets all the ElementFiles on disk
+     * 
+     * @param doingThis - the window to use for parenting
+     * @param workspace - the workspace to get the elements from
+     * @return an array of ElementFiles, populated by all the ones found on disk
+     */
     public static ElementFile<?>[] getElementsFromWorkspace(java.awt.Window doingThis, String workspace) {
         List<ElementFile<?>> building = new ArrayList<>();
         for (File file : RFileOperations
@@ -603,7 +722,7 @@ public class RFileOperations {
                 .listFiles()) {
             try {
                 ElementSource<?> source = getElementSourceFromFileExtension(doingThis,
-                        file.getName().substring(file.getName().lastIndexOf('.') + 1));
+                        file.getName().substring(file.getName().lastIndexOf('.') + 1)); // dont make en error
 
                 building.add(source.getFromJSON(Files.readString(file.toPath())));
             } catch (Exception e) {
