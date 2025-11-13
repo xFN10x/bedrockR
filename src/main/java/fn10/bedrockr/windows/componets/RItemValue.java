@@ -31,8 +31,10 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
@@ -116,6 +118,10 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
 
         public ShapedOutput(RecipeFile from) {
+            if (from == null || from.ShapedKey == null || from.ShapedPattern == null || from.ShapedKey.isEmpty()
+                    || from.ShapedPattern.length <= 0) {
+                return;
+            }
             this.key = from.ShapedKey;
             this.pattern = from.ShapedPattern;
         }
@@ -177,7 +183,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     public ArrayList<Item> getItems() throws WrongItemValueTypeException {
-        if (currentType == Type.ListOfItems) {
+        if (currentType == Type.ListOfItems || currentType == Type.ListOfBlocks) {
             ArrayList<Item> building = new ArrayList<Item>();
             for (ListElement ele : getListElements()) {
                 if (!ele.getItems().isEmpty()) {
@@ -199,12 +205,42 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
     }
 
+    public void empty() throws WrongItemValueTypeException {
+        if (currentType == Type.ListOfItems || currentType == Type.ListOfBlocks)
+            throw new WrongItemValueTypeException("Can't set a single button from this item value!", Type.CraftingTable,
+                    currentType);
+
+        if (currentType == Type.Single || currentType == Type.SingleBlock) {
+            try {
+                setButtonToItem(0, Recipe.NULL_RETURN_ITEM);
+            } catch (WrongItemValueTypeException e) {
+                e.printStackTrace();
+            }
+        } else if (currentType == Type.CraftingTable) {
+            for (int i = 0; i < 9; i++) {
+                try {
+                    setButtonToItem(i, Recipe.NULL_RETURN_ITEM);
+                } catch (WrongItemValueTypeException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
         if (item == null)
             return;
         if (currentType == Type.ListOfItems || currentType == Type.ListOfBlocks)
             throw new WrongItemValueTypeException("Can't set a single button from this item value!", Type.CraftingTable,
                     currentType);
+
+        if (item.equals(Recipe.NULL_RETURN_ITEM)) {
+            button.setIcon(null);
+            button.setText("");
+            button.setToolTipText("");
+            button.setName("");
+            return;
+        }
         if (item.Texture != null) {
             button.setFont(button.getFont().deriveFont(16f));
             button.setIcon(new ImageIcon(
@@ -228,30 +264,31 @@ public class RItemValue extends JPanel implements ValidatableValue {
         if (currentType != Type.CraftingTable)
             throw new WrongItemValueTypeException("Can't set shaped recipe from this item value!", Type.CraftingTable,
                     currentType);
-        for (int i = 0; i < value.pattern.length; i++) { // go for each vertical row
-            // 'i' is the index in the array
-            String row = value.pattern[i];
-            for (int j = 0; j < row.length(); j++) { // go for the 3 buttons to set the string
-                String itemString = String.valueOf(row.charAt(j));
-                if (itemString.isBlank() || itemString.isEmpty()) {
-                    continue;
-                }
-                ReturnItemInfo item;
-                try {
-                    if (currentType == Type.SingleBlock || currentType == Type.ListOfBlocks) {
-                        item = RBlockSelector.getBlockById(parent,
-                                value.key.get(itemString), workspace);
-                    } else {
-                        item = RItemSelector.getItemById(parent,
-                                value.key.get(itemString), workspace);
+        if (value.pattern != null)
+            for (int i = 0; i < value.pattern.length; i++) { // go for each vertical row
+                // 'i' is the index in the array
+                String row = value.pattern[i];
+                for (int j = 0; j < row.length(); j++) { // go for the 3 buttons to set the string
+                    String itemString = String.valueOf(row.charAt(j));
+                    if (itemString.isBlank() || itemString.isEmpty()) {
+                        continue;
                     }
-                } catch (IncorrectWorkspaceException | NameNotFoundException e) {
-                    e.printStackTrace();
-                    continue;
+                    ReturnItemInfo item;
+                    try {
+                        if (currentType == Type.SingleBlock || currentType == Type.ListOfBlocks) {
+                            item = RBlockSelector.getBlockById(parent,
+                                    value.key.get(itemString), workspace);
+                        } else {
+                            item = RItemSelector.getItemById(parent,
+                                    value.key.get(itemString), workspace);
+                        }
+                    } catch (IncorrectWorkspaceException | NameNotFoundException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+                    setButtonToItem((i * 3) + j, item);
                 }
-                setButtonToItem((i * 3) + j, item);
             }
-        }
     }
 
     public ShapedOutput getShapedRecipe() throws WrongItemValueTypeException {
@@ -354,7 +391,8 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 ListInnerScroll.setLayout(ListInnerLayout);
 
                 ListAddButton.addActionListener(ac -> {
-                    ListInnerScroll.add(new ListElement(ListInnerScroll, WorkspaceName, (currentType == Type.ListOfBlocks || currentType == Type.SingleBlock)));
+                    ListInnerScroll.add(new ListElement(ListInnerScroll, WorkspaceName,
+                            (currentType == Type.ListOfBlocks || currentType == Type.SingleBlock)));
                     ListInnerScroll.revalidate();
                     ListInnerScroll.repaint();
                 });

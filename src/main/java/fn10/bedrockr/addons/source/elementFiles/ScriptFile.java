@@ -15,7 +15,6 @@ import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
-import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.componets.RBlockly;
 import fn10.bedrockr.windows.componets.RBlockly.Bridge;
 import javafx.application.Platform;

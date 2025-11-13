@@ -1,13 +1,17 @@
 package fn10.bedrockr.addons.source;
 
 import java.awt.Window;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -17,6 +21,8 @@ import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
@@ -28,6 +34,11 @@ import fn10.bedrockr.windows.componets.RItemValue.Type;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceRecipeElement implements ElementSource<RecipeFile> {
+
+    public static enum RecipeType {
+        Shaped,
+        Shapeless,
+    }
 
     private final String Location = File.separator + "elements" + File.separator;
     private RecipeFile serilized;
@@ -105,6 +116,23 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
             frame.InnerPane.setLayout(Layout);
             RItemValue grid = new RItemValue(Workspace, Type.CraftingTable, true);
             if (serilized != null) {
+                switch (serilized.recipeType) {
+                    case RecipeType.Shaped:
+                        grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
+                        break;
+
+                    default:
+                        serilized.ShapelessIngredients.forEach(item -> {
+                            try {
+                                grid.setButtonToItem(serilized.ShapelessIngredients.indexOf(item),
+                                        RItemSelector.getItemById(Parent, item.item, Workspace));
+                            } catch (WrongItemValueTypeException | NameNotFoundException
+                                    | IncorrectWorkspaceException e1) {
+                                e1.printStackTrace();
+                            }
+                        });
+                        break;
+                }
                 grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
             }
 
@@ -123,6 +151,12 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
             if (serilized != null) {
                 extraResults.addListElements(Workspace, ReturnItemInfo.fromRecipeItem(serilized.ExtraResults, Workspace)
                         .toArray(new ReturnItemInfo[0]));
+            }
+
+            JLabel TypeDropdownText = new JLabel("Recipe Type");
+            JComboBox<RecipeType> TypeDropdown = new JComboBox<RecipeType>(RecipeType.values());
+            if (serilized != null) {
+                TypeDropdown.setSelectedItem(serilized.recipeType);
             }
 
             JLabel arrow = new JLabel(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
@@ -151,6 +185,13 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
             Layout.putConstraint(SpringLayout.SOUTH, extraResults, -5, SpringLayout.NORTH, lowerFields);
             Layout.putConstraint(SpringLayout.NORTH, extraResults, 5, SpringLayout.SOUTH, outputSlot);
 
+            Layout.putConstraint(SpringLayout.WEST, TypeDropdownText, 0, SpringLayout.WEST, grid);
+            Layout.putConstraint(SpringLayout.SOUTH, TypeDropdownText, 1, SpringLayout.NORTH, TypeDropdown);
+
+            Layout.putConstraint(SpringLayout.WEST, TypeDropdown, 0, SpringLayout.WEST, grid);
+            Layout.putConstraint(SpringLayout.NORTH, TypeDropdown, 15, SpringLayout.NORTH, frame.InnerPane);
+            Layout.putConstraint(SpringLayout.SOUTH, TypeDropdown, -20, SpringLayout.NORTH, grid);
+
             Layout.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, -70, SpringLayout.VERTICAL_CENTER,
                     frame.InnerPane);
             Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, -50, SpringLayout.HORIZONTAL_CENTER,
@@ -169,17 +210,28 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
                     try {
-                        // JOptionPane.showMessageDialog(Parent, gson.toJson(grid.getShapedRecipe()));
-
                         ShapedOutput shaped = grid.getShapedRecipe();
                         RecipeFile building = new RecipeFile();
 
                         building.ElementName = ElementName.getValue().toString();
                         building.RecipeID = RecipeID.getValue().toString();
-                        building.ShapedPattern = shaped.pattern;
-                        building.ShapedKey = shaped.key;
-                        if (!extraResults.getItems().isEmpty())
-                            building.ExtraResults = extraResults.getItems();
+                        building.recipeType = (RecipeType) TypeDropdown.getSelectedItem();
+                        switch (TypeDropdown.getSelectedItem()) {
+
+                            case RecipeType.Shaped:
+                                building.ShapedPattern = shaped.pattern;
+                                building.ShapedKey = shaped.key;
+                                if (!extraResults.getItems().isEmpty())
+                                    building.ExtraResults = extraResults.getItems();
+                                break;
+
+                            case RecipeType.Shapeless:
+                                building.ShapelessIngredients = grid.getItems();
+                                break;
+                            default:
+                                break;
+                        }
+
                         building.UnlockConditions = UnlockCondition.fromRecipeItem(unlockItems.getItems());
                         building.Result = outputSlot.getItems().get(0);
 
@@ -205,6 +257,75 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
             frame.InnerPane.add(lowerFields);
             frame.InnerPane.add(unlockItems);
             frame.InnerPane.add(extraResults);
+            frame.InnerPane.add(TypeDropdown);
+            frame.InnerPane.add(TypeDropdownText);
+
+            TypeDropdown.addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+
+                    if (serilized == null)
+                        serilized = new RecipeFile();
+                    try {
+                        ShapedOutput shaped = grid.getShapedRecipe();
+                        serilized.ShapedPattern = shaped.pattern;
+                        serilized.ShapedKey = shaped.key;
+                        if (!extraResults.getItems().isEmpty())
+                            serilized.ExtraResults = extraResults.getItems();
+
+                        serilized.ShapelessIngredients = grid.getItems();
+                    } catch (WrongItemValueTypeException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    switch (TypeDropdown.getSelectedItem()) {
+                        case RecipeType.Shaped:
+                            arrow.setIcon(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
+                            extraResults.setVisible(true);
+                            try {
+                                grid.empty();
+                            } catch (WrongItemValueTypeException e1) {
+                                e1.printStackTrace();
+                            }
+                            if (serilized != null) {
+                                try {
+                                    grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
+                                } catch (WrongItemValueTypeException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            break;
+
+                        case RecipeType.Shapeless:
+                            arrow.setIcon(new ImageIcon(getClass().getResource("/ui/ArrowShapless.png")));
+                            extraResults.setVisible(false);
+                            try {
+                                grid.empty();
+                            } catch (WrongItemValueTypeException e1) {
+                                e1.printStackTrace();
+                            }
+                            if (serilized != null) {
+                                serilized.ShapelessIngredients.forEach(item -> {
+                                    try {
+                                        grid.setButtonToItem(serilized.ShapelessIngredients.indexOf(item),
+                                                RItemSelector.getItemById(Parent, item.item, Workspace));
+                                    } catch (WrongItemValueTypeException | NameNotFoundException
+                                            | IncorrectWorkspaceException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                });
+                            }
+                            break;
+
+                        default:
+                            arrow.setIcon(new ImageIcon(getClass().getResource("/ui/ArrowShapless.png")));
+                            extraResults.setVisible(false);
+                            break;
+                    }
+                }
+
+            });
 
             return frame;
         } catch (Exception e) {

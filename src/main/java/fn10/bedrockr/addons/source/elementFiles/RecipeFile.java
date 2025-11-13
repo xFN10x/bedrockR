@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.InnerDiscription;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShaped;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShapeless;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
+import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -25,7 +28,7 @@ import fn10.bedrockr.utils.RAnnotation.VeryImportant;
  * use as referance
  * https://wiki.bedrock.dev/loot/recipes
  */
-public class RecipeFile implements  ElementFile<SourceRecipeElement> {
+public class RecipeFile implements ElementFile<SourceRecipeElement> {
 
     @CantEditAfter
     @VeryImportant
@@ -41,6 +44,9 @@ public class RecipeFile implements  ElementFile<SourceRecipeElement> {
     public List<UnlockCondition> UnlockConditions = new ArrayList<UnlockCondition>();
 
     public Item Result;
+
+    public RecipeType recipeType = RecipeType.Shaped;
+
     /**
      * Only used in Shaped Recipes
      */
@@ -78,20 +84,31 @@ public class RecipeFile implements  ElementFile<SourceRecipeElement> {
             GlobalBuildingVariables globalResVaribles) throws IOException {
         Recipe recipe = new Recipe();
         recipe.formatVersion = "1.21.50";
-        // RecipeShapeless shapeless = new RecipeShapeless(); TODO: for now, you can
-        // only do shaped
-        RecipeShaped shaped = new RecipeShaped();
-        shaped.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
-        shaped.key = ShapedKey;
-        shaped.pattern = ShapedPattern;
-        shaped.unlock = UnlockConditions.toArray(new UnlockCondition[0]);
-        List<Item> fullResults = new ArrayList<Item>();
-        fullResults.add(Result);
-        if (!ExtraResults.isEmpty())
-            fullResults.addAll(ExtraResults);
-        shaped.result = fullResults.toArray(new Item[0]);
-        
-        recipe.mcRecipeShaped = shaped;
+        switch (recipeType) {
+            case RecipeType.Shapeless:
+                RecipeShapeless shapeless = new RecipeShapeless();
+                shapeless.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
+                shapeless.unlock = UnlockConditions.toArray(new UnlockCondition[0]);
+                shapeless.result = Result;
+                shapeless.ingredients = ShapelessIngredients.toArray(new Item[0]);
+                recipe.mcRecipeShapeless = shapeless;
+
+                break;
+
+            case RecipeType.Shaped:
+                RecipeShaped shaped = new RecipeShaped();
+                shaped.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
+                shaped.key = ShapedKey;
+                shaped.pattern = ShapedPattern;
+                shaped.unlock = UnlockConditions.toArray(new UnlockCondition[0]);
+                List<Item> fullResults = new ArrayList<Item>();
+                fullResults.add(Result);
+                if (!ExtraResults.isEmpty())
+                    fullResults.addAll(ExtraResults);
+                shaped.result = fullResults.toArray(new Item[0]);
+                recipe.mcRecipeShaped = shaped;
+                break;
+        }
 
         // build file
         String json = gson.toJson(recipe);
