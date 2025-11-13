@@ -93,13 +93,18 @@ public class RFileOperations {
      */
     public static Class<? extends ElementSource<?>> getElementSourceClassFromFileExtension(java.awt.Window doingThis,
             String fileExtension) {
-        try {
-            return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
-        } catch (Exception e) {
-            e.printStackTrace();
-            ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
-            return null;
+        if (ELEMENT_EXTENSION_CLASSES.containsKey(fileExtension)) {
+            try {
+                return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException("This Element extension isnt avaliable in this version");
         }
+
     }
 
     /**
@@ -107,8 +112,8 @@ public class RFileOperations {
      * extension
      * 
      * @param doingThis     the closest (J)frame
-     * @param fileExtension
-     * @return
+     * @param fileExtension the extension of the file
+     * @return the ElementSource accosseated with the extension.
      */
     public static ElementSource<?> getElementSourceFromFileExtension(java.awt.Window doingThis,
             String fileExtension) {
@@ -722,7 +727,7 @@ public class RFileOperations {
                 .listFiles()) {
             try {
                 ElementSource<?> source = getElementSourceFromFileExtension(doingThis,
-                        file.getName().substring(file.getName().lastIndexOf('.') + 1)); // dont make en error
+                        file.getName().substring(file.getName().lastIndexOf('.') + 1));
 
                 building.add(source.getFromJSON(Files.readString(file.toPath())));
             } catch (Exception e) {
