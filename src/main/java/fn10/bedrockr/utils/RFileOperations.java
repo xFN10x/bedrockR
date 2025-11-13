@@ -35,9 +35,6 @@ import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RLoadingScreen;
 import fn10.bedrockr.windows.RWorkspace;
 
-/**
- * TODO: add javadoc to all of the functions
- */
 public class RFileOperations {
 
     private static final String USER_DIR = System.getProperty("user.home");
@@ -423,7 +420,7 @@ public class RFileOperations {
      */
     public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
             Boolean strict) {
-        Launcher.LOG.warning("This file should start with the file seperator, or not at all! not '/'!");
+        //Launcher.LOG.warning("This file should start with the file seperator, or not at all! not '/'!");
         try {
             String proposed = BASE_DIRECTORY + File.separator + "workspace" + File.separator + WorkspaceName
                     + (ToCreate.startsWith(File.separator) ? "" : File.separator) + ToCreate;

@@ -93,6 +93,10 @@ public class RItemSelector extends RDialog {
             return (other.Prefix + ":" + other.Id).equals(Prefix + ":" + Id);
         }
 
+        public boolean equals(Item other) {
+            return other.item.equals(Prefix + ":" + Id);
+        }
+
         public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace) {
             try {
                 return RItemSelector.getItemById(null, con.item, workspace);
