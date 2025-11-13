@@ -147,7 +147,7 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-        globalResVaribles.EnglishTexts.put("tile." + workspaceFile.Prefix + ":" + ID, Name);
+        globalResVaribles.EnglishTexts.put("tile." + workspaceFile.Prefix + ":" + ID + ".name", Name);
 
         globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
                 new BlockJSONEntry(Sound,
