@@ -26,7 +26,6 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
@@ -34,7 +33,7 @@ import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructib
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
-import fn10.bedrockr.windows.RItemSelector;
+import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
 
 public class RElementMapValue extends JPanel {
@@ -79,7 +78,7 @@ public class RElementMapValue extends JPanel {
             else
                 InputField = new JSpinner(new SpinnerNumberModel(0, -2147483648f, 2147483647f, 0.1));
         } else if (RME.Type == minecraftBlockPlacer.class) {
-            InputField = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName, Type.Single, true);
+            InputField = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName, Type.SingleBlock, true);
         }
         // set input field to whatever is nessesary
         else if (RME.Type == String.class) { // string
@@ -173,7 +172,7 @@ public class RElementMapValue extends JPanel {
                 if (val instanceof LinkedTreeMap) {
                     val = gson.fromJson(gson.toJsonTree(val), minecraftBlockPlacer.class);
                 }
-                ((RItemValue) InputField).setButtonToItem(0, RItemSelector.getItemById(Ancestor,
+                ((RItemValue) InputField).setButtonToItem(0, RBlockSelector.getBlockById(Ancestor,
                         ((minecraftBlockPlacer) val).block, RFileOperations.getCurrentWorkspace().WorkspaceName));
             } else if (rMapElement.Type == String.class) { // string
                 ((JTextField) InputField).setText(((String) val));

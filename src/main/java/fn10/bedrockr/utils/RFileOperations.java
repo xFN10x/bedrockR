@@ -30,6 +30,7 @@ import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RLoadingScreen;
 import fn10.bedrockr.windows.RWorkspace;
@@ -255,6 +256,7 @@ public class RFileOperations {
         var workspaceView = new RWorkspace(WPF);
         // get items ready for use
         RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
+        RBlockSelector.downloadVanillaBlocks(((WorkspaceFile) WPF.getSerilized()));
 
         SwingUtilities.invokeLater(() -> {
             if (doingThis != null)

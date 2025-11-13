@@ -36,6 +36,7 @@ import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
+import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.interfaces.ValidatableValue;
@@ -45,7 +46,9 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public static enum Type {
         CraftingTable,
         Single,
-        ListOfItems
+        ListOfItems,
+        SingleBlock,
+        ListOfBlocks,
     }
 
     protected static class ListElement extends JPanel {
@@ -55,8 +58,9 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
         private final static Dimension size = new Dimension(115, 75);
 
-        public ListElement(JComponent parent, String workspace) {
-            this.ItemVal = new RItemValue(workspace, Type.Single, true);
+        public ListElement(JComponent parent, String workspace, boolean blocks) {
+
+            this.ItemVal = new RItemValue(workspace, blocks ? Type.SingleBlock : Type.Single, true);
 
             setMinimumSize(size);
             setPreferredSize(size);
@@ -151,7 +155,8 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
         ListInnerScroll.removeAll();
         for (ReturnItemInfo ite : item) {
-            ListInnerScroll.add(new ListElement(ListInnerScroll, workspace).setItem(ite));
+            ListInnerScroll.add(new ListElement(ListInnerScroll, workspace,
+                    (currentType == Type.ListOfBlocks || currentType == Type.SingleBlock)).setItem(ite));
         }
         ListInnerScroll.revalidate();
         ListInnerScroll.repaint();
@@ -195,8 +200,9 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
-        if (item == null) return;
-        if (currentType == Type.ListOfItems)
+        if (item == null)
+            return;
+        if (currentType == Type.ListOfItems || currentType == Type.ListOfBlocks)
             throw new WrongItemValueTypeException("Can't set a single button from this item value!", Type.CraftingTable,
                     currentType);
         if (item.Texture != null) {
@@ -230,11 +236,15 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 if (itemString.isBlank() || itemString.isEmpty()) {
                     continue;
                 }
-                System.out.println("item string is '" + itemString + "'");
                 ReturnItemInfo item;
                 try {
-                    item = RItemSelector.getItemById(parent,
-                            value.key.get(itemString), workspace);
+                    if (currentType == Type.SingleBlock || currentType == Type.ListOfBlocks) {
+                        item = RBlockSelector.getBlockById(parent,
+                                value.key.get(itemString), workspace);
+                    } else {
+                        item = RItemSelector.getItemById(parent,
+                                value.key.get(itemString), workspace);
+                    }
                 } catch (IncorrectWorkspaceException | NameNotFoundException e) {
                     e.printStackTrace();
                     continue;
@@ -336,6 +346,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
         this.needsItems = needsToHaveItems;
         setLayout(Layout);
         switch (type) {
+            case Type.ListOfBlocks:
             case Type.ListOfItems:
                 setMinimumSize(new Dimension(200, 300));
                 setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY));
@@ -343,7 +354,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 ListInnerScroll.setLayout(ListInnerLayout);
 
                 ListAddButton.addActionListener(ac -> {
-                    ListInnerScroll.add(new ListElement(ListInnerScroll, WorkspaceName));
+                    ListInnerScroll.add(new ListElement(ListInnerScroll, WorkspaceName, (currentType == Type.ListOfBlocks || currentType == Type.SingleBlock)));
                     ListInnerScroll.revalidate();
                     ListInnerScroll.repaint();
                 });
@@ -361,9 +372,10 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 break;
             default:
             case Type.CraftingTable:
+            case Type.SingleBlock:
             case Type.Single:
 
-                if (type == Type.Single) {
+                if (type == Type.Single || type == Type.SingleBlock) {
                     setMinimumSize(SIZE_SINGLE);
                     setPreferredSize(SIZE_SINGLE);
                     setMaximumSize(SIZE_SINGLE);
@@ -375,14 +387,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     ButtonGrid.setLayout(ButtonLayout);
                 }
 
-                for (int i = 0; i < (type == Type.Single ? 1 : 9); i++) {
+                for (int i = 0; i < ((type == Type.Single || type == Type.SingleBlock) ? 1 : 9); i++) {
 
                     JButton building = new JButton("");
                     building.setBorderPainted(false);
                     building.setName("");
                     building.setBackground(new Color(28, 56, 17));
                     buttons.add(i, building);
-                    if (type == Type.Single) {
+                    if (type == Type.Single || type == Type.SingleBlock) {
                         ButtonGridSingleLayout.putConstraint(SpringLayout.WEST, building, 1,
                                 SpringLayout.WEST, ButtonGrid);
                         ButtonGridSingleLayout.putConstraint(SpringLayout.NORTH, building, 1,
@@ -448,7 +460,11 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     building.setMargin(new Insets(1, 1, 1, 1));
                     building.addActionListener(ac -> {
                         try {
-                            ReturnItemInfo itemInfo = RItemSelector.openSelector(null, WorkspaceName);
+                            ReturnItemInfo itemInfo;
+                            if (currentType == Type.SingleBlock || currentType == Type.ListOfBlocks)
+                                itemInfo = RBlockSelector.openSelector(null, WorkspaceName);
+                            else
+                                itemInfo = RItemSelector.openSelector(null, WorkspaceName);
                             if (itemInfo != null) {
                                 setButtonToItem(building, itemInfo);
                             }
@@ -481,6 +497,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
     @Override
     public boolean valid(boolean strict) {
         switch (currentType) {
+            case Type.ListOfBlocks:
             case Type.ListOfItems:
                 if (needsItems) {
                     try {
@@ -503,6 +520,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 break;
             default:
             case Type.Single:
+            case Type.SingleBlock:
             case Type.CraftingTable:
                 if (strict) {
                     if (needsItems) {
