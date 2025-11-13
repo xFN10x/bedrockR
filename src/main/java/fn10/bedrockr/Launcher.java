@@ -13,6 +13,11 @@ import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.laf.BedrockrDark;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
+import javafx.scene.web.WebEngine;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -31,6 +36,8 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 
 import javax.imageio.ImageIO;
@@ -44,6 +51,8 @@ public class Launcher {
     public static String VERSION = "a1.3.1";
     public static int CHECKVERSION = 5;
     public static Image ICON;
+
+    public static WebEngine BLOCKLY_MINI_WEBENGINE;
 
     public static List<Image> ICONS = new ArrayList<Image>();
 
@@ -165,6 +174,49 @@ public class Launcher {
             e.printStackTrace();
         }
 
+        try {
+            Platform.startup(() -> {
+            });
+        } catch (Exception e) {
+            // this throws if javafx is already started. idk how to check if it is
+        }
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            WebEngine webEngine = new WebEngine();
+            webEngine.load(Launcher.class.getResource("/blockly/blockly-minimized.html").toExternalForm());
+            webEngine.getLoadWorker().stateProperty().addListener(
+                    new ChangeListener<Worker.State>() {
+                        @Override
+                        public void changed(
+                                ObservableValue<? extends javafx.concurrent.Worker.State> observable,
+                                javafx.concurrent.Worker.State oldValue,
+                                javafx.concurrent.Worker.State newValue) {
+                            if (newValue == Worker.State.SUCCEEDED) {
+                                // when its loaded, add a referance to java
+                                webEngine
+                                        .executeScript(RFileOperations.readResourceAsString("/blockly/blockly.js"));
+                                BLOCKLY_MINI_WEBENGINE = webEngine;
+                                latch.countDown();
+                            } else if (newValue == Worker.State.FAILED) {
+                                Exception ex = new Exception("Blockly pane failed to load.");
+
+                                ex.printStackTrace();
+                                ErrorShower.showError(null, "Blockly Pane failed to load.", ex);
+
+                            } else {
+                                Launcher.LOG.info("Unknown state: " + newValue);
+                            }
+
+                        }
+                    });
+
+        });
+        try {
+            latch.await(10000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if (args.length >= 1) {
             File file;
             if ((file = Path.of(args[0]).toFile()).exists()) {
@@ -180,6 +232,7 @@ public class Launcher {
                 }
             }
         }
+
         // open app
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
