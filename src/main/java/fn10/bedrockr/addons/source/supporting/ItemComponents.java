@@ -30,7 +30,6 @@ public class ItemComponents implements RMapElementProvider {
 
         /*
          * TODO: add;
-         * https://wiki.bedrock.dev/items/item-components#block-placer
          * https://wiki.bedrock.dev/items/item-components#bundle-interaction
          * https://wiki.bedrock.dev/items/item-components#compostable
          * https://wiki.bedrock.dev/items/item-components#cooldown
