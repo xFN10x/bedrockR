@@ -2,7 +2,12 @@ package fn10.bedrockr.windows.componets;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SpringLayout;
+
+import org.codehaus.plexus.util.StringUtils;
 
 import fn10.bedrockr.addons.RMapElement;
 
@@ -12,11 +17,15 @@ public class RMapElementViewer extends RElement {
 
     public RMapElementViewer(Runnable selectedFunction, RMapElement element)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        super(null, selectedFunction, Color.green,false);
+        super(null, selectedFunction, Color.green, false);
 
         this.Element = element;
 
-        setPreferredSize(new Dimension(100, 50));
+        setPreferredSize(new Dimension(100, 80));
+        setMaximumSize(new Dimension(354, 35 + Desc.getFontMetrics(Desc.getFont()).getHeight()
+                * (StringUtils.countMatches(element.HelpDescription, "<br/>") + 1)));
+
+        Lay.putConstraint(SpringLayout.SOUTH, this, 0, SpringLayout.SOUTH, Desc);
 
         Name.setText(element.DisplayName);
         Desc.setText(element.HelpDescription);

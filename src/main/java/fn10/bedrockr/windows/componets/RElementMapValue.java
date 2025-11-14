@@ -79,6 +79,8 @@ public class RElementMapValue extends JPanel {
                 InputField = new JSpinner(new SpinnerNumberModel(0, -2147483648f, 2147483647f, 0.1));
         } else if (RME.Type == minecraftBlockPlacer.class) {
             InputField = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName, Type.SingleBlock, true);
+            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, InputField, 0, SpringLayout.VERTICAL_CENTER, this);
+            Lay.putConstraint(SpringLayout.EAST, InputField, -4, SpringLayout.EAST, this);
         }
         // set input field to whatever is nessesary
         else if (RME.Type == String.class) { // string
