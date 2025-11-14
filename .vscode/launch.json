@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RenderingTest",
+            "request": "launch",
+            "mainClass": "fn10.bedrockr.gl.RenderingTest",
+            "projectName": "bedrockR"
+        },
+        {
+            "type": "java",
             "name": "Launcher",
             "request": "launch",
             "mainClass": "fn10.bedrockr.Launcher",

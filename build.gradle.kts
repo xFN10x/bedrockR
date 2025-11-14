@@ -36,6 +36,11 @@ dependencies {
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+
+    //3d stuff
+    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-alpha2")
+    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-alpha2")
+    implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha2")
 }
 
 java {
