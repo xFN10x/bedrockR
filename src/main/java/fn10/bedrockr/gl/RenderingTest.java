@@ -4,15 +4,11 @@ import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.utils.RFileOperations;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.light.AmbientLight;
@@ -25,7 +21,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeCanvasContext;
-import com.jme3.system.SystemListener;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
