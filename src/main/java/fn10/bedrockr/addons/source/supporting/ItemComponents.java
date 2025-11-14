@@ -34,15 +34,18 @@ public class ItemComponents implements RMapElementProvider {
      * https://wiki.bedrock.dev/items/item-components#compostable
      * https://wiki.bedrock.dev/items/item-components#cooldown
      * https://wiki.bedrock.dev/items/item-components#damage-absorption
+     * 
      * (seperate element) https://wiki.bedrock.dev/items/item-components#digger &
      * https://wiki.bedrock.dev/items/item-components#durability &
      * https://wiki.bedrock.dev/items/item-components#durability-sensor
+     * 
      * https://wiki.bedrock.dev/items/item-components#dyeable
      * (seperate) https://wiki.bedrock.dev/items/item-components#enchantable
      * https://wiki.bedrock.dev/items/item-components#entity-placer
      * https://wiki.bedrock.dev/items/item-components#fire-resistant
      * (seperate) https://wiki.bedrock.dev/items/item-components#food &
      * https://wiki.bedrock.dev/items/custom-food
+     * 
      * https://wiki.bedrock.dev/items/item-components#fuel
      * https://wiki.bedrock.dev/items/item-components#repairable
      * (seperate) https://wiki.bedrock.dev/items/item-components#shooter
@@ -52,19 +55,19 @@ public class ItemComponents implements RMapElementProvider {
     public RMapElement[] getPickable() {
         return new RMapElement[] {
                 new RMapElement("Allow Off Hand", "minecraft:allow_off_hand", Boolean.class,
-                        "Determines if this item can go in the Off-Hand slot."),
+                        "Determines if this item can go in the\nOff-Hand slot."),
                 new RMapElement("Can Break Blocks in Creative", "minecraft:can_destroy_in_creative",
                         Boolean.class,
-                        "Determines if this item breaks blocks in creative, like a sword."),
+                        "Determines if this item breaks blocks\nin creative; like how a sword doesn't."),
                 new RMapElement("Weapon Damage", "minecraft:damage", Integer.class,
-                        "The damage this item does. It will say the amount of damage it does on the tooltip.",
+                        "The damage this item does. It will say\nthe amount of damage it does on the\ntooltip.",
                         MapValueFilter.NotNegitive),
                 new RMapElement("Enchanted Glint", "minecraft:glint", Boolean.class,
-                        "Specifies if the item looks like its enchanted"),
+                        "Specifies if the item looks like it's\nenchanted"),
                 new RMapElement("Tool Animations", "minecraft:hand_equipped", Boolean.class,
-                        "Determines if the item is held like a tool"),
+                        "Determines if the item is held like a\ntool"),
                 new RStringDropdownMapElement("Name Colour", "minecraft:hover_text_color",
-                        "Determines the color of the item name when hovering over it.", "black",
+                        "Determines the color of the item name\nwhen hovering over it.", "black",
                         "dark_blue", "dark_green", "dark_aqua", "dark_red",
                         "dark_purple", "gold", "gray", "dark_gray", "blue", "green", "aqua",
                         "red",
@@ -75,17 +78,17 @@ public class ItemComponents implements RMapElementProvider {
                         "material_lapis",
                         "material_amethyst", "material_resin"),
                 new RMapElement("Interact Text", "minecraft:interact_button", String.class,
-                        "The text that is shown when holding the item with controller tips on. \nDefault: \"Use Item\""),
+                        "The text that is shown when holding\nthe item with controller tips on.\n\nDefault: \"Use Item\""),
                 new RMapElement("Max Stack Size", "minecraft:max_stack_size", Integer.class,
-                        "How many of this item can be held in an inventory slot",
+                        "How many of this item can be held in\nan inventory slot",
                         MapValueFilter.NotNegitive),
                 new RMapElement("Item Despawning", "minecraft:should_despawn", Boolean.class,
-                        "Determines if this item despawns on the ground after 5 minutes."),
+                        "Determines if this item despawns on\nthe ground after 5 minutes."),
                 new RStringDropdownMapElement("Rarity", "minecraft:rarity",
-                        "Basicly \"Name Colour\", but the colour changes if its enchanted ((un)common -> rare, rare -> epic)\n\nThis is overwritten if Name Colour is specified.",
+                        "Basicly \"Name Colour\", but the colour\nchanges if its enchanted\n<b>(uncommon/common -> rare,\nrare -> epic)</b>\n\nThis is overwritten if Name Colour is\nspecified.",
                         "common", "uncommon", "rare", "epic"),
                 new RMapElement("Block Placer", "minecraft:block_placer", minecraftBlockPlacer.class,
-                        "Specifes if this item places a block when used on another. Like a bucket; but its infinite use."),
+                        "Specifes if this item places a block\nwhen used on another. Like a bucket;\nbut its infinite use."),
         };
     }
 }
