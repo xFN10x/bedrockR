@@ -2,7 +2,6 @@ package fn10.bedrockr.windows.componets;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SpringLayout;
