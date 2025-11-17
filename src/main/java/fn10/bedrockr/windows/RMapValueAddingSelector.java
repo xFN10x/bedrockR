@@ -71,7 +71,7 @@ public class RMapValueAddingSelector extends RDialog {
 
                 if (continu)
                     continue;
-                var toAdd = new RMapElementViewer(() -> unselectAll(), rMapElement);
+                RMapElementViewer toAdd = new RMapElementViewer(() -> unselectAll(), rMapElement);
                 toAdd.setAlignmentX(.5f);
                 toAdd.setName("RMEV");
                 InnerPanel.add(toAdd);

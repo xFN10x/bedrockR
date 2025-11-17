@@ -72,7 +72,7 @@ public class Launcher {
         }
 
         RSplashScreen loading = new RSplashScreen();
-
+        loading.ProgressText.setText("Loading icon...");
         try {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui/Icon_huge.png"));
@@ -98,6 +98,7 @@ public class Launcher {
         }
 
         // set up logging
+        loading.ProgressText.setText("Setting up logging...");
         String logloc = RFileOperations.getBaseDirectory(null, File.separator + "logs").getAbsolutePath()
                 + File.separator + "bedrockR-log-"
                 + System.currentTimeMillis() + ".log";
@@ -137,6 +138,7 @@ public class Launcher {
 
         // setup theme
 
+        loading.ProgressText.setText("Setting up theme...");
         FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
 
         try {
@@ -150,6 +152,7 @@ public class Launcher {
         }
 
         // try to see if this version is out of date
+        loading.ProgressText.setText("Checking for updates...");
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpRequest req = HttpRequest.newBuilder()
@@ -174,6 +177,7 @@ public class Launcher {
             e.printStackTrace();
         }
 
+        loading.ProgressText.setText("Setting up Blockly...");
         try {
             Platform.startup(() -> {
             });
@@ -217,6 +221,7 @@ public class Launcher {
             e.printStackTrace();
         }
 
+        loading.ProgressText.setText("Checking if opening workspace...");
         if (args.length >= 1) {
             File file;
             if ((file = Path.of(args[0]).toFile()).exists()) {
@@ -234,6 +239,7 @@ public class Launcher {
         }
 
         // open app
+        loading.ProgressText.setText("Launching...");
         SwingUtilities.invokeLater(() -> {
             var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
             launch.setVisible(true);

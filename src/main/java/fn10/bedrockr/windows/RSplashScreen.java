@@ -1,6 +1,8 @@
 package fn10.bedrockr.windows;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.time.LocalTime;
 
 import javax.swing.ImageIcon;
@@ -10,10 +12,12 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.utils.RFonts;
 
 public class RSplashScreen extends JWindow {
 
     private final JLabel image = new JLabel();
+    public final JLabel ProgressText = new JLabel("Loading...");
     // private final JProgressBar prog = new JProgressBar(JProgressBar.VERTICAL);
 
     private final SpringLayout lay = new SpringLayout();
@@ -21,8 +25,6 @@ public class RSplashScreen extends JWindow {
     public RSplashScreen() {
 
         setAlwaysOnTop(true);
-        //setUndecorated(true);
-        //setIconImage(Launcher.ICON);
 
         LocalTime now = LocalTime.now();
         LocalTime sunset = LocalTime.of(7, 0);
@@ -39,12 +41,19 @@ public class RSplashScreen extends JWindow {
 
             image.setIcon(new ImageIcon(getClass().getResource("/splash.png")));
         }
-        
+
+        lay.putConstraint(SpringLayout.WEST, ProgressText, 18, SpringLayout.WEST, getContentPane());
+        lay.putConstraint(SpringLayout.NORTH, ProgressText, 135, SpringLayout.NORTH, getContentPane());
+
+        ProgressText.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 16f));
+        ProgressText.setForeground(Color.white);
+
         setLayout(lay);
 
         setSize(new Dimension(800, 500));
         setLocation(ImageUtilites.getScreenCenter(this));
 
+        add(ProgressText);
         add(image);
 
         SwingUtilities.invokeLater(() -> {
