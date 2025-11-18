@@ -121,7 +121,7 @@ public class RenderingTest extends SimpleApplication {
         DirectionalLight light = new DirectionalLight(new Vector3f(-0.4f, -1.0f, -0.3f));
 
         rootNode.addLight(light);
-        rootNode.addLight(new AmbientLight(new ColorRGBA(0.35f, 0.35f, 0.35f, 1)));
+        rootNode.addLight(new AmbientLight(new ColorRGBA(0.5f, 0.5f, 0.5f, 1)));
 
     }
 
