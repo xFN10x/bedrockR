@@ -1,7 +1,6 @@
 package fn10.bedrockr.gl;
 
 import jakarta.annotation.Nullable;
-import jme3tools.converters.ImageToAwt;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -10,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.file.Path;
 
 import com.jme3.app.SimpleApplication;
@@ -24,32 +22,32 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
-import com.jme3.system.JmeContext;
+import com.jme3.system.JmeContext.Type;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture.MagFilter;
-import com.jme3.texture.image.ColorSpace;
+import com.jme3.texture.plugins.AWTLoader;
 
 public class RenderHandler extends SimpleApplication {
 
     public static RenderHandler CurrentHandler;
 
     private FrameBuffer buffer;
-    private int size = 16;
+    private int size = 64;
     private Texture2D renderTarget = new Texture2D(size, size, Format.ARGB8);
     private Spatial model;
     private String sspath = RFileOperations.getBaseDirectory(null, "cache", "testRenders").getAbsolutePath();
     private ScreenshotAppState screenShotState = new ScreenshotAppState(
             sspath + File.separator);
+    private boolean started = false;
 
-    protected RenderHandler() {
+    public void run() {
         setDisplayStatView(false);
         setDisplayFps(false);
         setShowSettings(false);
-        screenShotState.setIsNumbered(false);
-        start(JmeContext.Type.Canvas);
+        start(Type.OffscreenSurface);
     }
 
     protected static Texture make6Sided(Image top, Image down, Image east, Image west, Image north, Image south) {
@@ -63,9 +61,7 @@ public class RenderHandler extends SimpleApplication {
         g.drawImage(ImageUtilites.ResizeImage(east, sideSize), 0, 16, null); // east
         g.drawImage(ImageUtilites.ResizeImage(west, sideSize), 32, 16, null); // west
 
-        ByteBuffer data = ByteBuffer.allocate(20000);
-        ImageToAwt.convert(img, Format.RGB8, data);
-        com.jme3.texture.Image JMEimg = new com.jme3.texture.Image(Format.RGB8, 64, 64, data, ColorSpace.Linear);
+        com.jme3.texture.Image JMEimg = new AWTLoader().load(img, true);
         Texture2D tex = new Texture2D(JMEimg);
         tex.setMagFilter(MagFilter.Nearest);
         return tex;
@@ -85,25 +81,29 @@ public class RenderHandler extends SimpleApplication {
         return CurrentHandler.renderToFile(fullBlockId.replaceAll(":", "."));
     }
 
-    public static RenderHandler Startup() {
+    public static RenderHandler startup() {
         RenderHandler making = new RenderHandler();
-
+        making.run();
         CurrentHandler = making;
         return making;
     }
 
-    protected Path renderToFile(String name) {
+    private Path renderToFile(String name) {
+        if (!started)
+            return null;
         screenShotState.setFileName(name);
         screenShotState.takeScreenshot();
         return Path.of(sspath, name + ".png");
     }
 
     public void changeModel(@Nullable Spatial model, Texture tex) {
+        if (!started)
+            return;
+
         rootNode.detachAllChildren();
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
         mat.setFloat("AlphaDiscardThreshold", 0.1f);
-        tex.setMagFilter(MagFilter.Nearest);
         mat.setTexture("DiffuseMap", tex);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
 
@@ -150,6 +150,9 @@ public class RenderHandler extends SimpleApplication {
         rootNode.addLight(light);
         rootNode.addLight(new AmbientLight(new ColorRGBA(0.5f, 0.5f, 0.5f, 1)));
 
+        screenShotState.setIsNumbered(false);
+        stateManager.attach(screenShotState);
+        
+        started = true;
     }
-
 }

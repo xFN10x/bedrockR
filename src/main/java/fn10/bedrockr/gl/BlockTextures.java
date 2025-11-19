@@ -1,5 +1,6 @@
 package fn10.bedrockr.gl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -43,15 +45,22 @@ public class BlockTextures {
     }
 
     public static void main(String[] args) {
-        RenderHandler.Startup();
+        RenderHandler.startup();
         RFrame test = new RFrame(JFrame.EXIT_ON_CLOSE, "Test", new Dimension(300, 300), false);
-        try {
-            String imgpath = RenderHandler.renderBlock("minecraft.stone", downloadTexture("azalea_leaves_flowers")).toString();
-            test.add(new JLabel(new ImageIcon(imgpath)));
-            System.out.println(imgpath);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        JButton button = new JButton("load");
+
+        button.addActionListener(ac -> {
+            try {
+                String imgpath = RenderHandler
+                        .renderBlock("minecraft.stone", ImageIO.read(new File("C:\\Users\\mathd\\Pictures\\pfp.png")))
+                        .toString();
+                test.add(new JLabel(new ImageIcon(imgpath)));
+                System.out.println(imgpath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        test.add(button);
         test.setVisible(true);
     }
 
@@ -70,7 +79,9 @@ public class BlockTextures {
                 .uri(loc)
                 .version(HttpClient.Version.HTTP_2).GET().build();
         HttpResponse<InputStream> response = client.send(dataPathsReq, BodyHandlers.ofInputStream());
-
+        System.out.println(
+                "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/textures/blocks/"
+                        + id + ".png");
         return ImageIO.read(response.body());
     }
 
