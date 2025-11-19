@@ -1,4 +1,4 @@
-package fn10.bedrockr.gl;
+package fn10.bedrockr.rendering;
 
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.utils.RFileOperations;
