@@ -1,4 +1,4 @@
-package fn10.bedrockr.gl;
+package fn10.bedrockr.rendering;
 
 import jakarta.annotation.Nullable;
 import fn10.bedrockr.utils.ImageUtilites;
@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.concurrent.Future;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
@@ -22,6 +23,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
+import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext.Type;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Texture;
@@ -35,7 +37,7 @@ public class RenderHandler extends SimpleApplication {
     public static RenderHandler CurrentHandler;
 
     private FrameBuffer buffer;
-    private int size = 64;
+    private int size = 150;
     private Texture2D renderTarget = new Texture2D(size, size, Format.ARGB8);
     private Spatial model;
     private String sspath = RFileOperations.getBaseDirectory(null, "cache", "testRenders").getAbsolutePath();
@@ -44,6 +46,9 @@ public class RenderHandler extends SimpleApplication {
     private boolean started = false;
 
     public void run() {
+        AppSettings settings = new AppSettings(true);
+        settings.setResolution(150, 150);
+        setSettings(settings);
         setDisplayStatView(false);
         setDisplayFps(false);
         setShowSettings(false);
@@ -67,18 +72,21 @@ public class RenderHandler extends SimpleApplication {
         return tex;
     }
 
-    public static Path renderBlock(String fullBlockId, Image texture) {
+    public Future<Path> renderBlock(String fullBlockId, Image texture) {
         return renderBlock(fullBlockId, texture, texture, texture, texture, texture, texture);
     }
 
-    public static Path renderBlock(String fullBlockId, Image top, Image side, Image down) {
+    public Future<Path> renderBlock(String fullBlockId, Image top, Image side, Image down) {
         return renderBlock(fullBlockId, top, down, side, side, side, side);
     }
 
-    public static Path renderBlock(String fullBlockId, Image top, Image down, Image east, Image west, Image north,
+    public Future<Path> renderBlock(String fullBlockId, Image top, Image down, Image east, Image west, Image north,
             Image south) {
-        CurrentHandler.changeModel(null, make6Sided(top, down, east, west, north, south));
-        return CurrentHandler.renderToFile(fullBlockId.replaceAll(":", "."));
+        return enqueue(() -> {
+            CurrentHandler.changeModel(null, make6Sided(top, down, east, west, north, south));
+            CurrentHandler.renderToFile(fullBlockId.replaceAll(":", "."));
+            return null;
+        });
     }
 
     public static RenderHandler startup() {
@@ -91,8 +99,10 @@ public class RenderHandler extends SimpleApplication {
     private Path renderToFile(String name) {
         if (!started)
             return null;
+
         screenShotState.setFileName(name);
         screenShotState.takeScreenshot();
+
         return Path.of(sspath, name + ".png");
     }
 
@@ -113,14 +123,15 @@ public class RenderHandler extends SimpleApplication {
         model.setMaterial(mat);
         model.rotate(new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f));
         rootNode.attachChild(model);
-        model.scale(0.3f);
-        model.move(0, -0.25f, 0);
+        model.scale(0.5f);
+        model.center();
     }
 
     @Override
     public void simpleInitApp() {
         model = assetManager.loadModel("models/StandardBlock.obj");
         flyCam.setEnabled(false);
+        System.out.println(cam.getAspect());
 
         buffer = new FrameBuffer(size, size, 1);
 
@@ -142,7 +153,7 @@ public class RenderHandler extends SimpleApplication {
         model.setMaterial(mat);
         model.rotate(new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f));
         rootNode.attachChild(model);
-        model.scale(0.3f);
+        model.scale(0.5f);
         model.center();
         cam.setParallelProjection(true);
         DirectionalLight light = new DirectionalLight(new Vector3f(-0.4f, -1.0f, -0.3f));
@@ -152,7 +163,7 @@ public class RenderHandler extends SimpleApplication {
 
         screenShotState.setIsNumbered(false);
         stateManager.attach(screenShotState);
-        
+
         started = true;
     }
 }
