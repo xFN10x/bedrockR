@@ -1,6 +1,5 @@
 package fn10.bedrockr.rendering;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -8,26 +7,27 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RBlockSelector;
+import fn10.bedrockr.windows.*;
 import fn10.bedrockr.windows.RBlockSelector.BlockJsonEntry;
-import fn10.bedrockr.windows.RItemSelector;
-import fn10.bedrockr.windows.RItemSelector.ItemJsonEntry;
 import fn10.bedrockr.windows.base.RFrame;
 
 public class BlockTextures {
@@ -70,13 +70,32 @@ public class BlockTextures {
         JButton button = new JButton("load");
 
         button.addActionListener(ac -> {
-            RBlockSelector.downloadVanillaBlocks(RFileOperations.getWorkspaceFile(button, "bedrockR - Testing"));
-            for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaItems) {
-                renderBlock(vanillaItems.name);
-            }
+            downloadAllBlockTextures(test, "bedrockR - Testing");
         });
         test.add(button);
         test.setVisible(true);
+    }
+
+    public static void downloadAllBlockTextures(Window doingThis, String workspace) {
+        if (RBlockSelector.vanillaItems == null)
+            RBlockSelector.downloadVanillaBlocks(RFileOperations.getWorkspaceFile(doingThis, workspace));
+        RLoadingScreen loading = new RLoadingScreen(doingThis);
+        SwingUtilities.invokeLater(() -> {
+            loading.setVisible(true);
+        });
+        SwingUtilities.invokeLater(() -> {
+            loading.Steps = RBlockSelector.vanillaItems.length;
+            new Thread(() -> {
+                for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaItems) {
+                    try {
+                        loading.increaseProgressBySteps("");
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    renderBlock(vanillaItems.name);
+                }
+            }).start();
+        });
     }
 
     /**
@@ -87,6 +106,9 @@ public class BlockTextures {
      * @throws IOException
      */
     public static Image downloadTexture(String id) throws IOException, InterruptedException {
+        if (!id.startsWith("textures/blocks")) {
+            id = "textures/blocks/" + id;
+        }
         URI loc = URI.create(
                 "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/"
                         + id + ".png");
@@ -111,17 +133,48 @@ public class BlockTextures {
         }
 
         try {
+            if (!blocksJson.containsKey(blockId))
+                return;
             Object textures = blocksJson.get(blockId).get("textures");
+            if (textures == null) {
+                return;
+            }
             if (textures instanceof String) {
-                System.out.println("texture name: " + textures);
+                // System.out.println("texture name: " + textures);
                 Object texId = terrianTextureJson.get("texture_data").get(textures).get("textures");
-                System.out.println("texture file name: " + texId.toString());
+                // System.out.println("texture file name: " + texId.toString());
                 if (texId instanceof String) {
                     try {
                         RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texId.toString()));
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
+                }
+            } else {
+                if (((LinkedTreeMap<String, String>) textures).containsKey("side")) {
+                    Object texIdTop = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("up")).get("textures");
+                    System.out.println(texIdTop.getClass().getSimpleName());
+                    if (List.class.isAssignableFrom(texIdTop.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdTop);
+                        texIdTop = list.get(0);
+                    }
+                    Object texIdSide = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("side")).get("textures");
+                    if (List.class.isAssignableFrom(texIdSide.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdSide);
+                        texIdSide = list.get(0);
+                    }
+                    Object texIdDown = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("down")).get("textures");
+                    if (List.class.isAssignableFrom(texIdDown.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdDown);
+                        texIdDown = list.get(0);
+                    }
+
+                    RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
+                            downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
+
                 }
             }
         } catch (Exception e) {
