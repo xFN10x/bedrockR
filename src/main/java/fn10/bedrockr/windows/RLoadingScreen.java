@@ -7,6 +7,8 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import com.formdev.flatlaf.ui.FlatProgressBarUI;
+
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFonts;
@@ -19,6 +21,7 @@ public class RLoadingScreen extends RDialog {
 
     protected JProgressBar MainBar = new JProgressBar();
     protected JLabel MainText = new JLabel("Loading...");;
+    protected double actualProgress = 0;
 
     public Integer Steps = null;
 
@@ -32,11 +35,12 @@ public class RLoadingScreen extends RDialog {
         }
     }
 
-    public void increaseProgress(int increase, @Nullable String TextChange) {
+    public void increaseProgress(double increase, @Nullable String TextChange) {
         MainBar.setIndeterminate(false);
         changeText(TextChange);
         SwingUtilities.invokeLater(() -> {
-            MainBar.setValue(MainBar.getValue() + increase);
+            actualProgress += increase;
+            MainBar.setValue((int)actualProgress);
         });
     }
 
@@ -56,7 +60,9 @@ public class RLoadingScreen extends RDialog {
         changeText(TextChange);
 
         SwingUtilities.invokeLater(() -> {
-            MainBar.setValue(MainBar.getValue() + 100 / Steps);
+            actualProgress += (100 / (double)Steps);
+            System.out.println(actualProgress);
+            MainBar.setValue((int)actualProgress);
         });
     }
 

@@ -8,6 +8,13 @@
             "type": "java",
             "name": "BlockTextures",
             "request": "launch",
+            "mainClass": "fn10.bedrockr.rendering.BlockTextures",
+            "projectName": "bedrockR"
+        },
+        {
+            "type": "java",
+            "name": "BlockTextures",
+            "request": "launch",
             "mainClass": "fn10.bedrockr.gl.BlockTextures",
             "projectName": "bedrockR"
         },
