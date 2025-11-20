@@ -39,7 +39,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
     public static final int ITEM_TEXTURE = 0;
     public static final int BLOCK_TEXTURE = 1;
 
-    public File getResourceFile(Window doingThis, String workspaceName, String file, int resourceType)
+    public File getFileOfResource(Window doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
                 RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()

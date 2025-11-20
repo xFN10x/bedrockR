@@ -356,7 +356,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     ToAdd.Desc.setText(entry.getValue());
                     ToAdd.CanBeSelected = false;
 
-                    File file = resFile.Serilized.getResourceFile(this, SWPF.workspaceName(), entry.getKey(),
+                    File file = resFile.Serilized.getFileOfResource(this, SWPF.workspaceName(), entry.getKey(),
                             resFile.Serilized.ResourceTypes.get(entry.getKey()));
                     ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
 

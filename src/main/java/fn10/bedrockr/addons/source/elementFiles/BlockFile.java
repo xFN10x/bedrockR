@@ -191,7 +191,7 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     public Image getTexture(String workspace) {
         try {
             ResourceFile resFile = RFileOperations.getResources(null, workspace).Serilized;
-            BufferedImage img = ImageIO.read(resFile.getResourceFile(null, workspace, MapUtilities
+            BufferedImage img = ImageIO.read(resFile.getFileOfResource(null, workspace, MapUtilities
                     .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.BLOCK_TEXTURE));
             return img;
         } catch (IllegalAccessError | IOException e) {

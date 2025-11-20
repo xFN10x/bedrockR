@@ -1,12 +1,15 @@
 package fn10.bedrockr.rendering;
 
 import jakarta.annotation.Nullable;
+import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.windows.base.RDialog;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
@@ -36,11 +39,14 @@ public class RenderHandler extends SimpleApplication {
 
     public static RenderHandler CurrentHandler;
 
+    public static final Quaternion DOWN_ISO = new Quaternion(0.0990458f, -0.8923991f, 0.2391176f, -0.3696438f);
+    public static final Quaternion NORMAL_ISO = new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f);
+
     private FrameBuffer buffer;
     private int size = 150;
     private Texture2D renderTarget = new Texture2D(size, size, Format.ARGB8);
     private Spatial model;
-    private String sspath = RFileOperations.getBaseDirectory(null, "cache", "testRenders").getAbsolutePath();
+    private String sspath = RFileOperations.getBaseDirectory(null, "cache", "testRdeners").getAbsolutePath();
     private ScreenshotAppState screenShotState = new ScreenshotAppState(
             sspath + File.separator);
     private boolean started = false;
@@ -106,6 +112,17 @@ public class RenderHandler extends SimpleApplication {
         return Path.of(sspath, name + ".png");
     }
 
+public void showPreviewWindow(Window parent) {
+    RDialog dia = new RDialog(parent, RDialog.DISPOSE_ON_CLOSE, "Block PreviewS", new Dimension(500, 700), true);
+
+    dia.setVisible(true);
+}
+
+    public void changeDownModel(@Nullable Spatial model, Texture tex) {
+        changeModel(model, tex);
+        model.rotate(DOWN_ISO);
+    }
+
     public void changeModel(@Nullable Spatial model, Texture tex) {
         if (!started)
             return;
@@ -121,7 +138,7 @@ public class RenderHandler extends SimpleApplication {
             model = assetManager.loadModel("models/StandardBlock.obj");
 
         model.setMaterial(mat);
-        model.rotate(new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f));
+        model.rotate(NORMAL_ISO);
         rootNode.attachChild(model);
         model.scale(0.5f);
         model.center();
@@ -151,7 +168,7 @@ public class RenderHandler extends SimpleApplication {
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
 
         model.setMaterial(mat);
-        model.rotate(new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f));
+        model.rotate(NORMAL_ISO);
         rootNode.attachChild(model);
         model.scale(0.5f);
         model.center();

@@ -45,27 +45,16 @@ public class RenderingTest extends SimpleApplication {
         setDisplayStatView(false);
         setDisplayFps(false);
         setShowSettings(false);
-        createCanvas();
-        startCanvas();
-        stateManager.attach(screenShotState);
-        screenShotState.setFilePath(
-                RFileOperations.getBaseDirectory(null, "cache", "testRenders").getAbsolutePath() + File.separator);
-        ctx = (JmeCanvasContext) getContext();
-        ctx.getCanvas().setPreferredSize(new Dimension(64, 64));
-
-        RFrame previewWIn = new RFrame(JFrame.EXIT_ON_CLOSE, "test", new Dimension(500, 500), false, false);
-        previewWIn.add(ctx.getCanvas());
-        previewWIn.add(testButton);
-        previewWIn.Lay.putConstraint(SpringLayout.SOUTH, testButton, -5, SpringLayout.SOUTH,
-                previewWIn.getContentPane());
-        previewWIn.Lay.putConstraint(SpringLayout.WEST, testButton, 5, SpringLayout.WEST, previewWIn.getContentPane());
-        previewWIn.Lay.putConstraint(SpringLayout.EAST, testButton, -5, SpringLayout.EAST, previewWIn.getContentPane());
-        testButton.addActionListener(ac -> {
-            changeModel(assetManager.loadModel("models/StandardBlock.obj"));
-            renderToFile("minecraft.Grass");
-        });
-        previewWIn.setVisible(true);
+        start();
         renderToFile("minecraft.Stone");
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            changeModel(assetManager.loadModel("models/StandardBlock.obj"));
+        }).start();
     }
 
     public void renderToFile(String name) {
@@ -77,14 +66,14 @@ public class RenderingTest extends SimpleApplication {
         rootNode.detachAllChildren();
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        Texture tex = assetManager.loadTexture("models/skeleton_king.png");
+        Texture tex = assetManager.loadTexture("models/default.png");
         mat.setFloat("AlphaDiscardThreshold", 0.1f);
         tex.setMagFilter(MagFilter.Nearest);
         mat.setTexture("DiffuseMap", tex);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
 
         model.setMaterial(mat);
-        model.rotate(new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f));
+        model.rotate(new Quaternion(0.0990458f, -0.8923991f, 0.2391176f, -0.3696438f));
         rootNode.attachChild(model);
         model.scale(0.3f);
         model.move(0, -0.25f, 0);
@@ -92,7 +81,7 @@ public class RenderingTest extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        model = assetManager.loadModel("models/TestProj.obj");
+        model = assetManager.loadModel("models/StandardBlock.obj");
         flyCam.setEnabled(false);
 
         buffer = new FrameBuffer(size, size, 1);
@@ -106,14 +95,14 @@ public class RenderingTest extends SimpleApplication {
 
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        Texture tex = assetManager.loadTexture("models/skeleton_king.png");
+        Texture tex = assetManager.loadTexture("models/default.png");
         mat.setFloat("AlphaDiscardThreshold", 0.1f);
         tex.setMagFilter(MagFilter.Nearest);
         mat.setTexture("DiffuseMap", tex);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
 
         model.setMaterial(mat);
-        model.rotate(new Quaternion(0.0990458f, -0.8923991f, -0.2391176f, 0.3696438f));
+        model.rotate(new Quaternion(0.09904568838473506f, 0.89239911809345f, 0.239117558506f, 0.369643827011f));
         rootNode.attachChild(model);
         model.scale(0.3f);
         model.center();
