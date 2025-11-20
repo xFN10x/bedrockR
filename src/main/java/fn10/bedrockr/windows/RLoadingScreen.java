@@ -24,7 +24,6 @@ public class RLoadingScreen extends RDialog {
 
     public void changeText(String text) {
         try {
-            Launcher.LOG.info(text);
             SwingUtilities.invokeLater(() -> {
                 MainText.setText(text);
             });
@@ -49,7 +48,7 @@ public class RLoadingScreen extends RDialog {
     public void increaseProgressBySteps(@Nullable String TextChange) throws IllegalAccessException {
         if (Steps == null)
             throw new IllegalArgumentException("Total steps not set yet.");
-        if (!MainBar.isIndeterminate())
+        if (MainBar.isIndeterminate())
             SwingUtilities.invokeLater(() -> {
                 MainBar.setIndeterminate(false);
             });
@@ -61,7 +60,7 @@ public class RLoadingScreen extends RDialog {
         });
     }
 
-    public RLoadingScreen(Frame Parent) {
+    public RLoadingScreen(Window Parent) {
         super(Parent, DO_NOTHING_ON_CLOSE, "Loading", new Dimension(600, 150));
 
         // setUndecorated(true);
@@ -90,16 +89,19 @@ public class RLoadingScreen extends RDialog {
         MainText.setForeground(Color.WHITE);
 
         // bg
-        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, BG, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, BG, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, BG, 0, SpringLayout.HORIZONTAL_CENTER, getContentPane());
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, BG, 0, SpringLayout.VERTICAL_CENTER, getContentPane());
         // branding
         Lay.putConstraint(SpringLayout.WEST, Branding, 10, SpringLayout.WEST, this);
         Lay.putConstraint(SpringLayout.NORTH, Branding, 10, SpringLayout.NORTH, this);
         // progress bar
-        Lay.putConstraint(SpringLayout.SOUTH, MainBar, -30, SpringLayout.SOUTH, this);
+        Lay.putConstraint(SpringLayout.WEST, MainBar, 0, SpringLayout.WEST, getContentPane());
+        Lay.putConstraint(SpringLayout.EAST, MainBar, 0, SpringLayout.EAST, getContentPane());
+        Lay.putConstraint(SpringLayout.SOUTH, MainBar, 0, SpringLayout.SOUTH, getContentPane());
+        Lay.putConstraint(SpringLayout.NORTH, MainBar, -10, SpringLayout.SOUTH, getContentPane());
         // progress text
         Lay.putConstraint(SpringLayout.SOUTH, MainText, 5, SpringLayout.NORTH, MainBar);
-        Lay.putConstraint(SpringLayout.WEST, MainText, 10, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.WEST, MainText, 10, SpringLayout.WEST, getContentPane());
 
         add(Branding);
         add(MainText);
