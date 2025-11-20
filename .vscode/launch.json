@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RenderingTest",
+            "request": "launch",
+            "mainClass": "fn10.bedrockr.rendering.RenderingTest",
+            "projectName": "bedrockR"
+        },
+        {
+            "type": "java",
             "name": "BlockTextures",
             "request": "launch",
             "mainClass": "fn10.bedrockr.rendering.BlockTextures",

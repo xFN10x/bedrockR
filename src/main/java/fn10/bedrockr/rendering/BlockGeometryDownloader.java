@@ -7,12 +7,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import org.apache.tools.ant.types.resources.Last;
-
 import com.google.gson.Gson;
 
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.rendering.BlockGeometryDownloader.VersionManifest.VersionEntry;
 
 /**
  * Downloads the lastest minecraft java jar, and gets the block models, then

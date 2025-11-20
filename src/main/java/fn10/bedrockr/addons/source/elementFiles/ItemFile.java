@@ -155,7 +155,7 @@ public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement
     public Image getTexture(String workspace) {
         try {
             ResourceFile resFile = RFileOperations.getResources(null, workspace).Serilized;
-            BufferedImage img = ImageIO.read(resFile.getResourceFile(null, workspace, MapUtilities
+            BufferedImage img = ImageIO.read(resFile.getFileOfResource(null, workspace, MapUtilities
                     .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.ITEM_TEXTURE));
             return img;
         } catch (IllegalAccessError | IOException e) {

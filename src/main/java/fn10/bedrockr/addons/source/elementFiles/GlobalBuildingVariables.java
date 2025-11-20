@@ -63,7 +63,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
             ItemTexturesFile.texture_data.put(plannedkey, new TextureData(textureName));
-        ItemTextures.add(Resource.getResourceFile(null, WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
+        ItemTextures.add(Resource.getFileOfResource(null, WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
         return plannedkey;
     }
 
@@ -82,7 +82,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         if (BlockTexturesFile.texture_data.containsKey(plannedkey))
             BlockTexturesFile.texture_data.put(plannedkey, new BlockTexture.TextureData(textureName));
-        BlockTextures.add(Resource.getResourceFile(null, WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
+        BlockTextures.add(Resource.getFileOfResource(null, WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
         return plannedkey;
     }
 

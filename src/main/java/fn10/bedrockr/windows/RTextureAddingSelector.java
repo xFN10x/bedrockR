@@ -80,7 +80,7 @@ public class RTextureAddingSelector extends RDialog {
                     JButton ToAdd = new JButton();
                     Dimension size = new Dimension(48, 48);
                     ImageIcon normalIcon = new ImageIcon(res
-                            .getResourceFile(parent, Workspace, entry.getKey(), entry.getValue()).getPath());
+                            .getFileOfResource(parent, Workspace, entry.getKey(), entry.getValue()).getPath());
                     ImageIcon resizedIcon = new ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
                             (int) size.getHeight(), Image.SCALE_AREA_AVERAGING));
                     ToAdd.setMinimumSize(size);

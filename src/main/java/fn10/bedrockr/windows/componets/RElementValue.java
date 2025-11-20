@@ -533,7 +533,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             IDItem.setText(id);
                             try {
                                 IconItem.setIcon(ImageUtilites.ResizeIcon(
-                                        new ImageIcon(Files.readAllBytes(res.Serilized.getResourceFile(parentFrame,
+                                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(parentFrame,
                                                 WorkspaceName, NameItem.getText(), ResourceFile.ITEM_TEXTURE)
                                                 .toPath())),
                                         64, 64));
@@ -660,7 +660,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             IDBlock.setText(id);
                             try {
                                 IconBlock.setIcon(ImageUtilites.ResizeIcon(
-                                        new ImageIcon(Files.readAllBytes(res.Serilized.getResourceFile(parentFrame,
+                                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(parentFrame,
                                                 WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE)
                                                 .toPath())),
                                         64, 64));
@@ -855,7 +855,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             IDBlock.setText(id);
             try {
                 IconBlock.setIcon(ImageUtilites.ResizeIcon(
-                        new ImageIcon(Files.readAllBytes(res.Serilized.getResourceFile(parentFrame,
+                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(parentFrame,
                                 WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
@@ -868,7 +868,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             IDItem.setText(id);
             try {
                 IconItem.setIcon(ImageUtilites.ResizeIcon(
-                        new ImageIcon(Files.readAllBytes(res.Serilized.getResourceFile(parentFrame,
+                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(parentFrame,
                                 WorkspaceName, NameItem.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
