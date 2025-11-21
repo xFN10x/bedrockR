@@ -70,6 +70,8 @@ public class RAnnotation {
     public @interface StringDropdownField {
 
         String[] value();
+
+        boolean strict() default false;
     }
 
 }

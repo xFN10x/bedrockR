@@ -314,11 +314,12 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                 DisplayName, e);
                     }
-                } else if (anno != null && field != null) { // dropdown string, an editable combobox
+                } else if (anno != null && field != null) { // dropdown string
                     Input = new JComboBox<String>(anno.value());
                     try {
                         Input.setName("dd");
-                        ((JComboBox<String>) Input).setEditable(true);
+                        //if its strict, dont make it editable
+                        ((JComboBox<String>) Input).setEditable(!anno.strict()); 
                         if (!FromEmpty)
                             ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
                         else {
