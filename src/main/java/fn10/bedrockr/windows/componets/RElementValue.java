@@ -268,7 +268,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                 Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                 Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-            } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) { // if bool, its dropdown
+            } else if (Boolean.class.isAssignableFrom(InputType)) { // if bool, its dropdown
                 String[] vals = { "true", "false" };
                 Input = new JComboBox<String>(vals);
                 try {
@@ -288,7 +288,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
                             DisplayName, e);
                 }
-            } else if (InputType.equals(String.class)) { // if string, do this
+            } else if (String.class.isAssignableFrom(InputType)) { // if string, do this
                 // if normal do this
 
                 final StringDropdownField anno;
@@ -412,11 +412,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                 Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                 Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-            } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
+            } else if (Integer.class.isAssignableFrom(InputType)) { // int
 
                 Input = new JSpinner();
 
-            } else if (InputType.equals(UUID.class)) { // resource
+            } else if (UUID.class.isAssignableFrom(InputType)) { // resource
 
                 final ResourcePackResourceType anno;
                 if (field != null) {
