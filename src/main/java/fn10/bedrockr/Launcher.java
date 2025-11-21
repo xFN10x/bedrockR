@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.event.FocusEvent.Cause;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -249,9 +250,10 @@ public class Launcher {
         // open app
         loading.ProgressText.setText("Launching...");
         SwingUtilities.invokeLater(() -> {
-            var launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
+            RLaunchPage launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
             launch.setVisible(true);
             loading.setVisible(false);
+            launch.requestFocus(Cause.ACTIVATION);
         });
     }
 }
