@@ -76,7 +76,7 @@ public class RFrame extends JFrame {
 
         siegeButton.addActionListener(e -> {
             try {
-                Desktop.getDesktop().browse(new URI("https://siege.hackclub.com/armory/1682"));
+                Desktop.getDesktop().browse(new URI("https://siege.hackclub.com/armory/1948"));
             } catch (IOException e1) {
 
                 e1.printStackTrace();

@@ -78,8 +78,8 @@ public class RElement extends JPanel implements MouseListener {
         setLayout(Lay);
 
         setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.white, 1, 16));
-        setPreferredSize(new Dimension(354, 80));
-        setMaximumSize(new Dimension(354, 80));
+        setPreferredSize(new Dimension(350, 80));
+        setMaximumSize(new Dimension(350, 80));
 
         Icon.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.gray, 1, 16));
         Icon.setPreferredSize(new Dimension(70, 70));

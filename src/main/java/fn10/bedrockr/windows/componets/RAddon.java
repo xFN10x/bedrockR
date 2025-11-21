@@ -86,7 +86,7 @@ public class RAddon extends JPanel implements MouseListener {
                     if (op == JOptionPane.YES_OPTION) {
                         var bic = new JFileChooser();
                         bic.setFileFilter(
-                                new FileNameExtensionFilter("Addon's Support Image Files", WPF.IconExtension));
+                                new FileNameExtensionFilter("Addon's Supported Image Files", WPF.IconExtension));
                         if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             BI = ImageIO.read(bic.getSelectedFile());
                             ImageIO.write(BI, WPF.IconExtension, RFileOperations

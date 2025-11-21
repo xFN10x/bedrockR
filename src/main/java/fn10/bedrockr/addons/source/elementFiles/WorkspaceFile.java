@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Header;
@@ -85,28 +86,41 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
      * This should be called everytime you rebuild your addon. Since some stuff
      * doesnt reset automaticly.
      */
-    public void reset() {
-        if (Scripts == null)
+    public void reset(String rootPath) {
+        if (Scripts == null) {
             Scripts = new HashMap<UUID, String>();
+        } else {
+            for (Entry<UUID,String> set : Scripts.entrySet()) {
+                try {
+                    Launcher.LOG.info("Deleting script that already exists: " + set.getValue());
+                    Files.deleteIfExists(Path.of(rootPath, set.getValue()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         Scripts.clear();
     }
 
     /**
      * Adds a javascript script to the addon
      * 
-     * @param name - the name of the script. {@code name = "script.js"} would be
-     *             located in {@code scripts/script.js}, and
-     *             {@code name = "folder/script.js"} would be located in
-     *             {@code scripts/folder/script.js}
+     * @param rootPath - the root of the building BP
+     * 
+     * @param name     - the name of the script. {@code name = "script.js"} would be
+     *                 located in {@code scripts/script.js}, and
+     *                 {@code name = "folder/script.js"} would be located in
+     *                 {@code scripts/folder/script.js}
      * @return the path the file can be written to.
      */
     public Path addScript(String rootPath, String name) {
         if (Scripts == null) {
             Scripts = new HashMap<UUID, String>();
         }
+        if (Scripts.containsValue(name)) // return if its already here
+            return Path.of(rootPath, "scripts", name);
 
         Scripts.put(UUID.randomUUID(), "scripts/" + name);
-
         return Path.of(rootPath, "scripts", name);
     }
 

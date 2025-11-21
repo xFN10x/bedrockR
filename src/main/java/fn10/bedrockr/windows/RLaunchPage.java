@@ -64,7 +64,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
         siegeButton.addActionListener(ac -> {
             try {
-                desk.browse(URI.create("https://siege.hackclub.com/armory/1682"));
+                desk.browse(URI.create("https://siege.hackclub.com/armory/1948"));
             } catch (IOException e) {
 
                 e.printStackTrace();
