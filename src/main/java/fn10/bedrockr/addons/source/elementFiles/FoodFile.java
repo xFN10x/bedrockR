@@ -113,15 +113,27 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @FieldDetails(Optional = false, displayName = "Is Meat")
     public boolean IsMeat = false;
 
-    @HelpMessage("Specifes if this food is cooked. While I could'nt find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
+    @HelpMessage("Specifes if this food is cooked. While I couldn't find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
     @FieldDetails(Optional = false, displayName = "Is Cooked")
     public boolean IsCooked = false;
 
     public transient Separator sep2;
 
-    @HelpMessage("Specifes if this food is cooked. While I could'nt find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
-    @UneditableByCreation //this is added manually 
+    @UneditableByCreation // this is added manually
     public String EatingTurnsInto = null;
+
+    @HelpMessage("Specifes if this food can be eaten in creative, or if at max hunger")
+    @FieldDetails(Optional = false, displayName = "Can Always Be Eaten")
+    public boolean CanAlwaysBeEaten = false;
+
+    @HelpMessage("Saturation is the first statistic to decrease when a player performs energy-intensive actions, and it must be completely depleted before the visible hunger meter begins decreasing. Although the current saturation level is generally hidden, the player can tell that their saturation level is completely depleted if the visible hunger meter begins displaying a jittering effect. \n\n Taken from https://minecraft.wiki/w/Food#Saturation \n\n Golden carrots have a saturation of 1.2, the highest in the game")
+    @FieldDetails(Optional = false, displayName = "Saturation")
+    @NumberRange(max = Float.MAX_VALUE, min = 0)
+    public float Saturation = 0.6f;
+
+    @HelpMessage("How much hunger the player gets after eating this food. Golden carrots replenish 6, 3 whole hunger icons.")
+    @FieldDetails(Optional = false, displayName = "Nutrition")
+    public int Nutrition = 3;
 
     @UneditableByCreation
     public Boolean isDraft = false;
@@ -187,6 +199,22 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
             Tags.add("minecraft:is_cooked");
 
         TagsComp.put("tags", Tags.toArray(new String[0]));
+        /*
+         * "minecraft:food": {
+         * "can_always_eat": false,
+         * "nutrition": 3,
+         * "saturation_modifier": 0.6,
+         * "using_converts_to": "bowl"
+         * }
+         */
+
+        Map<String, Object> FoodComp = new HashMap<String, Object>();
+        FoodComp.put("can_always_eat", CanAlwaysBeEaten);
+        FoodComp.put("nutrition", Nutrition);
+        FoodComp.put("saturation_modifier", Saturation);
+        if (EatingTurnsInto != null)
+            if (!EatingTurnsInto.trim().isEmpty())
+                FoodComp.put("using_converts_to", EatingTurnsInto);
 
         Map<String, Float> UseModifComp = new HashMap<String, Float>();
         UseModifComp.put("movement_modifier", EatMovementSpeed);
@@ -194,6 +222,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
 
         inner.components.put("minecraft:use_modifiers", UseModifComp);
         inner.components.put("minecraft:tags", TagsComp);
+        inner.components.put("minecraft:food", FoodComp);
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
