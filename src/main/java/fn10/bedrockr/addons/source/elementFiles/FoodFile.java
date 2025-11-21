@@ -117,6 +117,12 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @FieldDetails(Optional = false, displayName = "Is Cooked")
     public boolean IsCooked = false;
 
+    public transient Separator sep2;
+
+    @HelpMessage("Specifes if this food is cooked. While I could'nt find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
+    @UneditableByCreation //this is added manually 
+    public String EatingTurnsInto = null;
+
     @UneditableByCreation
     public Boolean isDraft = false;
 
