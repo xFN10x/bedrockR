@@ -70,7 +70,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 }));
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError((Frame) getParent(), "error", "very bad error message", e);
+                ErrorShower.showError((Frame) getParent(), "error", e);
                 continue;
             }
         }
