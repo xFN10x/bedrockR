@@ -52,6 +52,7 @@ import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.utils.WrapLayout;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
@@ -99,7 +100,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         ResourceFile.ActiveWorkspace = this;
 
         this.SWPF = WPF;
-        FlowLayout InnerLayout1 = new FlowLayout(FlowLayout.CENTER);
+        WrapLayout InnerLayout1 = new WrapLayout(FlowLayout.CENTER);
         BoxLayout InnerLayout2 = new BoxLayout(ResourceInnerPanelView, BoxLayout.Y_AXIS);
 
         Tabs.addTab("Elements", ElementView);
