@@ -323,10 +323,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         Input.setName("dd");
                         // if its strict, dont make it editable
                         ((JComboBox<String>) Input).setEditable(!anno.strict());
-                        if (!FromEmpty)
+                        if (!FromEmpty) {
                             ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
-                        else {
-                            ((JComboBox<String>) Input).setSelectedItem("(Select a value)");
+                        } else {
+                            ((JComboBox<String>) Input).setSelectedItem(anno.value()[0]);
                         }
                     } catch (Exception e) {
 
@@ -832,11 +832,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public void setValue(Object value) throws ClassNotFoundException {
         if (value == null)
             return;
-        if (!InputType.isAssignableFrom(value.getClass())) {
+        else if (!InputType.isAssignableFrom(value.getClass())) {
             throw new ClassNotFoundException("This ElementValue isnt the class of the object. ("
                     + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
-        }
-        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
+        } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
             casted.setSelectedItem(value);
         } else if (InputType.equals(HashMap.class)) {
@@ -909,7 +908,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
             Input.setName(id);
         } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
                 || InputType == Float.class) { // int, float
-            //Launcher.LOG.info("this is an int, or float, and its getting set to a " + value.getClass().getSimpleName());
+            // Launcher.LOG.info("this is an int, or float, and its getting set to a " +
+            // value.getClass().getSimpleName());
             ((JSpinner) Input).setValue(value);
         } else {
             try {
