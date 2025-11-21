@@ -48,7 +48,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -56,8 +56,8 @@ application {
     mainClass = "fn10.bedrockr.Launcher"
 }
 
-val version = "a1.3.1"
-val winver = "0.4.1"
+val version = "a1.4"
+val winver = "0.5.0"
 
 tasks.test {
     failOnNoDiscoveredTests = false
