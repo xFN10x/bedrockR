@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPopupMenu.Separator;
 
 import org.apache.commons.io.FileUtils;
 
@@ -82,6 +83,8 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
     @FieldDetails(Optional = false, displayName = "Item Texture")
     public UUID TextureUUID;
+
+    public transient Separator sep;
 
     @HelpMessage("Determines the animation that is used when eating this item. Soups use eat, potions use drink. They are the same animation, but the sounds are different.")
     @FieldDetails(Optional = false, displayName = "Eating Animation", Filter = FieldFilters.CommonFilter1.class)
