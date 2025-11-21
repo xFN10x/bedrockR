@@ -268,7 +268,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                 Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                 Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-            } else if (Boolean.class.isAssignableFrom(InputType)) { // if bool, its dropdown
+            } else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) { // if
+                                                                                                                 // bool,
+                                                                                                                 // its
+                                                                                                                 // dropdown
                 String[] vals = { "true", "false" };
                 Input = new JComboBox<String>(vals);
                 try {
@@ -318,8 +321,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JComboBox<String>(anno.value());
                     try {
                         Input.setName("dd");
-                        //if its strict, dont make it editable
-                        ((JComboBox<String>) Input).setEditable(!anno.strict()); 
+                        // if its strict, dont make it editable
+                        ((JComboBox<String>) Input).setEditable(!anno.strict());
                         if (!FromEmpty)
                             ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
                         else {
@@ -413,10 +416,17 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                 Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                 Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-            } else if (Integer.class.isAssignableFrom(InputType)) { // int
+            } else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
 
                 Input = new JSpinner();
+                if (!FromEmpty)
+                    ((JSpinner) Input).setValue(((Integer) field.get(TargetFile)));
 
+            } else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
+
+                Input = new JSpinner(new SpinnerNumberModel(0f, -Float.MAX_VALUE, Float.MAX_VALUE, 0.1f));
+                if (!FromEmpty)
+                    ((JSpinner) Input).setValue(((Float) field.get(TargetFile)));
             } else if (UUID.class.isAssignableFrom(InputType)) { // resource
 
                 final ResourcePackResourceType anno;
@@ -897,7 +907,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
             }
             Input.setName(id);
-        } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
+        } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
+                || InputType == Float.class) { // int, float
+            //Launcher.LOG.info("this is an int, or float, and its getting set to a " + value.getClass().getSimpleName());
             ((JSpinner) Input).setValue(value);
         } else {
             try {
@@ -963,7 +975,16 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 } else if (InputType.equals(UUID.class)) {
                     return UUID.fromString(Input.getName());
                 } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
-                    return ((JSpinner) Input).getValue();
+                    if (((JSpinner) Input).getValue() instanceof Double doubleVal)
+                        return doubleVal.intValue();
+                    else
+                        return ((JSpinner) Input).getValue();
+                } else if (InputType == float.class
+                        || InputType == Float.class) {
+                    if (((JSpinner) Input).getValue() instanceof Double doubleVal)
+                        return doubleVal.floatValue();
+                    else
+                        return ((JSpinner) Input).getValue();
                 } else {
                     try {
                         if (Input.getName() != null && Input.getName().equals("dd")) // if its a drop down
@@ -1038,8 +1059,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 log.info(Target + ": Bool cannot be wrong, so it passes");
 
                 return true;
-            } else if (InputType.equals(Integer.class) || InputType.equals(int.class)) { // int
-                log.info(Target + ": Int cannot be wrong, so it passes");
+            } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType.equals(Float.class)
+                    || InputType.equals(float.class)) { // numbers
+                log.info(Target + ": All numbers cannot be wrong, so it passes");
 
                 return true;
             } else if (InputType.equals(UUID.class)) {
