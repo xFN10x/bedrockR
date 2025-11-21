@@ -107,7 +107,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID + ".name", Name);
+        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID, Name);
 
         // make item
         var item = new Item();
