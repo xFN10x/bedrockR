@@ -300,7 +300,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 progress.Steps = ToBuild.size() + 1;
 
-                ((WorkspaceFile) SWPF.getSerilized()).reset();
+                SWPF.getSerilized().reset();
 
                 // build rest
                 for (ElementFile<?> elementFile : ToBuild) {
