@@ -1,6 +1,5 @@
 package fn10.bedrockr.windows.componets;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -16,9 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.swing.border.LineBorder;
-
-import com.jme3.texture.Texture2D;
-import com.jme3.texture.plugins.AWTLoader;
 
 import java.io.File;
 
