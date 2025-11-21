@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -46,7 +47,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @StringDropdownField({ "construction", "equipment", "items", "nature" })
     public String Category;
 
-    @HelpMessage("The group that this item is put into. These groups ")
+    @HelpMessage("The group that this item is put into.")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
@@ -75,11 +76,35 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
             "itemGroup.name.wool", "itemGroup.name.woolCarpet" })
     public String Group;
 
-
     @HelpMessage("The texture for the item.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
-    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
+    @FieldDetails(Optional = false, displayName = "Item Texture")
     public UUID TextureUUID;
+
+    @HelpMessage("Determines the animation that is used when eating this item. Soups use eat, potions use drink. They are the same animation, but the sounds are different.")
+    @FieldDetails(Optional = false, displayName = "Eating Animation", Filter = FieldFilters.CommonFilter1.class)
+    @StringDropdownField(value = { "eat",
+            "drink",
+            "bow",
+            "block",
+            "camera",
+            "crossbow",
+            "none",
+            "brush",
+            "spear",
+            "spyglass" }, strict = true)
+    public String EatAnimation;
+
+    @HelpMessage("Specifies how long it takes to eat this. Default: 1.6")
+    @FieldDetails(Optional = false, displayName = "Eating Length")
+    public Float EatTime = 1.6f;
+
+    @HelpMessage("Specifies how fast you move when eating this, in a percentage. A value of 1 lets you eat it at walk speed. 0 stops you from moving while eating this. Default: 0.33")
+    @FieldDetails(Optional = false, displayName = "Eating Movement Speed")
+    @NumberRange(max = 1f, min = 0f)
+    public Float EatMovementSpeed = 0.33f;
+
+    
 
     @UneditableByCreation
     public Boolean isDraft = Boolean.FALSE;
@@ -111,7 +136,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
 
         // make item
         var item = new Item();
-        item.format_version = "1.21.60";
+        item.format_version = "1.21.120";
         // catagory
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
@@ -134,7 +159,13 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
         inner.components = new HashMap<String, Object>();
         inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
                 MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
+        inner.components.put("minecraft:use_animation", EatAnimation);
 
+        Map<String, Float> UseModif = new HashMap<String, Float>();
+        UseModif.put("movement_modifier", EatMovementSpeed);
+        UseModif.put("use_duration", EatTime);
+
+        inner.components.put("minecraft:use_modifiers", UseModif);
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
