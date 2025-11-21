@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
+import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceResourceElement;
@@ -75,6 +76,7 @@ public class RFileOperations {
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
         ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
         ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceRecipeElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("foodref", SourceFoodElement.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
@@ -294,12 +296,21 @@ public class RFileOperations {
      * @param WPF       - The workspace to open
      */
     public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
-        var workspaceView = new RWorkspace(WPF);
-        // get items ready for use
+        new Thread(() -> {
+        RWorkspace workspaceView = new RWorkspace(WPF);
+
+        RLoadingScreen loading = new RLoadingScreen(doingThis);
+        loading.setAlwaysOnTop(true);
+        SwingUtilities.invokeLater(() -> {
+            loading.setVisible(true);
+        });
+        
         RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
         RBlockSelector.downloadVanillaBlocks(((WorkspaceFile) WPF.getSerilized()));
 
+        // get items ready for use
         SwingUtilities.invokeLater(() -> {
+            loading.setVisible(false);
             if (doingThis != null)
                 doingThis.dispose();
             workspaceView.setVisible(true);
@@ -322,6 +333,7 @@ public class RFileOperations {
             }
             CURRENT_WORKSPACE = WPF.getSerilized();
         });
+        }).start();
     }
 
     /**
@@ -420,7 +432,8 @@ public class RFileOperations {
      */
     public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
             Boolean strict) {
-        //Launcher.LOG.warning("This file should start with the file seperator, or not at all! not '/'!");
+        // Launcher.LOG.warning("This file should start with the file seperator, or not
+        // at all! not '/'!");
         try {
             String proposed = BASE_DIRECTORY + File.separator + "workspace" + File.separator + WorkspaceName
                     + (ToCreate.startsWith(File.separator) ? "" : File.separator) + ToCreate;

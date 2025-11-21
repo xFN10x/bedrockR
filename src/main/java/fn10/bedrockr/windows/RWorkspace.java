@@ -161,7 +161,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         });
         helpMenu.add("bedrockR on Siege").addActionListener(ac -> {
             try {
-                desk.browse(new URI("https://siege.hackclub.com/armory/1682"));
+                desk.browse(new URI("https://siege.hackclub.com/armory/1948"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -300,7 +300,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 progress.Steps = ToBuild.size() + 1;
 
-                SWPF.getSerilized().reset();
+                SWPF.getSerilized().reset(BPdir);
 
                 // build rest
                 for (ElementFile<?> elementFile : ToBuild) {
@@ -309,22 +309,22 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     // build a element, then incrament the counter
                     progress.changeText("Building " + elementFile.getElementName()); // change text
                     elementFile.build(BPdir,
-                            ((WorkspaceFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
+                            SWPF.getSerilized(), RPdir, GlobalResVars); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }
                 // build RP
                 // build global res vars
                 progress.changeText("Building resources... "); // change text
                 GlobalResVars.build(BPdir,
-                        ((WorkspaceFile) SWPF.getSerilized()), RPdir, GlobalResVars);
+                        SWPF.getSerilized(), RPdir, GlobalResVars);
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
                 SWPF.getSerilized().build(BPdir,
-                        ((WorkspaceFile) SWPF.getSerilized()), RPdir, GlobalResVars); // build
+                        SWPF.getSerilized(), RPdir, GlobalResVars); // build
 
                 progress.increaseProgressBySteps("Done!"); // next
                 // do mc sync
-                if (((WorkspaceFile) SWPF.getSerilized()).MinecraftSync) {
+                if (SWPF.getSerilized().MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
                     RFileOperations.mcSync(this);
                 }
@@ -471,7 +471,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var ac = arg0.getActionCommand();
         if (ac.equals("add")) {
             SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewElement(this, ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName);
+                var addFrame = new RNewElement(this, SWPF.getSerilized().WorkspaceName);
                 addFrame.setVisible(true);
             });
         } else if (ac.equals("texture")) {
@@ -493,15 +493,15 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 case 1:
 
-                    RFileOperations.getResources(this, ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName).Serilized
+                    RFileOperations.getResources(this, SWPF.getSerilized().WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.ITEM_TEXTURE,
-                                    ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName);
+                                    SWPF.getSerilized().WorkspaceName);
                     break;
                 case 2:
 
-                    RFileOperations.getResources(this, ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName).Serilized
+                    RFileOperations.getResources(this, SWPF.getSerilized().WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.BLOCK_TEXTURE,
-                                    ((WorkspaceFile) SWPF.getSerilized()).WorkspaceName);
+                                    SWPF.getSerilized().WorkspaceName);
                     break;
                 default:
                     break;
@@ -530,7 +530,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementDraft(ElementSource<?> element) {
-        element.buildJSONFile(this, (((WorkspaceFile) SWPF.getSerilized()).WorkspaceName));
+        element.buildJSONFile(this, (SWPF.getSerilized().WorkspaceName));
         refreshAll();
     }
 
@@ -541,7 +541,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementCreate(ElementSource<?> element) {
-        element.buildJSONFile(this, (((WorkspaceFile) SWPF.getSerilized()).WorkspaceName));
+        element.buildJSONFile(this, (SWPF.getSerilized().WorkspaceName));
         refreshAll();
     }
 }

@@ -15,6 +15,7 @@ import javax.swing.SpringLayout;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBlockElement;
+import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
@@ -31,7 +32,8 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public class RNewElement extends RDialog implements ActionListener {
 
     private JPanel MainPane = new JPanel();
-    private JScrollPane MainScrollPane = new JScrollPane(MainPane);
+    private JScrollPane MainScrollPane = new JScrollPane(MainPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
     private JButton CreateAsNormalButton = new JButton("Create!");
     private Frame Parent;
@@ -43,6 +45,7 @@ public class RNewElement extends RDialog implements ActionListener {
             SourceBlockElement.class,
             SourceScriptElement.class,
             SourceRecipeElement.class,
+            SourceFoodElement.class,
     };
 
     public RNewElement(Frame Parent, String WorkspaceName) {
@@ -55,6 +58,8 @@ public class RNewElement extends RDialog implements ActionListener {
         MainPane.setLayout(new SpringLayout());
         this.Parent = Parent;
         this.workspaceName = WorkspaceName;
+
+        MainScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         for (Class<? extends ElementSource<?>> class1 : ELEMENTS) {
             try {

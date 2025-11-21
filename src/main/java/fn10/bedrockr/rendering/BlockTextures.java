@@ -122,6 +122,7 @@ public class BlockTextures {
         return ImageIO.read(response.body());
     }
 
+    @SuppressWarnings("unchecked")
     public static void renderBlock(String blockId) {
         if (blocksJson == null) {
             try {

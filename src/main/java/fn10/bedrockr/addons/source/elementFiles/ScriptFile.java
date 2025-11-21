@@ -49,7 +49,7 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
      * format with; string version, elementname, scriptname, version (= 1.0.0)
      */
     private transient String scriptHeader = "/*\r\n" + //
-            "  This script was generated with - bedrockR (https://github.com/xFN10x/bedrockR)\r\n" + //
+            "  This following code was generated with - bedrockR (https://github.com/xFN10x/bedrockR)\r\n" + //
             "  Version: %s\r\n" +
             "\r\n" +
             "  Details:\r\n" +
@@ -102,7 +102,7 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
                 Path path = workspaceFile.addScript(rootPath, ScriptName + ".js");
                 FileUtils.writeStringToFile(
                         path.toFile(),
-                        finishedCode, StandardCharsets.UTF_8);
+                        finishedCode, StandardCharsets.UTF_8,true);
             } catch (IOException e) {
                 e.printStackTrace();
                 ErrorShower.showError(null, "Failed to write script.", e);

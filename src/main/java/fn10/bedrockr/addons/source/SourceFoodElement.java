@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 
 import javax.swing.ImageIcon;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.source.elementFiles.ItemFile;
+import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
@@ -19,27 +19,28 @@ import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import jakarta.annotation.Nullable;
 
-public class SourceItemElement implements ElementSource<ItemFile> {
+public class SourceFoodElement implements ElementSource<FoodFile> {
     private final String Location = File.separator + "elements" + File.separator;
-    private Class<ItemFile> serilizedClass = ItemFile.class;
-    private ItemFile serilized;
+    private Class<FoodFile> serilizedClass = FoodFile.class;
+    private FoodFile serilized;
 
-    public SourceItemElement(ItemFile obj) {
+    public SourceFoodElement(FoodFile obj) {
         this.serilized = obj;
     }
 
-    public SourceItemElement() {
+    public SourceFoodElement() {
         this.serilized = null;
     }
 
-    public SourceItemElement(String jsonString) {
-        this.serilized = (ItemFile) getFromJSON(jsonString);
+    public SourceFoodElement(String jsonString) {
+        this.serilized = getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() {
-                return new ElementDetails("Item ",
-                "<html>A basic item. Can be made as food, <br>block placer, or food..</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Item.png")));
+        return new ElementDetails("Food",
+                "<html>A food, can give custom effects<br /> and run certain commands</html>",
+                new ImageIcon(ElementSource.class.getResource("/addons/element/Food.png")));
+
     }
 
     @Override
@@ -48,12 +49,12 @@ public class SourceItemElement implements ElementSource<ItemFile> {
     }
 
     @Override
-    public Class<ItemFile> getSerilizedClass() {
-        return ItemFile.class;
+    public Class<FoodFile> getSerilizedClass() {
+        return FoodFile.class;
     }
 
     @Override
-    public ItemFile getFromJSON(String jsonString) {
+    public FoodFile getFromJSON(String jsonString) {
         return gson.fromJson(jsonString, serilizedClass);
     }
 
@@ -62,7 +63,7 @@ public class SourceItemElement implements ElementSource<ItemFile> {
     public File buildJSONFile(Window doingThis, String workspace) {
         var string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
-                Location + serilized.ElementName + ".itemref");
+                Location + serilized.ElementName + ".foodref");
         file.setWritable(true);
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -76,14 +77,14 @@ public class SourceItemElement implements ElementSource<ItemFile> {
     }
 
     @Override
-    public ItemFile getSerilized() {
+    public FoodFile getSerilized() {
         return this.serilized;
     }
 
     @Override
     public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
-        var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent,
-                RElementEditingScreen.SPECIAL_AREA_STYLE);
+        var frame = new RElementEditingScreen(Parent, "Food", this, getSerilizedClass(), parent,
+                RElementEditingScreen.DEFAULT_STYLE);
 
         for (Field field : getSerilizedClass().getFields()) { // try to get fields
             try { // then add them

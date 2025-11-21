@@ -2,6 +2,7 @@ package fn10.bedrockr.windows;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -145,7 +146,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         // InnerPane.setMaximumSize(new Dimension(300,1110));
         // InnerPane.setPreferredSize(new Dimension(300,1110));
 
-        InnerPane.setLayout(PaneLay);
+        if (layout == SPECIAL_AREA_STYLE)
+            InnerPane.setLayout(new BoxLayout(InnerPane, BoxLayout.Y_AXIS));
+        else
+            InnerPane.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
         InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
 
         add(CreateButton);

@@ -178,8 +178,6 @@ public class Launcher {
             e.printStackTrace();
         }
 
-        loading.ProgressText.setText("Setting up 3D...");
-        RenderHandler.startup();
         loading.ProgressText.setText("Setting up Blockly...");
         try {
             CountDownLatch latch = new CountDownLatch(1);
@@ -227,6 +225,9 @@ public class Launcher {
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
         }
+
+        loading.ProgressText.setText("Setting up 3D...");
+        RenderHandler.startup();
 
         loading.ProgressText.setText("Checking if opening workspace...");
         if (args.length >= 1) {
