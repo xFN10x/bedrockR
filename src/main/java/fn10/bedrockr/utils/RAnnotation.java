@@ -53,7 +53,8 @@ public class RAnnotation {
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     /**
-     * Used to specify if this field can be edited after the Element has been created initially.
+     * Used to specify if this field can be edited after the Element has been
+     * created initially.
      */
     public @interface CantEditAfter {
     }
@@ -80,9 +81,10 @@ public class RAnnotation {
     /**
      * Used to specify that a String field should be a dropdown.
      * 
-     * @param value - an array of strings that are selectable
+     * @param value  - an array of strings that are selectable
      * 
-     * @param strict - Specifies if the user can write whatever into the combobox or not. Default: {@code false}
+     * @param strict - Specifies if the user can write whatever into the combobox or
+     *               not. Default: {@code false}
      */
     public @interface StringDropdownField {
 
@@ -91,4 +93,22 @@ public class RAnnotation {
         boolean strict() default false;
     }
 
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
+    /**
+     * Used to specify that a Number; like an Integer/int, or Float/float; has
+     * bounds.
+     * 
+     * @param min - a float being the minimum number. Casted to int if the field is
+     *            one
+     * 
+     * @param max - a float being the maximum number. Casted to int if the field is
+     *            one
+     */
+    public @interface NumberRange {
+
+        float max() default 1;
+
+        float min() default 0;
+    }
 }

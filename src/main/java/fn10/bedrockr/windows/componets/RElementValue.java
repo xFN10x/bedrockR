@@ -32,6 +32,7 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
+import fn10.bedrockr.utils.RAnnotation.NumberRange;
 import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
@@ -417,14 +418,28 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                 Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
             } else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
+                final NumberRange anno;
+                if (field != null) {
+                    anno = field.getAnnotation(RAnnotation.NumberRange.class);
+                } else {
+                    anno = null;
+                }
+                Input = new JSpinner(new SpinnerNumberModel(0, anno != null ? (int) anno.min() : Integer.MIN_VALUE,
+                        anno != null ? (int) anno.max() : Integer.MAX_VALUE, 1));
 
-                Input = new JSpinner();
                 if (!FromEmpty)
                     ((JSpinner) Input).setValue(((Integer) field.get(TargetFile)));
 
             } else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
+                final NumberRange anno;
+                if (field != null) {
+                    anno = field.getAnnotation(RAnnotation.NumberRange.class);
+                } else {
+                    anno = null;
+                }
 
-                Input = new JSpinner(new SpinnerNumberModel(0f, -Float.MAX_VALUE, Float.MAX_VALUE, 0.1f));
+                Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
+                        anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                 if (!FromEmpty)
                     ((JSpinner) Input).setValue(((Float) field.get(TargetFile)));
             } else if (UUID.class.isAssignableFrom(InputType)) { // resource
