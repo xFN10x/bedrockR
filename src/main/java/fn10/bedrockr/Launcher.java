@@ -4,6 +4,7 @@
 package fn10.bedrockr;
 
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
+import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.http.Format1Latest;
@@ -177,48 +178,47 @@ public class Launcher {
             e.printStackTrace();
         }
 
+        loading.ProgressText.setText("Setting up 3D...");
+        RenderHandler.startup();
         loading.ProgressText.setText("Setting up Blockly...");
         try {
+            CountDownLatch latch = new CountDownLatch(1);
             Platform.startup(() -> {
+                WebEngine webEngine = new WebEngine();
+                webEngine.load(Launcher.class.getResource("/blockly/blockly-minimized.html").toExternalForm());
+                webEngine.getLoadWorker().stateProperty().addListener(
+                        new ChangeListener<Worker.State>() {
+                            @Override
+                            public void changed(
+                                    ObservableValue<? extends javafx.concurrent.Worker.State> observable,
+                                    javafx.concurrent.Worker.State oldValue,
+                                    javafx.concurrent.Worker.State newValue) {
+                                if (newValue == Worker.State.SUCCEEDED) {
+                                    // when its loaded, add a referance to java
+                                    webEngine
+                                            .executeScript(RFileOperations.readResourceAsString("/blockly/blockly.js"));
+                                    BLOCKLY_MINI_WEBENGINE = webEngine;
+                                    latch.countDown();
+                                } else if (newValue == Worker.State.FAILED) {
+                                    Exception ex = new Exception("Blockly pane failed to load.");
+
+                                    ex.printStackTrace();
+                                    ErrorShower.showError(null, "Blockly Pane failed to load.", ex);
+
+                                } else {
+                                    Launcher.LOG.info("Unknown state: " + newValue);
+                                }
+
+                            }
+                        });
             });
+            try {
+                latch.await(10000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
-        }
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            WebEngine webEngine = new WebEngine();
-            webEngine.load(Launcher.class.getResource("/blockly/blockly-minimized.html").toExternalForm());
-            webEngine.getLoadWorker().stateProperty().addListener(
-                    new ChangeListener<Worker.State>() {
-                        @Override
-                        public void changed(
-                                ObservableValue<? extends javafx.concurrent.Worker.State> observable,
-                                javafx.concurrent.Worker.State oldValue,
-                                javafx.concurrent.Worker.State newValue) {
-                            if (newValue == Worker.State.SUCCEEDED) {
-                                // when its loaded, add a referance to java
-                                webEngine
-                                        .executeScript(RFileOperations.readResourceAsString("/blockly/blockly.js"));
-                                BLOCKLY_MINI_WEBENGINE = webEngine;
-                                latch.countDown();
-                            } else if (newValue == Worker.State.FAILED) {
-                                Exception ex = new Exception("Blockly pane failed to load.");
-
-                                ex.printStackTrace();
-                                ErrorShower.showError(null, "Blockly Pane failed to load.", ex);
-
-                            } else {
-                                Launcher.LOG.info("Unknown state: " + newValue);
-                            }
-
-                        }
-                    });
-
-        });
-        try {
-            latch.await(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
