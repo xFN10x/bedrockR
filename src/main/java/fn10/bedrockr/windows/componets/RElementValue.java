@@ -276,6 +276,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         ((JComboBox<String>) Input).setSelectedIndex((boolean) field.get(TargetFile)
                                 ? 0 // convert bool to index
                                 : 1);
+                    else
+                        ((JComboBox<String>) Input).setSelectedItem("false");
                 } catch (Exception e) {
 
                     e.printStackTrace();
@@ -576,7 +578,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     BufferedImage.TYPE_INT_RGB);
                             bi.getGraphics().drawImage(icon, 0, 0, parentFrame);
                             RenderHandler.CurrentHandler.showPreviewWindow(parentFrame,
-                                   RenderHandler.make6Sided(bi));
+                                    RenderHandler.make6Sided(bi));
                         });
                         AddButtonBlock.addActionListener(ac -> {
                             RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
