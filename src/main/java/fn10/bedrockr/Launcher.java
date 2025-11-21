@@ -203,17 +203,24 @@ public class Launcher {
                                     Exception ex = new Exception("Blockly pane failed to load.");
 
                                     ex.printStackTrace();
-                                    ErrorShower.showError(null, "Blockly Pane failed to load.", ex);
-
+                                    loading.setAlwaysOnTop(false);
+                                    ErrorShower.showError(loading, "Blockly Pane failed to load.", ex);
                                 } else {
+                                    Exception ex = new Exception("Blockly pane failed to load.");
                                     Launcher.LOG.info("Unknown state: " + newValue);
+                                    ErrorShower.showError(loading, "Blockly Pane failed to load. Unknown state.", ex);
                                 }
 
                             }
                         });
             });
             try {
-                latch.await(10000, TimeUnit.MILLISECONDS);
+                if (!latch.await(10000, TimeUnit.MILLISECONDS)) {
+                    loading.setAlwaysOnTop(false);
+                    JOptionPane.showMessageDialog(loading,
+                            "Failed to load blockly; you will not be able to build scripts!", "Blockly Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
