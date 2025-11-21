@@ -107,7 +107,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID, Name);
+        globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID + ".name", Name);
 
         // make item
         var item = new Item();
@@ -132,6 +132,8 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
         inner.description = desc;
 
         inner.components = new HashMap<String, Object>();
+        inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
+                MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
 
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
