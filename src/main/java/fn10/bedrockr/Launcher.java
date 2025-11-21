@@ -64,11 +64,11 @@ public class Launcher {
         String ver = System.getProperty("java.version");
         if (ver.startsWith("1.")) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
-                    + "\n Required version: 21.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
+                    + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
             return;
-        } else if (Integer.parseInt(ver.substring(0, 2)) < 21) {
+        } else if (Integer.parseInt(ver.substring(0, 2)) < 25) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
-                    + "\n Required version: 21.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
+                    + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
