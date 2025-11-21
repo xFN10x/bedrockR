@@ -49,8 +49,8 @@ import com.google.gson.Gson;
 
 public class Launcher {
 
-    public static String VERSION = "a1.3.1";
-    public static int CHECKVERSION = 5;
+    public static String VERSION = "a1.4";
+    public static int CHECKVERSION = 6;
     public static Image ICON;
 
     public static WebEngine BLOCKLY_MINI_WEBENGINE;
