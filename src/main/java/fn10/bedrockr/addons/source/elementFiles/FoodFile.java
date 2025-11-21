@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -104,10 +106,16 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @NumberRange(max = 1f, min = 0f)
     public Float EatMovementSpeed = 0.33f;
 
-    
+    @HelpMessage("Specifes if this food is meat. Probably used for letting dogs eat it (?)")
+    @FieldDetails(Optional = false, displayName = "Is Meat")
+    public boolean IsMeat = false;
+
+    @HelpMessage("Specifes if this food is cooked. While I could'nt find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
+    @FieldDetails(Optional = false, displayName = "Is Cooked")
+    public boolean IsCooked = false;
 
     @UneditableByCreation
-    public Boolean isDraft = Boolean.FALSE;
+    public Boolean isDraft = false;
 
     @Override
     public Class<SourceFoodElement> getSourceClass() {
@@ -161,11 +169,22 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
                 MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
         inner.components.put("minecraft:use_animation", EatAnimation);
 
-        Map<String, Float> UseModif = new HashMap<String, Float>();
-        UseModif.put("movement_modifier", EatMovementSpeed);
-        UseModif.put("use_duration", EatTime);
+        Map<String, String[]> TagsComp = new HashMap<String, String[]>();
+        List<String> Tags = new ArrayList<String>();
+        Tags.add("minecraft:is_food");
+        if (IsMeat)
+            Tags.add("minecraft:is_meat");
+        if (IsCooked)
+            Tags.add("minecraft:is_cooked");
 
-        inner.components.put("minecraft:use_modifiers", UseModif);
+        TagsComp.put("tags", Tags.toArray(new String[0]));
+
+        Map<String, Float> UseModifComp = new HashMap<String, Float>();
+        UseModifComp.put("movement_modifier", EatMovementSpeed);
+        UseModifComp.put("use_duration", EatTime);
+
+        inner.components.put("minecraft:use_modifiers", UseModifComp);
+        inner.components.put("minecraft:tags", TagsComp);
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
         // build file
