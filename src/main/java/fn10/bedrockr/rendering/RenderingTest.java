@@ -1,6 +1,5 @@
 package fn10.bedrockr.rendering;
 
-import javax.swing.JButton;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.light.AmbientLight;
@@ -12,7 +11,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
-import com.jme3.system.JmeCanvasContext;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
@@ -24,9 +22,7 @@ public class RenderingTest extends SimpleApplication {
     private FrameBuffer buffer;
     private int size = 64;
     private Texture2D renderTarget = new Texture2D(size, size, Image.Format.ARGB8);
-    private static JButton testButton = new JButton("Test Block");
     private Spatial model;
-    private JmeCanvasContext ctx;
     private ScreenshotAppState screenShotState = new ScreenshotAppState();
 
     public static void main(String[] args) {

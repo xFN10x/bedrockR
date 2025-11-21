@@ -1,6 +1,5 @@
 package fn10.bedrockr.windows;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;

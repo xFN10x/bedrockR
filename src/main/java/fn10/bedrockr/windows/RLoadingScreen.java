@@ -7,8 +7,6 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-import com.formdev.flatlaf.ui.FlatProgressBarUI;
-
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFonts;
