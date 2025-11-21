@@ -16,12 +16,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JViewport;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.WrapLayout;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
@@ -108,7 +110,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         CancelButton.setActionCommand("cancel");
         CancelButton.addActionListener(this);
 
-        var Sep = new JSeparator(JSeparator.HORIZONTAL);
+        JSeparator Sep = new JSeparator(JSeparator.HORIZONTAL);
 
         Lay.putConstraint(SpringLayout.SOUTH, CreateButton, -10, SpringLayout.SOUTH, getContentPane());
         Lay.putConstraint(SpringLayout.EAST, CreateButton, -10, SpringLayout.EAST, getContentPane());
@@ -127,9 +129,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         Lay.putConstraint(SpringLayout.NORTH, Pane, 5, SpringLayout.NORTH, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, Pane, 5, SpringLayout.WEST, getContentPane());
         if (layout == DEFAULT_STYLE) {
-            InnerPane.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
-            InnerPane.setPreferredSize(new Dimension(150, 0));
-            
+            InnerPane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
+
             Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.EAST, getContentPane());
         } else if (layout == SPECIAL_AREA_STYLE) {
             InnerPane.setLayout(new BoxLayout(InnerPane, BoxLayout.Y_AXIS));

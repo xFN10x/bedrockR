@@ -7,6 +7,7 @@ import com.formdev.flatlaf.util.ColorFunctions;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
+import fn10.bedrockr.utils.WrapLayout;
 import fn10.bedrockr.utils.Greetings.Greeting;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RAddon;
@@ -45,7 +46,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 "<html>Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and <br>maybe check out the wiki.</html>");
         othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
 
-        FlowLayout gride = new FlowLayout(1, 8, 6);
+        WrapLayout gride = new WrapLayout(1, 8, 6);
 
         Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
 
