@@ -1,9 +1,11 @@
 package fn10.bedrockr.windows.componets;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -15,6 +17,9 @@ import java.util.UUID;
 
 import javax.swing.border.LineBorder;
 
+import com.jme3.texture.Texture2D;
+import com.jme3.texture.plugins.AWTLoader;
+
 import java.io.File;
 
 import fn10.bedrockr.Launcher;
@@ -22,6 +27,7 @@ import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.MapUtilities;
@@ -60,6 +66,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private JLabel IDBlock;
     private JLabel TypeBlock;
     private JButton AddButtonBlock;
+    private JButton PreviewButtonBlock;
     private JButton SelectButtonBlock;
     private JLabel IconBlock;
     // item texture
@@ -85,7 +92,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
             String WorkspaceName) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         this(parentFrame, InputType, Filter, TargetField, DisplayName, Optional, ElementFileClass,
-                ElementFileClass != null ? ((ElementFile<?>) ElementFileClass.getConstructor().newInstance()) : null, true,
+                ElementFileClass != null ? ((ElementFile<?>) ElementFileClass.getConstructor().newInstance()) : null,
+                true,
                 WorkspaceName);
     }
 
@@ -562,10 +570,18 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         TypeBlock.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
                         TypeBlock.setForeground(getForeground().darker().darker());
                         AddButtonBlock = new JButton("+");
+                        PreviewButtonBlock = new JButton("Preview");
                         SelectButtonBlock = new JButton("Select");
                         IconBlock = new JLabel(ImageUtilites.ResizeIcon(
                                 new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
-
+                        PreviewButtonBlock.addActionListener(ac -> {
+                            Image icon = ((ImageIcon) IconBlock.getIcon()).getImage();
+                            BufferedImage bi = new BufferedImage(icon.getWidth(parentFrame), icon.getHeight(null),
+                                    BufferedImage.TYPE_INT_RGB);
+                            bi.getGraphics().drawImage(icon, 0, 0, parentFrame);
+                            RenderHandler.CurrentHandler.showPreviewWindow(parentFrame,
+                                   RenderHandler.make6Sided(bi));
+                        });
                         AddButtonBlock.addActionListener(ac -> {
                             RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
                                     .importTexture(parentFrame, ResourceFile.BLOCK_TEXTURE,
@@ -618,7 +634,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButtonBlock, 0,
                                 SpringLayout.HORIZONTAL_CENTER,
                                 this.Name);
+                        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, PreviewButtonBlock, 0,
+                                SpringLayout.HORIZONTAL_CENTER,
+                                this.Name);
                         Lay.putConstraint(SpringLayout.SOUTH, AddButtonBlock, 0, SpringLayout.SOUTH, Input);
+                        Lay.putConstraint(SpringLayout.NORTH, PreviewButtonBlock, 0, SpringLayout.NORTH, Input);
 
                         ((JPanel) Input).add(IconBlock);
                         ((JPanel) Input).add(NameBlock);
@@ -626,6 +646,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         ((JPanel) Input).add(TypeBlock);
                         ((JPanel) Input).add(SelectButtonBlock);
                         add(AddButtonBlock);
+                        add(PreviewButtonBlock);
 
                         setMaximumSize(new Dimension(350, 80));
                         setPreferredSize(new Dimension(350, 80));
