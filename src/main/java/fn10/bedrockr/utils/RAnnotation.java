@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
+import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 import jakarta.annotation.Nullable;
 
@@ -23,7 +24,7 @@ public class RAnnotation {
         boolean Optional();
 
         @Nullable
-        Class<? extends FieldFilter> Filter();
+        Class<? extends FieldFilter> Filter() default RegularStringFilter.class;
 
         @Nullable
         String displayName();
