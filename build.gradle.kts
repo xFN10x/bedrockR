@@ -18,7 +18,7 @@ sourceSets["main"].resources {
 }
 
 javafx {
-    version = "23"
+    version = "25"
     modules("javafx.controls", "javafx.swing", "javafx.web")
 }
 

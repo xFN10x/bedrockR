@@ -54,7 +54,6 @@ public class BlockGeometryDownloader {
                 .version(HttpClient.Version.HTTP_2).GET().build();
         HttpResponse<String> response = client.send(dataPathsReq, BodyHandlers.ofString());
 
-        VersionManifest mani = gson.fromJson(response.body(), VersionManifest.class);
 
         //uhh i dont think this will work
     }
