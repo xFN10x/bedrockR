@@ -38,7 +38,7 @@ public class SourceItemElement implements ElementSource<ItemFile> {
 
     public static ElementDetails getDetails() {
                 return new ElementDetails("Item ",
-                "<html>A basic item. Can be made as food, <br>block placer, or food..</html>",
+                "<html>A basic item. Can be made as a block<br>placer, and have custom visuals</html>",
                 new ImageIcon(ElementSource.class.getResource("/addons/element/Item.png")));
     }
 
