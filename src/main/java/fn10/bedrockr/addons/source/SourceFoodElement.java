@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 
-
 import javax.swing.ImageIcon;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
@@ -85,34 +84,24 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
     public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
         var frame = new RElementEditingScreen(Parent, "Food", this, getSerilizedClass(), parent,
                 RElementEditingScreen.DEFAULT_STYLE);
-
+        if (serilized == null)
+            serilized = new FoodFile();
         for (Field field : getSerilizedClass().getFields()) { // try to get fields
             try { // then add them
                 RElementValue rev = null;
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
-                    if (this.serilized != null) // create field with a file already there
-                        rev = new RElementValue(Parent,field.getType(),
-                                details.Filter() != null ? details.Filter().getConstructor().newInstance()
-                                        // if no filter, dont add one
-                                        : field.getType() == String.class ? new RegularStringFilter() : null,
-                                // if its a string however, add a basic filter
-                                field.getName(), // target
-                                details.displayName(), // display name
-                                details.Optional(),
-                                getSerilizedClass(),
-                                this.serilized,
-                                Workspace);
-                    else // create file without anything there
-                         // ---------------------------------------------------------------------
-                        rev = new RElementValue(Parent,field.getType(),
-                                details.Filter() != null ? details.Filter().getConstructor().newInstance()
-                                        : field.getType() == String.class ? new RegularStringFilter() : null,
-                                field.getName(), // target
-                                details.displayName(), // display name
-                                details.Optional(),
-                                getSerilizedClass(),
-                                Workspace);
+                    rev = new RElementValue(Parent, field.getType(),
+                            details.Filter() != null ? details.Filter().getConstructor().newInstance()
+                                    // if no filter, dont add one
+                                    : field.getType() == String.class ? new RegularStringFilter() : null,
+                            // if its a string however, add a basic filter
+                            field.getName(), // target
+                            details.displayName(), // display name
+                            details.Optional(),
+                            getSerilizedClass(),
+                            this.serilized,
+                            Workspace);
                     if (field.getAnnotation(RAnnotation.SpecialField.class) != null)
                         frame.setSpecialField(rev);
                     else
