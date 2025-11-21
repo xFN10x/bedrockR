@@ -244,7 +244,7 @@ public class RenderHandler extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         model = assetManager.loadModel("models/StandardBlock.obj");
-        System.out.println(cam.getAspect());
+        //System.out.println(cam.getAspect());
 
         buffer = new FrameBuffer(size, size, 1);
 

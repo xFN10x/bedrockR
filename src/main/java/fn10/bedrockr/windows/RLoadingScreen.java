@@ -61,7 +61,7 @@ public class RLoadingScreen extends RDialog {
 
         SwingUtilities.invokeLater(() -> {
             actualProgress += (100 / (double)Steps);
-            System.out.println(actualProgress);
+            //System.out.println(actualProgress);
             MainBar.setValue((int)actualProgress);
         });
     }

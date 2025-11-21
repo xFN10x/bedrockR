@@ -116,9 +116,9 @@ public class BlockTextures {
                 .uri(loc)
                 .version(HttpClient.Version.HTTP_2).GET().build();
         HttpResponse<InputStream> response = client.send(dataPathsReq, BodyHandlers.ofInputStream());
-        System.out.println(
-                "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/"
-                        + id + ".png");
+        //System.out.println(
+        //        "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/"
+        //                + id + ".png");
         return ImageIO.read(response.body());
     }
 
@@ -154,7 +154,7 @@ public class BlockTextures {
                 if (((LinkedTreeMap<String, String>) textures).containsKey("side")) {
                     Object texIdTop = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("up")).get("textures");
-                    System.out.println(texIdTop.getClass().getSimpleName());
+                    //System.out.println(texIdTop.getClass().getSimpleName());
                     if (List.class.isAssignableFrom(texIdTop.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdTop);
                         texIdTop = list.get(0);

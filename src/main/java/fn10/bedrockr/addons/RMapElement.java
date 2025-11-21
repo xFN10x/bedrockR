@@ -86,7 +86,6 @@ public class RMapElement {
             Help = Help.replaceAll("\n", "<br/>");
             Help = "<html>" + Help + "</html>";
         }
-        System.out.println(Help);
         this.HelpDescription = Help;
     }
 
@@ -99,7 +98,6 @@ public class RMapElement {
             Help = Help.replaceAll("\n", "<br/>");
             Help = "<html>" + Help + "</html>";
         }
-        System.out.println(Help);
         this.HelpDescription = Help;
         this.Filters = List.of(filters);
     }
