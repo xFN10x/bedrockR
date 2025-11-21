@@ -6,9 +6,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
+
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help;
+
 import javax.swing.JPopupMenu.Separator;
 
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
@@ -18,9 +25,15 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.windows.RElementEditingScreen;
+import fn10.bedrockr.windows.RItemSelector;
+import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RElementValue;
+import fn10.bedrockr.windows.componets.RItemValue;
 import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.interfaces.ValidatableValue;
 import jakarta.annotation.Nullable;
 
 public class SourceFoodElement implements ElementSource<FoodFile> {
@@ -87,7 +100,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
 
     @Override
     public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
-        var frame = new RElementEditingScreen(Parent, "Food", this, getSerilizedClass(), parent,
+        RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", this, getSerilizedClass(), parent,
                 RElementEditingScreen.DEFAULT_STYLE);
         if (serilized == null)
             serilized = new FoodFile();
@@ -104,7 +117,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
                 RElementValue rev = null;
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
                 if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
-                    rev = new RElementValue(Parent, field.getType(),
+                    rev = new RElementValue(frame, field.getType(),
                             details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                     // if no filter, dont add one
                                     : field.getType() == String.class ? new RegularStringFilter() : null,
@@ -115,17 +128,77 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
                             getSerilizedClass(),
                             this.serilized,
                             Workspace);
-                    if (field.getAnnotation(RAnnotation.SpecialField.class) != null)
-                        frame.setSpecialField(rev);
-                    else
-                        frame.addField(rev);
+                    frame.addField(rev);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
+                ErrorShower.showError(frame, "Failed to create a field for " + field.getName(), "Field Error", e);
             }
         }
+
+        RItemValue turnsInto = new RItemValue(Workspace, RItemValue.Type.Single, false);
+        if (serilized.EatingTurnsInto != null) {
+            try {
+                turnsInto.setButtonToItem(0, RItemSelector.getItemById(frame, serilized.EatingTurnsInto, Workspace));
+            } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
+                e.printStackTrace();
+                ErrorShower.showError(frame, "Failed to set item value.", e);
+            }
+        }
+        frame.InnerPane.add(new JLabel("Eating Turns Into"));
+        frame.InnerPane.add(turnsInto);
+        JButton help = new JButton("?");
+        help.putClientProperty("JButton.buttonType", "help");
+        help.addActionListener(ac -> {
+            JOptionPane.showMessageDialog(frame,
+                    "Specifies what this item turns into after eating. For example, a soup turns into a bowl. Leave blank to turn into nothing");
+        });
+        frame.InnerPane.add(help);
+
+        frame.addVaildations(turnsInto);
+        SourceFoodElement This = this;
+        frame.setCustomCreateFunction(new CustomCreateFunction() {
+
+            /**
+             * i copied the default one, now ill add that one item value
+             */
+            @Override
+            public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
+
+                try { // handle if there is no constructor
+                    for (ValidatableValue validatable : frame.Fields) { // add the fields
+                        if (validatable instanceof RElementValue elementValue) {
+                            if (!elementValue.getOptionallyEnabled()) { // if its not enabled, continue
+                                continue;
+                            } else
+                                try {
+                                    serilizedClass.getField(elementValue.getTarget()).set(serilized,
+                                            elementValue.getValue());
+                                    // try to set field ^
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(),
+                                            e);
+                                    continue;
+                                }
+                        }
+                    }
+                    if (!turnsInto.getItems().isEmpty())
+                        serilized.EatingTurnsInto = turnsInto.getItems().get(0).item;
+
+                    serilized.setDraft(isDraft);
+
+                    Listener.onElementCreate(This); // create
+                    Sindow.dispose();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    ErrorShower.showError(Parent, "Failed to create ElementSource",
+                            "Source Creation Error", ex);
+                }
+            }
+
+        });
 
         return frame;
     }
