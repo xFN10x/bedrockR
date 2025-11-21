@@ -1,11 +1,16 @@
 package fn10.bedrockr.addons.source;
 
+import java.awt.Dimension;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 
+import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.JSeparator;
+import javax.swing.JPopupMenu.Separator;
+
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
@@ -87,6 +92,14 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
         if (serilized == null)
             serilized = new FoodFile();
         for (Field field : getSerilizedClass().getFields()) { // try to get fields
+            if (field.getType().equals(Separator.class)) {
+                JSeparator sep = new JSeparator();
+                sep.setPreferredSize(new Dimension(700, 10));
+                frame.InnerPane.add(Box.createHorizontalStrut(1000));
+                frame.InnerPane.add(sep);
+                frame.InnerPane.add(Box.createHorizontalStrut(1000));
+                continue;
+            }
             try { // then add them
                 RElementValue rev = null;
                 var details = field.getAnnotation(RAnnotation.FieldDetails.class);
