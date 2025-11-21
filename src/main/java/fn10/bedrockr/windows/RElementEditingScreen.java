@@ -37,7 +37,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     private ElementCreationListener Listener;
     public JPanel InnerPane = new JPanel();
     private JScrollPane Pane = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     private JPanel SpecialPane = null;
     private SpringLayout SpecialPaneLay = new SpringLayout();
     public BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
@@ -127,13 +127,18 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         Lay.putConstraint(SpringLayout.SOUTH, Pane, -5, SpringLayout.NORTH, Sep);
         Lay.putConstraint(SpringLayout.NORTH, Pane, 5, SpringLayout.NORTH, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, Pane, 5, SpringLayout.WEST, getContentPane());
-        if (layout == DEFAULT_STYLE)
+        if (layout == DEFAULT_STYLE) {
+            InnerPane.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
+            InnerPane.setPreferredSize(new Dimension(150, 0));
+            
             Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.EAST, getContentPane());
-        if (layout == SPECIAL_AREA_STYLE) {
+        } else if (layout == SPECIAL_AREA_STYLE) {
+            InnerPane.setLayout(new BoxLayout(InnerPane, BoxLayout.Y_AXIS));
+            InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
+
             Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.HORIZONTAL_CENTER, getContentPane());
             SpecialPane = new JPanel();
             SpecialPane.setLayout(SpecialPaneLay);
-            SpecialPane.setBackground(Color.BLUE);
 
             Lay.putConstraint(SpringLayout.SOUTH, SpecialPane, 0, SpringLayout.NORTH, Sep);
             Lay.putConstraint(SpringLayout.NORTH, SpecialPane, 0, SpringLayout.NORTH, getContentPane());
@@ -143,14 +148,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             add(SpecialPane);
         }
 
-        // InnerPane.setMaximumSize(new Dimension(300,1110));
-        // InnerPane.setPreferredSize(new Dimension(300,1110));
-
-        if (layout == SPECIAL_AREA_STYLE)
-            InnerPane.setLayout(new BoxLayout(InnerPane, BoxLayout.Y_AXIS));
-        else
-            InnerPane.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
-        InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
+        Pane.getVerticalScrollBar().setUnitIncrement(16);
 
         add(CreateButton);
         add(DraftButton);
