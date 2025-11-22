@@ -102,7 +102,7 @@ public class Launcher {
         System.setErr(new PrintStream(new LoggingOutputStream(LOG, Level.SEVERE)));
         // try to add file handler
         try {
-            Handler fileHandler = new FileHandler(logloc, 10000, 1, true);
+            Handler fileHandler = new FileHandler(logloc, 20000000, 1, true);
             fileHandler.setFormatter(new RLogFormatter());
             fileHandler.setFilter(new RLogFilter());
             LOG.addHandler(fileHandler);
