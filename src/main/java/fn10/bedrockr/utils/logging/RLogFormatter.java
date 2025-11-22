@@ -1,5 +1,7 @@
 package fn10.bedrockr.utils.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Formatter;
@@ -22,10 +24,20 @@ public class RLogFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        return ANSI_GREEN + "(" + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
-                + " @ "
-                + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : " + ANSI_WHITE
-                + record.getMessage() + "\n";
+        if (record.getThrown() != null) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            record.getThrown().printStackTrace(pw);
+            return ANSI_RED + "("
+                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+                    + " @ "
+                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+                    + sw.toString();
+        } else
+            return ANSI_GREEN + "("
+                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+                    + " @ "
+                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : " + ANSI_WHITE
+                    + record.getMessage() + "\n";
     }
-
 }
