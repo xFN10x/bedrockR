@@ -1,10 +1,14 @@
 package fn10.bedrockr.windows;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,12 +16,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.naming.NameNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -40,6 +47,7 @@ import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.windows.base.RDialog;
+import fn10.bedrockr.windows.laf.BedrockrDark;
 
 public class RItemSelector extends RDialog {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -229,9 +237,9 @@ public class RItemSelector extends RDialog {
             ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
             for (ItemJsonEntry entry : itemEntrys) {
                 ItemJsonEntry building = entry;
-                //if (!building.name.startsWith("minecraft:")) 
-                    //building.name = "minecraft:" + entry.name;
-                
+                // if (!building.name.startsWith("minecraft:"))
+                // building.name = "minecraft:" + entry.name;
+
                 parsedEntrys.add(building);
             }
             vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
@@ -315,11 +323,20 @@ public class RItemSelector extends RDialog {
         for (ItemJsonEntry item : vanillaItems) {
             try {
                 JButton ToAdd = new JButton();
+                ToAdd.setMargin(new Insets(2, 1, 2, 1));
                 Dimension size = new Dimension(48, 48);
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
+                File proposedRender = Path
+                        .of(RFileOperations.getBaseDirectory(this, "cache", "renders").getAbsolutePath(),
+                                item.name + ".png")
+                        .toFile();
                 ToAdd.setText(item.displayName);
+                if (proposedRender.exists()) {
+                    ToAdd.setIcon(new ImageIcon(ImageIO.read(proposedRender).getScaledInstance(45, 45,
+                            BufferedImage.SCALE_AREA_AVERAGING)));
+                }
                 ToAdd.setToolTipText(item.displayName + " (" + item.name +
                         ")");
                 ToAdd.addActionListener(e -> {
