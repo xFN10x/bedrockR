@@ -179,12 +179,14 @@ public class Launcher {
         loading.ProgressText.setText("Setting up Blockly...");
         try {
             CountDownLatch latch = new CountDownLatch(1);
+            Platform.setImplicitExit(false);
             Platform.startup(() -> {
                 try {
                     WebEngine webEngine = new WebEngine();
-                    webEngine.load(Launcher.class.getResource("/blockly/blockly-minimized.html").toExternalForm());
+                                        BLOCKLY_MINI_WEBENGINE = webEngine;
                     webEngine.getLoadWorker().stateProperty().addListener(
                             new ChangeListener<Worker.State>() {
+                                {LOG.info("CHANGE LISTIENER STARTED");}
                                 @Override
                                 public void changed(
                                         ObservableValue<? extends javafx.concurrent.Worker.State> observable,
@@ -195,24 +197,21 @@ public class Launcher {
                                         webEngine
                                                 .executeScript(
                                                         RFileOperations.readResourceAsString("/blockly/blockly.js"));
-                                        BLOCKLY_MINI_WEBENGINE = webEngine;
                                         latch.countDown();
                                     } else if (newValue == Worker.State.FAILED) {
                                         Exception ex = new Exception("Blockly pane failed to load.");
 
                                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                                 "Exception thrown", ex);
-                                        loading.setAlwaysOnTop(false);
                                         ErrorShower.showError(loading, "Blockly Pane failed to load.", ex);
+                                        latch.countDown();
                                     } else {
-                                        Exception ex = new Exception("Blockly pane failed to load.");
-                                        Launcher.LOG.info("Unknown state: " + newValue);
-                                        ErrorShower.showError(loading, "Blockly Pane failed to load. Unknown state.",
-                                                ex);
+                                        Launcher.LOG.warning("Unknown state: " + newValue);
                                     }
-
                                 }
                             });
+                    LOG.warning("LOADING: " + RFileOperations.readResourceAsString("/blockly/blockly-minimized.html"));
+                    webEngine.loadContent(RFileOperations.readResourceAsString("/blockly/blockly-minimized.html"));
                 } catch (Exception e) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
