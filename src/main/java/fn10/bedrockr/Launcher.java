@@ -4,9 +4,11 @@
 package fn10.bedrockr;
 
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
+import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.utils.http.Format1Latest;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
@@ -47,6 +49,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.FlatLaf;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 public class Launcher {
 
@@ -60,6 +63,7 @@ public class Launcher {
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");
+    public static HttpClient client = HttpClient.newBuilder().build();
 
     public static void main(String[] args) {
         String ver = System.getProperty("java.version");
@@ -72,36 +76,37 @@ public class Launcher {
                     + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        RSplashScreen loading = new RSplashScreen();
-        loading.ProgressText.setText("Loading icon...");
         try {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui/Icon_huge.png"));
-            // ICONS = new Image[] {
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_16.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_27.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_32.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_64.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_128.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_256.png")));
-            ICONS.add(ImageIO.read(Launcher.class
-                    .getResourceAsStream("/ui/Icon_huge.png")));
-            // };
+            /*
+             * ICONS = new Image[] {
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_16.png")));
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_27.png")));
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_32.png")));
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_64.png")));
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_128.png")));
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_256.png")));
+             * ICONS.add(ImageIO.read(Launcher.class
+             * .getResourceAsStream("/ui/Icon_huge.png")));
+             * };
+             */
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
         }
+        RSplashScreen loading = new RSplashScreen();
+        loading.ProgressText.setText("Loading icon...");
 
         // set up logging
         loading.ProgressText.setText("Setting up logging...");
-        String logloc = RFileOperations.getBaseDirectory(null, File.separator + "logs").getAbsolutePath()
+        String logloc = RFileOperations.getBaseDirectory(loading, File.separator + "logs").getAbsolutePath()
                 + File.separator + "bedrockR-log-"
                 + System.currentTimeMillis() + ".log";
 
@@ -133,7 +138,7 @@ public class Launcher {
 
         // log stuff
         LOG.info("Logging to " + logloc);
-        LOG.info("Base Path: " + RFileOperations.getBaseDirectory(null).getAbsolutePath());
+        LOG.info("Base Path: " + RFileOperations.getBaseDirectory(loading).getAbsolutePath());
         LOG.info("Launch Args: " + String.join(",", args));
         LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
                 System.getProperty("java.vm.name")));
@@ -150,13 +155,13 @@ public class Launcher {
             BedrockrDark.setup();
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorShower.showError(null, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error", e);
+            ErrorShower.showError(loading, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error",
+                    e);
         }
 
         // try to see if this version is out of date
         loading.ProgressText.setText("Checking for updates...");
         try {
-            HttpClient client = HttpClient.newBuilder().build();
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(new URI("https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/latest.json"))
                     .version(HttpClient.Version.HTTP_2).GET().build();
@@ -229,6 +234,28 @@ public class Launcher {
 
         loading.ProgressText.setText("Setting up 3D...");
         RenderHandler.startup();
+
+        loading.ProgressText.setText("Downloading Block textures...");
+        HttpRequest latestMCDataVerReq = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
+                .version(HttpClient.Version.HTTP_2).GET().build();
+        try {
+            HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
+            SettingsFile settings = SettingsFile
+                    .load(loading);
+            if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
+                    || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
+                            .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
+                try {
+                    BlockTextures.downloadAllBlockTextures(loading).await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return;
+        }
 
         loading.ProgressText.setText("Checking if opening workspace...");
         if (args.length >= 1) {

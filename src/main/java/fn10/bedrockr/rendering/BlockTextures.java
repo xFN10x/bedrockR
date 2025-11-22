@@ -11,24 +11,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Window;
 
+import com.ctc.wstx.shaded.msv_core.util.Uri;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 
-import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.windows.*;
 import fn10.bedrockr.windows.RBlockSelector.BlockJsonEntry;
-import fn10.bedrockr.windows.base.RFrame;
 
 public class BlockTextures {
     private static final Gson gson = new GsonBuilder().create();
@@ -64,21 +62,25 @@ public class BlockTextures {
         return terrianTextureJson;
     }
 
-    public static void main(String[] args) {
-        RenderHandler.startup();
-        RFrame test = new RFrame(JFrame.EXIT_ON_CLOSE, "Test", new Dimension(300, 300), false);
-        JButton button = new JButton("load");
+    /*
+     * public static void main(String[] args) {
+     * RenderHandler.startup();
+     * RFrame test = new RFrame(JFrame.EXIT_ON_CLOSE, "Test", new Dimension(300,
+     * 300), false);
+     * JButton button = new JButton("load");
+     * 
+     * button.addActionListener(ac -> {
+     * downloadAllBlockTextures(test, "bedrockR - Testing");
+     * });
+     * test.add(button);
+     * test.setVisible(true);
+     * }
+     */
 
-        button.addActionListener(ac -> {
-            downloadAllBlockTextures(test, "bedrockR - Testing");
-        });
-        test.add(button);
-        test.setVisible(true);
-    }
-
-    public static void downloadAllBlockTextures(Window doingThis, String workspace) {
+    public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
         if (RBlockSelector.vanillaItems == null)
-            RBlockSelector.downloadVanillaBlocks(RFileOperations.getWorkspaceFile(doingThis, workspace));
+            RBlockSelector.downloadVanillaBlocks();
+        CountDownLatch latch = new CountDownLatch(1);
         RLoadingScreen loading = new RLoadingScreen(doingThis);
         SwingUtilities.invokeLater(() -> {
             loading.setVisible(true);
@@ -88,14 +90,29 @@ public class BlockTextures {
             new Thread(() -> {
                 for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaItems) {
                     try {
-                        loading.increaseProgressBySteps("");
+                        loading.increaseProgressBySteps("Downloading " + vanillaItems.name + "'s textures...");
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                     renderBlock(vanillaItems.name);
                 }
+                latch.countDown();
+                SettingsFile settings = SettingsFile.load(doingThis);
+                HttpRequest latestVerReq = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
+                        .version(HttpClient.Version.HTTP_2).GET().build();
+                try {
+                    HttpResponse<String> response = client.send(latestVerReq, BodyHandlers.ofString());
+                    settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Double) gson
+                            .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                settings.save(doingThis);
             }).start();
         });
+        return latch;
     }
 
     /**
@@ -116,9 +133,9 @@ public class BlockTextures {
                 .uri(loc)
                 .version(HttpClient.Version.HTTP_2).GET().build();
         HttpResponse<InputStream> response = client.send(dataPathsReq, BodyHandlers.ofInputStream());
-        //System.out.println(
-        //        "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/"
-        //                + id + ".png");
+        // System.out.println(
+        // "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/"
+        // + id + ".png");
         return ImageIO.read(response.body());
     }
 
@@ -155,7 +172,7 @@ public class BlockTextures {
                 if (((LinkedTreeMap<String, String>) textures).containsKey("side")) {
                     Object texIdTop = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("up")).get("textures");
-                    //System.out.println(texIdTop.getClass().getSimpleName());
+                    // System.out.println(texIdTop.getClass().getSimpleName());
                     if (List.class.isAssignableFrom(texIdTop.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdTop);
                         texIdTop = list.get(0);

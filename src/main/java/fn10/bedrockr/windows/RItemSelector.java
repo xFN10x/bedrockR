@@ -203,7 +203,7 @@ public class RItemSelector extends RDialog {
         throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist.");
     }
 
-    public static void downloadVanillaItems(WorkspaceFile workspace) {
+    public static void downloadVanillaItems() {
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
@@ -213,7 +213,7 @@ public class RItemSelector extends RDialog {
             HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
             HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                    .get(workspace.MinimumEngineVersion);
+                    .get(RNewAddon.PICKABLE_VERSIONS[0]);
 
             String path = versionPaths.get("items");
 

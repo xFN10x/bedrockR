@@ -43,8 +43,6 @@ public class ItemComponents implements RMapElementProvider {
      * (seperate) https://wiki.bedrock.dev/items/item-components#enchantable
      * https://wiki.bedrock.dev/items/item-components#entity-placer
      * https://wiki.bedrock.dev/items/item-components#fire-resistant
-     * (seperate) https://wiki.bedrock.dev/items/item-components#food &
-     * https://wiki.bedrock.dev/items/custom-food
      * 
      * https://wiki.bedrock.dev/items/item-components#fuel
      * https://wiki.bedrock.dev/items/item-components#repairable
@@ -67,7 +65,8 @@ public class ItemComponents implements RMapElementProvider {
                 new RMapElement("Tool Animations", "minecraft:hand_equipped", Boolean.class,
                         "Determines if the item is held like a\ntool"),
                 new RStringDropdownMapElement("Name Colour", "minecraft:hover_text_color",
-                        "Determines the color of the item name\nwhen hovering over it.", "black",
+                        "Determines the color of the item name\nwhen hovering over it.",
+                        "black",
                         "dark_blue", "dark_green", "dark_aqua", "dark_red",
                         "dark_purple", "gold", "gray", "dark_gray", "blue", "green", "aqua",
                         "red",

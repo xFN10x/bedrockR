@@ -133,7 +133,7 @@ public class RBlockSelector extends RDialog {
         throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist.");
     }
 
-    public static void downloadVanillaBlocks(WorkspaceFile workspace) {
+    public static void downloadVanillaBlocks() {
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
@@ -143,7 +143,7 @@ public class RBlockSelector extends RDialog {
             HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
             HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                    .get(workspace.MinimumEngineVersion);
+                    .get(RNewAddon.PICKABLE_VERSIONS[0]);
 
             String path = versionPaths.get("blocks");
 
@@ -159,9 +159,6 @@ public class RBlockSelector extends RDialog {
             ArrayList<BlockJsonEntry> parsedEntrys = new ArrayList<BlockJsonEntry>();
             for (BlockJsonEntry entry : itemEntrys) {
                 BlockJsonEntry building = entry;
-                // if (!building.name.startsWith("minecraft:"))
-                // building.name = "minecraft:" + entry.name;
-
                 parsedEntrys.add(building);
             }
             vanillaItems = parsedEntrys.toArray(new BlockJsonEntry[0]);

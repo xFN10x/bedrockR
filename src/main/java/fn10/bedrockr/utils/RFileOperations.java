@@ -45,7 +45,7 @@ public class RFileOperations {
     @SuppressWarnings("unused")
     private static String COMMOJANG = null;
     static {
-        var settings = SettingsFile.getSettings(null);
+        var settings = SettingsFile.load(null);
         COMMOJANG = settings.comMojangPath;
         // Launcher.LOG.info(COMMOJANG);
     }
@@ -248,7 +248,7 @@ public class RFileOperations {
                 platforms,
                 "Windows");
 
-        var settings = SettingsFile.getSettings(doingThis);
+        var settings = SettingsFile.load(doingThis);
         switch (platformSelection) {
             case 0:
 
@@ -260,7 +260,7 @@ public class RFileOperations {
                             "oops", JOptionPane.ERROR_MESSAGE);
                     break;
                 }
-                settings.buildFile(doingThis);
+                settings.save(doingThis);
 
                 JOptionPane.showMessageDialog(doingThis,
                         "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
@@ -277,7 +277,7 @@ public class RFileOperations {
                             "oops", JOptionPane.ERROR_MESSAGE);
                     break;
                 }
-                settings.buildFile(doingThis);
+                settings.save(doingThis);
 
                 JOptionPane.showMessageDialog(doingThis,
                         "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
@@ -305,8 +305,8 @@ public class RFileOperations {
             loading.setVisible(true);
         });
         
-        RItemSelector.downloadVanillaItems(((WorkspaceFile) WPF.getSerilized()));
-        RBlockSelector.downloadVanillaBlocks(((WorkspaceFile) WPF.getSerilized()));
+        RItemSelector.downloadVanillaItems();
+        RBlockSelector.downloadVanillaBlocks();
 
         // get items ready for use
         SwingUtilities.invokeLater(() -> {
@@ -321,7 +321,7 @@ public class RFileOperations {
                 if (ask == JOptionPane.YES_OPTION) {
                     showMCSyncPopup(doingThis, WPF);
                 }
-            } else if (!new File(SettingsFile.getSettings(doingThis).comMojangPath).exists()) {
+            } else if (!new File(SettingsFile.load(doingThis).comMojangPath).exists()) {
                 var ask = JOptionPane.showConfirmDialog(doingThis,
                         "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
                         "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -467,7 +467,7 @@ public class RFileOperations {
      * @param doingThis - the window to be used for debugging
      */
     public static void mcSync(java.awt.Window doingThis) {
-        SettingsFile settings = SettingsFile.getSettings(doingThis);
+        SettingsFile settings = SettingsFile.load(doingThis);
         try {
             String bpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "BP"
                     + File.separator;
@@ -627,7 +627,7 @@ public class RFileOperations {
             e.printStackTrace();
             ErrorShower.showError(doingThis, "Failed to execute Minecraft Sync", e.getMessage(), e);
         } finally {
-            settings.buildFile(doingThis); // finally
+            settings.save(doingThis); // finally
         }
     }
 
