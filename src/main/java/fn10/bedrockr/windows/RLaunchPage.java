@@ -23,7 +23,30 @@ import java.io.IOException;
 import java.net.URI;
 
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
-    public JPanel ProjectsPart = new JPanel();
+    private JPanel ProjectsPart = new JPanel();
+    private JScrollPane ProjectsScrollPart = new JScrollPane(ProjectsPart, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+    private Greeting greeting = Greetings.GetGreeting();
+    private JLabel greetingText = new JLabel(greeting.Text);
+
+    private JSeparator seperater = new JSeparator(JSeparator.HORIZONTAL);
+
+    private JLabel othergreeting = new JLabel(
+            "<html>Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and <br>maybe check out the wiki.</html>");
+    private WrapLayout InnerLay = new WrapLayout(1, 8, 6);
+
+    private JMenuBar menuBar = new JMenuBar();
+
+    private JMenu addonsMenu = new JMenu("Addons");
+    private JMenu helpMenu = new JMenu("Help");
+
+    private Desktop desk = Desktop.getDesktop();
+    private JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
+    private JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
+    private JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
+    private JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
+    private JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
 
     public RLaunchPage(Dimension Size) {
         super(
@@ -33,36 +56,22 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 false);
 
         // Add things to the window.
-        Greeting greetingtext = Greetings.GetGreeting();
-        JLabel greeting = new JLabel(greetingtext.Text);
-        greeting.setFont(RFonts.RegMinecraftFont.deriveFont(2, greetingtext.Size));
-        greeting.setSize(Size.width, 100);
-        greeting.setHorizontalTextPosition(SwingConstants.LEFT);
+        greetingText.setFont(RFonts.RegMinecraftFont.deriveFont(2, greeting.Size));
+        greetingText.setSize(Size.width, 100);
+        greetingText.setHorizontalTextPosition(SwingConstants.LEFT);
 
-        JSeparator seperater = new JSeparator(JSeparator.HORIZONTAL);
         seperater.setPreferredSize(new Dimension(400, 3));
 
-        JLabel othergreeting = new JLabel(
-                "<html>Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and <br>maybe check out the wiki.</html>");
         othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
 
-        WrapLayout gride = new WrapLayout(1, 8, 6);
+        ProjectsScrollPart.setPreferredSize(new Dimension(540, 180));
+        ProjectsPart.setBackground(Color.darkGray.darker());
+        ProjectsPart.setLayout(InnerLay);
+        ProjectsPart.setBorder(new FlatLineBorder(new Insets(2, 2, 2, 2), Color.WHITE, 0, 16));
+        ProjectsScrollPart.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.WHITE, 1, 16));
+        ProjectsScrollPart.getVerticalScrollBar().setUnitIncrement(16);
 
-        Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
-
-        ProjectsPart.setPreferredSize(new Dimension(540, 180));
-        ProjectsPart.setBackground(BGC);
-        ProjectsPart.setLayout(gride);
-        ProjectsPart.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.WHITE, 1, 16));
-
-        Desktop desk = Desktop.getDesktop();
-        JMenuBar menuBar = new JMenuBar();
-        JMenu addonsMenu = new JMenu("Addons");
-        JMenu helpMenu = new JMenu("Help");
-        // newprojectbutton.addActionListener(this);
-        JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
         newaddonButton.addActionListener(this);
-        JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
         siegeButton.addActionListener(ac -> {
             try {
                 desk.browse(URI.create("https://siege.hackclub.com/armory/1948"));
@@ -71,7 +80,6 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
         somButton.addActionListener(ac -> {
             try {
                 desk.browse(URI.create("https://summer.hackclub.com/projects/703"));
@@ -80,7 +88,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
+
         gitButton.addActionListener(ac -> {
             try {
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
@@ -89,7 +97,6 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
         helpButton.addActionListener(ac -> {
             try {
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
@@ -109,25 +116,24 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         menuBar.add(addonsMenu);
         menuBar.add(helpMenu);
 
-        gride.layoutContainer(ProjectsPart);
         // seperater
-        Lay.putConstraint(SpringLayout.NORTH, seperater, 10, SpringLayout.SOUTH, greeting);
+        Lay.putConstraint(SpringLayout.NORTH, seperater, 10, SpringLayout.SOUTH, greetingText);
         // greeting
-        Lay.putConstraint(SpringLayout.WEST, greeting, 30, SpringLayout.WEST, this);
-        Lay.putConstraint(SpringLayout.NORTH, greeting, 30, SpringLayout.NORTH, this);
+        Lay.putConstraint(SpringLayout.WEST, greetingText, 30, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.NORTH, greetingText, 30, SpringLayout.NORTH, this);
         // other greeting
         Lay.putConstraint(SpringLayout.NORTH, othergreeting, 10, SpringLayout.SOUTH, seperater);
         Lay.putConstraint(SpringLayout.WEST, othergreeting, 30, SpringLayout.WEST, this);
         // projects part
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, ProjectsPart, 0, SpringLayout.VERTICAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, ProjectsPart, -7, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, ProjectsScrollPart, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, ProjectsScrollPart, -7, SpringLayout.HORIZONTAL_CENTER, this);
 
         refresh();
 
         setJMenuBar(menuBar);
-        add(greeting);
+        add(greetingText);
         add(othergreeting);
-        add(ProjectsPart);
+        add(ProjectsScrollPart);
 
         add(seperater);
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
@@ -148,7 +154,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                         ProjectsPart.revalidate();
                     });
                 }
-            
+
         }).start();
     }
 
