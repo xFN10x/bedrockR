@@ -59,8 +59,6 @@ public class Launcher {
 
     public static WebEngine BLOCKLY_MINI_WEBENGINE;
 
-    public static List<Image> ICONS = new ArrayList<Image>();
-
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getLogger("bedrockR");
     public static HttpClient client = HttpClient.newBuilder().build();
@@ -79,24 +77,6 @@ public class Launcher {
         try {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui/Icon_huge.png"));
-            /*
-             * ICONS = new Image[] {
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_16.png")));
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_27.png")));
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_32.png")));
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_64.png")));
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_128.png")));
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_256.png")));
-             * ICONS.add(ImageIO.read(Launcher.class
-             * .getResourceAsStream("/ui/Icon_huge.png")));
-             * };
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
