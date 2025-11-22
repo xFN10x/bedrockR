@@ -96,7 +96,7 @@ public class RFileOperations {
             try {
                 return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
                 return null;
             }
@@ -119,7 +119,7 @@ public class RFileOperations {
         try {
             return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
             return null;
         }
@@ -135,7 +135,7 @@ public class RFileOperations {
         try {
             return Files.readString(Path.of(RFileOperations.class.getResource(resource).toURI()));
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
         }
     }
@@ -177,7 +177,7 @@ public class RFileOperations {
             try {
                 Files.createDirectories(folder);
             } catch (IOException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
@@ -214,7 +214,7 @@ public class RFileOperations {
                 var source = new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
                 return source;
             } catch (IOException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(doingThis, "Failed to get resource file.", e.getMessage(), e);
                 return null;
             }
@@ -372,7 +372,7 @@ public class RFileOperations {
             } else
                 return file;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
         }
         return BASE_DIRECTORY;
@@ -393,7 +393,7 @@ public class RFileOperations {
                 return BASE_DIRECTORY;
         } catch (Exception e) {
             ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -444,7 +444,7 @@ public class RFileOperations {
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
             ErrorShower.showError(windowDoingThis, "IO Error", "Failed to get WP File", e);
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
 
@@ -573,7 +573,7 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, bpDestPath);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", bpDestPath.getPath(),
                                 e);
                     }
@@ -607,7 +607,7 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, rpDestPath);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", rpDestPath.getPath(),
                                 e);
                     }
@@ -624,7 +624,7 @@ public class RFileOperations {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to execute Minecraft Sync", e.getMessage(), e);
         } finally {
             settings.save(doingThis); // finally
@@ -691,7 +691,7 @@ public class RFileOperations {
                 return srcWPF;
 
             } catch (Exception e) { // handle exception
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError((Frame) loading.getParent(),
                         "Exepection, with path " + wsFolder.getAbsolutePath(),
                         "IO Error", e);
@@ -741,7 +741,7 @@ public class RFileOperations {
 
                 building.add(source.getFromJSON(Files.readString(file.toPath())));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         return building.toArray(new ElementFile[0]);

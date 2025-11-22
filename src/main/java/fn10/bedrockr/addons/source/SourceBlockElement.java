@@ -71,7 +71,7 @@ public class SourceBlockElement implements ElementSource<BlockFile> {
             fileWriter.close();
             return file;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -120,7 +120,7 @@ public class SourceBlockElement implements ElementSource<BlockFile> {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
             }
         }

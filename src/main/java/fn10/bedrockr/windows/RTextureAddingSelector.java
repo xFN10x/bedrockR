@@ -94,7 +94,7 @@ public class RTextureAddingSelector extends RDialog {
                     InnerPanel.add(ToAdd);
                 }
             } catch (Exception e1) {
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         }
 

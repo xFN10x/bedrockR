@@ -195,7 +195,7 @@ public class RElementMapValue extends JPanel {
                         InputField.getClass().getName() + " does not suppot type " + rMapElement.Type.getName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(this, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
         }
     }
@@ -243,7 +243,7 @@ public class RElementMapValue extends JPanel {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(this, "Failed to get value of Map Entry.", e.getMessage(), e);
             return null;
         }

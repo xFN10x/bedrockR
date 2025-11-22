@@ -79,10 +79,10 @@ public class RFrame extends JFrame {
                 Desktop.getDesktop().browse(new URI("https://siege.hackclub.com/armory/1948"));
             } catch (IOException e1) {
 
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             } catch (URISyntaxException e1) {
 
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
 
         });
@@ -91,10 +91,10 @@ public class RFrame extends JFrame {
                 Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR"));
             } catch (IOException e1) {
 
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             } catch (URISyntaxException e1) {
 
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         });
 

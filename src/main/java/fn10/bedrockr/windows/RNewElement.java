@@ -69,7 +69,7 @@ public class RNewElement extends RDialog implements ActionListener {
                     }
                 }));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError((Frame) getParent(), "error", e);
                 continue;
             }

@@ -169,7 +169,7 @@ public class RBlockSelector extends RDialog {
             vanillaItems = parsedEntrys.toArray(new BlockJsonEntry[0]);
             Arrays.sort(vanillaItems);
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 
@@ -234,7 +234,7 @@ public class RBlockSelector extends RDialog {
                                 .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
                                 .toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
-                        e1.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
                     building.Texture = icon;
@@ -274,7 +274,7 @@ public class RBlockSelector extends RDialog {
                 InnerPanel.add(ToAdd);
 
             } catch (Exception e1) {
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         }
 

@@ -95,7 +95,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
                     Launcher.LOG.info("Deleting script that already exists: " + set.getValue());
                     Files.deleteIfExists(Path.of(rootPath, set.getValue()));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         }

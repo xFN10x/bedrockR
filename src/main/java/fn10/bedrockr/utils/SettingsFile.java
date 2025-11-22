@@ -30,7 +30,7 @@ public class SettingsFile {
             Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                     StandardOpenOption.WRITE);
         } catch (IOException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to save global settings", "IO Error", e);
         }
 
@@ -44,7 +44,7 @@ public class SettingsFile {
             }
             return gson.fromJson(Files.readString(file), SettingsFile.class);
         } catch (JsonSyntaxException | IOException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to get global settings", "IO Error", e);
             return null;
         }

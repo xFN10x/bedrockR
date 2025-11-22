@@ -104,14 +104,14 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
                         path.toFile(),
                         finishedCode, StandardCharsets.UTF_8,true);
             } catch (IOException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(null, "Failed to write script.", e);
             }
         });
         try {
             latch.await(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 

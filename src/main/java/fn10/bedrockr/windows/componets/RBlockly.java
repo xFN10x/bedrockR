@@ -63,14 +63,14 @@ public class RBlockly extends JFXPanel {
                 try {
                     execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             });
         else
             try {
                 execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
     }
 
@@ -151,7 +151,7 @@ public class RBlockly extends JFXPanel {
                             }
                         });
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
     }

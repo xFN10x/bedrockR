@@ -64,7 +64,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         try {
             ChosenIconFile = new File(RNewAddon.class.getResource("/addons/DefaultIcon.png").toURI());
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         AddonIcon.setSize(new Dimension(300, 300));
@@ -173,7 +173,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                     AddonIcon.setIcon(ChosenIcon);
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
 
             } catch (Exception ex) {

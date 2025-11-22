@@ -73,7 +73,7 @@ public class RAddon extends JPanel implements MouseListener {
             resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             if (step == 0) {
                 return;
             } else if (step == 1) {
@@ -98,7 +98,7 @@ public class RAddon extends JPanel implements MouseListener {
                     resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
                 } catch (Exception e2) {
-                    e2.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
                     BI = null;
                     resizedImage = null;
                     return;
@@ -179,7 +179,7 @@ public class RAddon extends JPanel implements MouseListener {
                             "The Addon " + WPFile.workspaceName() + " has been deleted.");
                     parent.refresh();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         });
