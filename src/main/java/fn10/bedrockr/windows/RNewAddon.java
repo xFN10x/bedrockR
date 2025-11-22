@@ -2,6 +2,7 @@ package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -42,14 +43,13 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             "1.21.120",
             "1.21.130",
     };
-    protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
-            getClass().getResource("/addons/DefaultIcon.png"),
+    protected Image ChosenIcon = ImageUtilites.ResizeImage(
+            new ImageIcon(getClass().getResource("/addons/DefaultIcon.png")).getImage(),
             250, 250);
-    protected File ChosenIconFile;
     protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
-    protected JLabel AddonIcon = new JLabel(ChosenIcon);
+    protected JLabel AddonIcon = new JLabel(new ImageIcon(ChosenIcon));
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
     protected JTextField ModPrefixInput = new JTextField("my_mod");
@@ -61,11 +61,6 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 DISPOSE_ON_CLOSE,
                 "New Addon",
                 new Dimension(459, 380));
-        try {
-            ChosenIconFile = new File(RNewAddon.class.getResource("/addons/DefaultIcon.png").toURI());
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
 
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -164,13 +159,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             try {
                 fileChooser.setDialogTitle("Choose Addon's Icon");
                 fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image files", "png"));
-                ;
                 fileChooser.showOpenDialog(this);
                 try {
                     File file = fileChooser.getSelectedFile();
-                    ChosenIconFile = file;
-                    ChosenIcon = ImageUtilites.ResizeIcon(new ImageIcon(ImageIO.read(file)), 250, 250);
-                    AddonIcon.setIcon(ChosenIcon);
+                    ChosenIcon = ImageIO.read(file);
+                    AddonIcon.setIcon(new ImageIcon(ChosenIcon));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -181,8 +174,8 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             }
         } else if (e.getActionCommand() == "create") {
 
-            if (ChosenIconFile == null) {
-                JOptionPane.showMessageDialog(this, "Please select a file", "error, thanks lince",
+            if (ChosenIcon == null) {
+                JOptionPane.showMessageDialog(this, "Please select a file", "No Addon icon selected",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -203,7 +196,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
                                 imageExtension, ModPrefixInput.getText()),
 
-                        ChosenIconFile);
+                        ChosenIcon);
 
                 if (workspace != null) {
                     RFileOperations.openWorkspace(((Frame) this.getParent()), workspace);

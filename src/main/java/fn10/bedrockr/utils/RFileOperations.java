@@ -2,7 +2,9 @@ package fn10.bedrockr.utils;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -134,7 +137,8 @@ public class RFileOperations {
      */
     public static String readResourceAsString(String resource) {
         try {
-            return new String(RFileOperations.class.getResourceAsStream(resource).readAllBytes(), StandardCharsets.UTF_8);
+            return new String(RFileOperations.class.getResourceAsStream(resource).readAllBytes(),
+                    StandardCharsets.UTF_8);
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
@@ -298,42 +302,42 @@ public class RFileOperations {
      */
     public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
         new Thread(() -> {
-        RWorkspace workspaceView = new RWorkspace(WPF);
+            RWorkspace workspaceView = new RWorkspace(WPF);
 
-        RLoadingScreen loading = new RLoadingScreen(doingThis);
-        loading.setAlwaysOnTop(true);
-        SwingUtilities.invokeLater(() -> {
-            loading.setVisible(true);
-        });
-        
-        RItemSelector.downloadVanillaItems();
-        RBlockSelector.downloadVanillaBlocks();
+            RLoadingScreen loading = new RLoadingScreen(doingThis);
+            loading.setAlwaysOnTop(true);
+            SwingUtilities.invokeLater(() -> {
+                loading.setVisible(true);
+            });
 
-        // get items ready for use
-        SwingUtilities.invokeLater(() -> {
-            loading.setVisible(false);
-            if (doingThis != null)
-                doingThis.dispose();
-            workspaceView.setVisible(true);
-            if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
-                var ask = JOptionPane.showConfirmDialog(doingThis,
-                        "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
-                        "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                if (ask == JOptionPane.YES_OPTION) {
-                    showMCSyncPopup(doingThis, WPF);
+            RItemSelector.downloadVanillaItems();
+            RBlockSelector.downloadVanillaBlocks();
+
+            // get items ready for use
+            SwingUtilities.invokeLater(() -> {
+                loading.setVisible(false);
+                if (doingThis != null)
+                    doingThis.dispose();
+                workspaceView.setVisible(true);
+                if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
+                    var ask = JOptionPane.showConfirmDialog(doingThis,
+                            "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
+                            "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (ask == JOptionPane.YES_OPTION) {
+                        showMCSyncPopup(doingThis, WPF);
+                    }
+                } else if (!new File(SettingsFile.load(doingThis).comMojangPath).exists()) {
+                    var ask = JOptionPane.showConfirmDialog(doingThis,
+                            "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
+                            "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (ask == JOptionPane.YES_OPTION) {
+                        showMCSyncPopup(doingThis, WPF);
+                    } else {
+                        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
+                    }
                 }
-            } else if (!new File(SettingsFile.load(doingThis).comMojangPath).exists()) {
-                var ask = JOptionPane.showConfirmDialog(doingThis,
-                        "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
-                        "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                if (ask == JOptionPane.YES_OPTION) {
-                    showMCSyncPopup(doingThis, WPF);
-                } else {
-                    ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
-                }
-            }
-            CURRENT_WORKSPACE = WPF.getSerilized();
-        });
+                CURRENT_WORKSPACE = WPF.getSerilized();
+            });
         }).start();
     }
 
@@ -643,7 +647,7 @@ public class RFileOperations {
      */
     public static SourceWorkspaceFile createWorkspace(RLoadingScreen loading, // String workspaceName, String
                                                                               // minimumVersion)
-            WorkspaceFile wpf, File addonIcon) throws IOException {
+            WorkspaceFile wpf, Image addonIcon) throws IOException {
 
         String[] wsFolders = {
                 File.separator + "elements" + File.separator,
@@ -684,10 +688,17 @@ public class RFileOperations {
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
                 srcWPF.buildJSONFile((Frame) loading.getParent(), wpf.WorkspaceName);
 
-                File srcIcon = new File(wsFolder.getAbsolutePath() + File.separator + "icon." + wpf.IconExtension);
+                File srcIcon = Path.of(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension).toFile();
+                if (!srcIcon.exists())
+                    if (!srcIcon.createNewFile())
+                        throw new IOException("Failed to create source addon icon file");
+                    
                 trying = srcIcon;
 
-                FileUtils.copyFile(addonIcon, srcIcon);
+                BufferedImage bi = new BufferedImage(addonIcon.getWidth(loading), addonIcon.getHeight(loading),
+                        BufferedImage.TYPE_INT_RGB);
+                bi.getGraphics().drawImage(addonIcon, 0, 0, loading);
+                ImageIO.write(bi, wpf.IconExtension, srcIcon);
 
                 return srcWPF;
 
