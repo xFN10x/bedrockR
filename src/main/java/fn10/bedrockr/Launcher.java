@@ -214,7 +214,7 @@ public class Launcher {
                                 }
                             });
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             });
             try {
