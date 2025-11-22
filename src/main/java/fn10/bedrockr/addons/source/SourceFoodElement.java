@@ -14,8 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help;
-
 import javax.swing.JPopupMenu.Separator;
 
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;

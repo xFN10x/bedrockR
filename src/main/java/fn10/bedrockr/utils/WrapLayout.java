@@ -12,9 +12,7 @@ import javax.swing.SwingUtilities;
  * FlowLayout subclass that fully supports wrapping of components.
  */
 public class WrapLayout extends FlowLayout {
-	private Dimension preferredLayoutSize;
 	// this isnt taken
-	private int maxw = Integer.MAX_VALUE;
 
 	/**
 	 * Constructs a new <code>WrapLayout</code> with a left

@@ -19,7 +19,6 @@ import javax.swing.SwingUtilities;
 import java.awt.Image;
 import java.awt.Window;
 
-import com.ctc.wstx.shaded.msv_core.util.Uri;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;

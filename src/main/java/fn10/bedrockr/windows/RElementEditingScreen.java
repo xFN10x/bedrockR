@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JViewport;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.Launcher;
