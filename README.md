@@ -9,20 +9,18 @@ A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
 ## Why?
 
-Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavliy inspired by MCreator, and how it doesn't have the best Bedrock modding in it. 
+Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavliy inspired by MCreator, and how it doesn't have the best Bedrock modding in it.
 
 **bedrockR is still in alpha, things can change and feedback is greatly appreciated!**
 
-**(A bedrockR tutorial is [here](https://github.com/xFN10x/bedrockR/wiki))**
+**(A bedrockR tutorial is [on the wiki](https://github.com/xFN10x/bedrockR/wiki))**
 
-#### Tip: Using the Jar
+**Tip: Using the Jar**
+Using the Release Jar can be useful if there isn't a build for your platform, or for if you just want to try out bedrockR. If you already have a JDK installed, make sure it is Java 25, most downloads will just lead straight to java 8.
 
-Using the Release Jar, can be useful if there isnt a build for your platform, or for if you just want to try out bedrockR. If you already have a JDK installed, make sure it is Java 21, most downloads will just lead straight to java 8.
-
-Go [here](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21) for a JDK I reccomend.
+Go [to Microsoft's builds of java](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-25) for a JDK I reccomend.
 
 ## Source Code
-
 
 bedrockR is made with Java 21, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
 
