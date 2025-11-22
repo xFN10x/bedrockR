@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -133,7 +134,7 @@ public class RFileOperations {
      */
     public static String readResourceAsString(String resource) {
         try {
-            return Files.readString(Path.of(RFileOperations.class.getResource(resource).toURI()));
+            return FileUtils.readFileToString(new File(RFileOperations.class.getResource(resource).toExternalForm()), StandardCharsets.UTF_8);
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
