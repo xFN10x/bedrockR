@@ -130,7 +130,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 dispose();
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 if (ex.getCause() != null) {
                     ErrorShower.showError((Frame) getParent(),
                             "Failed to create component. " + ex.getCause().getMessage() + "\n\n",

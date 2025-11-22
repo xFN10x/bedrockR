@@ -177,7 +177,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
             }
         } else if (e.getActionCommand() == "create") {
 
@@ -213,7 +213,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                     throw new Exception();
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(((Frame) getParent()), "Failed to make new addon.", "Grrrr", ex);
             }
 

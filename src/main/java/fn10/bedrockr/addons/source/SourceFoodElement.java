@@ -190,7 +190,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
                     Listener.onElementCreate(This); // create
                     Sindow.dispose();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                     ErrorShower.showError(Parent, "Failed to create ElementSource",
                             "Source Creation Error", ex);
                 }

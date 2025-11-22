@@ -142,7 +142,7 @@ public class RBlockly extends JFXPanel {
                                 } else if (newValue == Worker.State.FAILED) {
                                     Exception ex = new Exception("Blockly pane failed to load.");
 
-                                    ex.printStackTrace();
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                                     ErrorShower.showError(getParent(), "Blockly Pane failed to load.", ex);
 
                                 } else {
