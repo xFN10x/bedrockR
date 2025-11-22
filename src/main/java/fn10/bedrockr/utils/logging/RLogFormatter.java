@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Formatter;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 public class RLogFormatter extends Formatter {
@@ -15,6 +16,7 @@ public class RLogFormatter extends Formatter {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_ORANGE = "\u001B[38;5;214m";
 
     @Override
     public String format(LogRecord record) {
@@ -22,11 +24,24 @@ public class RLogFormatter extends Formatter {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             record.getThrown().printStackTrace(pw);
-            return ANSI_RED + "("
+            if (record.getLevel() == Level.WARNING)
+                return ANSI_ORANGE + "("
+                        + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+                        + " @ "
+                        + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+                        + record.getMessage() + "\n" + sw.toString();
+            else
+                return ANSI_RED + "("
+                        + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+                        + " @ "
+                        + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+                        + sw.toString();
+        } else if (record.getLevel() == Level.WARNING) {
+            return ANSI_ORANGE + "("
                     + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
                     + " @ "
                     + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                    + sw.toString();
+                    + record.getMessage() + "\n";
         } else {
             return ANSI_GREEN + "("
                     + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
