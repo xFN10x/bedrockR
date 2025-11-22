@@ -134,7 +134,7 @@ public class RFileOperations {
      */
     public static String readResourceAsString(String resource) {
         try {
-            return FileUtils.readFileToString(new File(RFileOperations.class.getResource(resource).toExternalForm()), StandardCharsets.UTF_8);
+            return new String(RFileOperations.class.getResourceAsStream(resource).readAllBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
