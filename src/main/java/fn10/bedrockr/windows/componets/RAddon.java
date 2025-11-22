@@ -46,7 +46,7 @@ public class RAddon extends JPanel implements MouseListener {
     protected JSeparator Div = new JSeparator();
     protected JPopupMenu Popup = new JPopupMenu();
     protected JLabel Name;
-    protected JLabel Version;
+    protected VerticalLabel Version;
     protected JLabel LoadText;
     protected SourceWorkspaceFile WPFile;
     protected WorkspaceFile WPF;
@@ -157,7 +157,7 @@ public class RAddon extends JPanel implements MouseListener {
         Lay.putConstraint(SpringLayout.SOUTH, LoadText, 18, SpringLayout.SOUTH, this);
 
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Version, 21, SpringLayout.HORIZONTAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Version, -14, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Version, -10, SpringLayout.VERTICAL_CENTER, this);
 
         add(Name);
         add(Div);
