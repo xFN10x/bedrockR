@@ -17,15 +17,16 @@ public class Greetings { // no, the class is not welcoming you, it is for those 
     protected static Greeting[] GREETINGS = {
         new Greeting("Welcome back!",25),
         new Greeting("Welcome to BR, how may I serve you today?",15),
-        new Greeting("Could I interest you in some text-based programming?",14),
         new Greeting("Yo.",25),
         new Greeting("bugrockR",25),
         new Greeting("This isnt MCreator...",20),
         new Greeting("Now in alpha!",24),
-        new Greeting("bedrocker",26),
+        new Greeting("bed-rocking you to sleep tonight",24),
         new Greeting("Rock Bedrock!",25),
-        new Greeting("bedrockR, myyyyy rival",26),
+        new Greeting("bedrockR, my rival",26),
         new Greeting("PSPTools, now out!",26),
+        new Greeting("Remember major updates?",26),
+        new Greeting("I love when Microsoft breaks things",24),
     };
 
     
