@@ -7,6 +7,7 @@ import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.utils.http.Format1Latest;
@@ -30,6 +31,7 @@ import java.awt.Image;
 import java.awt.event.FocusEvent.Cause;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -95,10 +97,12 @@ public class Launcher {
         LOG.setUseParentHandlers(false);
         LOG.setLevel(Level.FINE);
         LOG.addHandler(new RLogHandler());
-
+        Logger.getLogger("javafx").addHandler(new RLogHandler());
+        System.setOut(new PrintStream(new LoggingOutputStream(LOG, Level.ALL)));
+        System.setErr(new PrintStream(new LoggingOutputStream(LOG, Level.SEVERE)));
         // try to add file handler
         try {
-            Handler fileHandler = new FileHandler(logloc, 2000, 1, true);
+            Handler fileHandler = new FileHandler(logloc, 10000, 1, true);
             fileHandler.setFormatter(new RLogFormatter());
             fileHandler.setFilter(new RLogFilter());
             LOG.addHandler(fileHandler);
@@ -113,7 +117,6 @@ public class Launcher {
                 }
             }
         });
-
         // log stuff
         LOG.info("Logging to " + logloc);
         LOG.info("Base Path: " + RFileOperations.getBaseDirectory(loading).getAbsolutePath());
