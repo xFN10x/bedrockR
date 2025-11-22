@@ -6,6 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JLabel;
 
+/*
+you suck past me, im gonna get rid of this
+*/
+
+@Deprecated(since = "a1.4", forRemoval = true)
 //fully ai made (someday ill learn the graphics stuff)
 public class RoundedLabel extends JLabel {
     private final int arc;

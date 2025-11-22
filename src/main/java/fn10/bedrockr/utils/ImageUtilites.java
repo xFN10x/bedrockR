@@ -17,22 +17,21 @@ public class ImageUtilites {
         return new ImageIcon(OG.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
 
-    public static Image ResizeImage(Image OG,  Dimension size) {
-        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), Image.SCALE_SMOOTH);
+    public static Image ResizeImage(Image OG, Dimension size) {
+        return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), Image.SCALE_SMOOTH);
     }
 
-    public static Image ResizeImage(BufferedImage OG,  Dimension size) {
-        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), Image.SCALE_SMOOTH);
+    public static Image ResizeImage(BufferedImage OG, Dimension size) {
+        return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), Image.SCALE_SMOOTH);
     }
 
-    public static Image ResizeImage(Image OG,  Dimension size, int resizeMode) {
-        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), resizeMode);
+    public static Image ResizeImage(Image OG, Dimension size, int resizeMode) {
+        return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), resizeMode);
     }
 
     public static Image ResizeImage(BufferedImage OG, Dimension size, int resizeMode) {
-        return OG.getScaledInstance((int)size.getWidth(), (int)size.getHeight(), resizeMode);
+        return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), resizeMode);
     }
-
 
     public static Image ResizeImage(Image OG, int width, int height) {
         return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
@@ -72,22 +71,33 @@ public class ImageUtilites {
                 ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
     }
 
-    // credit: https://stackoverflow.com/a/7603815, and github copilot
-    public static BufferedImage makeRoundedCorner(BufferedImage image, int cornerRadius) {
-        int w = image.getWidth();
-        int h = image.getHeight();
+    /**
+     * credit: https://stackoverflow.com/a/7603815
+     */
+    public static BufferedImage makeRoundedCorner(Image image, int cornerRadius) {
+        int w = image.getWidth(null);
+        int h = image.getHeight(null);
         BufferedImage output = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g2 = output.createGraphics();
+
+        // This is what we want, but it only does hard-clipping, i.e. aliasing
+        // g2.setClip(new RoundRectangle2D ...)
+
+        // so instead fake soft-clipping by first drawing the desired clip shape
+        // in fully opaque white with antialiasing enabled...
+        g2.setComposite(AlphaComposite.Src);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.WHITE);
+        g2.fill(new RoundRectangle2D.Float(0, 0, w, h, cornerRadius, cornerRadius));
 
-        // Draw the rounded rectangle as the clipping mask
-        g2.setClip(new RoundRectangle2D.Float(0, 0, w, h, cornerRadius, cornerRadius));
-
-        // Draw the image only where the mask is set
+        // ... then compositing the image on top,
+        // using the white shape from above as alpha source
+        g2.setComposite(AlphaComposite.SrcAtop);
         g2.drawImage(image, 0, 0, null);
 
         g2.dispose();
+
         return output;
     }
 }

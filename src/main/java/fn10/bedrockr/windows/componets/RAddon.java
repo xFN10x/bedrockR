@@ -4,8 +4,12 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -113,23 +117,33 @@ public class RAddon extends JPanel implements MouseListener {
         setLayout(Lay);
         setPreferredSize(new Dimension(90, 90));
         setBackground(BGC);
-        setBorder(new FlatLineBorder(new Insets(2, 2, 2, 2), Color.WHITE, 1, 16));
+        setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.WHITE, 1, 16));
 
-        BufferedImage BI2 = new BufferedImage(resizedImage.getWidth(null), // back to bufferedimage
-                resizedImage.getHeight(null),
-                BufferedImage.TYPE_INT_ARGB);
-        BI2.getGraphics().drawImage(resizedImage, 0, 0, null);
-
-        Icon.setIcon(
-                new ImageIcon(ImageUtilites.makeRoundedCorner(BI2, 14)));
+        Icon.setIcon(new ImageIcon(ImageUtilites.makeRoundedCorner(resizedImage, 16)));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
-        Icon.setPreferredSize(new Dimension(100, 100));
+        Icon.setPreferredSize(new Dimension(88, 88));
 
-        Name = new RoundedLabel(WPName, 16);
+        Name = new JLabel(WPName) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                GradientPaint gp = new GradientPaint(
+                        0, 0, new Color(0, 0, 0, 0), // top color
+                        0, getHeight(), new Color(60, 60, 60) // bottom color
+                );
+
+                g2.setPaint(gp);
+                g2.fillRoundRect(1, 0, getWidth()-1, getHeight()-1, 15, 15);
+
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
         Name.setAlignmentX(CENTER_ALIGNMENT);
-        Name.setPreferredSize(new Dimension(90, 40));
-        Name.setBackground(Color.DARK_GRAY);
+        Name.setPreferredSize(new Dimension(90, 20));
         Name.setForeground(Color.white);
         Name.setHorizontalAlignment(SwingConstants.CENTER);
         Name.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -145,11 +159,11 @@ public class RAddon extends JPanel implements MouseListener {
         // Div.setAlignmentX(CENTER_ALIGNMENT);
 
         // icon contraint
-        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Icon, 6, SpringLayout.HORIZONTAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Icon, 0, SpringLayout.HORIZONTAL_CENTER, this);
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER, this);
         // others
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Div, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Div, 20, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.NORTH, Div, 0, SpringLayout.NORTH, Name);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, Name, 0, SpringLayout.HORIZONTAL_CENTER, this);
         Lay.putConstraint(SpringLayout.SOUTH, Name, 1, SpringLayout.SOUTH, this);
 
