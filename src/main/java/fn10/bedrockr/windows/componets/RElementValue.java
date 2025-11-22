@@ -943,7 +943,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     return;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(parentFrame, "There was a problem setting a field.", "Error", ex);
                 return;
             }
@@ -1022,7 +1022,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         }
 
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                         ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
                         return null;
                     }

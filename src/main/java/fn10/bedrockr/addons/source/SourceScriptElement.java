@@ -153,7 +153,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
                         Sindow.dispose();
                     });
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                     ErrorShower.showError(Sindow, "Failed to create ElementSource",
                             "Source Creation Error", ex);
                 }

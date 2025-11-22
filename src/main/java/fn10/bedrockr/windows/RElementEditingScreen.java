@@ -223,7 +223,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass)); // create
             this.dispose();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
             ErrorShower.showError((Frame) getParent(), "Failed to create ElementSource",
                     "Source Creation Error", ex);
         }
