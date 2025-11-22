@@ -2,9 +2,12 @@ package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,11 +15,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.naming.NameNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -242,11 +247,20 @@ public class RBlockSelector extends RDialog {
         for (BlockJsonEntry item : vanillaItems) {
             try {
                 JButton ToAdd = new JButton();
+                ToAdd.setMargin(new Insets(2, 1, 2, 1));
                 Dimension size = new Dimension(48, 48);
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
+                File proposedRender = Path
+                        .of(RFileOperations.getBaseDirectory(this, "cache", "renders").getAbsolutePath(),
+                                item.name + ".png")
+                        .toFile();
                 ToAdd.setText(item.displayName);
+                if (proposedRender.exists()) {
+                    ToAdd.setIcon(new ImageIcon(ImageIO.read(proposedRender).getScaledInstance(45, 45,
+                            BufferedImage.SCALE_AREA_AVERAGING)));
+                }
                 ToAdd.setToolTipText(item.displayName + " (" + item.name +
                         ")");
                 ToAdd.addActionListener(e -> {
