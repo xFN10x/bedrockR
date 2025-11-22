@@ -120,7 +120,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
             build(workspaceName, null, null, null);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to add resource.", e.getMessage(), e);
             return false;
         }

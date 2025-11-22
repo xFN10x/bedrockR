@@ -82,7 +82,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
             Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             return file;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -128,7 +128,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
                                         RItemSelector.getItemById(Parent, item.item, Workspace));
                             } catch (WrongItemValueTypeException | NameNotFoundException
                                     | IncorrectWorkspaceException e1) {
-                                e1.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             }
                         });
                         break;
@@ -245,7 +245,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
                             Listener.onElementCreate(This);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
 
@@ -276,7 +276,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
 
                         serilized.ShapelessIngredients = grid.getItems();
                     } catch (WrongItemValueTypeException e1) {
-                        e1.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                     }
 
                     switch (TypeDropdown.getSelectedItem()) {
@@ -286,13 +286,13 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
                             try {
                                 grid.empty();
                             } catch (WrongItemValueTypeException e1) {
-                                e1.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             }
                             if (serilized != null) {
                                 try {
                                     grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
                                 } catch (WrongItemValueTypeException e1) {
-                                    e1.printStackTrace();
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                                 }
                             }
                             break;
@@ -303,7 +303,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
                             try {
                                 grid.empty();
                             } catch (WrongItemValueTypeException e1) {
-                                e1.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             }
                             if (serilized != null) {
                                 serilized.ShapelessIngredients.forEach(item -> {
@@ -312,7 +312,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
                                                 RItemSelector.getItemById(Parent, item.item, Workspace));
                                     } catch (WrongItemValueTypeException | NameNotFoundException
                                             | IncorrectWorkspaceException e1) {
-                                        e1.printStackTrace();
+                                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                                     }
                                 });
                             }
@@ -329,7 +329,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
 
             return frame;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

@@ -86,7 +86,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
             fileWriter.close();
             return file;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -130,7 +130,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(frame, "Failed to create a field for " + field.getName(), "Field Error", e);
             }
         }
@@ -140,7 +140,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
             try {
                 turnsInto.setButtonToItem(0, RItemSelector.getItemById(frame, serilized.EatingTurnsInto, Workspace));
             } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(frame, "Failed to set item value.", e);
             }
         }
@@ -175,7 +175,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
                                             elementValue.getValue());
                                     // try to set field ^
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                                     ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(),
                                             e);
                                     continue;

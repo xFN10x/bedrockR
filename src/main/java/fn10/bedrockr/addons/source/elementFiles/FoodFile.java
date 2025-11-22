@@ -241,7 +241,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
                     .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.ITEM_TEXTURE));
             return img;
         } catch (IllegalAccessError | IOException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

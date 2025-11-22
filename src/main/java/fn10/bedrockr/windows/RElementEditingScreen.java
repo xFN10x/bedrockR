@@ -210,7 +210,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     ((RElementValue) validatable).getValue());
                             // try to set field ^
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                             ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
                             continue;
                         }

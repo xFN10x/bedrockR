@@ -106,7 +106,7 @@ public class RItemSelector extends RDialog {
             try {
                 return RItemSelector.getItemById(null, con.item, workspace);
             } catch (IncorrectWorkspaceException | NameNotFoundException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         }
@@ -128,7 +128,7 @@ public class RItemSelector extends RDialog {
             try {
                 return RItemSelector.getItemById(null, con.item, workspace);
             } catch (IncorrectWorkspaceException | NameNotFoundException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         }
@@ -140,7 +140,7 @@ public class RItemSelector extends RDialog {
                 try {
                     building.add(RItemSelector.getItemById(null, item.item, workspace));
                 } catch (NameNotFoundException | IncorrectWorkspaceException e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
             return building;
@@ -242,7 +242,7 @@ public class RItemSelector extends RDialog {
             vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
             Arrays.sort(vanillaItems);
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 
@@ -307,7 +307,7 @@ public class RItemSelector extends RDialog {
                                 .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
                                 .toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
-                        e1.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
                     building.Texture = icon;
@@ -347,7 +347,7 @@ public class RItemSelector extends RDialog {
                 InnerPanel.add(ToAdd);
 
             } catch (Exception e1) {
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         }
 

@@ -91,7 +91,7 @@ public class BlockTextures {
                     try {
                         loading.increaseProgressBySteps("Downloading " + vanillaItems.name + "'s textures...");
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                     renderBlock(vanillaItems.name);
                 }
@@ -105,7 +105,7 @@ public class BlockTextures {
                     settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Double) gson
                             .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     return;
                 }
                 settings.save(doingThis);
@@ -145,7 +145,7 @@ public class BlockTextures {
                 getBlocksJson();
                 getTerrianTextureJson();
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
 
@@ -164,7 +164,7 @@ public class BlockTextures {
                     try {
                         RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texId.toString()));
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
             } else {
@@ -195,7 +195,7 @@ public class BlockTextures {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 }

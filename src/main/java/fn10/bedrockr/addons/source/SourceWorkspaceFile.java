@@ -68,7 +68,7 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
             fileWriter.close();
             return file;
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

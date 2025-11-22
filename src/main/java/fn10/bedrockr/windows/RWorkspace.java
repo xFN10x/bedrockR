@@ -115,63 +115,63 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             try {
                 RFileOperations.showMCSyncPopup(this, WPF);
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open Workspace folder").addActionListener(ac -> {
             try {
                 desk.open(RFileOperations.getWorkspace(this, WPF.workspaceName()));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open built RP Folder").addActionListener(ac -> {
             try {
                 desk.open(RFileOperations.getBaseDirectory(this, "build", "RP", WPF.workspaceName()));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open built BP Folder").addActionListener(ac -> {
             try {
                 desk.open(RFileOperations.getBaseDirectory(this, "build", "BP", WPF.workspaceName()));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR Wiki").addActionListener(ac -> {
             try {
                 desk.browse(new URI("https://github.com/xFN10x/bedrockR/wiki"));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR Github").addActionListener(ac -> {
             try {
                 desk.browse(new URI("https://github.com/xFN10x/bedrockR"));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR on Summer Of Making").addActionListener(ac -> {
             try {
                 desk.browse(new URI("https://summer.hackclub.com/projects/703"));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR on Siege").addActionListener(ac -> {
             try {
                 desk.browse(new URI("https://siege.hackclub.com/armory/1948"));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("Open bedrockR Directory").addActionListener(ac -> {
             try {
                 desk.open(RFileOperations.getBaseDirectory(this));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 
@@ -204,7 +204,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         .browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
 
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 
@@ -331,7 +331,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(this, "Failed to build element.", "Building Error", e);
             } finally {
                 SwingUtilities.invokeLater(progress::dispose);
@@ -366,7 +366,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         try {
                             Desktop.getDesktop().open(file);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         }
                     });
 
@@ -374,7 +374,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         try {
                             Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         }
                     });
 
@@ -418,7 +418,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             JOptionPane.showMessageDialog(this, "Resized image from " + old + ", to " + choice);
                             this.refreshResources();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                             ErrorShower.showError(this, "Failed to resize image.", e);
                         }
                     });
@@ -432,7 +432,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             ResourceView.repaint();
                             resFile.Serilized.build(SWPF.workspaceName(), null, null, null);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         }
                     });
 
@@ -444,7 +444,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                     ResourceInnerPanelView.add(Box.createVerticalStrut(4));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         });
@@ -460,7 +460,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                     .getFileFromElementFile(this, SWPF.workspaceName(), file).toString()));
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
             ElementInnerPanelView.updateUI();
@@ -522,7 +522,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             try {
                 Desktop.getDesktop().browse(new URI("minecraft:///"));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(this, "Failed to open Minecraft", e.getMessage(), e);
             }
         }

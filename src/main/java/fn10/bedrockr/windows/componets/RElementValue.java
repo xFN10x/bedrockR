@@ -148,7 +148,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 if (TargetFile.getDraft())
                     return;
 
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(parentFrame,
                     "Failed to get field (does the passed ElementFile match the ElementSource?)",
                     DisplayName, e);
@@ -223,7 +223,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
                     }
                 }
@@ -261,7 +261,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         HashMapInnerPane.repaint();
 
                     } catch (Exception e1) {
-                        e1.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                     }
                 });
@@ -284,7 +284,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         ((JComboBox<String>) Input).setSelectedItem("false");
                 } catch (Exception e) {
 
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     if (!FromEmpty)
                         if (TargetFile.getDraft())
                             return;
@@ -313,7 +313,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         if (!FromEmpty)
                             if (TargetFile.getDraft())
                                 return;
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(parentFrame,
                                 "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                 DisplayName, e);
@@ -331,7 +331,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         }
                     } catch (Exception e) {
 
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         if (!FromEmpty)
                             if (TargetFile.getDraft())
                                 return;
@@ -379,7 +379,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             HashMapInnerPane.add(ToAdd);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
                     }
                 }
@@ -409,7 +409,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             HashMapInnerPane.repaint();
 
                         } catch (Exception e1) {
-                            e1.printStackTrace();
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                         }
                 });
@@ -496,7 +496,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 Input.setName(Selected.getKey());
 
                             } catch (InterruptedException e1) {
-                                e1.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             }
                         });
 
@@ -542,7 +542,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             } catch (IllegalArgumentException | IllegalAccessException e) {
                                 if (TargetFile.getDraft())
                                     return;
-                                e.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                                 ErrorShower.showError(parentFrame,
                                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                         DisplayName, e);
@@ -570,7 +570,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                                 .toPath())),
                                         64, 64));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                                 ErrorShower.showError(parentFrame,
                                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                         DisplayName, e);
@@ -630,7 +630,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 Input.setName(Selected.getKey());
 
                             } catch (InterruptedException e1) {
-                                e1.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             }
                         });
 
@@ -682,7 +682,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             } catch (IllegalArgumentException | IllegalAccessException e) {
                                 if (TargetFile.getDraft())
                                     return;
-                                e.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                                 ErrorShower.showError(parentFrame,
                                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                         DisplayName, e);
@@ -710,7 +710,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                                 .toPath())),
                                         64, 64));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                                 ErrorShower.showError(parentFrame,
                                         "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                         DisplayName, e);
@@ -726,7 +726,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 Input = new JLabel("Not supported.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         if (Optional) // stop the enable check affecting non-optional things
@@ -764,7 +764,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         // put in center is not hashmap
@@ -809,7 +809,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
         }
 
         add(Name);
@@ -864,7 +864,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     HashMapInnerPane.add(ToAdd);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(parentFrame, e.getMessage(), e);
             }
         } else if (InputType.equals(UUID.class)) {
@@ -877,7 +877,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             } catch (IllegalArgumentException e) {
 
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
                 return;
@@ -903,7 +903,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
             }
@@ -916,7 +916,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 WorkspaceName, NameItem.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(parentFrame,
                         "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
             }
@@ -1029,7 +1029,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             } catch (IllegalArgumentException
                     | SecurityException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         } else {
@@ -1048,7 +1048,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             try {
                 field = SourceFileClass.getField(Target);
             } catch (Exception e1) {
-                e1.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 log.info(Target + ": failed to get field; so it fails");
 
                 return false;
@@ -1134,7 +1134,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         return true;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
 
                 }
             }

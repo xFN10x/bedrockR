@@ -76,7 +76,7 @@ public class Launcher {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui/Icon_huge.png"));
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
         }
         RSplashScreen loading = new RSplashScreen();
@@ -103,7 +103,7 @@ public class Launcher {
             fileHandler.setFilter(new RLogFilter());
             LOG.addHandler(fileHandler);
         } catch (SecurityException | IOException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -132,7 +132,7 @@ public class Launcher {
                             Font.createFont(Font.TRUETYPE_FONT, Launcher.class.getResourceAsStream("/ui/font.otf")));
             BedrockrDark.setup();
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(loading, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error",
                     e);
         }
@@ -159,7 +159,7 @@ public class Launcher {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         loading.ProgressText.setText("Setting up Blockly...");
@@ -204,7 +204,7 @@ public class Launcher {
                             JOptionPane.ERROR_MESSAGE);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
@@ -227,11 +227,11 @@ public class Launcher {
                 try {
                     BlockTextures.downloadAllBlockTextures(loading).await();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return;
         }
 
@@ -245,7 +245,7 @@ public class Launcher {
                                 new SourceWorkspaceFile(Files.readString(file.toPath())));
                         return;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         JOptionPane.showMessageDialog(loading, "Couldn't open up that WPF file!");
                     }
                 }

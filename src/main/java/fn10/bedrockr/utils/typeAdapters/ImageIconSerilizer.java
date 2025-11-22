@@ -24,7 +24,7 @@ public class ImageIconSerilizer implements JsonSerializer<ImageIcon>, JsonDeseri
         try {
             return new ImageIcon(ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(json.getAsString()))));
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -38,7 +38,7 @@ public class ImageIconSerilizer implements JsonSerializer<ImageIcon>, JsonDeseri
             ImageIO.write(bi, "png", output);
             return context.serialize(Base64.getEncoder().encodeToString(output.toByteArray()));
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

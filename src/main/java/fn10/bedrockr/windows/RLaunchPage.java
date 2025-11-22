@@ -68,7 +68,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://siege.hackclub.com/armory/1948"));
             } catch (IOException e) {
 
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
@@ -77,7 +77,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://summer.hackclub.com/projects/703"));
             } catch (IOException e) {
 
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
@@ -86,7 +86,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
             } catch (IOException e) {
 
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
@@ -95,7 +95,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
             } catch (IOException e) {
 
-                e.printStackTrace();
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 

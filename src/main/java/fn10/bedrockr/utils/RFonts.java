@@ -16,7 +16,7 @@ public class RFonts {
         try {
             font_file = RFonts.class.getResourceAsStream(Path);
         } catch (Exception e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(null, "Failed to open font file", "Font Error", e);
             return null;
         }
@@ -26,7 +26,7 @@ public class RFonts {
             font = Font.createFont(Font.TRUETYPE_FONT, font_file).deriveFont(1, Size);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font); // reg font if not null
         } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(null, "Failed to load font.", "Font Error", e);
         }
 
