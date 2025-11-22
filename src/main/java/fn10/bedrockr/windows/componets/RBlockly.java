@@ -96,7 +96,6 @@ public class RBlockly extends JFXPanel {
         Bridge br = new Bridge(preview);
         this.bridge = br;
 
-        Platform.setImplicitExit(false);
         Platform.runLater(() -> {
 
             Color bgcolour = Color.rgb(38, 38, 38);
