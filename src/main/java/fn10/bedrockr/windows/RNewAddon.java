@@ -38,10 +38,9 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
-    protected final static String[] PICKABLE_VERSIONS = {
-            "1.21.130",
+    public final static String[] PICKABLE_VERSIONS = {
             "1.21.120",
-            "1.21.114",
+            "1.21.130",
     };
     protected ImageIcon ChosenIcon = ImageUtilites.ResizeImageByURL(
             getClass().getResource("/addons/DefaultIcon.png"),

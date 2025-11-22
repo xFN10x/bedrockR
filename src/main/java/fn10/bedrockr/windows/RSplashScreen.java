@@ -6,15 +6,16 @@ import java.awt.Font;
 import java.time.LocalTime;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JWindow;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFonts;
 
-public class RSplashScreen extends JWindow {
+public class RSplashScreen extends JFrame {
 
     private final JLabel image = new JLabel();
     public final JLabel ProgressText = new JLabel("Loading...");
@@ -51,6 +52,8 @@ public class RSplashScreen extends JWindow {
         setLayout(lay);
 
         setSize(new Dimension(800, 500));
+        setIconImage(Launcher.ICON);
+        setUndecorated(true);
         setLocation(ImageUtilites.getScreenCenter(this));
 
         add(ProgressText);

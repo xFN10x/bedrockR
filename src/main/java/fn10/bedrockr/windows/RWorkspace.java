@@ -512,8 +512,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         } else if (ac.equals("rebuild")) {
             buildElements(true);
         } else if (ac.equals("launch")) {
-            if (SettingsFile.getSettings(this).comMojangPath != null) {
-                if (!new File(SettingsFile.getSettings(this).comMojangPath).exists()) {
+            if (SettingsFile.load(this).comMojangPath != null) {
+                if (!new File(SettingsFile.load(this).comMojangPath).exists()) {
                     JOptionPane.showMessageDialog(this, "You... cant launch minecraft without it installed...",
                             "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
                     return;
