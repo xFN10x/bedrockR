@@ -7,6 +7,8 @@
 
 A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
 
+[bedrockR Youtube Channel](https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA)
+
 ## Why?
 
 Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavliy inspired by MCreator, and how it doesn't have the best Bedrock modding in it.
