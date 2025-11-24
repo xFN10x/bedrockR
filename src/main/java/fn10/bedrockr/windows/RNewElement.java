@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
@@ -46,6 +47,7 @@ public class RNewElement extends RDialog implements ActionListener {
             SourceScriptElement.class,
             SourceRecipeElement.class,
             SourceFoodElement.class,
+            SourceBiomeElement.class,
     };
 
     public RNewElement(Frame Parent, String WorkspaceName) {
