@@ -129,27 +129,27 @@ public class BiomeComponents implements RMapElementProvider {
     public RMapElement[] getPickable() {
         return new RMapElement[] {
                 new RMapElement("Climate", "minecraft:climate", Climate.class,
-                        "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values."),
+                        "Describes temperature, humidity,\nprecipitation, and similar.\nBiomes without this component will\nhave default values."),
 
                 new RMapElement("Creature Spawning", "minecraft:creature_spawn_probability",
                         CreatureSpawnProbablity.class,
-                        "Probability that creatures will spawn within the biome when a chunk is generated."),
+                        "Probability that creatures will spawn\nwithin the biome when a\nchunk is generated."),
 
                 new RMapElement("Is Humid", "minecraft:humidity", Humidity.class,
-                        "Forces a biome to ether always be humid or never humid. Humidity effects the spread chance, and spread rate of fire in the biome."),
+                        "Forces a biome to ether always be\nhumid or never humid.\nHumidity effects the spread chance,\nand spread rate of fire in the biome."),
 
                 new RMapElement("Map Foliage Colour", "minecraft:map_tints", Humidity.class,
-                        "Sets the color grass and foliage will be tinted by in this biome on the map."),
+                        "Sets the color grass and foliage will\nbe tinted by in this biome on the map."),
 
                 new RMapElement("Replace Biome(s)", "minecraft:replace_biomes", ReplaceBiomes.class,
-                        "Replaces a specified portion of one or more Minecraft biomes."),
+                        "Replaces a specified portion of one\nor more Minecraft biomes."),
 
                 new RMapElement("Biome Surface", "minecraft:surface_builder", SurfaceBuilder.class,
-                        "Controls the materials used for terrain generation."),
+                        "Controls the materials used for\nterrain generation."),
 
                 new RMapElement("Tags", "minecraft:tags", Tags.class,
                         """
-                                Attach arbitrary string tags to this biome. Most biome tags are referenced by JSON settings, but some meanings of tags are directly implemented in the game's code.
+                                Attach arbitrary string tags to this\nbiome. Most biome tags are referenced\nby JSON settings, but some meanings of tags are directly implemented in the game's code.
 
                                 These tags are listed here:
 
