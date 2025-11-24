@@ -49,7 +49,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private SpringLayout Lay = new SpringLayout();
     private JLabel Name = new JLabel();
     public JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
-    private Component Input;
+    public Component Input;
     private JCheckBox EnableDis = new JCheckBox();
 
     private String Target = "";

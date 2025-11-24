@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
@@ -49,9 +50,8 @@ public class RFileOperations {
     @SuppressWarnings("unused")
     private static String COMMOJANG = null;
     static {
-        var settings = SettingsFile.load(null);
+        SettingsFile settings = SettingsFile.load(null);
         COMMOJANG = settings.comMojangPath;
-        // Launcher.LOG.info(COMMOJANG);
     }
 
     /**
@@ -81,6 +81,7 @@ public class RFileOperations {
         ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
         ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceRecipeElement.class);
         ELEMENT_EXTENSION_CLASSES.put("foodref", SourceFoodElement.class);
+        ELEMENT_EXTENSION_CLASSES.put("biomeref", SourceBiomeElement.class);
     }
 
     public static final String WPFFILENAME = "workspace.WPF";
@@ -692,7 +693,7 @@ public class RFileOperations {
                 if (!srcIcon.exists())
                     if (!srcIcon.createNewFile())
                         throw new IOException("Failed to create source addon icon file");
-                    
+
                 trying = srcIcon;
 
                 BufferedImage bi = new BufferedImage(addonIcon.getWidth(loading), addonIcon.getHeight(loading),
