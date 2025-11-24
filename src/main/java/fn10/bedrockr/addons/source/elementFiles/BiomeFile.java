@@ -1,11 +1,6 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,48 +8,23 @@ import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
+import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
-import fn10.bedrockr.windows.RBlockSelector.DataPathsJson;
-import fn10.bedrockr.windows.RNewAddon;
 
 public class BiomeFile implements ElementFile<SourceBiomeElement> {
-    private static transient String[] vanillaBiomeNames;
-
-    public static void getVanillaBiomeNames() {
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
-
-            HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                    .get(RNewAddon.PICKABLE_VERSIONS[0]);
-
-            String path = versionPaths.get("biomes");
-
-            HttpRequest biomesJsonReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                    + path
-                                    + "/blocks.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-
-        }
-    }
+   
 
     @CantEditAfter
     @VeryImportant
+    @HelpMessage("The name of the element in bedrockR")
     public String ElementName;
 
     public boolean Draft = false;
 
     @StringDropdownField({"vanilla biomes"})
+    @HelpMessage("The ID of the biome. Used in /locate, and debugging. Make this ID a vanilla one, like \"plains\", to make it override that biome.")
     public String BiomeID;
 
     @MapFieldSelectables(BiomeComponents.class)
