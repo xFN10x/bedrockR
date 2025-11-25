@@ -3,10 +3,15 @@ package fn10.bedrockr.windows.componets;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Window;
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -27,6 +32,7 @@ import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.Climate;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
@@ -49,6 +55,7 @@ public class RElementMapValue extends JPanel {
     protected final JLabel DisplayNameLabel = new JLabel();
     protected final JLabel IDNameLabel = new JLabel();
     protected Component InputField = null;
+    protected Map<String, Component> MultipleInputs = new HashMap<String, Component>();
 
     public final RMapElement rMapElement;
     protected final Window Ancestor;
@@ -81,6 +88,41 @@ public class RElementMapValue extends JPanel {
             InputField = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName, Type.SingleBlock, true);
             Lay.putConstraint(SpringLayout.VERTICAL_CENTER, InputField, 0, SpringLayout.VERTICAL_CENTER, this);
             Lay.putConstraint(SpringLayout.EAST, InputField, -4, SpringLayout.EAST, this);
+        } else if (RME.Type == Climate.class) {
+            Size.setSize(400, 150);
+            InputField = new JPanel();
+            ((JPanel)InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
+
+            JPanel downfallPanel = new JPanel();
+            downfallPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            JSpinner downfallVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
+            downfallPanel.add(new JLabel("Downfall"));
+            downfallPanel.add(downfallVal);
+            MultipleInputs.put("downfallVal", downfallVal);
+            ((JPanel)InputField).add(downfallPanel);
+
+            JPanel snowfallPanel = new JPanel();
+            snowfallPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            JSpinner snowfallMax = new JSpinner(new SpinnerNumberModel(2, 0, 8, 1));
+            JSpinner snowfallMin = new JSpinner(new SpinnerNumberModel(0, 0, 8, 1));
+            snowfallPanel.add(new JLabel("Snowfall Accumulation"));
+            snowfallPanel.add(new JLabel("<html><i>Max</i></html>"));
+            snowfallPanel.add(snowfallMax);
+            snowfallPanel.add(new JLabel("<html><i>Min</i></html>"));
+            snowfallPanel.add(snowfallMin);
+            MultipleInputs.put("snowfallMax", snowfallMax);
+            MultipleInputs.put("snowfallMin", snowfallMin);
+            ((JPanel)InputField).add(snowfallPanel);
+
+            JPanel tempPanel = new JPanel();
+            tempPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            JSpinner tempVal = new JSpinner(new SpinnerNumberModel(0.8f, 0f, 2f, 0.1f));
+            tempPanel.add(new JLabel("Temperature"));
+            tempPanel.add(tempVal);
+            MultipleInputs.put("tempVal", tempVal);
+            ((JPanel)InputField).add(tempPanel);
+
+            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         }
         // set input field to whatever is nessesary
         else if (RME.Type == String.class) { // string
