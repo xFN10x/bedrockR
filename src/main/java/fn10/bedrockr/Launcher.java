@@ -183,10 +183,13 @@ public class Launcher {
             Platform.startup(() -> {
                 try {
                     WebEngine webEngine = new WebEngine();
-                                        BLOCKLY_MINI_WEBENGINE = webEngine;
+                    BLOCKLY_MINI_WEBENGINE = webEngine;
                     webEngine.getLoadWorker().stateProperty().addListener(
                             new ChangeListener<Worker.State>() {
-                                {LOG.info("CHANGE LISTIENER STARTED");}
+                                {
+                                    LOG.info("CHANGE LISTIENER STARTED");
+                                }
+
                                 @Override
                                 public void changed(
                                         ObservableValue<? extends javafx.concurrent.Worker.State> observable,
@@ -234,10 +237,10 @@ public class Launcher {
         RenderHandler.startup();
 
         loading.ProgressText.setText("Downloading Block textures...");
-        HttpRequest latestMCDataVerReq = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
-                .version(HttpClient.Version.HTTP_2).GET().build();
         try {
+            HttpRequest latestMCDataVerReq = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
+                    .version(HttpClient.Version.HTTP_2).GET().build();
             HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
             SettingsFile settings = SettingsFile
                     .load(loading);
@@ -252,7 +255,6 @@ public class Launcher {
             }
         } catch (IOException | InterruptedException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return;
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
