@@ -1,5 +1,7 @@
 package fn10.bedrockr.addons.source.supporting;
 
+import java.util.List;
+
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 
@@ -81,9 +83,9 @@ public class BiomeComponents implements RMapElementProvider {
              * must not contain namespaces (yes they have too microsoft). Value must have at
              * least 1 items.
              */
-            public String[] targets;
+            public List<String> targets;
         }
-
+        public Replacement replacements;
     }
 
     public static class SurfaceBuilder {
@@ -114,7 +116,7 @@ public class BiomeComponents implements RMapElementProvider {
     }
 
     public static class Tags {
-        public String[] tags;
+        public List<String> tags;
     }
 
     // not adding
@@ -138,7 +140,7 @@ public class BiomeComponents implements RMapElementProvider {
                 new RMapElement("Is Humid", "minecraft:humidity", Humidity.class,
                         "Forces a biome to ether always be\nhumid or never humid.\nHumidity effects the spread chance,\nand spread rate of fire in the biome."),
 
-                new RMapElement("Map Foliage Colour", "minecraft:map_tints", Humidity.class,
+                new RMapElement("Map Foliage Colour", "minecraft:map_tints", MapTints.class,
                         "Sets the color grass and foliage will\nbe tinted by in this biome on the map."),
 
                 new RMapElement("Replace Biome(s)", "minecraft:replace_biomes", ReplaceBiomes.class,

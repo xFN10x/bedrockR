@@ -226,6 +226,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
     }
 
+    public void setItem(ReturnItemInfo info) {
+            try {
+                setButtonToItem(0, info);
+            } catch (WrongItemValueTypeException e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        }
+
     public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
         if (item == null)
             return;
