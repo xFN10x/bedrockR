@@ -853,7 +853,31 @@ public class RElementValue extends JPanel implements ValidatableValue {
         } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
             casted.setSelectedItem(value);
-        } else if (InputType.equals(HashMap.class)) {
+        } else if (List.class.isAssignableFrom(InputType)) {
+            try {
+                Object[] array;
+                if (value instanceof List list)
+                    array = list.toArray();
+                else if (value.getClass().isArray())
+                    array = ((Object[]) value);
+                else
+                    return;
+
+                for (Object entry : array) {
+                    RElementValue toAdd = new RElementValue(parentFrame, InputType.getComponentType(),
+                            Filter,
+                            null, "",
+                            false, null, WorkspaceName);
+                    toAdd.setValue(entry);
+                    toAdd.setName("E");
+
+                    HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
+                    HashMapInnerPane.add(toAdd);
+                }
+            } catch (Exception e) {
+                ErrorShower.exception(parentFrame, e);
+            }
+        } else if (Map.class.isAssignableFrom(InputType)) {
             try {
                 for (Map.Entry<Object, Object> entry : ((HashMap<Object, Object>) value).entrySet()) {
                     var ToAdd = new RElementMapValue(parentFrame,
@@ -903,9 +927,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(parentFrame,
-                        "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
+                ErrorShower.exception(parentFrame, e);
             }
             NameItem.setText(
                     filename);

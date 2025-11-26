@@ -7,12 +7,15 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Window;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -31,8 +34,16 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
+import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.Climate;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.CreatureSpawnProbablity;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.Humidity;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes.Replacement;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.SurfaceBuilder;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.Tags;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
@@ -40,6 +51,7 @@ import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.RBlockSelector;
+import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
 
 public class RElementMapValue extends JPanel {
@@ -91,7 +103,7 @@ public class RElementMapValue extends JPanel {
         } else if (RME.Type == Climate.class) {
             Size.setSize(400, 150);
             InputField = new JPanel();
-            ((JPanel)InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
+            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
 
             JPanel downfallPanel = new JPanel();
             downfallPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -99,7 +111,7 @@ public class RElementMapValue extends JPanel {
             downfallPanel.add(new JLabel("Downfall"));
             downfallPanel.add(downfallVal);
             MultipleInputs.put("downfallVal", downfallVal);
-            ((JPanel)InputField).add(downfallPanel);
+            ((JPanel) InputField).add(downfallPanel);
 
             JPanel snowfallPanel = new JPanel();
             snowfallPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -112,7 +124,7 @@ public class RElementMapValue extends JPanel {
             snowfallPanel.add(snowfallMin);
             MultipleInputs.put("snowfallMax", snowfallMax);
             MultipleInputs.put("snowfallMin", snowfallMin);
-            ((JPanel)InputField).add(snowfallPanel);
+            ((JPanel) InputField).add(snowfallPanel);
 
             JPanel tempPanel = new JPanel();
             tempPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -120,7 +132,126 @@ public class RElementMapValue extends JPanel {
             tempPanel.add(new JLabel("Temperature"));
             tempPanel.add(tempVal);
             MultipleInputs.put("tempVal", tempVal);
-            ((JPanel)InputField).add(tempPanel);
+            ((JPanel) InputField).add(tempPanel);
+
+            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+        } else if (RME.Type == CreatureSpawnProbablity.class) {
+            InputField = new JSpinner(new SpinnerNumberModel(0.1f, 0f, 0.75f, 0.01f));
+        } else if (RME.Type == Humidity.class) {
+            InputField = new JCheckBox("Can it rain?");
+        } else if (RME.Type == MapTints.class) {
+            Size.setSize(400, 150);
+            InputField = new JPanel();
+            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
+
+            JPanel foliagePanel = new JPanel();
+            foliagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            JButton foliageColour = new JButton("Select Colour");
+            foliageColour.addActionListener(ac -> {
+                foliageColour
+                        .setForeground(JColorChooser.showDialog(foliageColour, "Select Foliage Colour", Color.green));
+            });
+            foliagePanel.add(new JLabel("Foliage Colour"));
+            foliagePanel.add(foliageColour);
+            MultipleInputs.put("foliageColour", foliageColour);
+            ((JPanel) InputField).add(foliagePanel);
+
+            JPanel grassPanel = new JPanel();
+            grassPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            JButton grassColour = new JButton("Select Colour");
+            grassColour.addActionListener(ac -> {
+                grassColour.setForeground(JColorChooser.showDialog(grassColour, "Select Grass Colour", Color.green));
+            });
+            grassPanel.add(new JLabel("Grass Colour"));
+            grassPanel.add(grassColour);
+            MultipleInputs.put("grassColour", grassColour);
+            ((JPanel) InputField).add(grassPanel);
+
+            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+        } else if (RME.Type == ReplaceBiomes.class) { // TODO: finish
+            Size.setSize(400, 250);
+            InputField = new JPanel();
+            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
+
+            JPanel replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JSpinner replacementVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
+            replacementPercentPanel.add(new JLabel("Replacement %"));
+            replacementPercentPanel.add(replacementVal);
+            MultipleInputs.put("replacementVal", replacementVal);
+            ((JPanel) InputField).add(replacementPercentPanel);
+
+            JPanel noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JSpinner noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
+            noisePanel.add(new JLabel("Noise Frequency Scale"));
+            noisePanel.add(noiseVal);
+            MultipleInputs.put("noiseVal", noiseVal);
+            ((JPanel) InputField).add(noisePanel);
+
+            RElementValue targetsVal = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
+                    "Replace Biomes", false,
+                    Replacement.class, null, true, null);
+            MultipleInputs.put("targetsVal", targetsVal);
+            ((JPanel) InputField).add(targetsVal);
+
+            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+        } else if (RME.Type == SurfaceBuilder.class) { // TODO: finish
+            Size.setSize(400, 500);
+            InputField = new JPanel();
+            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
+
+            JPanel seaFloorDepthPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JSpinner seaDepthVal = new JSpinner(new SpinnerNumberModel(1, 0, 127, 1));
+            seaFloorDepthPanel.add(new JLabel("Sea Floor Depth"));
+            seaFloorDepthPanel.add(seaDepthVal);
+            ((JPanel) InputField).add(seaFloorDepthPanel);
+
+            JPanel seaMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            RItemValue seaMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                    RItemValue.Type.SingleBlock);
+            seaMaterialPanel.add(new JLabel("Sea Block"));
+            seaMaterialPanel.add(seaMaterialVal);
+            ((JPanel) InputField).add(seaMaterialPanel);
+
+            JPanel seaFloorMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            RItemValue seaFloorMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                    RItemValue.Type.SingleBlock);
+            seaFloorMaterialPanel.add(new JLabel("Sea Floor Block"));
+            seaFloorMaterialPanel.add(seaFloorMaterialVal);
+            ((JPanel) InputField).add(seaFloorMaterialPanel);
+
+            JPanel foundationMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            RItemValue foundationMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                    RItemValue.Type.SingleBlock);
+            foundationMaterialPanel.add(new JLabel("Underground Block"));
+            foundationMaterialPanel.add(foundationMaterialVal);
+            ((JPanel) InputField).add(foundationMaterialPanel);
+
+            JPanel midMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            RItemValue midMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                    RItemValue.Type.SingleBlock);
+            midMaterialPanel.add(new JLabel("Ground Block"));
+            midMaterialPanel.add(midMaterialVal);
+            ((JPanel) InputField).add(midMaterialPanel);
+
+            JPanel surfaceMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            RItemValue surfaceMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                    RItemValue.Type.SingleBlock);
+            surfaceMaterialPanel.add(new JLabel("Surface Block"));
+            surfaceMaterialPanel.add(surfaceMaterialVal);
+            MultipleInputs.put("midMaterialVal", midMaterialVal);
+            MultipleInputs.put("foundationMaterialVal", foundationMaterialVal);
+            MultipleInputs.put("seaDepthVal", seaDepthVal);
+            MultipleInputs.put("seaMaterialVal", seaMaterialVal);
+            MultipleInputs.put("seaFloorMaterialVal", seaFloorMaterialVal);
+            MultipleInputs.put("surfaceMaterialVal", surfaceMaterialVal);
+            ((JPanel) InputField).add(surfaceMaterialPanel);
+
+            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+        } else if (RME.Type == Tags.class) { // TODO: finish
+            Size.setSize(400, 500);
+            InputField = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
+                    "Replace Biomes", false,
+                    Tags.class, null, true, null);
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         }
@@ -199,12 +330,57 @@ public class RElementMapValue extends JPanel {
         try {
             Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
 
-            if (rMapElement instanceof RStringDropdownMapElement) {
+            if (rMapElement.Type == Climate.class && val instanceof Climate climate) {
+
+                ((JSpinner) MultipleInputs.get("downfallVal")).setValue(climate.downfall);
+
+                ((JSpinner) MultipleInputs.get("snowfallMax")).setValue(climate.snow_accumulation[1]);
+
+                ((JSpinner) MultipleInputs.get("snowfallMin")).setValue(climate.snow_accumulation[0]);
+
+                ((JSpinner) MultipleInputs.get("tempVal")).setValue(climate.temperature);
+
+            } else if (rMapElement.Type == CreatureSpawnProbablity.class
+                    && val instanceof CreatureSpawnProbablity creatureSpawnProbablity) { // TODO: finish
+                ((JSpinner) InputField).setValue(creatureSpawnProbablity.probability);
+            } else if (rMapElement.Type == Humidity.class && val instanceof Humidity humidity) { // TODO: finish
+                ((JCheckBox) InputField).setSelected(humidity.is_humid);
+            } else if (rMapElement.Type == MapTints.class && val instanceof MapTints mapTints) { // TODO: finish
+                ((JButton) MultipleInputs.get("foliageColour")).setForeground(Color.decode(mapTints.foliage));
+                ((JButton) MultipleInputs.get("grassColour")).setForeground(Color.decode(mapTints.grass.tint));
+            } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) { // TODO:
+                                                                                                                // finish
+                ((JSpinner) MultipleInputs.get("replacementVal")).setValue(replaceBiomes.replacements.amount);
+                ((JSpinner) MultipleInputs.get("noiseVal")).setValue(replaceBiomes.replacements.noise_frequency_scale);
+                ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements.targets);
+
+            } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) { // TODO:
+                                                                                                                   // finish
+                ((JSpinner) MultipleInputs.get("seaDepthVal")).setValue(surfaceBuilder.builder.sea_floor_depth);
+
+                ((RItemValue) MultipleInputs.get("midMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                        surfaceBuilder.builder.mid_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+
+                ((RItemValue) MultipleInputs.get("foundationMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                        surfaceBuilder.builder.foundation_material,
+                        RFileOperations.getCurrentWorkspace().WorkspaceName));
+
+                ((RItemValue) MultipleInputs.get("seaMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                        surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+
+                ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                        surfaceBuilder.builder.sea_floor_material,
+                        RFileOperations.getCurrentWorkspace().WorkspaceName));
+
+                ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                        surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+
+            } else if (rMapElement.Type == Tags.class && val instanceof Tags tags) {
+                ((RElementValue) InputField).setValue(tags.tags);
+            } else if (rMapElement instanceof RStringDropdownMapElement) {
                 ((JComboBox<String>) InputField).setSelectedItem(val);
                 return;
-            }
-
-            if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
+            } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                 ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
                 if (val instanceof LinkedTreeMap) {

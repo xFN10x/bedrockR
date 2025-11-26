@@ -6,7 +6,21 @@ import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
+import fn10.bedrockr.Launcher;
+
 public class ErrorShower {
+
+    /**
+     * Shows an error message, and prints the stack trace to the log
+     * 
+     * @param parent - the component closet related to the process this is thrown
+     *               from
+     * @param ex     - the exception
+     */
+    public static void exception(Component parent, Exception ex) {
+        Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+        showError(parent, "", ex);
+    }
 
     public static void showError(Component parent, String msg, Exception ex) {
         showError(parent, msg, ex.getMessage(), ex);
