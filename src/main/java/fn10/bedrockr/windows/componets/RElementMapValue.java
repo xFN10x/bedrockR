@@ -43,7 +43,9 @@ import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes.Replacement;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.SurfaceBuilder;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.SurfaceBuilder.OverworldBuilder;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.Tags;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints.GrassTint;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
@@ -138,7 +140,8 @@ public class RElementMapValue extends JPanel {
         } else if (RME.Type == CreatureSpawnProbablity.class) {
             InputField = new JSpinner(new SpinnerNumberModel(0.1f, 0f, 0.75f, 0.01f));
         } else if (RME.Type == Humidity.class) {
-            InputField = new JCheckBox("Can it rain?");
+            String[] ars = { "true", "false" };
+            InputField = new JComboBox<String>(ars);
         } else if (RME.Type == MapTints.class) {
             Size.setSize(400, 150);
             InputField = new JPanel();
@@ -341,15 +344,21 @@ public class RElementMapValue extends JPanel {
                 ((JSpinner) MultipleInputs.get("tempVal")).setValue(climate.temperature);
 
             } else if (rMapElement.Type == CreatureSpawnProbablity.class
-                    && val instanceof CreatureSpawnProbablity creatureSpawnProbablity) { // TODO: finish
+                    && val instanceof CreatureSpawnProbablity creatureSpawnProbablity) {
+
                 ((JSpinner) InputField).setValue(creatureSpawnProbablity.probability);
-            } else if (rMapElement.Type == Humidity.class && val instanceof Humidity humidity) { // TODO: finish
+
+            } else if (rMapElement.Type == Humidity.class && val instanceof Humidity humidity) {
+
                 ((JCheckBox) InputField).setSelected(humidity.is_humid);
-            } else if (rMapElement.Type == MapTints.class && val instanceof MapTints mapTints) { // TODO: finish
+
+            } else if (rMapElement.Type == MapTints.class && val instanceof MapTints mapTints) {
+
                 ((JButton) MultipleInputs.get("foliageColour")).setForeground(Color.decode(mapTints.foliage));
                 ((JButton) MultipleInputs.get("grassColour")).setForeground(Color.decode(mapTints.grass.tint));
-            } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) { // TODO:
-                                                                                                                // finish
+
+            } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) {
+
                 ((JSpinner) MultipleInputs.get("replacementVal")).setValue(replaceBiomes.replacements.amount);
                 ((JSpinner) MultipleInputs.get("noiseVal")).setValue(replaceBiomes.replacements.noise_frequency_scale);
                 ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements.targets);
@@ -376,7 +385,9 @@ public class RElementMapValue extends JPanel {
                         surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
 
             } else if (rMapElement.Type == Tags.class && val instanceof Tags tags) {
+
                 ((RElementValue) InputField).setValue(tags.tags);
+
             } else if (rMapElement instanceof RStringDropdownMapElement) {
                 ((JComboBox<String>) InputField).setSelectedItem(val);
                 return;
@@ -428,7 +439,79 @@ public class RElementMapValue extends JPanel {
             }
 
             if (rMapElement.Type != null) {
-                if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
+                if (rMapElement.Type == Climate.class) {
+                    val = new Climate();
+                    
+                    ((Climate) val).downfall = (float) ((JSpinner) MultipleInputs.get("downfallVal")).getValue();
+                    ((Climate) val).snow_accumulation = new float[] {
+                            (float) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue(),
+                            (float) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue() };
+
+                    ((Climate) val).temperature =
+
+                            (float) ((JSpinner) MultipleInputs.get("tempVal")).getValue();
+
+                } else if (rMapElement.Type == CreatureSpawnProbablity.class) {
+                    val = new CreatureSpawnProbablity();
+                    ((CreatureSpawnProbablity) val).probability = (float) ((JSpinner) InputField).getValue();
+
+                } else if (rMapElement.Type == Humidity.class) {
+
+                    val = new Humidity();
+                    ((Humidity) val).is_humid = ((JComboBox<String>) InputField).getSelectedIndex() == 0 ? true : false;
+
+                } else if (rMapElement.Type == MapTints.class) {
+                    val = new MapTints();
+                    GrassTint grassTint = new GrassTint();
+
+                    Color foliageColor = ((JButton) MultipleInputs.get("foliageColour")).getForeground();
+                    ((MapTints) val).foliage = String.format("#%02x%02x%02x", foliageColor.getRed(),
+                            foliageColor.getGreen(),
+                            foliageColor.getBlue());
+
+                    Color grassColor = ((JButton) MultipleInputs.get("grassColour")).getForeground();
+                    grassTint.tint = String.format("#%02x%02x%02x", grassColor.getRed(),
+                            grassColor.getGreen(),
+                            grassColor.getBlue());
+
+                    grassTint.type = "tint";
+
+                    ((MapTints) val).grass = grassTint;
+
+                } else if (rMapElement.Type == ReplaceBiomes.class) {
+                    val = new ReplaceBiomes();
+                    Replacement replacement = new Replacement();
+
+                    replacement.amount = (int) ((JSpinner) MultipleInputs.get("replacementVal")).getValue();
+                    replacement.noise_frequency_scale = (float) ((JSpinner) MultipleInputs.get("noiseVal")).getValue();
+                    replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
+
+                    ((ReplaceBiomes) val).replacements = replacement;
+                } else if (rMapElement.Type == SurfaceBuilder.class) {
+                    val = new SurfaceBuilder();
+                    OverworldBuilder builder = new OverworldBuilder();
+
+                    builder.sea_floor_depth = (int) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue();
+                    builder.mid_material = ((RItemValue) MultipleInputs.get("midMaterialVal")).getItems().get(0).item;
+
+                    builder.foundation_material = ((RItemValue) MultipleInputs.get("foundationMaterialVal"))
+                            .getItems().get(0).item;
+
+                    builder.sea_material = ((RItemValue) MultipleInputs.get("seaMaterialVal")).getItems().get(0).item;
+
+                    builder.sea_floor_material = ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).getItems()
+                            .get(0).item;
+
+                    builder.top_material = ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).getItems()
+                            .get(0).item;
+
+                    ((SurfaceBuilder) val).builder = builder;
+
+                } else if (rMapElement.Type == Tags.class) {
+
+                    val = ((RElementValue) InputField).getValue();
+
+                } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                     val = new minecraftDamage();
                     ((minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
                 } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
