@@ -255,7 +255,7 @@ public class RBlockSelector extends RDialog {
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
                 File proposedRender = Path
                         .of(RFileOperations.getBaseDirectory(this, "cache", "renders").getAbsolutePath(),
-                                item.name + ".png")
+                                item.name.split(":")[1] + ".png")
                         .toFile();
                 ToAdd.setText(item.displayName);
                 if (proposedRender.exists()) {
