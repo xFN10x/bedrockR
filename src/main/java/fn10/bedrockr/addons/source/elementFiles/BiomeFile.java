@@ -28,7 +28,7 @@ public class BiomeFile implements ElementFile<SourceBiomeElement> {
     public String BiomeID;
 
     @MapFieldSelectables(BiomeComponents.class)
-    public Map<String, Object> Comps = new HashMap<String, Object>();
+    public HashMap<String, Object> Comps = new HashMap<String, Object>();
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
