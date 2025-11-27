@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -52,6 +53,7 @@ import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructib
 import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
@@ -300,7 +302,11 @@ public class RElementMapValue extends JPanel {
 
         for (Entry<String, Component> entry : MultipleInputs.entrySet()) {
             if (entry.getValue() instanceof RItemValue riv) {
-                riv.setItem(new ReturnItemInfo("air", "Air", "minecraft"));
+                try {
+                    riv.setItem(RBlockSelector.getBlockById(Ancestor, "minecraft:air", RFileOperations.getCurrentWorkspace().WorkspaceName));
+                } catch (NameNotFoundException | IncorrectWorkspaceException e) {
+                    ErrorShower.exception(Ancestor, e);
+                }
             }
         }
 
