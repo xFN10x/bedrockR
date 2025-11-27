@@ -362,13 +362,12 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 } else {
                     anno = null;
                 }
-
                 List<RMapElement> picked = new ArrayList<RMapElement>();
                 if (!FromEmpty && field != null) {
                     try {
                         for (Map.Entry<String, Object> entry : ((Map<String, Object>) field.get(TargetFile))
                                 .entrySet()) {
-                            var ToAdd = new RElementMapValue(parentFrame,
+                            RElementMapValue ToAdd = new RElementMapValue(parentFrame,
                                     RMapElement.LookupMap.get(entry.getKey()));
                             ToAdd.setVal(entry.getValue());
                             ToAdd.setName("E");
@@ -1112,12 +1111,12 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     log.info(Target + ": Texture is selected, and cannot be wrong. it passes");
                     return true;
                 }
-            } else if (InputType.equals(File.class)) {
+            } else if (File.class.isAssignableFrom(InputType)) {
                 log.info(Target + ": File cannot be wrong. it passes");
 
                 return true;
-            } else if (InputType.equals(HashMap.class)) {
-                log.info(Target + ": (Hash)Map cannot be wrong. it passes");
+            } else if (Map.class.isAssignableFrom(InputType)) {
+                log.info(Target + ": Map cannot be wrong. it passes");
 
                 return true;
             } else {
@@ -1157,7 +1156,6 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     }
                 } catch (Exception e) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-
                 }
             }
         } catch (Exception e) {

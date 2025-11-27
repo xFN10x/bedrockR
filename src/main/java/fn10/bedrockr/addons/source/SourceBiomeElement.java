@@ -138,7 +138,7 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                 "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
         RElementValue idVal = new RElementValue(screen, String.class, new FieldFilters.IDStringFilter(),
                 "BiomeID", "Biome ID", false, getSerilizedClass(), serilized, Workspace);
-        RElementValue compsVal = new RElementValue(screen, Map.class, new FieldFilters.IDStringFilter(),
+        RElementValue compsVal = new RElementValue(screen, HashMap.class, new FieldFilters.IDStringFilter(),
                 "Comps", "Biome Components", false, getSerilizedClass(), serilized, Workspace);
         if (idVal.Input instanceof JComboBox input) {
             input.setModel(new DefaultComboBoxModel<String>(vanillaBiomeNames));
