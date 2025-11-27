@@ -82,20 +82,51 @@ public class RenderHandler extends SimpleApplication {
         BufferedImage img = new BufferedImage(64, 64, BufferedImage.TYPE_INT_RGB);
         Graphics g = img.getGraphics();
         Dimension sideSize = new Dimension(16, 16);
-        g.drawImage(ImageUtilites.ResizeImage(top, sideSize), 16, 0, null); // top
-        g.drawImage(ImageUtilites.ResizeImage(down, sideSize), 32, 0, null); // bottom
-        g.drawImage(ImageUtilites.ResizeImage(north, sideSize), 16, 16, null); // north
-        g.drawImage(ImageUtilites.ResizeImage(south, sideSize), 48, 16, null); // south
-        g.drawImage(ImageUtilites.ResizeImage(east, sideSize), 0, 16, null); // east
-        g.drawImage(ImageUtilites.ResizeImage(west, sideSize), 32, 16, null); // west
+        try {
+            g.drawImage(ImageUtilites.ResizeImage(top, sideSize), 16, 0, null); // top
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            g.drawImage(ImageUtilites.ResizeImage(down, sideSize), 32, 0, null); // bottom
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            g.drawImage(ImageUtilites.ResizeImage(north, sideSize), 16, 16, null); // north
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            g.drawImage(ImageUtilites.ResizeImage(south, sideSize), 48, 16, null); // south
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            g.drawImage(ImageUtilites.ResizeImage(east, sideSize), 0, 16, null); // east
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            g.drawImage(ImageUtilites.ResizeImage(west, sideSize), 32, 16, null); // west
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
         /*
-         * try {
-         * ImageIO.write(img, "png", new
-         * File("C:\\Users\\mathd\\Pictures\\Untitled - Copy.jpg"));
-         * } catch (IOException e) {
-         * fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-         * }
-         */
+           * try {
+           * ImageIO.write(img, "png", new
+           * File("C:\\Users\\mathd\\Pictures\\Untitled - Copy.jpg"));
+           * } catch (IOException e) {
+           * fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+           * "Exception thrown", e);
+           * }
+           */
         com.jme3.texture.Image JMEimg = new AWTLoader().load(img, true);
         Texture2D tex = new Texture2D(JMEimg);
         tex.setMagFilter(MagFilter.Nearest);
@@ -243,7 +274,7 @@ public class RenderHandler extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         model = assetManager.loadModel("models/StandardBlock.obj");
-        //System.out.println(cam.getAspect());
+        // System.out.println(cam.getAspect());
 
         buffer = new FrameBuffer(size, size, 1);
 
