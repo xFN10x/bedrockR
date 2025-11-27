@@ -298,7 +298,7 @@ public class RElementMapValue extends JPanel {
             Lay.putConstraint(SpringLayout.SOUTH, InputField, -5, SpringLayout.SOUTH, this);
         }
 
-        for (Entry<String,Component> entry : MultipleInputs.entrySet()) {
+        for (Entry<String, Component> entry : MultipleInputs.entrySet()) {
             if (entry.getValue() instanceof RItemValue riv) {
                 riv.setItem(new ReturnItemInfo("air", "Air", "minecraft"));
             }
