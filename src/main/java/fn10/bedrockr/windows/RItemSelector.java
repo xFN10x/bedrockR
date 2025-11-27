@@ -195,17 +195,27 @@ public class RItemSelector extends RDialog {
             }
         }
 
-        if (fullID.startsWith("minecraft")) {
+        //if (fullID.startsWith("minecraft")) {
             for (ItemJsonEntry item : vanillaItems) {
                 if (item.name.equals(fullID)) {
                     return item.toReturnItemInfo();
                 }
             }
-        } else {
-            throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
-                    + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
+        //} else {
+        //    throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
+        //            + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
+        //}
+        Launcher.LOG.info("Vanilla items: ");
+        for (ItemJsonEntry vanillaItem : vanillaItems) {
+            Launcher.LOG.info(vanillaItem.name);
         }
-        throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist.");
+        Launcher.LOG.info("Non-Vanilla items: " + RFileOperations.getElementsFromWorkspace(doing, workspaceName));
+        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
+            if (element instanceof ItemLikeElement ile) {
+                Launcher.LOG.info(ile.getItemId());
+            }
+        }
+        throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist. Printed all items to log.");
     }
 
     public static void downloadVanillaItems() {
