@@ -332,7 +332,9 @@ public class RElementMapValue extends JPanel {
     public void setVal(Object val) {
         try {
             Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
-
+            if (val instanceof LinkedTreeMap lrm) {
+                val = gson.fromJson(gson.toJsonTree(lrm), rMapElement.Type);
+            }
             if (rMapElement.Type == Climate.class && val instanceof Climate climate) {
 
                 ((JSpinner) MultipleInputs.get("downfallVal")).setValue(climate.downfall);
@@ -441,19 +443,23 @@ public class RElementMapValue extends JPanel {
             if (rMapElement.Type != null) {
                 if (rMapElement.Type == Climate.class) {
                     val = new Climate();
-                    
-                    ((Climate) val).downfall = (float) ((JSpinner) MultipleInputs.get("downfallVal")).getValue();
+
+                    ((Climate) val).downfall = ((Double) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
+                            .floatValue();
                     ((Climate) val).snow_accumulation = new float[] {
-                            (float) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue(),
-                            (float) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue() };
+                            (1f / 8f) * ((Integer) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue())
+                                    .floatValue(),
+                            (1f / 8f) * ((Integer) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue())
+                                    .floatValue() };
 
                     ((Climate) val).temperature =
 
-                            (float) ((JSpinner) MultipleInputs.get("tempVal")).getValue();
+                            ((Double) ((JSpinner) MultipleInputs.get("tempVal")).getValue()).floatValue();
 
                 } else if (rMapElement.Type == CreatureSpawnProbablity.class) {
                     val = new CreatureSpawnProbablity();
-                    ((CreatureSpawnProbablity) val).probability = (float) ((JSpinner) InputField).getValue();
+                    ((CreatureSpawnProbablity) val).probability = ((Double) ((JSpinner) InputField).getValue())
+                            .floatValue();
 
                 } else if (rMapElement.Type == Humidity.class) {
 
@@ -483,7 +489,8 @@ public class RElementMapValue extends JPanel {
                     Replacement replacement = new Replacement();
 
                     replacement.amount = (int) ((JSpinner) MultipleInputs.get("replacementVal")).getValue();
-                    replacement.noise_frequency_scale = (float) ((JSpinner) MultipleInputs.get("noiseVal")).getValue();
+                    replacement.noise_frequency_scale = ((Double) ((JSpinner) MultipleInputs.get("noiseVal"))
+                            .getValue()).floatValue();
                     replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
 
                     ((ReplaceBiomes) val).replacements = replacement;
