@@ -456,7 +456,7 @@ public class RElementMapValue extends JPanel {
                 if (rMapElement.Type == Climate.class) {
                     val = new Climate();
 
-                    ((Climate) val).downfall = ((Double) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
+                    ((Climate) val).downfall = ((Float) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
                             .floatValue();
                     ((Climate) val).snow_accumulation = new float[] {
                             (1f / 8f) * ((Integer) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue())

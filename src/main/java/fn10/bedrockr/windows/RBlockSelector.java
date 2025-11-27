@@ -67,8 +67,12 @@ public class RBlockSelector extends RDialog {
         public String boundingBox;
 
         public ReturnItemInfo toReturnItemInfo() {
-            String[] splitId = name.split(":");
-            return new ReturnItemInfo(splitId[1], displayName, splitId[0]);
+            if (name.contains(":")) {
+                String[] splitId = name.split(":");
+                return new ReturnItemInfo(splitId[1], displayName, splitId[0]);
+            } else {
+                return new ReturnItemInfo(name, displayName, "");
+            }
         }
 
         @Override
@@ -164,7 +168,8 @@ public class RBlockSelector extends RDialog {
             ArrayList<BlockJsonEntry> parsedEntrys = new ArrayList<BlockJsonEntry>();
             for (BlockJsonEntry entry : itemEntrys) {
                 BlockJsonEntry building = entry;
-                building.name = "minecraft:" + entry.name;
+                if (!building.name.startsWith("minecraft"))
+                    building.name = "minecraft:" + entry.name;
                 parsedEntrys.add(building);
             }
             vanillaBlocks = parsedEntrys.toArray(new BlockJsonEntry[0]);
@@ -265,12 +270,7 @@ public class RBlockSelector extends RDialog {
                 ToAdd.setToolTipText(item.displayName + " (" + item.name +
                         ")");
                 ToAdd.addActionListener(e -> {
-                    ReturnItemInfo building = new ReturnItemInfo();
-                    building.Id = item.name;
-                    building.Name = item.displayName;
-                    building.Prefix = "minecraft";
-                    building.Texture = null;
-                    selected = building;
+                    selected = item.toReturnItemInfo();
                 });
                 InnerPanel.add(ToAdd);
 
