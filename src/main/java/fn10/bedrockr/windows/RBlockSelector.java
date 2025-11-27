@@ -68,7 +68,7 @@ public class RBlockSelector extends RDialog {
 
         public ReturnItemInfo toReturnItemInfo() {
             String[] splitId = name.split(":");
-            return new ReturnItemInfo(splitId[0], displayName, splitId[1]);
+            return new ReturnItemInfo(splitId[1], displayName, splitId[0]);
         }
 
         @Override
