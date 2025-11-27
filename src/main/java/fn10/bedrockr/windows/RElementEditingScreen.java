@@ -165,6 +165,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             RequiredFields.add(Field);
     }
 
+    //make sure to meet at mercedes
     public void setSpecialField(RElementValue Field) throws IllegalAccessError {
         if (SpecialPane == null)
             throw new IllegalAccessError("This Element Creation Screen was not set to be the special layout.");
