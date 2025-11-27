@@ -396,7 +396,7 @@ public class RElementMapValue extends JPanel {
                         RFileOperations.getCurrentWorkspace().WorkspaceName));
 
                 ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
-                        surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        surfaceBuilder.builder.top_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
 
             } else if (rMapElement.Type == Tags.class && val instanceof Tags tags) {
 
