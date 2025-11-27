@@ -77,7 +77,7 @@ public class BlockTextures {
      */
 
     public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
-        if (RBlockSelector.vanillaItems == null)
+        if (RBlockSelector.vanillaBlocks == null)
             RBlockSelector.downloadVanillaBlocks();
         CountDownLatch latch = new CountDownLatch(1);
         RLoadingScreen loading = new RLoadingScreen(doingThis);
@@ -85,9 +85,9 @@ public class BlockTextures {
             loading.setVisible(true);
         });
         SwingUtilities.invokeLater(() -> {
-            loading.Steps = RBlockSelector.vanillaItems.length;
+            loading.Steps = RBlockSelector.vanillaBlocks.length;
             new Thread(() -> {
-                for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaItems) {
+                for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaBlocks) {
                     try {
                         loading.increaseProgressBySteps("Downloading " + vanillaItems.name + "'s textures...");
                     } catch (IllegalAccessException e) {
@@ -191,6 +191,54 @@ public class BlockTextures {
 
                     RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
                             downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
+
+                } else if (((LinkedTreeMap<String, String>) textures).containsKey("east")) {
+                    Object texIdTop = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("up")).get("textures");
+                    // System.out.println(texIdTop.getClass().getSimpleName());
+                    if (List.class.isAssignableFrom(texIdTop.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdTop);
+                        texIdTop = list.get(0);
+                    }
+                    Object texIdEast = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("east")).get("textures");
+                    if (List.class.isAssignableFrom(texIdEast.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdEast);
+                        texIdEast = list.get(0);
+                    }
+
+                    Object texIdWest = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("west")).get("textures");
+                    if (List.class.isAssignableFrom(texIdWest.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdWest);
+                        texIdWest = list.get(0);
+                    }
+
+                    Object texIdSouth = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("south")).get("textures");
+                    if (List.class.isAssignableFrom(texIdSouth.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdSouth);
+                        texIdSouth = list.get(0);
+                    }
+
+                    Object texIdNorth = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("north")).get("textures");
+                    if (List.class.isAssignableFrom(texIdNorth.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdNorth);
+                        texIdNorth = list.get(0);
+                    }
+
+                    Object texIdDown = terrianTextureJson.get("texture_data")
+                            .get(((LinkedTreeMap<String, String>) textures).get("down")).get("textures");
+                    if (List.class.isAssignableFrom(texIdDown.getClass())) {
+                        List<String> list = ((ArrayList<String>) texIdDown);
+                        texIdDown = list.get(0);
+                    }
+
+                    RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
+                            downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
+                            downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString()),
+                            downloadTexture(texIdSouth.toString()));
 
                 }
             }
