@@ -97,7 +97,7 @@ public class RBlockSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    public static BlockJsonEntry[] vanillaItems;
+    public static BlockJsonEntry[] vanillaBlocks;
 
     /**
      * 
@@ -126,7 +126,7 @@ public class RBlockSelector extends RDialog {
         }
 
         if (fullID.startsWith("minecraft")) {
-            for (BlockJsonEntry item : vanillaItems) {
+            for (BlockJsonEntry item : vanillaBlocks) {
                 if (item.name.equals(fullID)) {
                     return item.toReturnItemInfo();
                 }
@@ -164,10 +164,11 @@ public class RBlockSelector extends RDialog {
             ArrayList<BlockJsonEntry> parsedEntrys = new ArrayList<BlockJsonEntry>();
             for (BlockJsonEntry entry : itemEntrys) {
                 BlockJsonEntry building = entry;
+                building.name = "minecraft:" + entry.name;
                 parsedEntrys.add(building);
             }
-            vanillaItems = parsedEntrys.toArray(new BlockJsonEntry[0]);
-            Arrays.sort(vanillaItems);
+            vanillaBlocks = parsedEntrys.toArray(new BlockJsonEntry[0]);
+            Arrays.sort(vanillaBlocks);
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
@@ -244,7 +245,7 @@ public class RBlockSelector extends RDialog {
             }
         }
 
-        for (BlockJsonEntry item : vanillaItems) {
+        for (BlockJsonEntry item : vanillaBlocks) {
             try {
                 JButton ToAdd = new JButton();
                 ToAdd.setMargin(new Insets(2, 1, 2, 1));

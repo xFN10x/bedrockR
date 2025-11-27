@@ -195,16 +195,17 @@ public class RItemSelector extends RDialog {
             }
         }
 
-        //if (fullID.startsWith("minecraft")) {
+        if (fullID.startsWith("minecraft")) {
             for (ItemJsonEntry item : vanillaItems) {
+                Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
                 if (item.name.equals(fullID)) {
                     return item.toReturnItemInfo();
                 }
             }
-        //} else {
-        //    throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
-        //            + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
-        //}
+        } else {
+            throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
+                    + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
+        }
         Launcher.LOG.info("Vanilla items: ");
         for (ItemJsonEntry vanillaItem : vanillaItems) {
             Launcher.LOG.info(vanillaItem.name);
@@ -244,8 +245,8 @@ public class RItemSelector extends RDialog {
             ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
             for (ItemJsonEntry entry : itemEntrys) {
                 ItemJsonEntry building = entry;
-                // if (!building.name.startsWith("minecraft:"))
-                // building.name = "minecraft:" + entry.name;
+
+                building.name = "minecraft:" + entry.name;
 
                 parsedEntrys.add(building);
             }
