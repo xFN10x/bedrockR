@@ -88,12 +88,13 @@ public class BlockTextures {
             loading.Steps = RBlockSelector.vanillaBlocks.length;
             new Thread(() -> {
                 for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaBlocks) {
+                    String name = vanillaItems.name.split(":")[1];
                     try {
-                        loading.increaseProgressBySteps("Downloading " + vanillaItems.name + "'s textures...");
+                        loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
                     } catch (IllegalAccessException e) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
-                    renderBlock(vanillaItems.name);
+                    renderBlock(name);
                 }
                 latch.countDown();
                 SettingsFile settings = SettingsFile.load(doingThis);
@@ -109,6 +110,9 @@ public class BlockTextures {
                     return;
                 }
                 settings.save(doingThis);
+                SwingUtilities.invokeLater(() -> {
+                    loading.setVisible(false);
+                });
             }).start();
         });
         return latch;
