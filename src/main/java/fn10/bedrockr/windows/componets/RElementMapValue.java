@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -34,7 +35,6 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
-import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.Climate;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.CreatureSpawnProbablity;
@@ -54,6 +54,7 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
+import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
 
 public class RElementMapValue extends JPanel {
@@ -171,7 +172,7 @@ public class RElementMapValue extends JPanel {
             ((JPanel) InputField).add(grassPanel);
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
-        } else if (RME.Type == ReplaceBiomes.class) { // TODO: finish
+        } else if (RME.Type == ReplaceBiomes.class) {
             Size.setSize(400, 250);
             InputField = new JPanel();
             ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
@@ -197,7 +198,7 @@ public class RElementMapValue extends JPanel {
             ((JPanel) InputField).add(targetsVal);
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
-        } else if (RME.Type == SurfaceBuilder.class) { // TODO: finish
+        } else if (RME.Type == SurfaceBuilder.class) {
             Size.setSize(400, 500);
             InputField = new JPanel();
             ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
@@ -250,7 +251,7 @@ public class RElementMapValue extends JPanel {
             ((JPanel) InputField).add(surfaceMaterialPanel);
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
-        } else if (RME.Type == Tags.class) { // TODO: finish
+        } else if (RME.Type == Tags.class) {
             Size.setSize(400, 500);
             InputField = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
                     "Replace Biomes", false,
@@ -295,6 +296,12 @@ public class RElementMapValue extends JPanel {
             Lay.putConstraint(SpringLayout.WEST, InputField, 5, SpringLayout.WEST, this);
             Lay.putConstraint(SpringLayout.EAST, InputField, -5, SpringLayout.EAST, this);
             Lay.putConstraint(SpringLayout.SOUTH, InputField, -5, SpringLayout.SOUTH, this);
+        }
+
+        for (Entry<String,Component> entry : MultipleInputs.entrySet()) {
+            if (entry.getValue() instanceof RItemValue riv) {
+                riv.setItem(new ReturnItemInfo("air", "Air", "minecraft"));
+            }
         }
 
         HelpButton.addActionListener(
@@ -365,8 +372,7 @@ public class RElementMapValue extends JPanel {
                 ((JSpinner) MultipleInputs.get("noiseVal")).setValue(replaceBiomes.replacements.noise_frequency_scale);
                 ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements.targets);
 
-            } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) { // TODO:
-                                                                                                                   // finish
+            } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) {
                 ((JSpinner) MultipleInputs.get("seaDepthVal")).setValue(surfaceBuilder.builder.sea_floor_depth);
 
                 ((RItemValue) MultipleInputs.get("midMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
