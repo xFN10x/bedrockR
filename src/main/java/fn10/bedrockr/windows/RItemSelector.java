@@ -197,7 +197,7 @@ public class RItemSelector extends RDialog {
 
         if (fullID.startsWith("minecraft")) {
             for (ItemJsonEntry item : vanillaItems) {
-                //Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
+                // Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
                 if (item.name.equals(fullID)) {
                     return item.toReturnItemInfo();
                 }
@@ -246,7 +246,8 @@ public class RItemSelector extends RDialog {
             for (ItemJsonEntry entry : itemEntrys) {
                 ItemJsonEntry building = entry;
 
-                building.name = "minecraft:" + entry.name;
+                if (!building.name.startsWith("minecraft"))
+                    building.name = "minecraft:" + entry.name;
 
                 parsedEntrys.add(building);
             }
@@ -348,12 +349,7 @@ public class RItemSelector extends RDialog {
                 ToAdd.setToolTipText(item.displayName + " (" + item.name +
                         ")");
                 ToAdd.addActionListener(e -> {
-                    ReturnItemInfo building = new ReturnItemInfo();
-                    building.Id = item.name;
-                    building.Name = item.displayName;
-                    building.Prefix = "minecraft";
-                    building.Texture = null;
-                    selected = building;
+                    selected = item.toReturnItemInfo();
                 });
                 InnerPanel.add(ToAdd);
 
