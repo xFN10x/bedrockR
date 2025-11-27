@@ -197,7 +197,7 @@ public class RItemSelector extends RDialog {
 
         if (fullID.startsWith("minecraft")) {
             for (ItemJsonEntry item : vanillaItems) {
-                Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
+                //Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
                 if (item.name.equals(fullID)) {
                     return item.toReturnItemInfo();
                 }

@@ -4,6 +4,9 @@ import javax.swing.*;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 
+import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockTexture;
+import fn10.bedrockr.rendering.BlockTextures;
+import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;
@@ -38,6 +41,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
 
     private JMenuBar menuBar = new JMenuBar();
 
+    private JMenu fileMenu = new JMenu("File");
     private JMenu addonsMenu = new JMenu("Addons");
     private JMenu helpMenu = new JMenu("Help");
 
@@ -113,6 +117,11 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         helpMenu.add(somButton);
         helpMenu.add(siegeButton);
 
+        fileMenu.add("Render Blocks").addActionListener(ac -> {
+            BlockTextures.downloadAllBlockTextures(this);
+        });
+
+        menuBar.add(fileMenu);
         menuBar.add(addonsMenu);
         menuBar.add(helpMenu);
 
