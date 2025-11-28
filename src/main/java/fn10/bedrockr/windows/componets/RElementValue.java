@@ -968,14 +968,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
             ((JSpinner) Input).setValue(value);
         } else {
             try {
-                if (Input.getName() != null) {
-                    if (Input.getName().equals("dd")) // if its a drop down
-                    {
-                        ((JComboBox<String>) Input).setSelectedItem(value);
-                        return;
-                    }
-                }
-                if (Input instanceof JTextField)
+                if (Input instanceof JComboBox jcb) // if its a drop down
+                {
+                    jcb.setSelectedItem(value);
+                    return;
+                } else if (Input instanceof JTextField)
                     ((JTextField) Input).setText(String.valueOf(value));
                 // else is called when the input is a JLabel, its only that when not supported
                 else {
@@ -1039,8 +1036,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         return ((JSpinner) Input).getValue();
                 } else {
                     try {
-                        if (Input.getName() != null && Input.getName().equals("dd")) // if its a drop down
-                            return ((JComboBox<String>) Input).getSelectedItem();
+                        if (Input instanceof JComboBox jcb) // if its a drop down
+                            return jcb.getSelectedItem();
 
                         if (Input instanceof JTextField) {
                             String text = ((JTextField) Input).getText();
@@ -1139,9 +1136,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 try {
                     log.info(Target + ": Scary!");
 
-                    if (Input.getName() == "dd") { // for a string drop down
+                    if (Input instanceof JComboBox jcb) { // for a string drop down
                         Problem = "String is not valid.";
-                        if (!Filter.getValid(((String) ((JComboBox<String>) Input).getSelectedItem()))) {
+                        if (!Filter.getValid(((String) jcb.getSelectedItem()))) {
                             Problem = "String is not valid.";
                             log.info(Target + ": Drop down didnt pass filter, " + Filter.getClass().getName()
                                     + "it doesnt pass");
