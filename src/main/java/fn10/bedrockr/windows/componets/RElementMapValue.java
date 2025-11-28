@@ -365,7 +365,7 @@ public class RElementMapValue extends JPanel {
 
             } else if (rMapElement.Type == Humidity.class && val instanceof Humidity humidity) {
 
-                ((JCheckBox) InputField).setSelected(humidity.is_humid);
+                ((JComboBox<String>) InputField).setSelectedIndex(humidity.is_humid ? 0 : 1);;
 
             } else if (rMapElement.Type == MapTints.class && val instanceof MapTints mapTints) {
 
