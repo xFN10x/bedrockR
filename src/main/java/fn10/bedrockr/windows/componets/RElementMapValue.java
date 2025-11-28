@@ -374,9 +374,9 @@ public class RElementMapValue extends JPanel {
 
             } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) {
 
-                ((JSpinner) MultipleInputs.get("replacementVal")).setValue(replaceBiomes.replacements.amount);
-                ((JSpinner) MultipleInputs.get("noiseVal")).setValue(replaceBiomes.replacements.noise_frequency_scale);
-                ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements.targets);
+                ((JSpinner) MultipleInputs.get("replacementVal")).setValue(replaceBiomes.replacements[0].amount);
+                ((JSpinner) MultipleInputs.get("noiseVal")).setValue(replaceBiomes.replacements[0].noise_frequency_scale);
+                ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements[0].targets);
 
             } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) {
                 ((JSpinner) MultipleInputs.get("seaDepthVal")).setValue(surfaceBuilder.builder.sea_floor_depth);
@@ -500,12 +500,12 @@ public class RElementMapValue extends JPanel {
                     val = new ReplaceBiomes();
                     Replacement replacement = new Replacement();
 
-                    replacement.amount = (int) ((JSpinner) MultipleInputs.get("replacementVal")).getValue();
-                    replacement.noise_frequency_scale = ((Double) ((JSpinner) MultipleInputs.get("noiseVal"))
+                    replacement.amount = ((Number) ((JSpinner) MultipleInputs.get("replacementVal")).getValue()).floatValue();
+                    replacement.noise_frequency_scale = ((Number) ((JSpinner) MultipleInputs.get("noiseVal"))
                             .getValue()).floatValue();
                     replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
 
-                    ((ReplaceBiomes) val).replacements = replacement;
+                    ((ReplaceBiomes) val).replacements = new Replacement[] {replacement};
                 } else if (rMapElement.Type == SurfaceBuilder.class) {
                     val = new SurfaceBuilder();
                     OverworldBuilder builder = new OverworldBuilder();
