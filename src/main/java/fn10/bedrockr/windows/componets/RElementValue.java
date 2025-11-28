@@ -854,16 +854,35 @@ public class RElementValue extends JPanel implements ValidatableValue {
             casted.setSelectedItem(value);
         } else if (List.class.isAssignableFrom(InputType)) {
             try {
-                Object[] array;
-                if (value instanceof List list)
-                    array = list.toArray();
-                else if (value.getClass().isArray())
-                    array = ((Object[]) value);
-                else
+                Field field;
+                try { // try to get field
+                    if (SourceFileClass != null) {
+                        field = SourceFileClass.getField(Target);
+                    } else {
+                        field = null;
+                    }
+                } catch (Exception e) {
                     return;
-
-                for (Object entry : array) {
-                    RElementValue toAdd = new RElementValue(parentFrame, InputType.getComponentType(),
+                }
+                final Class<?> genericType;
+                if (!InputType.isArray()) {
+                    if (field == null) {
+                        return;
+                    }
+                    if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
+                        java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
+                                .getGenericType();
+                        genericType = (Class<?>) pt.getActualTypeArguments()[0];
+                    } else
+                        genericType = null;
+                    if (genericType == null) {
+                        throw new NullPointerException("This list doesnt have a type.");
+                    }
+                } else {
+                    genericType = null;
+                }
+                for (Object entry : ((List<Object>) value)) {
+                    RElementValue toAdd = new RElementValue(parentFrame, genericType,
                             Filter,
                             null, "",
                             false, null, WorkspaceName);
@@ -997,11 +1016,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     List<Object> listToBuild = new ArrayList<Object>();
                     for (Component comp : HashMapInnerPane.getComponents()) {
-                        if (comp.getName() == null)
-                            continue;
-                        if (comp.getName().equals("E")) {
-                            var mapElement = ((RElementValue) comp);
-                            listToBuild.add(mapElement.getValue());
+                        if (comp instanceof RElementValue rev) {
+                            listToBuild.add(rev.getValue());
                         }
                     }
                     if (InputType.isArray())
