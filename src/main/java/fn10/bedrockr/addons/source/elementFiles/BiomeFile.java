@@ -2,7 +2,6 @@ package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 

@@ -2,11 +2,7 @@ package fn10.bedrockr.windows;
 
 import javax.swing.*;
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.formdev.flatlaf.util.ColorFunctions;
-
-import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockTexture;
 import fn10.bedrockr.rendering.BlockTextures;
-import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFonts;

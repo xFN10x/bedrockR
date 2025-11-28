@@ -56,7 +56,6 @@ import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
 
 public class RElementMapValue extends JPanel {
