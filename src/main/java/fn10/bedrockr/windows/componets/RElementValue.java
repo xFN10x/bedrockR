@@ -160,8 +160,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             if (List.class.isAssignableFrom(InputType)) {
                 /*
                  * im just stealing most of the hash map stuff, since it is basicly already a
-                 * list
-                 * view.
+                 * list view.
                  */
                 Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -205,7 +204,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         null, "",
                                         false, null, WorkspaceName);
                                 toAdd.setValue(entry);
-                                toAdd.setName("E");
+                                
 
                                 HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                                 HashMapInnerPane.add(toAdd);
@@ -216,7 +215,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         null, "",
                                         false, null, WorkspaceName);
                                 toAdd.setValue(entry);
-                                toAdd.setName("E");
+                                
 
                                 HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                                 HashMapInnerPane.add(toAdd);
@@ -230,19 +229,18 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                 // add the button
                 HashMapAdd.addActionListener((e) -> {
-
                     try {
                         RElementValue toAdd;
                         if (InputType.isArray()) {
-                            Launcher.LOG.info("make an array value element with class: "
-                                    + InputType.getComponentType().getCanonicalName());
+                            // Launcher.LOG.info("make an array value element with class: "
+                            //        + InputType.getComponentType().getCanonicalName());
                             toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter, null, "",
                                     false,
                                     null, WorkspaceName);
                         } else if (genericType != null) {
 
-                            Launcher.LOG.info("make an list value element with class: "
-                                    + genericType.getCanonicalName());
+                            //Launcher.LOG.info("make an list value element with class: "
+                            //        + genericType.getCanonicalName());
                             toAdd = new RElementValue(parentFrame, genericType, Filter, null,
                                     "",
                                     false,
@@ -251,7 +249,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             return;
                         }
                         toAdd.setAlignmentX(0.5f);
-                        toAdd.setName("E");
+                        
 
                         HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                         HashMapInnerPane.add(toAdd);
@@ -370,7 +368,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             RElementMapValue ToAdd = new RElementMapValue(parentFrame,
                                     RMapElement.LookupMap.get(entry.getKey()));
                             ToAdd.setVal(entry.getValue());
-                            ToAdd.setName("E");
+                            
 
                             picked.add(RMapElement.LookupMap.get(entry.getKey()));
 
@@ -397,7 +395,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             toAdd.setSize(HashMapInnerPane.getWidth() - 5,
                                     Double.valueOf(toAdd.getSize().getHeight()).intValue());
                             toAdd.setAlignmentX(0.5f);
-                            toAdd.setName("E");
+                            
                             picked.add(select);
 
                             HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
@@ -885,7 +883,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             null, "",
                             false, null, WorkspaceName);
                     toAdd.setValue(entry);
-                    toAdd.setName("E");
+                    
 
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                     HashMapInnerPane.add(toAdd);
@@ -899,7 +897,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     var ToAdd = new RElementMapValue(parentFrame,
                             RMapElement.LookupMap.get(entry.getKey().toString()));
                     ToAdd.setVal(entry.getValue());
-                    ToAdd.setName("E");
+                    
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                     HashMapInnerPane.add(ToAdd);
                 }
@@ -997,10 +995,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 } else if (Map.class.isAssignableFrom(InputType)) {
                     var mapToBuild = new HashMap<RMapElement, Object>();
                     for (Component comp : HashMapInnerPane.getComponents()) {
-                        if (comp.getName() == null)
-                            continue;
-                        if (comp.getName().equals("E")) {
-                            var mapElement = ((RElementMapValue) comp);
+                        if (comp instanceof RElementMapValue remv) {
+                            RElementMapValue mapElement = remv;
                             mapToBuild.put(mapElement.rMapElement, mapElement.getKeyAndVal().getValue());
                         }
                     }
