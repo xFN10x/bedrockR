@@ -4,6 +4,7 @@ import java.util.List;
 
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
+import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 
 /**
  * thinks like help and javadoc taken from
@@ -117,6 +118,7 @@ public class BiomeComponents implements RMapElementProvider {
     }
 
     public static class Tags {
+        @StringDropdownField(value = { "tets", "testrwt" }, strict = true)
         public List<String> tags;
     }
 

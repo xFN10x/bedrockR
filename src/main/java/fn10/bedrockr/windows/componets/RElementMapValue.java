@@ -253,9 +253,9 @@ public class RElementMapValue extends JPanel {
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         } else if (RME.Type == Tags.class) {
-            Size.setSize(400, 500);
+            Size.setSize(600, 500);
             InputField = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "tags",
-                    "Replace Biomes", false,
+                    "Tags", false,
                     Tags.class, null, true, null);
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
@@ -344,10 +344,10 @@ public class RElementMapValue extends JPanel {
     @SuppressWarnings("unchecked")
     public void setVal(Object val) {
         try {
-            Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
             if (val instanceof LinkedTreeMap lrm) {
                 val = gson.fromJson(gson.toJsonTree(lrm), rMapElement.Type);
             }
+            Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
             if (rMapElement.Type == Climate.class && val instanceof Climate climate) {
 
                 ((JSpinner) MultipleInputs.get("downfallVal")).setValue(climate.downfall);
@@ -365,7 +365,8 @@ public class RElementMapValue extends JPanel {
 
             } else if (rMapElement.Type == Humidity.class && val instanceof Humidity humidity) {
 
-                ((JComboBox<String>) InputField).setSelectedIndex(humidity.is_humid ? 0 : 1);;
+                ((JComboBox<String>) InputField).setSelectedIndex(humidity.is_humid ? 0 : 1);
+                ;
 
             } else if (rMapElement.Type == MapTints.class && val instanceof MapTints mapTints) {
 
@@ -513,7 +514,8 @@ public class RElementMapValue extends JPanel {
                     val = new SurfaceBuilder();
                     OverworldBuilder builder = new OverworldBuilder();
 
-                    builder.sea_floor_depth = ((Number) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue()).intValue();
+                    builder.sea_floor_depth = ((Number) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue())
+                            .intValue();
                     builder.mid_material = ((RItemValue) MultipleInputs.get("midMaterialVal")).getItems().get(0).item;
 
                     builder.foundation_material = ((RItemValue) MultipleInputs.get("foundationMaterialVal"))
