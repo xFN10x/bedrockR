@@ -254,7 +254,7 @@ public class RElementMapValue extends JPanel {
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         } else if (RME.Type == Tags.class) {
             Size.setSize(400, 500);
-            InputField = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
+            InputField = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "tags",
                     "Replace Biomes", false,
                     Tags.class, null, true, null);
 
@@ -302,7 +302,8 @@ public class RElementMapValue extends JPanel {
         for (Entry<String, Component> entry : MultipleInputs.entrySet()) {
             if (entry.getValue() instanceof RItemValue riv) {
                 try {
-                    riv.setItem(RBlockSelector.getBlockById(Ancestor, "minecraft:air", RFileOperations.getCurrentWorkspace().WorkspaceName));
+                    riv.setItem(RBlockSelector.getBlockById(Ancestor, "minecraft:air",
+                            RFileOperations.getCurrentWorkspace().WorkspaceName));
                 } catch (NameNotFoundException | IncorrectWorkspaceException e) {
                     ErrorShower.exception(Ancestor, e);
                 }
@@ -374,7 +375,8 @@ public class RElementMapValue extends JPanel {
             } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) {
 
                 ((JSpinner) MultipleInputs.get("replacementVal")).setValue(replaceBiomes.replacements[0].amount);
-                ((JSpinner) MultipleInputs.get("noiseVal")).setValue(replaceBiomes.replacements[0].noise_frequency_scale);
+                ((JSpinner) MultipleInputs.get("noiseVal"))
+                        .setValue(replaceBiomes.replacements[0].noise_frequency_scale);
                 ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements[0].targets);
 
             } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) {
@@ -434,7 +436,8 @@ public class RElementMapValue extends JPanel {
                 ((JComboBox<String>) InputField).setSelectedIndex(((Boolean) val) == true ? 0 : 1);
             } else { // else
                 throw new IllegalArgumentException(
-                        InputField.getClass().getName() + " does not suppot type " + rMapElement.Type.getName());
+                        "Class " + val.getClass().getSimpleName() + ", cannot be used on this RElementMapValue of type "
+                                + rMapElement.Type.getSimpleName());
             }
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -455,21 +458,21 @@ public class RElementMapValue extends JPanel {
                 if (rMapElement.Type == Climate.class) {
                     val = new Climate();
 
-                    ((Climate) val).downfall = ((Float) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
+                    ((Climate) val).downfall = ((Number) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
                             .floatValue();
                     ((Climate) val).snow_accumulation = new float[] {
-                            (1f / 8f) * ((Integer) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue())
+                            (1f / 8f) * ((Number) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue())
                                     .floatValue(),
-                            (1f / 8f) * ((Integer) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue())
+                            (1f / 8f) * ((Number) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue())
                                     .floatValue() };
 
                     ((Climate) val).temperature =
 
-                            ((Double) ((JSpinner) MultipleInputs.get("tempVal")).getValue()).floatValue();
+                            ((Number) ((JSpinner) MultipleInputs.get("tempVal")).getValue()).floatValue();
 
                 } else if (rMapElement.Type == CreatureSpawnProbablity.class) {
                     val = new CreatureSpawnProbablity();
-                    ((CreatureSpawnProbablity) val).probability = ((Double) ((JSpinner) InputField).getValue())
+                    ((CreatureSpawnProbablity) val).probability = ((Number) ((JSpinner) InputField).getValue())
                             .floatValue();
 
                 } else if (rMapElement.Type == Humidity.class) {
@@ -499,17 +502,18 @@ public class RElementMapValue extends JPanel {
                     val = new ReplaceBiomes();
                     Replacement replacement = new Replacement();
 
-                    replacement.amount = ((Number) ((JSpinner) MultipleInputs.get("replacementVal")).getValue()).floatValue();
+                    replacement.amount = ((Number) ((JSpinner) MultipleInputs.get("replacementVal")).getValue())
+                            .floatValue();
                     replacement.noise_frequency_scale = ((Number) ((JSpinner) MultipleInputs.get("noiseVal"))
                             .getValue()).floatValue();
                     replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
 
-                    ((ReplaceBiomes) val).replacements = new Replacement[] {replacement};
+                    ((ReplaceBiomes) val).replacements = new Replacement[] { replacement };
                 } else if (rMapElement.Type == SurfaceBuilder.class) {
                     val = new SurfaceBuilder();
                     OverworldBuilder builder = new OverworldBuilder();
 
-                    builder.sea_floor_depth = (int) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue();
+                    builder.sea_floor_depth = ((Number) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue()).intValue();
                     builder.mid_material = ((RItemValue) MultipleInputs.get("midMaterialVal")).getItems().get(0).item;
 
                     builder.foundation_material = ((RItemValue) MultipleInputs.get("foundationMaterialVal"))
@@ -527,7 +531,8 @@ public class RElementMapValue extends JPanel {
 
                 } else if (rMapElement.Type == Tags.class) {
 
-                    val = ((RElementValue) InputField).getValue();
+                    val = new Tags();
+                    ((Tags) val).tags = (List<String>) ((RElementValue) InputField).getValue();
 
                 } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                     val = new minecraftDamage();
