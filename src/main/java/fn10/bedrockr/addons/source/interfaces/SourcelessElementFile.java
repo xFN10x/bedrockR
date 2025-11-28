@@ -23,8 +23,14 @@ public interface SourcelessElementFile {
                     new StrictMapSerilizer())
             .create();
 
-
-
+    /**
+     * Builds this ElementFile to the built BP/RP
+     * @param rootPath - the path to the BP, e.g. {@code rootPath + "/items/"} would be where items go
+     * @param workspaceFile - the workspace file for which this element is being built under
+     * @param rootResPackPath - the path to the RP
+     * @param globalResVaribles - basicly the resource pack
+     * @throws IOException
+     */
     void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles)
             throws IOException;
