@@ -767,18 +767,16 @@ public class RElementValue extends JPanel implements ValidatableValue {
         }
 
         // put in center is not hashmap
-        if (InputType.equals(HashMap.class))
+        if (Map.class.isAssignableFrom(InputType)) {
             Lay.putConstraint(SpringLayout.NORTH, Name, 10, SpringLayout.NORTH, this);
-        else
+            Lay.putConstraint(SpringLayout.NORTH, Help, 10, SpringLayout.NORTH, this);
+        } else {
+            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
             Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
+        }
 
         Lay.putConstraint(SpringLayout.WEST, Name, 0, SpringLayout.WEST, this);
 
-        // put in center is not hashmap
-        if (InputType.equals(HashMap.class))
-            Lay.putConstraint(SpringLayout.NORTH, Help, 10, SpringLayout.NORTH, this);
-        else
-            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
 
         Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
@@ -791,7 +789,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
         Lay.putConstraint(SpringLayout.EAST, EnableDis, -3, SpringLayout.WEST, Help);
         // put in center is not hashmap
-        if (InputType.equals(HashMap.class))
+        if (Map.class.isAssignableFrom(InputType))
             Lay.putConstraint(SpringLayout.NORTH, EnableDis, 10, SpringLayout.NORTH, this);
         else
             Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableDis, 0, SpringLayout.VERTICAL_CENTER, this);
@@ -996,7 +994,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
                     var casted = ((JComboBox<String>) Input);
                     return (casted.getSelectedIndex() == 0);
-                } else if (InputType.equals(HashMap.class)) {
+                } else if (Map.class.isAssignableFrom(InputType)) {
                     var mapToBuild = new HashMap<RMapElement, Object>();
                     for (Component comp : HashMapInnerPane.getComponents()) {
                         if (comp.getName() == null)
