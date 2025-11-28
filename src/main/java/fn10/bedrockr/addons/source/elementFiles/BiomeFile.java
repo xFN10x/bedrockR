@@ -1,9 +1,16 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome.minecraftBiome;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome.minecraftBiome.description;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents;
@@ -14,7 +21,6 @@ import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 public class BiomeFile implements ElementFile<SourceBiomeElement> {
-   
 
     @CantEditAfter
     @VeryImportant
@@ -23,7 +29,7 @@ public class BiomeFile implements ElementFile<SourceBiomeElement> {
 
     public boolean Draft = false;
 
-    @StringDropdownField({"vanilla biomes"})
+    @StringDropdownField({ "vanilla biomes" })
     @HelpMessage("The ID of the biome. Used in /locate, and debugging. Make this ID a vanilla one, like \"plains\", to make it override that biome.")
     public String BiomeID;
 
@@ -33,8 +39,21 @@ public class BiomeFile implements ElementFile<SourceBiomeElement> {
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'build'");
+        Biome biome = new Biome();
+
+        biome.format_version = "1.21.120";
+
+        minecraftBiome biomeInner = new minecraftBiome();
+        biome.biome = biomeInner;
+
+        description desc = new description();
+        desc.identifier = workspaceFile.Prefix + ":" + BiomeID;
+        biomeInner.description = desc;
+
+        biomeInner.components = Comps;
+
+        FileUtils.writeStringToFile(new File(rootPath + "/biomes/" + BiomeID + ".json"), gson.toJson(biome),
+                StandardCharsets.UTF_8);
     }
 
     @Override
