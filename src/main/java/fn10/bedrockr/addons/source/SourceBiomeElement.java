@@ -142,6 +142,8 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                 "Comps", "Biome Components", false, getSerilizedClass(), serilized, Workspace);
         if (idVal.Input instanceof JComboBox input) {
             input.setModel(new DefaultComboBoxModel<String>(vanillaBiomeNames));
+            input.setName("dd");
+            input.setSelectedItem(serilized.BiomeID);
         }
         screen.addField(elementnameVal);
         screen.addField(idVal);
