@@ -85,7 +85,7 @@ public class BiomeComponents implements RMapElementProvider {
              */
             public List<String> targets;
         }
-        public Replacement replacements;
+        public Replacement[] replacements;
     }
 
     public static class SurfaceBuilder {
