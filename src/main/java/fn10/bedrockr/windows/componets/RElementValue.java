@@ -933,10 +933,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     if (anno != null) {
                         toAdd.remove(toAdd.Input);
                         JComboBox<String> newInput;
-                        if (anno.value()[0].equals("_VANILLABIOMES"))
+                        if (anno.value()[0].equals("_VANILLABIOMES")) {
                             newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
-                        else
+                        } else {
                             newInput = new JComboBox<String>(anno.value());
+                        }
 
                         toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
                         toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
@@ -947,8 +948,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                         if (anno.strict()) {
                             ((JComboBox<String>) newInput).setEditable(false);
-                            ((JComboBox<String>) newInput).setSelectedIndex(0);
                         }
+                        ((JComboBox<String>) newInput).setSelectedItem(entry);
                     }
 
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
@@ -1097,7 +1098,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     try {
                         if (Input instanceof JComboBox jcb) // if its a drop down
                         {
-                            //JOptionPane.showMessageDialog(jcb, jcb.getSelectedItem());
+                            // JOptionPane.showMessageDialog(jcb, jcb.getSelectedItem());
                             return jcb.getSelectedItem();
                         }
 
