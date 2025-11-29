@@ -28,7 +28,7 @@ public class BiomeFile implements ElementFile<SourceBiomeElement> {
 
     public boolean Draft = false;
 
-    @StringDropdownField({ "vanilla biomes" })
+    @StringDropdownField({"_VANILLABIOMES"})
     @HelpMessage("The ID of the biome. Used in /locate, and debugging. Make this ID a vanilla one, like \"plains\", to make it override that biome.")
     public String BiomeID;
 

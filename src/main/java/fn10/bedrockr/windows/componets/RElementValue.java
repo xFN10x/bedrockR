@@ -20,6 +20,7 @@ import java.io.File;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -252,13 +253,18 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                             if (anno != null) {
                                 toAdd.remove(toAdd.Input);
-                                JComboBox<String> newInput = new JComboBox<String>(anno.value());
+                                JComboBox<String> newInput;
+                                if (anno.value()[0].equals("_VANILLABIOMES"))
+                                    newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                                else
+                                    newInput = new JComboBox<String>(anno.value());
 
                                 toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
                                 toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
                                 toAdd.Lay.putConstraint(SpringLayout.SOUTH, newInput, -3, SpringLayout.SOUTH, toAdd);
                                 toAdd.Lay.putConstraint(SpringLayout.EAST, newInput, -3, SpringLayout.WEST, toAdd.Help);
                                 toAdd.add(newInput);
+                                toAdd.Input = newInput;
 
                                 if (anno.strict()) {
                                     ((JComboBox<String>) newInput).setEditable(false);
@@ -333,14 +339,21 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     DisplayName, e);
                         }
                     } else if (anno != null && field != null) { // dropdown string
-                        Input = new JComboBox<String>(anno.value());
+                        if (anno.value()[0].equals("_VANILLABIOMES"))
+                            Input = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                        else
+                            Input = new JComboBox<String>(anno.value());
                         try {
                             // if its strict, dont make it editable
                             ((JComboBox<String>) Input).setEditable(!anno.strict());
                             if (!FromEmpty) {
                                 ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
                             } else {
-                                ((JComboBox<String>) Input).setSelectedItem(anno.value()[0]);
+                                if (anno.value()[0].equals("_VANILLABIOMES"))
+                                    ((JComboBox<String>) Input)
+                                            .setSelectedItem(SourceBiomeElement.getVanillaBiomeNames()[0]);
+                                else
+                                    ((JComboBox<String>) Input).setSelectedItem(anno.value()[0]);
                             }
                         } catch (Exception e) {
 
@@ -918,10 +931,23 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     toAdd.setValue(entry);
 
                     if (anno != null) {
-                        toAdd.Input = new JComboBox<String>(anno.value());
+                        toAdd.remove(toAdd.Input);
+                        JComboBox<String> newInput;
+                        if (anno.value()[0].equals("_VANILLABIOMES"))
+                            newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                        else
+                            newInput = new JComboBox<String>(anno.value());
+
+                        toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
+                        toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
+                        toAdd.Lay.putConstraint(SpringLayout.SOUTH, newInput, -3, SpringLayout.SOUTH, toAdd);
+                        toAdd.Lay.putConstraint(SpringLayout.EAST, newInput, -3, SpringLayout.WEST, toAdd.Help);
+                        toAdd.add(newInput);
+                        toAdd.Input = newInput;
+
                         if (anno.strict()) {
-                            ((JComboBox<String>) toAdd.Input).setEditable(false);
-                            ((JComboBox<String>) toAdd.Input).setSelectedIndex(0);
+                            ((JComboBox<String>) newInput).setEditable(false);
+                            ((JComboBox<String>) newInput).setSelectedIndex(0);
                         }
                     }
 
@@ -1044,7 +1070,6 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 } else
 
                 if (List.class.isAssignableFrom(InputType)) {
-
                     List<Object> listToBuild = new ArrayList<Object>();
                     for (Component comp : HashMapInnerPane.getComponents()) {
                         if (comp instanceof RElementValue rev) {
@@ -1071,7 +1096,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 } else {
                     try {
                         if (Input instanceof JComboBox jcb) // if its a drop down
+                        {
+                            //JOptionPane.showMessageDialog(jcb, jcb.getSelectedItem());
                             return jcb.getSelectedItem();
+                        }
 
                         if (Input instanceof JTextField) {
                             String text = ((JTextField) Input).getText();
@@ -1172,13 +1200,14 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     if (Input instanceof JComboBox jcb) { // for a string drop down
                         Problem = "String is not valid.";
-                        if (!Filter.getValid(((String) jcb.getSelectedItem()))) {
-                            Problem = "String is not valid.";
-                            log.info(Target + ": Drop down didnt pass filter, " + Filter.getClass().getName()
-                                    + "it doesnt pass");
+                        if (Filter != null)
+                            if (!Filter.getValid(((String) jcb.getSelectedItem()))) {
+                                Problem = "String is not valid.";
+                                log.info(Target + ": Drop down didnt pass filter, " + Filter.getClass().getName()
+                                        + "it doesnt pass");
 
-                            return false;
-                        }
+                                return false;
+                            }
                         return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
                     }
                     if (Input instanceof JTextField) {
