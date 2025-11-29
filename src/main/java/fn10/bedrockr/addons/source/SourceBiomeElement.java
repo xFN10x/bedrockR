@@ -34,41 +34,45 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceBiomeElement implements ElementSource<BiomeFile> {
 
-    private static transient String[] vanillaBiomeNames;
+    private static transient String[] vanillaBiomeNames = null;
 
     @SuppressWarnings("unchecked")
-    public static void getVanillaBiomeNames() {
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
+    public static String[] getVanillaBiomeNames() {
+        if (vanillaBiomeNames != null) {
+            return vanillaBiomeNames;
+        } else
+            try {
+                HttpClient client = HttpClient.newBuilder().build();
+                HttpRequest dataPathsReq = HttpRequest.newBuilder()
+                        .uri(new URI(
+                                "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
+                        .version(HttpClient.Version.HTTP_2).GET().build();
+                HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
-            HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                    .get(RNewAddon.PICKABLE_VERSIONS[0]);
+                HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
+                        .get(RNewAddon.PICKABLE_VERSIONS[0]);
 
-            String path = versionPaths.get("biomes");
+                String path = versionPaths.get("biomes");
 
-            HttpRequest biomesJsonReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                    + path
-                                    + "/biomes.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
+                HttpRequest biomesJsonReq = HttpRequest.newBuilder()
+                        .uri(new URI(
+                                "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
+                                        + path
+                                        + "/biomes.json"))
+                        .version(HttpClient.Version.HTTP_2).GET().build();
 
-            HttpResponse<String> biomesRes = client.send(biomesJsonReq, BodyHandlers.ofString());
-            List<String> biomeNames = new ArrayList<String>();
-            for (Map<String, Object> biomeEntry : (ArrayList<LinkedTreeMap<String, Object>>) gson
-                    .fromJson(biomesRes.body(), List.class)) {
-                biomeNames.add(biomeEntry.get("name").toString());
+                HttpResponse<String> biomesRes = client.send(biomesJsonReq, BodyHandlers.ofString());
+                List<String> biomeNames = new ArrayList<String>();
+                for (Map<String, Object> biomeEntry : (ArrayList<LinkedTreeMap<String, Object>>) gson
+                        .fromJson(biomesRes.body(), List.class)) {
+                    biomeNames.add(biomeEntry.get("name").toString());
+                }
+                vanillaBiomeNames = biomeNames.toArray(new String[0]);
+                return vanillaBiomeNames;
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                return null;
             }
-            vanillaBiomeNames = biomeNames.toArray(new String[0]);
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-
-        }
     }
 
     private BiomeFile serilized = new BiomeFile();
@@ -125,7 +129,6 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
         return serilized;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
         RElementEditingScreen screen = new RElementEditingScreen(Parent, getDetails().Name, this, getSerilizedClass(),
@@ -140,11 +143,11 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                 "BiomeID", "Biome ID", false, getSerilizedClass(), serilized, Workspace);
         RElementValue compsVal = new RElementValue(screen, HashMap.class, new FieldFilters.IDStringFilter(),
                 "Comps", "Biome Components", false, getSerilizedClass(), serilized, Workspace);
-        if (idVal.Input instanceof JComboBox input) {
+        /*if (idVal.Input instanceof JComboBox input) {
             input.setModel(new DefaultComboBoxModel<String>(vanillaBiomeNames));
             input.setName("dd");
             input.setSelectedItem(serilized.BiomeID);
-        }
+        }*/
         screen.addField(elementnameVal);
         screen.addField(idVal);
         screen.addField(compsVal);

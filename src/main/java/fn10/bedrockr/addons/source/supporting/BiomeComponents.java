@@ -3,6 +3,7 @@ package fn10.bedrockr.addons.source.supporting;
 import java.util.List;
 
 import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 
@@ -84,6 +85,7 @@ public class BiomeComponents implements RMapElementProvider {
              * must not contain namespaces (yes they have too microsoft). Value must have at
              * least 1 items.
              */
+            @StringDropdownField({"_VANILLABIOMES"})
             public List<String> targets;
         }
 
@@ -118,7 +120,32 @@ public class BiomeComponents implements RMapElementProvider {
     }
 
     public static class Tags {
-        @StringDropdownField(value = { "tets", "testrwt" }, strict = true)
+        @StringDropdownField(value = {
+                "birch",
+                "cold",
+                "deep",
+                "desert",
+                "extreme_hills",
+                "flower_forest",
+                "forest",
+                "forest_generation",
+                "frozen",
+                "ice",
+                "ice_plains",
+                "jungle",
+                "hills",
+                "meadow",
+                "mesa",
+                "mountain",
+                "mutated",
+                "no_legacy_worldgen",
+                "ocean",
+                "pale_garden",
+                "plains",
+                "rare",
+                "swamp",
+                "taiga"
+        }, strict = true)
         public List<String> tags;
     }
 
