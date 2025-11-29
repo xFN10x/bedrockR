@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import javax.naming.NameNotFoundException;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;

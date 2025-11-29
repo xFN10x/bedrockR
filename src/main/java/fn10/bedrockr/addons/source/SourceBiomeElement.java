@@ -15,9 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.SpringLayout;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -35,8 +33,14 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public class SourceBiomeElement implements ElementSource<BiomeFile> {
 
     private static transient String[] vanillaBiomeNames = null;
+    private static transient String[] prefixedVanillaBiomeNames = null;
 
-    @SuppressWarnings("unchecked")
+    public static String[] getPrefixedVanillaBiomeNames() {
+        if (prefixedVanillaBiomeNames == null)
+            getVanillaBiomeNames();
+        return prefixedVanillaBiomeNames;
+    }
+
     public static String[] getVanillaBiomeNames() {
         if (vanillaBiomeNames != null) {
             return vanillaBiomeNames;
@@ -63,11 +67,14 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
 
                 HttpResponse<String> biomesRes = client.send(biomesJsonReq, BodyHandlers.ofString());
                 List<String> biomeNames = new ArrayList<String>();
+                List<String> biomeNamesPrefix = new ArrayList<String>();
                 for (Map<String, Object> biomeEntry : (ArrayList<LinkedTreeMap<String, Object>>) gson
                         .fromJson(biomesRes.body(), List.class)) {
                     biomeNames.add(biomeEntry.get("name").toString());
+                    biomeNamesPrefix.add("minecraft:" + biomeEntry.get("name").toString());
                 }
                 vanillaBiomeNames = biomeNames.toArray(new String[0]);
+                prefixedVanillaBiomeNames = biomeNamesPrefix.toArray(vanillaBiomeNames);
                 return vanillaBiomeNames;
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -143,11 +150,13 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                 "BiomeID", "Biome ID", false, getSerilizedClass(), serilized, Workspace);
         RElementValue compsVal = new RElementValue(screen, HashMap.class, new FieldFilters.IDStringFilter(),
                 "Comps", "Biome Components", false, getSerilizedClass(), serilized, Workspace);
-        /*if (idVal.Input instanceof JComboBox input) {
-            input.setModel(new DefaultComboBoxModel<String>(vanillaBiomeNames));
-            input.setName("dd");
-            input.setSelectedItem(serilized.BiomeID);
-        }*/
+        /*
+         * if (idVal.Input instanceof JComboBox input) {
+         * input.setModel(new DefaultComboBoxModel<String>(vanillaBiomeNames));
+         * input.setName("dd");
+         * input.setSelectedItem(serilized.BiomeID);
+         * }
+         */
         screen.addField(elementnameVal);
         screen.addField(idVal);
         screen.addField(compsVal);
