@@ -77,7 +77,7 @@ public class RBlockSelector extends RDialog {
 
         @Override
         public int compareTo(BlockJsonEntry o) {
-            return name.compareTo(o.name);
+            return displayName.compareToIgnoreCase(o.displayName);
         }
     }
 
