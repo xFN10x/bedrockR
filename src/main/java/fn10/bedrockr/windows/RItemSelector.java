@@ -62,7 +62,7 @@ public class RItemSelector extends RDialog {
 
         @Override
         public int compareTo(ItemJsonEntry o) {
-            return name.compareTo(o.name);
+            return displayName.compareToIgnoreCase(o.displayName);
         }
     }
 
