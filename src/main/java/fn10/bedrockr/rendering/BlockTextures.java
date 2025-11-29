@@ -1,5 +1,6 @@
 package fn10.bedrockr.rendering;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -7,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,15 +16,18 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import java.awt.Image;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.windows.*;
 import fn10.bedrockr.windows.RBlockSelector.BlockJsonEntry;
@@ -31,6 +36,7 @@ public class BlockTextures {
     private static final Gson gson = new GsonBuilder().create();
 
     private static HttpClient client = HttpClient.newBuilder().build();
+    private static Map<String, ImageIcon> preloadedIcons = new HashMap<String, ImageIcon>();
     private static Map<String, Map<String, Object>> blocksJson = null;
     private static Map<String, Map<String, Map<String, Object>>> terrianTextureJson = null;
     private static URI blocksJsonUrl = URI.create(
@@ -59,6 +65,23 @@ public class BlockTextures {
 
         terrianTextureJson = gson.fromJson(response.body(), HashMap.class);
         return terrianTextureJson;
+    }
+
+    public static ImageIcon getBlockTexture(Window doingThis, String name) throws IOException {
+        if (preloadedIcons.containsKey(name))
+            return preloadedIcons.get(name);
+
+        File proposedRender = Path
+                .of(RFileOperations.getBaseDirectory(doingThis, "cache", "renders").getAbsolutePath(),
+                        name + ".png")
+                .toFile();
+        if (proposedRender.exists()) {
+            preloadedIcons.put(name, new ImageIcon(ImageIO.read(proposedRender).getScaledInstance(45, 45,
+                    BufferedImage.SCALE_AREA_AVERAGING)));
+            return getBlockTexture(doingThis, name);
+        } else {
+            return null;
+        }
     }
 
     /*

@@ -30,7 +30,10 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,11 +42,14 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
+import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
+import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.windows.RBlockSelector.BlockJsonEntry;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
@@ -157,6 +163,7 @@ public class RItemSelector extends RDialog {
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     private final JButton addButton = new JButton("Add");
     private final JButton cancelButton = new JButton("Cancel");
+    private final JTextField searchBox = new JTextField();
 
     protected ReturnItemInfo selected = null;
 
@@ -258,6 +265,75 @@ public class RItemSelector extends RDialog {
         }
     }
 
+    public void showBlocksWithTerm(String searchTerm, Frame parent, String Workspace) {
+        InnerPanel.removeAll();
+        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
+            if (element instanceof BlockFile bf) {
+                if (!searchTerm.isEmpty())
+                    if (!bf.Name.toLowerCase().contains(searchTerm))
+                        continue;
+                JButton ToAdd = new JButton();
+                ToAdd.setMargin(new Insets(2, 1, 2, 1));
+                Dimension size = new Dimension(48, 48);
+                ToAdd.setMinimumSize(size);
+                ToAdd.setPreferredSize(size);
+                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
+                Image image = bf.getTexture(Workspace);
+                ImageIcon icon = new ImageIcon(image);
+                if (image != null)
+                    ToAdd.setIcon(icon);
+                else
+                    ToAdd.setText(bf.getDisplayName());
+                ToAdd.setToolTipText(
+                        bf.getDisplayName() + " (" + bf.getItemId() +
+                                ")");
+                ToAdd.addActionListener(e -> {
+                    ReturnItemInfo building = new ReturnItemInfo();
+                    building.Id = bf.getItemId();
+                    building.Name = bf.getDisplayName();
+                    try {
+                        building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(RFileOperations
+                                .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
+                                .toPath())).getSerilized()).Prefix;
+                    } catch (IOException e1) {
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                        building.Prefix = "error";
+                    }
+                    building.Texture = icon;
+                    selected = building;
+                });
+                InnerPanel.add(ToAdd);
+            }
+        }
+
+        for (ItemJsonEntry item : vanillaItems) {
+            if (item.displayName.toLowerCase().contains(searchTerm))
+                try {
+                    JButton ToAdd = new JButton();
+                    ToAdd.setMargin(new Insets(2, 1, 2, 1));
+                    Dimension size = new Dimension(48, 48);
+                    ToAdd.setMinimumSize(size);
+                    ToAdd.setPreferredSize(size);
+                    ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
+                    ImageIcon icon = BlockTextures.getBlockTexture(parent, item.name.split(":")[1]);
+                    if (icon != null)
+                        ToAdd.setIcon(icon);
+                    ToAdd.setText(item.displayName);
+                    ToAdd.setToolTipText(item.displayName + " (" + item.name +
+                            ")");
+                    ToAdd.addActionListener(e -> {
+                        selected = item.toReturnItemInfo();
+                    });
+                    InnerPanel.add(ToAdd);
+
+                } catch (Exception e1) {
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                }
+        }
+        InnerPanel.revalidate();
+        InnerPanel.repaint();
+    }
+
     protected RItemSelector(Frame parent, String Workspace) {
         super(
                 parent,
@@ -289,74 +365,35 @@ public class RItemSelector extends RDialog {
         Lay.putConstraint(SpringLayout.WEST, selector, 5, SpringLayout.WEST, getContentPane());
         Lay.putConstraint(SpringLayout.EAST, selector, -5, SpringLayout.EAST, getContentPane());
         Lay.putConstraint(SpringLayout.SOUTH, selector, -5, SpringLayout.NORTH, addButton);
-        Lay.putConstraint(SpringLayout.NORTH, selector, 5, SpringLayout.NORTH, getContentPane());
+        Lay.putConstraint(SpringLayout.NORTH, selector, 3, SpringLayout.SOUTH, searchBox);
+        // search
+        Lay.putConstraint(SpringLayout.WEST, searchBox, 5, SpringLayout.WEST, getContentPane());
+        Lay.putConstraint(SpringLayout.EAST, searchBox, -5, SpringLayout.EAST, getContentPane());
+        Lay.putConstraint(SpringLayout.NORTH, searchBox, 3, SpringLayout.NORTH, getContentPane());
+
+        searchBox.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                showBlocksWithTerm(searchBox.getText(), parent, Workspace);
+            }
+
+        });
 
         InnerPanel.setLayout(new GridLayout(0, 4, 3, 3));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
-            if (element instanceof ItemLikeElement) {
-                JButton ToAdd = new JButton();
-                Dimension size = new Dimension(48, 48);
-                ToAdd.setMinimumSize(size);
-                ToAdd.setPreferredSize(size);
-                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                Image image = ((ItemLikeElement) element).getTexture(Workspace);
-                ImageIcon icon = new ImageIcon(image);
-                if (image != null)
-                    ToAdd.setIcon(icon);
-                else
-                    ToAdd.setText(((ItemLikeElement) element).getDisplayName());
-                ToAdd.setToolTipText(
-                        ((ItemLikeElement) element).getDisplayName() + " (" + ((ItemLikeElement) element).getItemId() +
-                                ")");
-                ToAdd.addActionListener(e -> {
-                    ReturnItemInfo building = new ReturnItemInfo();
-                    building.Id = ((ItemLikeElement) element).getItemId();
-                    building.Name = ((ItemLikeElement) element).getDisplayName();
-                    try {
-                        building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(RFileOperations
-                                .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
-                                .toPath())).getSerilized()).Prefix;
-                    } catch (IOException e1) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-                        building.Prefix = "error";
-                    }
-                    building.Texture = icon;
-                    selected = building;
-                });
-                InnerPanel.add(ToAdd);
-            }
-        }
-
-        for (ItemJsonEntry item : vanillaItems) {
-            try {
-                JButton ToAdd = new JButton();
-                ToAdd.setMargin(new Insets(2, 1, 2, 1));
-                Dimension size = new Dimension(48, 48);
-                ToAdd.setMinimumSize(size);
-                ToAdd.setPreferredSize(size);
-                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                File proposedRender = Path
-                        .of(RFileOperations.getBaseDirectory(this, "cache", "renders").getAbsolutePath(),
-                                item.name.split(":")[1] + ".png")
-                        .toFile();
-                ToAdd.setText(item.displayName);
-                if (proposedRender.exists()) {
-                    ToAdd.setIcon(new ImageIcon(ImageIO.read(proposedRender).getScaledInstance(45, 45,
-                            BufferedImage.SCALE_AREA_AVERAGING)));
-                }
-                ToAdd.setToolTipText(item.displayName + " (" + item.name +
-                        ")");
-                ToAdd.addActionListener(e -> {
-                    selected = item.toReturnItemInfo();
-                });
-                InnerPanel.add(ToAdd);
-
-            } catch (Exception e1) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            }
-        }
+        showBlocksWithTerm("", parent, Workspace);
 
         setLayout(Lay);
 
@@ -364,6 +401,7 @@ public class RItemSelector extends RDialog {
         add(addButton);
         add(cancelButton);
         add(selector);
+        add(searchBox);
 
         setModal(true);
     }
