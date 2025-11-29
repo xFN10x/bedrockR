@@ -256,6 +256,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 JComboBox<String> newInput;
                                 if (anno.value()[0].equals("_VANILLABIOMES"))
                                     newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                                else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES"))
+                                    newInput = new JComboBox<String>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
                                 else
                                     newInput = new JComboBox<String>(anno.value());
 
@@ -271,6 +273,19 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     ((JComboBox<String>) newInput).setSelectedIndex(0);
                                 }
                             }
+
+                            JButton removeButton = new JButton("-");
+
+                            toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0,
+                                    SpringLayout.VERTICAL_CENTER, toAdd);
+                            toAdd.Lay.putConstraint(SpringLayout.WEST, toAdd.Input, 3, SpringLayout.EAST, removeButton);
+
+                            toAdd.add(removeButton);
+                            removeButton.addActionListener(ac -> {
+                                HashMapInnerPane.remove(toAdd);
+                                HashMapInnerPane.repaint();
+                                HashMapInnerPane.revalidate();
+                            });
 
                             toAdd.setAlignmentX(0.5f);
 
@@ -341,6 +356,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     } else if (anno != null && field != null) { // dropdown string
                         if (anno.value()[0].equals("_VANILLABIOMES"))
                             Input = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                        else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES"))
+                            Input = new JComboBox<String>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
                         else
                             Input = new JComboBox<String>(anno.value());
                         try {
@@ -348,12 +365,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             ((JComboBox<String>) Input).setEditable(!anno.strict());
                             if (!FromEmpty) {
                                 ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
-                            } else {
-                                if (anno.value()[0].equals("_VANILLABIOMES"))
-                                    ((JComboBox<String>) Input)
-                                            .setSelectedItem(SourceBiomeElement.getVanillaBiomeNames()[0]);
-                                else
-                                    ((JComboBox<String>) Input).setSelectedItem(anno.value()[0]);
+                            } else if (anno.strict()) {
+                                ((JComboBox<String>) Input).setSelectedIndex(0);
                             }
                         } catch (Exception e) {
 
@@ -935,6 +948,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         JComboBox<String> newInput;
                         if (anno.value()[0].equals("_VANILLABIOMES")) {
                             newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                        } else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES")) {
+                            newInput = new JComboBox<String>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
                         } else {
                             newInput = new JComboBox<String>(anno.value());
                         }
@@ -952,6 +967,19 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         ((JComboBox<String>) newInput).setSelectedItem(entry);
                     }
 
+                    JButton removeButton = new JButton("-");
+
+                    toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0, SpringLayout.VERTICAL_CENTER,
+                            toAdd);
+                    toAdd.Lay.putConstraint(SpringLayout.WEST, toAdd.Input, 3, SpringLayout.EAST, removeButton);
+
+                    toAdd.add(removeButton);
+                    removeButton.addActionListener(ac -> {
+                        HashMapInnerPane.remove(toAdd);
+                        HashMapInnerPane.repaint();
+                        HashMapInnerPane.revalidate();
+                    });
+
                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                     HashMapInnerPane.add(toAdd);
                 }
@@ -961,7 +989,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
         } else if (Map.class.isAssignableFrom(InputType)) {
             try {
                 for (Map.Entry<Object, Object> entry : ((HashMap<Object, Object>) value).entrySet()) {
-                    var ToAdd = new RElementMapValue(parentFrame,
+                    RElementMapValue ToAdd = new RElementMapValue(parentFrame,
                             RMapElement.LookupMap.get(entry.getKey().toString()));
                     ToAdd.setVal(entry.getValue());
 
@@ -1060,7 +1088,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     var casted = ((JComboBox<String>) Input);
                     return (casted.getSelectedIndex() == 0);
                 } else if (Map.class.isAssignableFrom(InputType)) {
-                    var mapToBuild = new HashMap<RMapElement, Object>();
+                    HashMap<RMapElement, Object> mapToBuild = new HashMap<RMapElement, Object>();
                     for (Component comp : HashMapInnerPane.getComponents()) {
                         if (comp instanceof RElementMapValue remv) {
                             RElementMapValue mapElement = remv;
