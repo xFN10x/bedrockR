@@ -129,6 +129,15 @@ public class RElementMapValue extends JPanel {
             MultipleInputs.put("snowfallMin", snowfallMin);
             ((JPanel) InputField).add(snowfallPanel);
 
+            snowfallMax.getModel().addChangeListener(cl -> {
+                ((SpinnerNumberModel) snowfallMin.getModel())
+                        .setMaximum((((Number) snowfallMax.getValue()).intValue()));
+            });
+            snowfallMin.getModel().addChangeListener(cl -> {
+                ((SpinnerNumberModel) snowfallMax.getModel())
+                        .setMinimum((((Number) snowfallMin.getValue()).intValue()));
+            });
+
             JPanel tempPanel = new JPanel();
             tempPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
             JSpinner tempVal = new JSpinner(new SpinnerNumberModel(0.8f, 0f, 2f, 0.1f));
@@ -351,9 +360,9 @@ public class RElementMapValue extends JPanel {
 
                 ((JSpinner) MultipleInputs.get("downfallVal")).setValue(climate.downfall);
 
-                ((JSpinner) MultipleInputs.get("snowfallMax")).setValue(climate.snow_accumulation[1]);
+                ((JSpinner) MultipleInputs.get("snowfallMax")).setValue((int) (climate.snow_accumulation[1] / 0.125f));
 
-                ((JSpinner) MultipleInputs.get("snowfallMin")).setValue(climate.snow_accumulation[0]);
+                ((JSpinner) MultipleInputs.get("snowfallMin")).setValue((int) (climate.snow_accumulation[0] / 0.125f));
 
                 ((JSpinner) MultipleInputs.get("tempVal")).setValue(climate.temperature);
 
