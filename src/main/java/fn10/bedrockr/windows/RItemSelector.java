@@ -4,10 +4,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.image.BufferedImage;
 import java.awt.Frame;
 import java.awt.GridLayout;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -15,14 +13,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.naming.NameNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,7 +45,6 @@ import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.windows.RBlockSelector.BlockJsonEntry;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
