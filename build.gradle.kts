@@ -38,9 +38,9 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 
     //3d stuff
-    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-alpha4")
-    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-alpha4")
-    implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha4")
+    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-alpha5")
+    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-alpha5")
+    implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha5")
 
     // https://mvnrepository.com/artifact/org.codehaus.plexus/plexus-utils
     implementation("org.codehaus.plexus:plexus-utils:4.0.2")
