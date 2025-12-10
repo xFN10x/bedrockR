@@ -3,7 +3,7 @@ plugins {
     application
     java
     id("org.panteleyev.jpackageplugin") version "1.7.3"
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.3.0"
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -30,7 +30,7 @@ dependencies {
     //flat laf
     implementation("com.formdev:flatlaf:3.7")
 
-    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.2.2")
+    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.0")
 
     implementation("commons-io:commons-io:2.21.0")
 
