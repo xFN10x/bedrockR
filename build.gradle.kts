@@ -4,7 +4,7 @@ plugins {
     java
     maven-publish
     id("org.panteleyev.jpackageplugin") version "1.7.3"
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.3.0"
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -29,9 +29,9 @@ dependencies {
     //gson
     implementation("com.google.code.gson:gson:2.13.1")
     //flat laf
-    implementation("com.formdev:flatlaf:3.6.2")
+    implementation("com.formdev:flatlaf:3.7")
 
-    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.2.2")
+    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.0")
 
     implementation("commons-io:commons-io:2.21.0")
 
@@ -39,9 +39,9 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 
     //3d stuff
-    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-alpha4")
-    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-alpha4")
-    implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha4")
+    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-alpha5")
+    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-alpha5")
+    implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha5")
 
     // https://mvnrepository.com/artifact/org.codehaus.plexus/plexus-utils
     implementation("org.codehaus.plexus:plexus-utils:4.0.2")
