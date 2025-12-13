@@ -43,8 +43,8 @@ import fn10.bedrockr.windows.RWorkspace;
 public class RFileOperations {
 
     private static final String USER_DIR = System.getProperty("user.home");
-    private static final String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
-    private static final File BASE_DIRECTORY = new File(BASE_PATH);
+    private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
+    private static File BASE_DIRECTORY = new File(BASE_PATH);
     private static WorkspaceFile CURRENT_WORKSPACE = null;
     @SuppressWarnings("unused")
     private static String COMMOJANG = null;
@@ -85,6 +85,11 @@ public class RFileOperations {
 
     public static final String WPFFILENAME = "workspace.WPF";
     public static final String RESOURCE_FILE_NAME = "resources.json";
+
+    public static void setBaseDir(File folder) {
+        BASE_DIRECTORY = folder;
+        BASE_PATH = folder.getAbsolutePath();
+    }
 
     /**
      * Gets the class of the ElementSource linked with the ElementFile, based on the
@@ -351,7 +356,7 @@ public class RFileOperations {
     }
 
     /**
-     * Gets a directory from {@coce .bedrockr}
+     * Gets a directory from {@code .bedrockr}
      * 
      * @param doingThis - the window to use for debugging
      * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
@@ -362,7 +367,7 @@ public class RFileOperations {
     }
 
     /**
-     * Gets a directory from {@coce .bedrockr}
+     * Gets a directory from {@code .bedrockr}
      * 
      * @param doingThis - the window to use for debugging
      * @param strict    - if strict, it doesn't make the directory you specify
@@ -384,7 +389,7 @@ public class RFileOperations {
     }
 
     /**
-     * Gets the {@coce .bedrockr} directory
+     * Gets the {@code .bedrockr} directory
      * 
      * @param doingThis - the window to use for debugging
      * @return the file, being the directory that you specified,

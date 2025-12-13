@@ -33,7 +33,7 @@ public class BiomeComponents implements RMapElementProvider {
     public static class CreatureSpawnProbablity {
         /**
          * Probabiltity between [0.0, 0.75] of creatures spawning within the biome on
-         * chunk generation. Value must be {@code value <= 0.75}.
+         * chunk generation. Value must be {@code value greater, or equal to 0.75}.
          */
         public float probability;
     }
@@ -64,7 +64,7 @@ public class BiomeComponents implements RMapElementProvider {
         public static class Replacement {
             /**
              * Noise value used to determine whether or not the replacement is attempted,
-             * similar to a percentage. Must be in the range (0.0, 1.0]. Value must be <= 1.
+             * similar to a percentage. Must be in the range (0.0, 1.0]. Value must be greater, or equal to 1.
              */
             public float amount;
             /**
@@ -76,7 +76,7 @@ public class BiomeComponents implements RMapElementProvider {
              * Scaling value used to alter the frequency of replacement attempts. A lower
              * frequency will mean a bigger contiguous biome area that occurs less often. A
              * higher frequency will mean smaller contiguous biome areas that occur more
-             * often. Must be in the range (0.0, 100.0]. Value must be <= 100.
+             * often. Must be in the range (0.0, 100.0]. Value must be greater, or equal to 100.
              */
             public float noise_frequency_scale;
             /**
@@ -100,7 +100,7 @@ public class BiomeComponents implements RMapElementProvider {
             public String type = "minecraft:overworld";
             /**
              * Controls how deep below the world water level the floor should occur Value
-             * must be <= 127.
+             * must be greater, or equal to 127.
              */
             public int sea_floor_depth;
             /** Controls the block type used for the bodies of water in this biome */
