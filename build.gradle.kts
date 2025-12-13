@@ -2,7 +2,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     java
-    maven-publish
+    `maven-publish`
     id("org.panteleyev.jpackageplugin") version "1.7.3"
     id("com.gradleup.shadow") version "9.3.0"
     id("org.openjfx.javafxplugin") version "0.1.0"
