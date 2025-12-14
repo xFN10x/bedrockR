@@ -14,22 +14,22 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
 
     @Override
     public Class<SourceScriptElement> getSourceClass() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSourceClass'");
+        return SourceScriptElement.class;
     }
 
     @Override
     public String getElementName() {
-        throw new UnsupportedOperationException("Unimplemented method 'getElementName'");
+        return "Script";
     }
 
     @Override
     public void setDraft(Boolean draft) {
-        throw new UnsupportedOperationException("Unimplemented method 'setDraft'");
+        return;
     }
 
     @Override
     public Boolean getDraft() {
-        throw new UnsupportedOperationException("Unimplemented method 'getDraft'");
+        return true;
     }
 /* sadly, scripts will not be in the next updates until i rework them
     @UneditableByCreation
