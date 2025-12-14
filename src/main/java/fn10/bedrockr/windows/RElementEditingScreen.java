@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
@@ -37,10 +35,8 @@ import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
-import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
-import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -51,15 +47,11 @@ import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.windows.base.RDialog;
-import fn10.bedrockr.windows.componets.RBlockly;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.componets.RItemValue;
 import fn10.bedrockr.windows.componets.RItemValue.ShapedOutput;
 import fn10.bedrockr.windows.util.ErrorShower;
-import fn10.bedrockr.windows.util.ImageUtilites;
 import fn10.bedrockr.windows.util.WrapLayout;
-import javafx.application.Platform;
-import javafx.stage.WindowEvent;
 
 /**
  * An RDialog that provides the basic parts to make a source element builder
@@ -223,7 +215,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             lay.putConstraint(SpringLayout.NORTH, compsVal, 5, SpringLayout.SOUTH, elementnameVal);
 
             return screen;
-        } else if (src.getClass().equals(SourceScriptElement.class)) {
+        } /*else if (src.getClass().equals(SourceScriptElement.class)) {
             ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so copying is easier
 
             RElementValue elementName = new RElementValue(Parent, String.class,
@@ -328,7 +320,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             });
 
             return frame;
-        } else if (src.getClass().equals(SourceRecipeElement.class)) {
+        }*/ else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
                 RecipeFile serilized = (RecipeFile) src.getSerilized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),

@@ -114,7 +114,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @FieldDetails(Optional = false, displayName = "Is Cooked")
     public boolean IsCooked = false;
 
-    public transient Separator sep2;
+    public transient CreationScreenSeperator sep2;
 
     @UneditableByCreation // this is added manually
     public String EatingTurnsInto = null;
