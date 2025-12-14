@@ -55,7 +55,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 public class Launcher {
 
-    public static int CHECKVERSION = 7;
+    public static int CHECKVERSION = 8;
     public static Image ICON;
 
     public static WebEngine BLOCKLY_MINI_WEBENGINE;
