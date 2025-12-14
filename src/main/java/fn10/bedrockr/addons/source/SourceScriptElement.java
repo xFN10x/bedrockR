@@ -2,13 +2,10 @@ package fn10.bedrockr.addons.source;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.RFileOperations;
+import kotlin.NotImplementedError;
 
 public class SourceScriptElement implements ElementSource<ScriptFile> {
 
@@ -50,7 +47,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
 
     @Override
     public File buildJSONFile(String workspace) {
-        String string = getJSONString();
+        /*String string = getJSONString();
         var file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".scriptref");
         try {
@@ -59,7 +56,8 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
-        }
+        }*/
+       throw new NotImplementedError("Scripts are not avalible since a2.0");
     }
 
     @Override
