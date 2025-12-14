@@ -218,6 +218,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             return screen;
         } else if (src.getClass().equals(SourceScriptElement.class)) {
             JOptionPane.showMessageDialog(Parent, "Sadly, scripts are unavailable since a2.0.");
+            return null;
             /*ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so copying is easier
 
             RElementValue elementName = new RElementValue(Parent, String.class,

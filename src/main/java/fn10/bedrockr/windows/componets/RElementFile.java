@@ -74,8 +74,10 @@ public class RElementFile extends RElement implements ActionListener {
             Class<? extends ElementSource<?>> srczz = file.getSourceClass();
             ElementSource<?> newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource
                                                                                                // with file
-            RElementEditingScreen.getElementsCreationScreen(newsrc, wksp, wksp, wksp.SWPF.getSerilized().WorkspaceName)
-                    .setVisible(true);
+            RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(newsrc, wksp, wksp,
+                    wksp.SWPF.getSerilized().WorkspaceName);
+            if (screen != null)
+                screen.setVisible(true);
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
