@@ -28,10 +28,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.windows.*;
-import fn10.bedrockr.windows.RBlockSelector.BlockJsonEntry;
 
 public class BlockTextures {
     private static final Gson gson = new GsonBuilder().create();

@@ -1,33 +1,14 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Dimension;
-import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RElementEditingScreen;
-import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
-import fn10.bedrockr.windows.componets.RBlockly;
-import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.util.ErrorShower;
-import fn10.bedrockr.windows.util.ImageUtilites;
-import javafx.application.Platform;
 
 public class SourceScriptElement implements ElementSource<ScriptFile> {
 
@@ -57,9 +38,14 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
     }
 
     public static ElementDetails getDetails() {
-        return new ElementDetails("Script",
-                "<html>A JavaScript Script, you can edit<br>with block coding.</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Script.png")));
+        try {
+            return new ElementDetails("Script",
+                    "<html>A JavaScript Script, you can edit<br>with block coding.</html>",
+                    ElementSource.class.getResource("/addons/element/Script.png").openStream().readAllBytes());
+        } catch (IOException e) {
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            return null;
+        }
     }
 
     @Override
@@ -71,7 +57,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
             Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             return file;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -85,109 +71,4 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
     public ScriptFile getSerilized() {
         return serilized;
     }
-
-    @Override
-    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
-
-        ElementSource<ScriptFile> This = this;
-
-        RElementValue elementName = new RElementValue(Parent, String.class, new FieldFilters.FileNameLikeStringFilter(),
-                "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
-        elementName.setMaximumSize(new Dimension(300, 40));
-        RElementValue scriptName = new RElementValue(Parent, String.class, new FieldFilters.IDStringFilter(),
-                "ScriptName", "Script Name", false, getSerilizedClass(), serilized, Workspace);
-        scriptName.setMaximumSize(new Dimension(300, 40));
-
-        JTextArea preview = new JTextArea();
-        preview.setEditable(false);
-
-        JLabel loading = new JLabel("Loading...");
-
-        JPanel rightStuff = new JPanel();
-        JPanel toprightStuff = new JPanel();
-
-        toprightStuff.setLayout(new BoxLayout(toprightStuff, BoxLayout.X_AXIS));
-        rightStuff.setLayout(new BoxLayout(rightStuff, BoxLayout.Y_AXIS));
-
-        rightStuff.add(preview);
-        rightStuff.add(toprightStuff);
-
-        toprightStuff.add(elementName);
-        toprightStuff.add(Box.createHorizontalStrut(5));
-        toprightStuff.add(scriptName);
-
-        RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
-                RElementEditingScreen.DEFAULT_STYLE);
-
-        frame.CreateButton.setEnabled(false);
-        JButton DebugButton = (JButton) frame.add(new JButton("Debug"));
-        frame.Lay.putConstraint(SpringLayout.WEST, DebugButton, 10, SpringLayout.EAST, frame.CancelButton);
-        frame.Lay.putConstraint(SpringLayout.SOUTH, DebugButton, 0, SpringLayout.SOUTH, frame.CancelButton);
-        frame.DraftButton.setEnabled(false);
-
-        RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null, () -> {
-            frame.CreateButton.setEnabled(true);
-            frame.DraftButton.setEnabled(true);
-        });
-
-        DebugButton.addActionListener(ac -> {
-            rblockly.execute("fixRendering(150)");
-        });
-
-        frame.setCustomCreateFunction(new CustomCreateFunction() {
-
-            @Override
-            public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
-                    boolean isDraft) {
-                try {
-                    Platform.runLater(() -> {
-                        if (serilized == null)
-                            serilized = new ScriptFile();
-
-                        serilized.ElementName = elementName.getValue().toString();
-                        serilized.ScriptName = scriptName.getValue().toString();
-                        serilized.Content = rblockly.getJson();
-                        serilized.setDraft(isDraft);
-
-                        Listener.onElementCreate(This); // create
-                        Sindow.dispose();
-                    });
-                } catch (Exception ex) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
-                    ErrorShower.showError(Sindow, "Failed to create ElementSource",
-                            "Source Creation Error", ex);
-                }
-            }
-
-        }).addVaildations(elementName, scriptName);
-        SpringLayout lay = new SpringLayout();
-
-        lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH, frame.InnerPane);
-        lay.putConstraint(SpringLayout.SOUTH, rightStuff, 0, SpringLayout.SOUTH, frame.InnerPane);
-        lay.putConstraint(SpringLayout.EAST, rightStuff, 0, SpringLayout.EAST, frame.InnerPane);
-        lay.putConstraint(SpringLayout.WEST, rightStuff, 855, SpringLayout.WEST, frame.InnerPane);
-
-        lay.putConstraint(SpringLayout.NORTH, rblockly, 0, SpringLayout.NORTH, frame.InnerPane);
-        lay.putConstraint(SpringLayout.SOUTH, rblockly, 0, SpringLayout.SOUTH, frame.InnerPane);
-        lay.putConstraint(SpringLayout.WEST, rblockly, 0, SpringLayout.WEST, frame.InnerPane);
-
-        frame.InnerPane.setLayout(lay);
-
-        frame.InnerPane.add(rblockly);
-        frame.InnerPane.add(rightStuff);
-        frame.InnerPane.add(loading);
-
-        frame.setSize(new Dimension(1500, 800));
-        frame.setLocation(ImageUtilites.getScreenCenter(frame));
-
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosed(WindowEvent e) {
-                rblockly.dispose();
-            }
-
-        });
-
-        return frame;
-    }
-
 }

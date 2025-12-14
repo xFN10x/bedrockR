@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
@@ -94,7 +93,7 @@ public class RTextureAddingSelector extends RDialog {
                     InnerPanel.add(ToAdd);
                 }
             } catch (Exception e1) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         }
 
@@ -144,7 +143,7 @@ public class RTextureAddingSelector extends RDialog {
         thiS.setVisible(true);
 
         if (thiS.choice == CANCEL_CHOICE) {
-            Launcher.LOG.info("canceled");
+            java.util.logging.Logger.getGlobal().info("canceled");
             return null;
         } else
             return thiS.getSelected();

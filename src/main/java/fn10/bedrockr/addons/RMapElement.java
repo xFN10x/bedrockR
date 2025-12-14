@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
 import fn10.bedrockr.addons.source.supporting.ItemComponents;
@@ -44,7 +43,7 @@ public class RMapElement {
     }
 
     public boolean Valid(Object value) {
-        var log = Launcher.LOG;
+        var log = java.util.logging.Logger.getGlobal();
         log.info(">---------=--------< Checking RMapElement " + this.DisplayName + "... >---------=--------<");
         for (MapValueFilter filter : Filters) {
             switch (filter) {

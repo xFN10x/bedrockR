@@ -123,7 +123,7 @@ public class RenderHandler extends SimpleApplication {
            * ImageIO.write(img, "png", new
            * File("C:\\Users\\mathd\\Pictures\\Untitled - Copy.jpg"));
            * } catch (IOException e) {
-           * fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+           * java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
            * "Exception thrown", e);
            * }
            */
@@ -181,7 +181,7 @@ public class RenderHandler extends SimpleApplication {
             dia.add(adding);
 
         } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         doNextFrame(() -> {
             changeDownModel(null, tex);
@@ -195,7 +195,7 @@ public class RenderHandler extends SimpleApplication {
                 dia.Lay.putConstraint(SpringLayout.SOUTH, adding, -5, SpringLayout.SOUTH, dia.getContentPane());
                 dia.add(adding);
             } catch (IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
             dia.setVisible(true);
         });

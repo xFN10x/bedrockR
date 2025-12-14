@@ -7,7 +7,6 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.util.ImageUtilites;
 import fn10.bedrockr.windows.util.RFonts;
@@ -29,7 +28,7 @@ public class RLoadingScreen extends RDialog {
                 MainText.setText(text);
             });
         } catch (Exception e) {
-            Launcher.LOG.warning("Failed to change progress message.");
+            java.util.logging.Logger.getGlobal().warning("Failed to change progress message.");
         }
     }
 

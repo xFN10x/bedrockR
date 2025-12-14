@@ -1,17 +1,19 @@
 package fn10.bedrockr.addons.source.interfaces;
 
 import java.io.File;
+import java.io.IOException;
 
-import javax.swing.ImageIcon;
 import com.google.gson.Gson;
 
-import fn10.bedrockr.interfaces.ElementCreationListener;
-import fn10.bedrockr.windows.RElementEditingScreen;
-
 /**
- * the interface used for Source Classes of Elements. Element Sources are responceable for most things that an element does. Like building to source, and giving info to the UI.
- * <br/><br/>
- * Notice: You should add the method, {@code public static ElementDetails getDetails()} if making a ElementSource that is meant to be added as a workspace element.
+ * the interface used for Source Classes of Elements. Element Sources are
+ * responceable for most things that an element does. Like building to source,
+ * and giving info to the UI.
+ * <br/>
+ * <br/>
+ * Notice: You should add the method,
+ * {@code public static ElementDetails getDetails()} if making a ElementSource
+ * that is meant to be added as a workspace element.
  */
 public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
 
@@ -20,14 +22,20 @@ public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>
     // final Integer Type = 0; // 0 for BP, 1 for RP
 
     public static ElementDetails getDetails() {
-        return new ElementDetails("Element", "A cool new element, \nwhich SOME dumbass forgot to change.",
-                new ImageIcon(ElementSource.class.getResource("/addons"+"/element"+"/Element.png")));
+        try {
+            return new ElementDetails("Element", "A cool new element, \nwhich SOME dumbass forgot to change.",
+                    ElementSource.class.getResource("/addons/element/Element.png").openStream().readAllBytes());
+        } catch (IOException e) {
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            return null;
+        }
     }
 
     abstract String getJSONString();
 
     /**
      * THIS SHOULD NOT SET SERILIZED
+     * 
      * @param jsonString the string, which is a json, that is serilized
      * @return the ElementFile.
      */
@@ -39,11 +47,10 @@ public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>
 
     /**
      * Gets the ElementFile linked to this ElementSource object.
+     * 
      * @return the ElementFile
      */
     abstract T getSerilized();
-
-    abstract RElementEditingScreen getBuilderWindow(ElementCreationListener parent, String Workspace);
 
     /**
      * You should use this instad of toString()

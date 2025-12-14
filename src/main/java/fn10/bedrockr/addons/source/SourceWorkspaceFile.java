@@ -2,16 +2,12 @@ package fn10.bedrockr.addons.source;
 
 import java.io.File;
 import java.io.FileWriter;
-
-
-import javax.swing.ImageIcon;
+import java.io.IOException;
 
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RElementEditingScreen;
 import jakarta.annotation.Nullable;
 
 public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
@@ -35,9 +31,14 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
     }
 
     public static ElementDetails getDetails() {
-        return new ElementDetails("Workspace File", "dont use this cause it will break",
-                new ImageIcon(ElementSource.class.getResource("/addons"
-                        + "/element" + "/Element.png")));
+        try {
+            return new ElementDetails("Workspace File", "dont use this cause it will break",
+                    ElementSource.class.getResource("/addons"
+                            + "/element" + "/Element.png").openStream().readAllBytes());
+        } catch (IOException e) {
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            return null;
+        }
     }
 
     @Override
@@ -67,7 +68,7 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
             fileWriter.close();
             return file;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -76,10 +77,4 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
     public WorkspaceFile getSerilized() {
         return this.serilized;
     }
-
-    @Override
-    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent, String Workspace) {
-        return null;
-    }
-
 }
