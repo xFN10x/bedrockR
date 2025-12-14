@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import javax.swing.BorderFactory;
@@ -41,8 +42,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
 
-    protected Byte[] ChosenIcon = ArrayUtils
-            .toObject(getClass().getResource("/addons/DefaultIcon.png").openStream().readAllBytes());
+    protected Byte[] ChosenIcon;
     protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
@@ -63,6 +63,14 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 "New Addon",
                 new Dimension(459, 380));
         this.Parent = Parent;
+        
+        try {
+            ChosenIcon = ArrayUtils
+                .toObject(getClass().getResource("/addons/DefaultIcon.png").openStream().readAllBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
         AddonIcon.setVerticalAlignment(SwingConstants.CENTER);
