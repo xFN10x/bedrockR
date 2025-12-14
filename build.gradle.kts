@@ -148,7 +148,7 @@ val mavenJar by tasks.registering(Jar::class) {
     // THIS IS THE KEY: Exclude the problematic classes.
     // Use forward slashes for paths.
     exclude("fn10/bedrockr/Launcher.class")
-    exclude("fn10/bedrockr/ui/**")
+    exclude("fn10/bedrockr/windows/**")
 }
 
 publishing {
