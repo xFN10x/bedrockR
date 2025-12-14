@@ -55,7 +55,6 @@ import com.google.gson.internal.LinkedTreeMap;
 
 public class Launcher {
 
-    public static String VERSION = "a1.5";
     public static int CHECKVERSION = 7;
     public static Image ICON;
 
@@ -124,7 +123,7 @@ public class Launcher {
         LOG.info("Logging to " + logloc);
         LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
         LOG.info("Launch Args: " + String.join(",", args));
-        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
+        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", RFileOperations.VERSION, Runtime.version(),
                 System.getProperty("java.vm.name")));
 
         Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -165,7 +164,7 @@ public class Launcher {
 
             if (serilized.LatestVersion > CHECKVERSION && serilized.ShouldUse) {
                 int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
-                        "Version out of date (" + serilized.CurrentStringVersion + " > " + VERSION + ")",
+                        "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION + ")",
                         JOptionPane.YES_NO_OPTION);
                 if (op == JOptionPane.YES_OPTION) {
                     Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR/releases/latest"));

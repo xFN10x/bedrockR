@@ -1,6 +1,7 @@
 package fn10.bedrockr.windows.base;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.util.ImageUtilites;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ public class RFrame extends JFrame {
     public static final int titleImgW = 168;
     public static final int titleImageH = 36;
 
-    public static final JLabel verText = new JLabel(Launcher.VERSION);
+    public static final JLabel verText = new JLabel(RFileOperations.VERSION);
 
     public final JButton siegeButton = new JButton(
             ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/siege.png")), 32, 32));

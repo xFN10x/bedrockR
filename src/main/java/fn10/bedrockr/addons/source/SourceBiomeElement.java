@@ -45,7 +45,7 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                         .version(HttpClient.Version.HTTP_2).GET().build();
                 HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
-                HashMap<String, String> versionPaths = ((HashMap<String,HashMap<String,String>>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
+                Map<String, String> versionPaths = ((Map<String,Map<String,String>>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
                         .get(RFileOperations.PICKABLE_VERSIONS[0]);
 
                 String path = versionPaths.get("biomes");

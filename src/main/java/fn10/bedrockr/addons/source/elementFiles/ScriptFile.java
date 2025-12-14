@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
@@ -96,7 +97,7 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
                     "javascript.javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace())")
                     .toString();
 
-            final String finishedCode = String.format(scriptHeader, Launcher.VERSION, ElementName,
+            final String finishedCode = String.format(scriptHeader, RFileOperations.VERSION, ElementName,
                     ScriptName, "1.0.0") + code;
             try {
                 Path path = workspaceFile.addScript(rootPath, ScriptName + ".js");

@@ -29,6 +29,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -39,6 +40,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import org.apache.commons.io.FileUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
@@ -100,7 +103,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 true,
                 false);
         setExtendedState(MAXIMIZED_BOTH);
-        ResourceFile.ActiveWorkspace = this;
 
         this.SWPF = WPF;
         WrapLayout InnerLayout1 = new WrapLayout(FlowLayout.CENTER);
@@ -137,7 +139,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         });
         fileMenu.add("Open built BP Folder").addActionListener(ac -> {
             try {
-                desk.open(RFileOperations.getBaseDirectory( "build", "BP", WPF.workspaceName()));
+                desk.open(RFileOperations.getBaseDirectory("build", "BP", WPF.workspaceName()));
             } catch (Exception e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
@@ -360,7 +362,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     ToAdd.Desc.setText(entry.getValue());
                     ToAdd.CanBeSelected = false;
 
-                    File file = resFile.Serilized.getFileOfResource(this, SWPF.workspaceName(), entry.getKey(),
+                    File file = resFile.Serilized.getFileOfResource(SWPF.workspaceName(), entry.getKey(),
                             resFile.Serilized.ResourceTypes.get(entry.getKey()));
                     ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
 
@@ -369,7 +371,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         try {
                             Desktop.getDesktop().open(file);
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                         }
                     });
 
@@ -377,7 +380,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         try {
                             Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                         }
                     });
 
@@ -421,7 +425,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             JOptionPane.showMessageDialog(this, "Resized image from " + old + ", to " + choice);
                             this.refreshResources();
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                             ErrorShower.showError(this, "Failed to resize image.", e);
                         }
                     });
@@ -435,7 +440,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             ResourceView.repaint();
                             resFile.Serilized.build(SWPF.workspaceName(), null, null, null);
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                         }
                     });
 
@@ -490,6 +496,32 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     options,
                     options[0]);
 
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+
+            if (file.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+                return;
+            Object input = JOptionPane.showInputDialog(this,
+                    "What do you want to name this texture? (" + file.getSelectedFile().getName()
+                            + ")",
+                    "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
+                    file.getSelectedFile().getName());
+
+            String finalName = (((String) input).contains(".png") ? input.toString()
+                    : input + ".png");
+            File dest = Path
+                    .of(RFileOperations.getBaseDirectory("workspace").getPath(), SWPF.getSerilized().WorkspaceName,
+                            "resources", finalName)
+                    .toFile();
+            if (dest.exists()) {
+                JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
+                        "Naming Error",
+                        JOptionPane.ERROR_MESSAGE);
+                actionPerformed(null);
+                return;
+            }
+
             switch (choice) {
                 case 0:
 
@@ -498,13 +530,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 case 1:
 
                     RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
-                            .importTexture(this, ResourceFile.ITEM_TEXTURE,
+                            .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
                                     SWPF.getSerilized().WorkspaceName);
                     break;
                 case 2:
 
                     RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
-                            .importTexture(this, ResourceFile.BLOCK_TEXTURE,
+                            .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
                                     SWPF.getSerilized().WorkspaceName);
                     break;
                 default:

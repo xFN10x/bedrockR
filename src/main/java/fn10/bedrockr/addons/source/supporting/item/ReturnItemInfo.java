@@ -8,7 +8,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ public class ReturnItemInfo {
             HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
             @SuppressWarnings("unchecked")
-            HashMap<String, String> versionPaths = (HashMap<String, String>) ((Map<String, Object>) gson
+            Map<String, String> versionPaths = (Map<String, String>) ((Map<String, Object>) gson
                     .fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
                     .get(RFileOperations.PICKABLE_VERSIONS[0]);
 
@@ -160,7 +159,7 @@ public class ReturnItemInfo {
                     .version(HttpClient.Version.HTTP_2).GET().build();
             HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
-            HashMap<String, String> versionPaths = (HashMap<String, String>) ((HashMap<String, Object>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
+            Map<String, String> versionPaths = (Map<String, String>) ((Map<String, Object>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
                     .get(RFileOperations.PICKABLE_VERSIONS[0]);
 
             String path = versionPaths.get("blocks");

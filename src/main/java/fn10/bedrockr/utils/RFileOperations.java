@@ -33,6 +33,7 @@ import fn10.bedrockr.windows.util.ErrorShower;
 
 public class RFileOperations {
 
+    public static String VERSION = "a1.5";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
@@ -47,7 +48,6 @@ public class RFileOperations {
     }
 
     public final static String[] PICKABLE_VERSIONS = {
-            "1.21.120",
             "1.21.130",
     };
 
