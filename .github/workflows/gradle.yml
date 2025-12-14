@@ -7,8 +7,8 @@ on:
     branches: [ "master" ]
     
 env:
-  vector_ver: '0.6.0'
-  string_ver: a1.5
+  vector_ver: '0.7.0'
+  string_ver: a2.0
 
 jobs:
   build:
