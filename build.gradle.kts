@@ -139,13 +139,24 @@ tasks.withType<Jar>() {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+val mavenJar by tasks.registering(Jar::class) {
+
+    // Use the output from the main source set as the input.
+    from(sourceSets.main.get().output)
+
+    // THIS IS THE KEY: Exclude the problematic classes.
+    // Use forward slashes for paths.
+    exclude("fn10/bedrockr/Launcher.class")
+    exclude("fn10/bedrockr/ui/**") 
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             artifactId = "bedrockr"
             groupId = "dev.xplate"
             version = version
-            artifact(tasks.jar)
+            artifact(tasks.named<Jar>("mavenJar"))
             artifact(tasks.named<Jar>("sourcesJar"))
             artifact(tasks.named<Jar>("javadocJar"))
             versionMapping {
