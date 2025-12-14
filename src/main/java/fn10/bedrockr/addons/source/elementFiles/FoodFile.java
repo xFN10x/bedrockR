@@ -10,13 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.swing.JPopupMenu.Separator;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
+import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.MapUtilities;
@@ -82,7 +81,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @FieldDetails(Optional = false, displayName = "Item Texture")
     public UUID TextureUUID;
 
-    public transient Separator sep;
+    public transient CreationScreenSeperator sep;
 
     @HelpMessage("Determines the animation that is used when eating this item. Soups use eat, potions use drink. They are the same animation, but the sounds are different.")
     @FieldDetails(Optional = false, displayName = "Eating Animation", Filter = FieldFilters.CommonFilter1.class)
