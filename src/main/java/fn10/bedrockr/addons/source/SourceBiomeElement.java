@@ -23,12 +23,12 @@ import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.source.elementFiles.BiomeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RBlockSelector.DataPathsJson;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RNewAddon;
 import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceBiomeElement implements ElementSource<BiomeFile> {
 
@@ -115,9 +115,9 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
     }
 
     @Override
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         try {
-            return Files.writeString(RFileOperations.getFileFromWorkspace(doingThis, workspace,
+            return Files.writeString(RFileOperations.getFileFromWorkspace(workspace,
                     "elements" + File.separator + serilized.getElementName() + ".biomeref").toPath(), getJSONString(),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE).toFile();
         } catch (IOException e) {
@@ -137,7 +137,8 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
+    //TODO: rework builder windows
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
         RElementEditingScreen screen = new RElementEditingScreen(Parent, getDetails().Name, this, getSerilizedClass(),
                 parent2);
         SpringLayout lay = new SpringLayout();

@@ -5,11 +5,11 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RFonts;
-import fn10.bedrockr.utils.WrapLayout;
 import fn10.bedrockr.utils.Greetings.Greeting;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RAddon;
+import fn10.bedrockr.windows.util.RFonts;
+import fn10.bedrockr.windows.util.WrapLayout;
 
 import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
@@ -151,8 +151,8 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
             ToAdd.setActionCommand("New Addon");
             ToAdd.addActionListener(this);
             ProjectsPart.add(ToAdd);
-            if (RFileOperations.getWorkspaces(this) != null)
-                for (var folder : RFileOperations.getWorkspaces(this)) {
+            if (RFileOperations.getWorkspaces() != null)
+                for (var folder : RFileOperations.getWorkspaces()) {
                     SwingUtilities.invokeLater(() -> {
                         ProjectsPart.add(new RAddon(this, folder));
                         ProjectsPart.repaint();

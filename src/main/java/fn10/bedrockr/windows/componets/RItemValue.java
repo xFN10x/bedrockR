@@ -27,6 +27,8 @@ import javax.swing.SpringLayout;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,13 +36,13 @@ import com.google.gson.GsonBuilder;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
-import fn10.bedrockr.windows.interfaces.ValidatableValue;
 
 public class RItemValue extends JPanel implements ValidatableValue {
 
@@ -251,7 +253,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
         if (item.Texture != null) {
             button.setFont(button.getFont().deriveFont(16f));
             button.setIcon(new ImageIcon(
-                    item.Texture.getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
+                    new ImageIcon(ArrayUtils.toPrimitive(item.Texture)).getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
             button.setText("");
         } else {
             button.setFont(button.getFont().deriveFont(8f));
@@ -283,10 +285,10 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     ReturnItemInfo item;
                     try {
                         if (currentType == Type.SingleBlock || currentType == Type.ListOfBlocks) {
-                            item = RBlockSelector.getBlockById(parent,
+                            item = ReturnItemInfo.getBlockById(
                                     value.key.get(itemString), workspace);
                         } else {
-                            item = RItemSelector.getItemById(parent,
+                            item = ReturnItemInfo.getItemById(
                                     value.key.get(itemString), workspace);
                         }
                     } catch (IncorrectWorkspaceException | NameNotFoundException e) {

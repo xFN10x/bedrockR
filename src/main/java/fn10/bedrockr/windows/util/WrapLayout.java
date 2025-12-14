@@ -2,7 +2,7 @@
 	This is from https://github.com/tips4java/tips4java/blob/main/source/WrapLayout.java
 */
 
-package fn10.bedrockr.utils;
+package fn10.bedrockr.windows.util;
 
 import java.awt.*;
 import javax.swing.JScrollPane;

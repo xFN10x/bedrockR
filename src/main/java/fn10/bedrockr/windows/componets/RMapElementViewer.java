@@ -6,8 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SpringLayout;
 
-import org.codehaus.plexus.util.StringUtils;
-
 import fn10.bedrockr.addons.RMapElement;
 
 public class RMapElementViewer extends RElement {
@@ -20,9 +18,19 @@ public class RMapElementViewer extends RElement {
 
         this.Element = element;
 
+        //took from org.codehaus.plexus.util.StringUtils
+        String str = element.HelpDescription;
+        String sub = "<br/>";
+        int count = 0;
+        int idx = 0;
+        while ((idx = str.indexOf(sub, idx)) != -1) {
+            count++;
+            idx += sub.length();
+        }
+
         setPreferredSize(new Dimension(100, 80));
         setMaximumSize(new Dimension(354, 35 + Desc.getFontMetrics(Desc.getFont()).getHeight()
-                * (StringUtils.countMatches(element.HelpDescription, "<br/>") + 1)));
+                * (count + 1)));
 
         Lay.putConstraint(SpringLayout.SOUTH, this, 0, SpringLayout.SOUTH, Desc);
 

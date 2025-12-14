@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
@@ -79,6 +78,7 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
         return Draft;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
@@ -105,7 +105,6 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
                         finishedCode, StandardCharsets.UTF_8,true);
             } catch (IOException e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(null, "Failed to write script.", e);
             }
         });
         try {

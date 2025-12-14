@@ -8,9 +8,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.utils.ImageUtilites;
-import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
+import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.RFonts;
 import jakarta.annotation.Nullable;
 
 import java.awt.*;

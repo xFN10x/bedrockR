@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.windows.*;
@@ -72,7 +73,7 @@ public class BlockTextures {
             return preloadedIcons.get(name);
 
         File proposedRender = Path
-                .of(RFileOperations.getBaseDirectory(doingThis, "cache", "renders").getAbsolutePath(),
+                .of(RFileOperations.getBaseDirectory("cache", "renders").getAbsolutePath(),
                         name + ".png")
                 .toFile();
         if (proposedRender.exists()) {
@@ -84,33 +85,18 @@ public class BlockTextures {
         }
     }
 
-    /*
-     * public static void main(String[] args) {
-     * RenderHandler.startup();
-     * RFrame test = new RFrame(JFrame.EXIT_ON_CLOSE, "Test", new Dimension(300,
-     * 300), false);
-     * JButton button = new JButton("load");
-     * 
-     * button.addActionListener(ac -> {
-     * downloadAllBlockTextures(test, "bedrockR - Testing");
-     * });
-     * test.add(button);
-     * test.setVisible(true);
-     * }
-     */
-
     public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
-        if (RBlockSelector.vanillaBlocks == null)
-            RBlockSelector.downloadVanillaBlocks();
+        if (ReturnItemInfo.vanillaBlocks == null)
+            ReturnItemInfo.downloadVanillaBlocks();
         CountDownLatch latch = new CountDownLatch(1);
         RLoadingScreen loading = new RLoadingScreen(doingThis);
         SwingUtilities.invokeLater(() -> {
             loading.setVisible(true);
         });
         SwingUtilities.invokeLater(() -> {
-            loading.Steps = RBlockSelector.vanillaBlocks.length;
+            loading.Steps = ReturnItemInfo.vanillaBlocks.length;
             new Thread(() -> {
-                for (BlockJsonEntry vanillaItems : RBlockSelector.vanillaBlocks) {
+                for (BlockJsonEntry vanillaItems : ReturnItemInfo.vanillaBlocks) {
                     String name = vanillaItems.name.split(":")[1];
                     try {
                         loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
@@ -120,7 +106,7 @@ public class BlockTextures {
                     renderBlock(name);
                 }
                 latch.countDown();
-                SettingsFile settings = SettingsFile.load(doingThis);
+                SettingsFile settings = SettingsFile.load();
                 HttpRequest latestVerReq = HttpRequest.newBuilder()
                         .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
                         .version(HttpClient.Version.HTTP_2).GET().build();
@@ -132,7 +118,7 @@ public class BlockTextures {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     return;
                 }
-                settings.save(doingThis);
+                settings.save();
                 SwingUtilities.invokeLater(() -> {
                     loading.setVisible(false);
                 });

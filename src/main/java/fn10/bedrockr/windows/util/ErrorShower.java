@@ -1,4 +1,4 @@
-package fn10.bedrockr.utils;
+package fn10.bedrockr.windows.util;
 
 import java.awt.Component;
 import java.io.PrintWriter;
@@ -24,6 +24,10 @@ public class ErrorShower {
 
     public static void showError(Component parent, String msg, Exception ex) {
         showError(parent, msg, ex.getMessage(), ex);
+    }
+
+    public static void showError(String msg, String title, Exception ex) {
+        showError(null, msg, title, ex);
     }
 
     public static void showError(Component parent, String msg, String title, Exception ex) {

@@ -3,7 +3,6 @@ package fn10.bedrockr.windows.componets;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,9 +37,10 @@ import com.formdev.flatlaf.util.ColorFunctions;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
-import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RLaunchPage;
+import fn10.bedrockr.windows.RWorkspace;
+import fn10.bedrockr.windows.util.ImageUtilites;
 
 public class RAddon extends JPanel implements MouseListener {
 
@@ -65,12 +65,12 @@ public class RAddon extends JPanel implements MouseListener {
         try {
             // dirty line of code coming up... "varibles? never hear of 'er"
             WPFile = new SourceWorkspaceFile(Files.readString(RFileOperations
-                    .getFileFromWorkspace((Frame) getParent(), WPName, File.separator + RFileOperations.WPFFILENAME,
+                    .getFileFromWorkspace(WPName, File.separator + RFileOperations.WPFFILENAME,
                             true)
                     .toPath()));
             WPF = (WorkspaceFile) WPFile.getSerilized();
             step = 1;
-            File iconFile = RFileOperations.getFileFromWorkspace((Frame) getParent(), WPName,
+            File iconFile = RFileOperations.getFileFromWorkspace(WPName,
                     File.separator + "icon." + WPF.IconExtension, true);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
@@ -94,7 +94,7 @@ public class RAddon extends JPanel implements MouseListener {
                         if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             BI = ImageIO.read(bic.getSelectedFile());
                             ImageIO.write(BI, WPF.IconExtension, RFileOperations
-                                    .getFileFromWorkspace((Frame) getParent(), WPName,
+                                    .getFileFromWorkspace(WPName,
                                             File.separator + "icon." + WPF.IconExtension));
                         }
 
@@ -187,8 +187,8 @@ public class RAddon extends JPanel implements MouseListener {
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
                     JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
-                    Launcher.LOG.info(RFileOperations.getWorkspace(this, WPFile.workspaceName()).getAbsolutePath());
-                    FileUtils.deleteDirectory(RFileOperations.getWorkspace(this, WPFile.workspaceName()));
+                    Launcher.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
+                    FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPFile.workspaceName()));
                     JOptionPane.showMessageDialog(parent,
                             "The Addon " + WPFile.workspaceName() + " has been deleted.");
                     parent.refresh();
@@ -204,7 +204,7 @@ public class RAddon extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent arg0) {
         if (arg0.getButton() == MouseEvent.BUTTON1)
-            RFileOperations.openWorkspace(ancestor, WPFile);
+            RWorkspace.openWorkspace(ancestor, WPFile);
     }
 
     @Override

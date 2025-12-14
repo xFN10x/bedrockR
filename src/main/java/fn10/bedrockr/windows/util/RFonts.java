@@ -1,4 +1,4 @@
-package fn10.bedrockr.utils;
+package fn10.bedrockr.windows.util;
 
 import java.awt.*;
 import java.io.IOException;

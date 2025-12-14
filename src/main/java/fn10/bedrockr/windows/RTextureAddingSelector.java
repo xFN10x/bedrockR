@@ -69,7 +69,7 @@ public class RTextureAddingSelector extends RDialog {
         InnerPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        ResourceFile res = RFileOperations.getResources(parent,
+        ResourceFile res = RFileOperations.getResources(
                 Workspace).Serilized;
         Map<String, Integer> resTypes = res.ResourceTypes;
         Map<String, String> resIDs = res.ResourceIDs;

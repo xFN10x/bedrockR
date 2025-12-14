@@ -1,14 +1,12 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Window;
 import java.io.File;
 import java.io.FileWriter;
 
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RElementEditingScreen;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceResourceElement implements ElementSource<ResourceFile> {
 
@@ -37,9 +35,9 @@ public class SourceResourceElement implements ElementSource<ResourceFile> {
     }
 
     @Override
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         var string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
+        var file = RFileOperations.getFileFromWorkspace(workspace,
                 File.separator + "resources" + File.separator + RFileOperations.RESOURCE_FILE_NAME);
         file.setWritable(true);
         try {
@@ -64,7 +62,7 @@ public class SourceResourceElement implements ElementSource<ResourceFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
         return null;
     }
 

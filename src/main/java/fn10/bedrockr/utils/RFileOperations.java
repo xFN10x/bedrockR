@@ -1,27 +1,20 @@
 package fn10.bedrockr.utils;
 
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.Image;
-import java.awt.Window;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
@@ -35,10 +28,8 @@ import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.windows.RBlockSelector;
-import fn10.bedrockr.windows.RItemSelector;
-import fn10.bedrockr.windows.RLoadingScreen;
-import fn10.bedrockr.windows.RWorkspace;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.windows.util.ErrorShower;
 
 public class RFileOperations {
 
@@ -49,9 +40,16 @@ public class RFileOperations {
     @SuppressWarnings("unused")
     private static String COMMOJANG = null;
     static {
-        SettingsFile settings = SettingsFile.load(null);
+        SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
+        ReturnItemInfo.downloadVanillaItems();
+        ReturnItemInfo.downloadVanillaBlocks();
     }
+
+    public final static String[] PICKABLE_VERSIONS = {
+            "1.21.120",
+            "1.21.130",
+    };
 
     /**
      * taken from https://stackoverflow.com/a/31976060
@@ -95,18 +93,18 @@ public class RFileOperations {
      * Gets the class of the ElementSource linked with the ElementFile, based on the
      * extension
      * 
-     * @param doingThis     the closest (J)frame
      * @param fileExtension
      * @return
      */
-    public static Class<? extends ElementSource<?>> getElementSourceClassFromFileExtension(java.awt.Window doingThis,
+    public static Class<? extends ElementSource<?>> getElementSourceClassFromFileExtension(
             String fileExtension) {
         if (ELEMENT_EXTENSION_CLASSES.containsKey(fileExtension)) {
             try {
                 return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
+                ErrorShower.showError(null,
+                        "Invalid Element File", "Reloading Error", e);
                 return null;
             }
         } else {
@@ -119,17 +117,16 @@ public class RFileOperations {
      * Gets the class of the ElementSource linked with the ElementFile, based on the
      * extension
      * 
-     * @param doingThis     the closest (J)frame
      * @param fileExtension the extension of the file
      * @return the ElementSource accosseated with the extension.
      */
-    public static ElementSource<?> getElementSourceFromFileExtension(java.awt.Window doingThis,
+    public static ElementSource<?> getElementSourceFromFileExtension(
             String fileExtension) {
         try {
-            return getElementSourceClassFromFileExtension(doingThis, fileExtension).getConstructor().newInstance();
+            return getElementSourceClassFromFileExtension(fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(doingThis, "Invalid Element File", "Reloading Error", e);
+            ErrorShower.showError(null, "Invalid Element File", "Reloading Error", e);
             return null;
         }
     }
@@ -177,12 +174,11 @@ public class RFileOperations {
     /**
      * Gets the workspaces that the user currently has.
      * 
-     * @param doingThis - the window to be used to parent errors to.
      * @return an array of strings, being the names of the workspaces
      */
-    public static String[] getWorkspaces(java.awt.Window doingThis) {
+    public static String[] getWorkspaces() {
         var folder = new File(
-                getBaseDirectory(doingThis).getAbsolutePath() + File.separator + "workspace" + File.separator).toPath();
+                getBaseDirectory().getAbsolutePath() + File.separator + "workspace" + File.separator).toPath();
         if (!folder.toFile().exists()) {
             try {
                 Files.createDirectories(folder);
@@ -203,7 +199,7 @@ public class RFileOperations {
             }
             return list.toArray(new String[0]);
         } catch (IOException e) {
-            ErrorShower.showError(doingThis, "IO Error", BASE_PATH, e);
+            ErrorShower.showError(null, "IO Error", BASE_PATH, e);
             return null;
         }
     }
@@ -211,13 +207,12 @@ public class RFileOperations {
     /**
      * Gets source resources that exist on disk from a workspace.
      * 
-     * @param doingThis     - the window to be used to parent errors to.
      * @param workspaceName - the workspace to get the resources from
      * @return a {@code SourceResourceElement}, containing the resources
      */
-    public static SourceResourceElement getResources(Window doingThis, String workspaceName) {
+    public static SourceResourceElement getResources(String workspaceName) {
 
-        var file = getFileFromWorkspace(doingThis, workspaceName,
+        var file = getFileFromWorkspace(workspaceName,
                 File.separator + "resources" + File.separator + RESOURCE_FILE_NAME, true);
         if (file.exists())
             try {
@@ -225,125 +220,22 @@ public class RFileOperations {
                 return source;
             } catch (IOException e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(doingThis, "Failed to get resource file.", e.getMessage(), e);
+                ErrorShower.showError(null, "Failed to get resource file.", e.getMessage(), e);
                 return null;
             }
         else { // make a blank resource file
             var source = new SourceResourceElement("{}");
-            source.buildJSONFile(doingThis, workspaceName);
+            source.buildJSONFile(workspaceName);
             return source;
         }
     }
 
     /**
-     * Shows a popup asking the user to enable Minecraft Sync, overriding it if they
-     * already have it.
-     * 
-     * @param doingThis - the window to parent too
-     * @param WPF       - the workspace that is having mc sync enabled
+     * Sets the current workspace.
+     * @param WPF - the SourceWorkspaceFile of the workspace.
      */
-    public static void showMCSyncPopup(Window doingThis, SourceWorkspaceFile WPF) {
-        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
-        WPF.buildJSONFile(doingThis, // rebuild
-                ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
-
-        String[] platforms = { "Windows (pre-1.21.120)", "Windows" };
-        var platformSelection = JOptionPane.showOptionDialog(
-                doingThis,
-                "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
-                "Platform Selection",
-                0,
-                JOptionPane.INFORMATION_MESSAGE,
-                null,
-                platforms,
-                "Windows");
-
-        var settings = SettingsFile.load(doingThis);
-        switch (platformSelection) {
-            case 0:
-
-                settings.comMojangPath = System.getenv("LOCALAPPDATA")
-                        + "\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang";
-                if (!new File(settings.comMojangPath).exists()) {
-                    JOptionPane.showMessageDialog(doingThis,
-                            "Couldn't find com.mojang (pre-1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \n Retry by selecting the option in the File menu.",
-                            "oops", JOptionPane.ERROR_MESSAGE);
-                    break;
-                }
-                settings.save(doingThis);
-
-                JOptionPane.showMessageDialog(doingThis,
-                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
-                        "yippe", JOptionPane.INFORMATION_MESSAGE);
-            case 1:
-
-                settings.comMojangPath = System.getenv("APPDATA")
-                        + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";
-                if (!new File(settings.comMojangPath).exists()) {
-                    JOptionPane.showMessageDialog(doingThis,
-                            "Couldn't find com.mojang (after 1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \\n"
-                                    + //
-                                    " Retry by selecting the option in the File menu.",
-                            "oops", JOptionPane.ERROR_MESSAGE);
-                    break;
-                }
-                settings.save(doingThis);
-
-                JOptionPane.showMessageDialog(doingThis,
-                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
-                        "yippe", JOptionPane.INFORMATION_MESSAGE);
-
-            default:
-                break;
-        }
-    }
-
-    /**
-     * Opens a workspace, showing the window, and doing all other nessesary steps
-     * too have a person be able to work on one
-     * 
-     * @param doingThis - the window to parent to, and hide once the window appears
-     * @param WPF       - The workspace to open
-     */
-    public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
-        new Thread(() -> {
-            RWorkspace workspaceView = new RWorkspace(WPF);
-
-            RLoadingScreen loading = new RLoadingScreen(doingThis);
-            loading.setAlwaysOnTop(true);
-            SwingUtilities.invokeLater(() -> {
-                loading.setVisible(true);
-            });
-
-            RItemSelector.downloadVanillaItems();
-            RBlockSelector.downloadVanillaBlocks();
-
-            // get items ready for use
-            SwingUtilities.invokeLater(() -> {
-                loading.setVisible(false);
-                if (doingThis != null)
-                    doingThis.dispose();
-                workspaceView.setVisible(true);
-                if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
-                    var ask = JOptionPane.showConfirmDialog(doingThis,
-                            "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
-                            "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    if (ask == JOptionPane.YES_OPTION) {
-                        showMCSyncPopup(doingThis, WPF);
-                    }
-                } else if (!new File(SettingsFile.load(doingThis).comMojangPath).exists()) {
-                    var ask = JOptionPane.showConfirmDialog(doingThis,
-                            "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
-                            "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    if (ask == JOptionPane.YES_OPTION) {
-                        showMCSyncPopup(doingThis, WPF);
-                    } else {
-                        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
-                    }
-                }
-                CURRENT_WORKSPACE = WPF.getSerilized();
-            });
-        }).start();
+    public static void setCurrentWorkspace(SourceWorkspaceFile WPF) {
+        CURRENT_WORKSPACE = WPF.getSerilized();
     }
 
     /**
@@ -362,8 +254,8 @@ public class RFileOperations {
      * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
-    public static File getBaseDirectory(Window doingThis, String... Folders) {
-        return getBaseDirectory(doingThis, false, Folders);
+    public static File getBaseDirectory(String... Folders) {
+        return getBaseDirectory(false, Folders);
     }
 
     /**
@@ -374,7 +266,7 @@ public class RFileOperations {
      * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
-    public static File getBaseDirectory(Window doingThis, Boolean strict, String... Folders) {
+    public static File getBaseDirectory(Boolean strict, String... Folders) {
         File file = Path.of(BASE_PATH, Folders).toFile();
         try {
             if (!file.exists() && !strict) {
@@ -383,7 +275,6 @@ public class RFileOperations {
                 return file;
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
         }
         return BASE_DIRECTORY;
     }
@@ -394,7 +285,7 @@ public class RFileOperations {
      * @param doingThis - the window to use for debugging
      * @return the file, being the directory that you specified,
      */
-    public static File getBaseDirectory(Window doingThis) {
+    public static File getBaseDirectory() {
         try {
             // Launcher.LOG.info(BaseDirectory.toPath());
             if (!BASE_DIRECTORY.exists()) {
@@ -402,7 +293,6 @@ public class RFileOperations {
             } else
                 return BASE_DIRECTORY;
         } catch (Exception e) {
-            ErrorShower.showError(doingThis, "Failed to get base dir. (how the hell?)", "IO Error", e);
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
@@ -417,12 +307,12 @@ public class RFileOperations {
      *                        e.g. {@code icon.jpg}
      * @return the file
      */
-    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate) {
-        return getFileFromWorkspace(windowDoingThis, WorkspaceName, ToCreate, true);
+    public static File getFileFromWorkspace(String WorkspaceName, String ToCreate) {
+        return getFileFromWorkspace(WorkspaceName, ToCreate, true);
     }
 
-    public static WorkspaceFile getWorkspaceFile(Component windowDoingThis, String WorkspaceName) {
-        File file = getFileFromWorkspace(windowDoingThis, WorkspaceName, WPFFILENAME, true);
+    public static WorkspaceFile getWorkspaceFile(String WorkspaceName) {
+        File file = getFileFromWorkspace(WorkspaceName, WPFFILENAME, true);
         try {
             return ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(file.toPath())).getSerilized());
         } catch (IOException e) {
@@ -440,7 +330,7 @@ public class RFileOperations {
      * @param strict          - if true, it doesnt create the file, and returns null
      * @return the file
      */
-    public static File getFileFromWorkspace(Component windowDoingThis, String WorkspaceName, String ToCreate,
+    public static File getFileFromWorkspace(String WorkspaceName, String ToCreate,
             Boolean strict) {
         // Launcher.LOG.warning("This file should start with the file seperator, or not
         // at all! not '/'!");
@@ -453,7 +343,7 @@ public class RFileOperations {
             } else
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
-            ErrorShower.showError(windowDoingThis, "IO Error", "Failed to get WP File", e);
+            ErrorShower.showError(null, "IO Error", "Failed to get WP File", e);
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
@@ -467,8 +357,8 @@ public class RFileOperations {
      * @param WorkspaceName   - the target workspace
      * @return a File, being the directory of the workspace
      */
-    public static File getWorkspace(Component windowDoingThis, String WorkspaceName) {
-        return getFileFromWorkspace(windowDoingThis, WorkspaceName, File.separator, true);
+    public static File getWorkspace(String WorkspaceName) {
+        return getFileFromWorkspace(WorkspaceName, File.separator, true);
     }
 
     /**
@@ -477,15 +367,13 @@ public class RFileOperations {
      * @param doingThis - the window to be used for debugging
      */
     public static void mcSync(java.awt.Window doingThis) {
-        SettingsFile settings = SettingsFile.load(doingThis);
+        SettingsFile settings = SettingsFile.load();
         try {
-            String bpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "BP"
+            String bpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "BP"
                     + File.separator;
-            String rpPath = getBaseDirectory(doingThis).getPath() + File.separator + "build" + File.separator + "RP"
+            String rpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "RP"
                     + File.separator;
             if (!Path.of(settings.comMojangPath).toFile().exists()) {
-                JOptionPane.showMessageDialog(doingThis, "The com.mojang folder doesnt exist. Cannot carry out MC Sync",
-                        "com.mojang isnt at: " + settings.comMojangPath, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
@@ -514,22 +402,6 @@ public class RFileOperations {
                                                                               // doesnt
                                                                               // recicnise
                                                                               // it
-
-                            var choice = JOptionPane.showConfirmDialog(doingThis,
-                                    "These is an unrecignised addon in here, \"" + f.getName()
-                                            + "\"\nDo you want to remove it, (yes) or ignore it (no).",
-                                    "Development BP warning",
-                                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-                            switch (choice) {
-                                case JOptionPane.YES_OPTION:
-                                    f.delete();
-                                case JOptionPane.NO_OPTION:
-                                    settings.ignored.add(f.getName());
-                                case JOptionPane.CANCEL_OPTION:
-                                    break;
-                                default:
-                                    break;
-                            }
                         }
                     }
                 }
@@ -548,19 +420,6 @@ public class RFileOperations {
                                                                               // recicnise
                                                                               // it
 
-                            var choice = JOptionPane.showConfirmDialog(doingThis,
-                                    "These is an unrecignised resource pack in here, \"" + f.getName()
-                                            + "\"\nDo you want to remove it, (yes) or ignore it (no).",
-                                    "Development RP warning",
-                                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-                            switch (choice) {
-                                case JOptionPane.YES_OPTION:
-                                    f.delete();
-                                case JOptionPane.NO_OPTION:
-                                    settings.ignored.add(f.getName());
-                                default:
-                                    break;
-                            }
                         }
                     }
                 }
@@ -587,15 +446,6 @@ public class RFileOperations {
                         ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", bpDestPath.getPath(),
                                 e);
                     }
-                } else {
-                    var choice = JOptionPane
-                            .showConfirmDialog(
-                                    doingThis, "There is a file/folder in the build folder that is not an addon, "
-                                            + f.getName() + ". Remove this?",
-                                    "Invaild Folder/File", JOptionPane.YES_NO_OPTION);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        f.delete();
-                    }
                 }
             }
             /*
@@ -621,23 +471,13 @@ public class RFileOperations {
                         ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", rpDestPath.getPath(),
                                 e);
                     }
-                } else {
-                    var choice = JOptionPane
-                            .showConfirmDialog(
-                                    doingThis,
-                                    "There is a file/folder in the build folder that is not an resource pack, "
-                                            + f.getName() + ". Remove this?",
-                                    "Invaild Folder/File", JOptionPane.YES_NO_OPTION);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        f.delete();
-                    }
                 }
             }
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to execute Minecraft Sync", e.getMessage(), e);
         } finally {
-            settings.save(doingThis); // finally
+            settings.save(); // finally
         }
     }
 
@@ -650,36 +490,29 @@ public class RFileOperations {
      * @return the new {@code SourceWorkspaceFile}
      * @throws IOException if the folder already exists
      */
-    public static SourceWorkspaceFile createWorkspace(RLoadingScreen loading, // String workspaceName, String
+    public static SourceWorkspaceFile createWorkspace( // String workspaceName, String
                                                                               // minimumVersion)
-            WorkspaceFile wpf, Image addonIcon) throws IOException {
+            WorkspaceFile wpf, Byte[] addonIcon) throws IOException {
 
         String[] wsFolders = {
                 File.separator + "elements" + File.separator,
                 File.separator + "resources" + File.separator
         };
 
-        File base = getBaseDirectory((Frame) loading.getParent());
+        File base = getBaseDirectory();
 
         File wsFolder = new File(base.getAbsolutePath() + File.separator + "workspace" + File.separator
                 + wpf.WorkspaceName + File.separator);
 
         if (wsFolder.exists()) { // throw if folder is already here
             IOException e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
-            ErrorShower.showError((Frame) loading.getParent(),
-                    "Failed to make folder; Folder" + wsFolder.getAbsolutePath() + " already exists.",
-                    "Failure!", e);
             throw e;
         } else {
             File trying;
             try { // try making dirs
 
-                SwingUtilities.invokeLater(() -> {
-                    loading.setVisible(true);
-                });
                 trying = wsFolder;
 
-                loading.changeText("Making directories...");
 
                 Files.createDirectories(wsFolder.toPath());
 
@@ -688,10 +521,9 @@ public class RFileOperations {
                     Files.createDirectories(trying.toPath());
                 }
 
-                loading.changeText("Creating workspace...");
 
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
-                srcWPF.buildJSONFile((Frame) loading.getParent(), wpf.WorkspaceName);
+                srcWPF.buildJSONFile(wpf.WorkspaceName);
 
                 File srcIcon = Path.of(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension).toFile();
                 if (!srcIcon.exists())
@@ -700,21 +532,13 @@ public class RFileOperations {
 
                 trying = srcIcon;
 
-                BufferedImage bi = new BufferedImage(addonIcon.getWidth(loading), addonIcon.getHeight(loading),
-                        BufferedImage.TYPE_INT_RGB);
-                bi.getGraphics().drawImage(addonIcon, 0, 0, loading);
-                ImageIO.write(bi, wpf.IconExtension, srcIcon);
+                Files.write(srcIcon.toPath(), ArrayUtils.toPrimitive(addonIcon), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
                 return srcWPF;
 
             } catch (Exception e) { // handle exception
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError((Frame) loading.getParent(),
-                        "Exepection, with path " + wsFolder.getAbsolutePath(),
-                        "IO Error", e);
                 throw e;
-            } finally {
-                loading.dispose();
             }
         }
 
@@ -728,9 +552,9 @@ public class RFileOperations {
      * @param elementFile - the ElementFile to search for on disk
      * @return
      */
-    public static Path getFileFromElementFile(java.awt.Window doingThis, String workspace, ElementFile<?> elementFile) {
+    public static Path getFileFromElementFile(String workspace, ElementFile<?> elementFile) {
         Path proposed = Path.of(RFileOperations
-                .getFileFromWorkspace(doingThis, workspace,
+                .getFileFromWorkspace(workspace,
                         File.separator + "elements" + File.separator)
                 .getAbsolutePath(),
                 elementFile.getElementName() + "."
@@ -742,18 +566,17 @@ public class RFileOperations {
     /**
      * Gets all the ElementFiles on disk
      * 
-     * @param doingThis - the window to use for parenting
      * @param workspace - the workspace to get the elements from
      * @return an array of ElementFiles, populated by all the ones found on disk
      */
-    public static ElementFile<?>[] getElementsFromWorkspace(java.awt.Window doingThis, String workspace) {
+    public static ElementFile<?>[] getElementsFromWorkspace(String workspace) {
         List<ElementFile<?>> building = new ArrayList<>();
         for (File file : RFileOperations
-                .getFileFromWorkspace(doingThis, workspace,
+                .getFileFromWorkspace(workspace,
                         File.separator + "elements" + File.separator)
                 .listFiles()) {
             try {
-                ElementSource<?> source = getElementSourceFromFileExtension(doingThis,
+                ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
 
                 building.add(source.getFromJSON(Files.readString(file.toPath())));

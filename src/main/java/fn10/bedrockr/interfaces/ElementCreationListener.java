@@ -1,4 +1,4 @@
-package fn10.bedrockr.windows.interfaces;
+package fn10.bedrockr.interfaces;
 
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 

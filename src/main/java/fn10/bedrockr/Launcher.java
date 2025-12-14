@@ -6,7 +6,6 @@ package fn10.bedrockr;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.rendering.RenderHandler;
-import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -16,7 +15,9 @@ import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
+import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.laf.BedrockrDark;
+import fn10.bedrockr.windows.util.ErrorShower;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -88,7 +89,7 @@ public class Launcher {
         // set up logging
         loading.ProgressText.setText("Setting up logging...");
 
-        String logloc = RFileOperations.getBaseDirectory(loading, File.separator + "logs").getAbsolutePath()
+        String logloc = RFileOperations.getBaseDirectory(File.separator + "logs").getAbsolutePath()
                 + File.separator + "bedrockR-log-"
                 + System.currentTimeMillis() + ".log";
 
@@ -121,7 +122,7 @@ public class Launcher {
         });
         // log stuff
         LOG.info("Logging to " + logloc);
-        LOG.info("Base Path: " + RFileOperations.getBaseDirectory(loading).getAbsolutePath());
+        LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
         LOG.info("Launch Args: " + String.join(",", args));
         LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", VERSION, Runtime.version(),
                 System.getProperty("java.vm.name")));
@@ -243,7 +244,7 @@ public class Launcher {
                     .version(HttpClient.Version.HTTP_2).GET().build();
             HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
             SettingsFile settings = SettingsFile
-                    .load(loading);
+                    .load();
             if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                     || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
                             .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
@@ -263,7 +264,7 @@ public class Launcher {
             if ((file = Path.of(args[0]).toFile()).exists()) {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
-                        RFileOperations.openWorkspace(loading,
+                        RWorkspace.openWorkspace(loading,
                                 new SourceWorkspaceFile(Files.readString(file.toPath())));
                         return;
                     } catch (IOException e) {

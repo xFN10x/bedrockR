@@ -16,8 +16,8 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ImageUtilites;
-import fn10.bedrockr.utils.RFonts;
+import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.RFonts;
 import jakarta.annotation.Nullable;
 
 public class RElement extends JPanel implements MouseListener {

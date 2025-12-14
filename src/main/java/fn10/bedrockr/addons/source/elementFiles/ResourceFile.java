@@ -17,9 +17,9 @@ import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.utils.ErrorShower;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RWorkspace;
+import fn10.bedrockr.windows.util.ErrorShower;
 
 public class ResourceFile implements ElementFile<SourceResourceElement> {
 
@@ -42,7 +42,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
     public File getFileOfResource(Window doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
-                RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
+                RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
                         + File.separator + workspaceName + File.separator + "resources" + File.separator
                         + file);
         if (ResourceTypes.get(file) != null) {
@@ -72,7 +72,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
     public String getResource(java.awt.Window doingThis, String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
-                RFileOperations.getBaseDirectory(doingThis, File.separator + "workspace" + File.separator).getPath()
+                RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
                         + File.separator + workspaceName + File.separator + "resources" + File.separator
                         + file);
         if (ResourceTypes.get(file) != null) {
@@ -107,7 +107,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
                 return false;
             String finalName = (((String) input).contains(".png") ? input.toString() : input + ".png");
 
-            File dest = Path.of(RFileOperations.getBaseDirectory(doingThis, "workspace").getPath(), workspaceName,
+            File dest = Path.of(RFileOperations.getBaseDirectory("workspace").getPath(), workspaceName,
                     "resources", finalName).toFile();
             if (dest.exists()) {
                 JOptionPane.showMessageDialog(doingThis, "Resource already exist. Please rename it.", "Naming Error",
@@ -138,7 +138,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
             ActiveWorkspace.refreshResources();
 
         var source = new SourceResourceElement(this);
-        source.buildJSONFile(null, rootPath);
+        source.buildJSONFile( rootPath);
     }
 
     @Override

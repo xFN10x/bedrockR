@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 
 public class Recipe {
 
