@@ -21,12 +21,12 @@ import javax.swing.SpringLayout;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.WrapLayout;
+import fn10.bedrockr.interfaces.ElementCreationListener;
+import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
-import fn10.bedrockr.windows.interfaces.ValidatableValue;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.WrapLayout;
 
 /**
  * An RDialog that provides the basic parts to make a source element builder
@@ -94,7 +94,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 Parent,
                 DISPOSE_ON_CLOSE,
                 "Editing " + elementName,
-                ElementSource.defaultSize);
+                new Dimension(800, 600));
 
         this.Listener = listenier;
         this.SourceClass = sourceClass;

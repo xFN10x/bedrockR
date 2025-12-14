@@ -1,7 +1,5 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPopupMenu.Separator;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
 import fn10.bedrockr.addons.source.*;
@@ -234,12 +232,11 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     }
 
     @Override
-    public Image getTexture(String workspace) {
+    public Byte[] getTexture(String workspace) {
         try {
-            ResourceFile resFile = RFileOperations.getResources(null, workspace).Serilized;
-            BufferedImage img = ImageIO.read(resFile.getFileOfResource(null, workspace, MapUtilities
-                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.ITEM_TEXTURE));
-            return img;
+            ResourceFile resFile = RFileOperations.getResources(workspace).Serilized;
+            return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(null, workspace, MapUtilities
+                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.ITEM_TEXTURE).toPath()));
         } catch (IllegalAccessError | IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;

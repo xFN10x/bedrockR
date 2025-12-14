@@ -49,13 +49,12 @@ import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints.GrassTint
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
-import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.windows.RBlockSelector;
-import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.componets.RItemValue.Type;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.RFonts;
 
 public class RElementMapValue extends JPanel {
 
@@ -310,7 +309,7 @@ public class RElementMapValue extends JPanel {
         for (Entry<String, Component> entry : MultipleInputs.entrySet()) {
             if (entry.getValue() instanceof RItemValue riv) {
                 try {
-                    riv.setItem(RBlockSelector.getBlockById(Ancestor, "minecraft:air",
+                    riv.setItem(ReturnItemInfo.getBlockById("minecraft:air",
                             RFileOperations.getCurrentWorkspace().WorkspaceName));
                 } catch (NameNotFoundException | IncorrectWorkspaceException e) {
                     ErrorShower.exception(Ancestor, e);
@@ -390,21 +389,21 @@ public class RElementMapValue extends JPanel {
             } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) {
                 ((JSpinner) MultipleInputs.get("seaDepthVal")).setValue(surfaceBuilder.builder.sea_floor_depth);
 
-                ((RItemValue) MultipleInputs.get("midMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                ((RItemValue) MultipleInputs.get("midMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.mid_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
 
-                ((RItemValue) MultipleInputs.get("foundationMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                ((RItemValue) MultipleInputs.get("foundationMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.foundation_material,
                         RFileOperations.getCurrentWorkspace().WorkspaceName));
 
-                ((RItemValue) MultipleInputs.get("seaMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                ((RItemValue) MultipleInputs.get("seaMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
 
-                ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.sea_floor_material,
                         RFileOperations.getCurrentWorkspace().WorkspaceName));
 
-                ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).setItem(RItemSelector.getItemById(Ancestor,
+                ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.top_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
 
             } else if (rMapElement.Type == Tags.class && val instanceof Tags tags) {
@@ -426,7 +425,7 @@ public class RElementMapValue extends JPanel {
                 if (val instanceof LinkedTreeMap) {
                     val = gson.fromJson(gson.toJsonTree(val), minecraftBlockPlacer.class);
                 }
-                ((RItemValue) InputField).setButtonToItem(0, RBlockSelector.getBlockById(Ancestor,
+                ((RItemValue) InputField).setButtonToItem(0, ReturnItemInfo.getBlockById(
                         ((minecraftBlockPlacer) val).block, RFileOperations.getCurrentWorkspace().WorkspaceName));
             } else if (rMapElement.Type == String.class) { // string
                 ((JTextField) InputField).setText(((String) val));

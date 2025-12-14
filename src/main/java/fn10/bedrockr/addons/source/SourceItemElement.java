@@ -11,12 +11,12 @@ import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.ItemFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.util.ErrorShower;
 import jakarta.annotation.Nullable;
 
 public class SourceItemElement implements ElementSource<ItemFile> {
@@ -59,9 +59,9 @@ public class SourceItemElement implements ElementSource<ItemFile> {
 
     @Override
     @Nullable
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         var string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
+        var file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".itemref");
         file.setWritable(true);
         try {
@@ -81,7 +81,8 @@ public class SourceItemElement implements ElementSource<ItemFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
+    //TODO: rework builder windows
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent, String Workspace) {
         var frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent,
                 RElementEditingScreen.SPECIAL_AREA_STYLE);
 
@@ -120,7 +121,6 @@ public class SourceItemElement implements ElementSource<ItemFile> {
 
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
             }
         }
 

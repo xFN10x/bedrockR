@@ -24,13 +24,11 @@ import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.rendering.RenderHandler;
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.NumberRange;
@@ -38,7 +36,9 @@ import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
-import fn10.bedrockr.windows.interfaces.ValidatableValue;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.RFonts;
 
 /**
  * The main Components for <code>RElementCreationScreen</code>.
@@ -510,7 +510,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
 
                             AddButtonItem.addActionListener(ac -> {
-                                RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
+                                RFileOperations.getResources(WorkspaceName).Serilized
                                         .importTexture(parentFrame, ResourceFile.ITEM_TEXTURE,
                                                 WorkspaceName);
                             });
@@ -522,8 +522,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     if (Selected == null)
                                         return;
                                     var filename = MapUtilities.getKeyFromValue(
-                                            RFileOperations.getResources(parentFrame,
-                                                    WorkspaceName).Serilized.ResourceIDs,
+                                            RFileOperations.getResources(                                                    WorkspaceName).Serilized.ResourceIDs,
                                             Selected.getKey());
                                     NameItem.setText(
                                             filename);
@@ -593,7 +592,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                                 String id = Id.toString();
 
-                                var res = RFileOperations.getResources(parentFrame,
+                                var res = RFileOperations.getResources(
                                         WorkspaceName);
 
                                 var filename = MapUtilities.getKeyFromValue(
@@ -650,7 +649,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         RenderHandler.make6Sided(bi));
                             });
                             AddButtonBlock.addActionListener(ac -> {
-                                RFileOperations.getResources(parentFrame, WorkspaceName).Serilized
+                                RFileOperations.getResources(WorkspaceName).Serilized
                                         .importTexture(parentFrame, ResourceFile.BLOCK_TEXTURE,
                                                 WorkspaceName);
                             });
@@ -662,7 +661,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     if (Selected == null)
                                         return;
                                     var filename = MapUtilities.getKeyFromValue(
-                                            RFileOperations.getResources(parentFrame,
+                                            RFileOperations.getResources(
                                                     WorkspaceName).Serilized.ResourceIDs,
                                             Selected.getKey());
                                     NameBlock.setText(
@@ -740,7 +739,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                                 String id = Id.toString();
 
-                                var res = RFileOperations.getResources(parentFrame,
+                                var res = RFileOperations.getResources(
                                         WorkspaceName);
 
                                 var filename = MapUtilities.getKeyFromValue(
@@ -1020,7 +1019,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
             String id = Id.toString();
 
-            var res = RFileOperations.getResources(parentFrame,
+            var res = RFileOperations.getResources(
                     WorkspaceName);
 
             var filename = MapUtilities.getKeyFromValue(

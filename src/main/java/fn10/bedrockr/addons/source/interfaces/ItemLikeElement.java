@@ -1,7 +1,5 @@
 package fn10.bedrockr.addons.source.interfaces;
 
-import java.awt.Image;
-
 /**
  * An interface used for ItemFiles and BlockFiles.
  * 
@@ -9,7 +7,12 @@ import java.awt.Image;
  * has an item form (like a block), that can be used in recipes.
  */
 public interface ItemLikeElement {
-    Image getTexture(String workspaceName);
+    /**
+     * Get the texture for the item in GUI
+     * @param workspaceName - the name of the workspace this item is in
+     * @return the image data
+     */
+    Byte[] getTexture(String workspaceName);
 
     String getItemId();
 

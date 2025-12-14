@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Window;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -10,9 +9,9 @@ import javax.swing.ImageIcon;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 import jakarta.annotation.Nullable;
 
 public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
@@ -58,9 +57,9 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
 
     @Override
     @Nullable
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         var string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace, Location);
+        var file = RFileOperations.getFileFromWorkspace(workspace, Location);
         file.setWritable(true);
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -79,7 +78,7 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent, String Workspace) {
         return null;
     }
 

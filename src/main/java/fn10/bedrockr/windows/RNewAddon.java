@@ -2,11 +2,11 @@ package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.imageio.ImageIO;
+import java.nio.file.Files;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,36 +24,35 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RFonts;
 import fn10.bedrockr.windows.base.RDialog;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.RFonts;
 
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
 
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
-    public final static String[] PICKABLE_VERSIONS = {
-            "1.21.120",
-            "1.21.130",
-    };
-    protected Image ChosenIcon = ImageUtilites.ResizeImage(
+    
+    protected Byte[] ChosenIcon = ArrayUtils.toObject(ImageUtilites.ImageToBytes(ImageUtilites.ResizeImage(
             new ImageIcon(getClass().getResource("/addons/DefaultIcon.png")).getImage(),
-            250, 250);
+            250, 250)));
     protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
-    protected JLabel AddonIcon = new JLabel(new ImageIcon(ChosenIcon));
+    protected JLabel AddonIcon = new JLabel(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)));
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
     protected JTextField ModPrefixInput = new JTextField("my_mod");
-    protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(PICKABLE_VERSIONS);
+    protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(RFileOperations.PICKABLE_VERSIONS);
     protected JButton CreateButton = new JButton("Create Addon!");
 
     public RNewAddon(JFrame Parent) {
@@ -162,8 +161,8 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 fileChooser.showOpenDialog(this);
                 try {
                     File file = fileChooser.getSelectedFile();
-                    ChosenIcon = ImageIO.read(file);
-                    AddonIcon.setIcon(new ImageIcon(ChosenIcon));
+                    ChosenIcon = ArrayUtils.toObject(Files.readAllBytes(file.toPath()));
+                    AddonIcon.setIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -185,12 +184,12 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
             // try {
             RLoadingScreen loading = new RLoadingScreen((JFrame) getParent());
-
+loading.changeText("Creating...");
             // new Thread(() -> {
             // try {
             // SwingUtilities.invokeLater(() -> {
             try {
-                SourceWorkspaceFile workspace = RFileOperations.createWorkspace(loading,
+                SourceWorkspaceFile workspace = RFileOperations.createWorkspace(
 
                         new WorkspaceFile(NameInput.getText(),
                                 MinimumEngineVersionSelection.getSelectedItem().toString(), DescInput.getText(),
@@ -199,7 +198,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                         ChosenIcon);
 
                 if (workspace != null) {
-                    RFileOperations.openWorkspace(((Frame) this.getParent()), workspace);
+                    RWorkspace.openWorkspace(loading, workspace);
                     loading.dispose();
                     this.dispose();
                 } else {
@@ -219,7 +218,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     private void checkForError() {
         String text = NameInput.getText();
         File proposedDir = new File(
-                RFileOperations.getBaseDirectory((Frame) getParent()) + File.separator + "workspace" + File.separator
+                RFileOperations.getBaseDirectory() + File.separator + "workspace" + File.separator
                         + NameInput.getText());
 
         SwingUtilities.invokeLater(() -> {

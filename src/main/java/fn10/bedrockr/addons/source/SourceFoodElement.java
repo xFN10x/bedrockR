@@ -20,7 +20,9 @@ import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.interfaces.ElementCreationListener;
+import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
@@ -30,8 +32,7 @@ import fn10.bedrockr.windows.RItemSelector;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RElementValue;
 import fn10.bedrockr.windows.componets.RItemValue;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
-import fn10.bedrockr.windows.interfaces.ValidatableValue;
+import fn10.bedrockr.windows.util.ErrorShower;
 import jakarta.annotation.Nullable;
 
 public class SourceFoodElement implements ElementSource<FoodFile> {
@@ -75,9 +76,9 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
 
     @Override
     @Nullable
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         var string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
+        var file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".foodref");
         file.setWritable(true);
         try {
@@ -97,7 +98,8 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace) {
+    //TODO: rework builder windows
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent, String Workspace) {
         RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", this, getSerilizedClass(), parent,
                 RElementEditingScreen.DEFAULT_STYLE);
         if (serilized == null)
@@ -138,7 +140,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
         RItemValue turnsInto = new RItemValue(Workspace, RItemValue.Type.Single, false);
         if (serilized.EatingTurnsInto != null) {
             try {
-                turnsInto.setButtonToItem(0, RItemSelector.getItemById(frame, serilized.EatingTurnsInto, Workspace));
+                turnsInto.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.EatingTurnsInto, Workspace));
             } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(frame, "Failed to set item value.", e);

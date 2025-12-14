@@ -20,18 +20,11 @@ import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.windows.RElementEditingScreen;
-import fn10.bedrockr.windows.RItemSelector;
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
-import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
-import fn10.bedrockr.windows.componets.RItemValue;
-import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.componets.RItemValue.ShapedOutput;
-import fn10.bedrockr.windows.componets.RItemValue.Type;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 public class SourceRecipeElement implements ElementSource<RecipeFile> {
 
@@ -74,9 +67,9 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
     }
 
     @Override
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         String string = getJSONString();
-        File file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
+        File file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".reciperef");
         try {
             Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -98,7 +91,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
         try {
             RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", this, getSerilizedClass(), parent2,
                     RElementEditingScreen.DEFAULT_STYLE);

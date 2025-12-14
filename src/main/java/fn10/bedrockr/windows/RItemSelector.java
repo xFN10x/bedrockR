@@ -3,23 +3,13 @@ package fn10.bedrockr.windows;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.naming.NameNotFoundException;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -31,128 +21,20 @@ import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
+import fn10.bedrockr.addons.source.supporting.item.ItemJsonEntry;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RItemSelector extends RDialog {
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    public class ItemJsonEntry implements Comparable<ItemJsonEntry> {
-        public int id;
-        public int stackSize;
-        public String name;
-        public String displayName;
-
-        public ReturnItemInfo toReturnItemInfo() {
-            String[] splitId = name.split(":");
-            return new ReturnItemInfo(splitId[1], displayName, splitId[0]);
-        }
-
-        @Override
-        public int compareTo(ItemJsonEntry o) {
-            return displayName.compareToIgnoreCase(o.displayName);
-        }
-    }
-
-    public static class ReturnItemInfo {
-        public String Id;
-        public String Name;
-        public ImageIcon Texture;
-        public String Prefix;
-
-        public ReturnItemInfo() {
-        }
-
-        public ReturnItemInfo(String id, String name, String prefix) {
-            this(id, name, prefix, new ImageIcon());
-        }
-
-        public ReturnItemInfo(String id, String name, String prefix, Image texture) {
-            this(id, name, prefix, new ImageIcon(texture));
-        }
-
-        public ReturnItemInfo(String id, String name, String prefix, ImageIcon texture) {
-            Id = id;
-            Name = name;
-            if (texture != null) {
-                if (texture.getImage() != null) {
-                    Texture = texture;
-                }
-            }
-            Prefix = prefix;
-        }
-
-        public boolean equals(ReturnItemInfo other) {
-            return (other.Prefix + ":" + other.Id).equals(Prefix + ":" + Id);
-        }
-
-        public boolean equals(Item other) {
-            return other.item.equals(Prefix + ":" + Id);
-        }
-
-        public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace) {
-            try {
-                return RItemSelector.getItemById(null, con.item, workspace);
-            } catch (IncorrectWorkspaceException | NameNotFoundException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                return null;
-            }
-        }
-
-        public static List<ReturnItemInfo> fromUnlockCondition(Collection<? extends UnlockCondition> list,
-                String workspace) {
-            ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
-            for (UnlockCondition info : list) {
-                building.add(ReturnItemInfo.fromUnlockCondition(info, workspace));
-            }
-            return building;
-        }
-
-        public Item toRecipeItem() {
-            return new Item(Prefix + ":" + Id);
-        }
-
-        public static ReturnItemInfo fromRecipeItem(Item con, String workspace) {
-            try {
-                return RItemSelector.getItemById(null, con.item, workspace);
-            } catch (IncorrectWorkspaceException | NameNotFoundException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                return null;
-            }
-        }
-
-        public static List<ReturnItemInfo> fromRecipeItem(Collection<? extends Item> list,
-                String workspace) {
-            ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
-            for (Item item : list) {
-                try {
-                    building.add(RItemSelector.getItemById(null, item.item, workspace));
-                } catch (NameNotFoundException | IncorrectWorkspaceException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                }
-            }
-            return building;
-        }
-    }
-
-    public class DataPathsJson {
-        public HashMap<String, HashMap<String, String>> pc;
-        public HashMap<String, HashMap<String, String>> bedrock;
-    }
-
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -169,100 +51,9 @@ public class RItemSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    public static ItemJsonEntry[] vanillaItems;
-
-    /**
-     * 
-     * @param fullID        the id of the item. 'prefix':'id'
-     * @param workspaceName the name of the workspace.
-     * @return a ReturnItemInfo with the info of the item found, or null if it
-     *         wasent found.
-     * @throws IncorrectWorkspaceException if the prefix of the fullID isnt used in
-     *                                     the workspace
-     * @throws NameNotFoundException       if the item isnt found
-     */
-    public static ReturnItemInfo getItemById(Window doing, String fullID, String workspaceName)
-            throws IncorrectWorkspaceException, NameNotFoundException {
-        // check the non-vanilla items
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
-            if (element instanceof ItemLikeElement) {
-                String Id = ((ItemLikeElement) element).getItemId();
-                String Name = ((ItemLikeElement) element).getDisplayName();
-                String Prefix = RFileOperations.getWorkspaceFile(doing, workspaceName).Prefix;
-                Image img = ((ItemLikeElement) element).getTexture(workspaceName);
-
-                if (fullID.equals(Prefix + ":" + Id)) {
-                    return new ReturnItemInfo(Id, Name, Prefix, img);
-                }
-            }
-        }
-
-        if (fullID.startsWith("minecraft")) {
-            for (ItemJsonEntry item : vanillaItems) {
-                // Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
-                if (item.name.equals(fullID)) {
-                    return item.toReturnItemInfo();
-                }
-            }
-        } else {
-            throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
-                    + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
-        }
-        Launcher.LOG.info("Vanilla items: ");
-        for (ItemJsonEntry vanillaItem : vanillaItems) {
-            Launcher.LOG.info(vanillaItem.name);
-        }
-        Launcher.LOG.info("Non-Vanilla items: " + RFileOperations.getElementsFromWorkspace(doing, workspaceName));
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
-            if (element instanceof ItemLikeElement ile) {
-                Launcher.LOG.info(ile.getItemId());
-            }
-        }
-        throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist. Printed all items to log.");
-    }
-
-    public static void downloadVanillaItems() {
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
-
-            HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                    .get(RNewAddon.PICKABLE_VERSIONS[0]);
-
-            String path = versionPaths.get("items");
-
-            HttpRequest itemJsonReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                    + path
-                                    + "/items.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-
-            HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
-            ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
-            ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
-            for (ItemJsonEntry entry : itemEntrys) {
-                ItemJsonEntry building = entry;
-
-                if (!building.name.startsWith("minecraft"))
-                    building.name = "minecraft:" + entry.name;
-
-                parsedEntrys.add(building);
-            }
-            vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
-            Arrays.sort(vanillaItems);
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
-    }
-
     public void showBlocksWithTerm(String searchTerm, Frame parent, String Workspace) {
         InnerPanel.removeAll();
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
+        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(Workspace)) {
             if (element instanceof BlockFile bf) {
                 if (!searchTerm.isEmpty())
                     if (!bf.Name.toLowerCase().contains(searchTerm))
@@ -273,9 +64,8 @@ public class RItemSelector extends RDialog {
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                Image image = bf.getTexture(Workspace);
-                ImageIcon icon = new ImageIcon(image);
-                if (image != null)
+                ImageIcon icon = new ImageIcon(ArrayUtils.toPrimitive(bf.getTexture(Workspace)));
+                if (!ArrayUtils.isEmpty(ArrayUtils.toPrimitive(bf.getTexture(Workspace))))
                     ToAdd.setIcon(icon);
                 else
                     ToAdd.setText(bf.getDisplayName());
@@ -288,20 +78,31 @@ public class RItemSelector extends RDialog {
                     building.Name = bf.getDisplayName();
                     try {
                         building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(RFileOperations
-                                .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
+                                .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
                                 .toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
-                    building.Texture = icon;
+                    // convert image to bytes
+                    Image img = icon.getImage();
+                    BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null),
+                            BufferedImage.TYPE_INT_ARGB);
+                    bi.getGraphics().drawImage(img, 0, 0, null);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    try {
+                        ImageIO.write(bi, "png", baos);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    building.Texture = org.apache.commons.lang3.ArrayUtils.toObject(baos.toByteArray());
                     selected = building;
                 });
                 InnerPanel.add(ToAdd);
             }
         }
 
-        for (ItemJsonEntry item : vanillaItems) {
+        for (ItemJsonEntry item : ReturnItemInfo.vanillaItems) {
             if (item.displayName.toLowerCase().contains(searchTerm))
                 try {
                     JButton ToAdd = new JButton();

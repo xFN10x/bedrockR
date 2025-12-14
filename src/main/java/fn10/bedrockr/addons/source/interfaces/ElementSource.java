@@ -1,13 +1,12 @@
 package fn10.bedrockr.addons.source.interfaces;
 
-import java.awt.Dimension;
-import java.awt.Window;
 import java.io.File;
 
 import javax.swing.ImageIcon;
 import com.google.gson.Gson;
+
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.windows.RElementEditingScreen;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 
 /**
  * the interface used for Source Classes of Elements. Element Sources are responceable for most things that an element does. Like building to source, and giving info to the UI.
@@ -17,8 +16,6 @@ import fn10.bedrockr.windows.interfaces.ElementCreationListener;
 public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
 
     public static final Gson gson = ElementFile.gson;
-
-    final Dimension defaultSize = new Dimension(800, 450);
 
     // final Integer Type = 0; // 0 for BP, 1 for RP
 
@@ -36,7 +33,7 @@ public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>
      */
     abstract T getFromJSON(String jsonString);
 
-    abstract File buildJSONFile(Window doingThis, String workspace);
+    abstract File buildJSONFile(String workspace);
 
     abstract Class<T> getSerilizedClass();
 
@@ -46,7 +43,7 @@ public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>
      */
     abstract T getSerilized();
 
-    abstract RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent, String Workspace);
+    abstract RElementEditingScreen getBuilderWindow(ElementCreationListener parent, String Workspace);
 
     /**
      * You should use this instad of toString()

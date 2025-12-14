@@ -1,9 +1,9 @@
 package fn10.bedrockr.rendering;
 
 import jakarta.annotation.Nullable;
-import fn10.bedrockr.utils.ImageUtilites;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
+import fn10.bedrockr.windows.util.ImageUtilites;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -55,7 +55,7 @@ public class RenderHandler extends SimpleApplication {
     private int size = 150;
     private Texture2D renderTarget = new Texture2D(size, size, Format.ARGB8);
     private Spatial model;
-    private String sspath = RFileOperations.getBaseDirectory(null, "cache", "renders").getAbsolutePath();
+    private String sspath = RFileOperations.getBaseDirectory("cache", "renders").getAbsolutePath();
     private ScreenshotAppState screenShotState = new ScreenshotAppState(
             sspath + File.separator);
     private boolean started = false;

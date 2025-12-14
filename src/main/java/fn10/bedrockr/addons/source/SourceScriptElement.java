@@ -19,14 +19,14 @@ import javax.swing.SpringLayout;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RElementEditingScreen.CustomCreateFunction;
 import fn10.bedrockr.windows.componets.RBlockly;
 import fn10.bedrockr.windows.componets.RElementValue;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.ImageUtilites;
 import javafx.application.Platform;
 
 public class SourceScriptElement implements ElementSource<ScriptFile> {
@@ -63,9 +63,9 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
     }
 
     @Override
-    public File buildJSONFile(Window doingThis, String workspace) {
+    public File buildJSONFile(String workspace) {
         String string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(doingThis, workspace,
+        var file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".scriptref");
         try {
             Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -87,7 +87,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
     }
 
     @Override
-    public RElementEditingScreen getBuilderWindow(Window Parent, ElementCreationListener parent2, String Workspace) {
+    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
 
         ElementSource<ScriptFile> This = this;
 

@@ -1,11 +1,13 @@
 package fn10.bedrockr.windows;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
@@ -48,15 +50,16 @@ import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
-import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.utils.WrapLayout;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.WrapLayout;
 
 public class RWorkspace extends RFrame implements ActionListener, ElementCreationListener {
 
@@ -113,28 +116,28 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         fileMenu.add("Change/Add MC Sync").addActionListener(ac -> {
             try {
-                RFileOperations.showMCSyncPopup(this, WPF);
+                showMCSyncPopup(this, WPF);
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open Workspace folder").addActionListener(ac -> {
             try {
-                desk.open(RFileOperations.getWorkspace(this, WPF.workspaceName()));
+                desk.open(RFileOperations.getWorkspace(WPF.workspaceName()));
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open built RP Folder").addActionListener(ac -> {
             try {
-                desk.open(RFileOperations.getBaseDirectory(this, "build", "RP", WPF.workspaceName()));
+                desk.open(RFileOperations.getBaseDirectory("build", "RP", WPF.workspaceName()));
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open built BP Folder").addActionListener(ac -> {
             try {
-                desk.open(RFileOperations.getBaseDirectory(this, "build", "BP", WPF.workspaceName()));
+                desk.open(RFileOperations.getBaseDirectory( "build", "BP", WPF.workspaceName()));
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
@@ -169,7 +172,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         });
         helpMenu.add("Open bedrockR Directory").addActionListener(ac -> {
             try {
-                desk.open(RFileOperations.getBaseDirectory(this));
+                desk.open(RFileOperations.getBaseDirectory());
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
@@ -276,9 +279,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void buildElements(boolean rebuild) {
         // make loading screen
         RLoadingScreen progress = new RLoadingScreen(this);
-        String BPdir = Path.of(RFileOperations.getBaseDirectory(this).getPath(), "build", "BP",
+        String BPdir = Path.of(RFileOperations.getBaseDirectory().getPath(), "build", "BP",
                 SWPF.getSerilized().getElementName()).toString();
-        String RPdir = Path.of(RFileOperations.getBaseDirectory(this).getPath(), "build", "RP",
+        String RPdir = Path.of(RFileOperations.getBaseDirectory().getPath(), "build", "RP",
                 SWPF.getSerilized().getElementName()).toString();
 
         SwingUtilities.invokeLater(() -> {
@@ -295,9 +298,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 }
                 refreshAll();
                 GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WorkspaceFile) SWPF.getSerilized(),
-                        RFileOperations.getResources(this, SWPF.workspaceName()).Serilized);
+                        RFileOperations.getResources(SWPF.workspaceName()).Serilized);
                 List<ElementFile<?>> ToBuild = List
-                        .of(RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName()));
+                        .of(RFileOperations.getElementsFromWorkspace(SWPF.workspaceName()));
 
                 progress.Steps = ToBuild.size() + 1;
 
@@ -346,7 +349,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     public void refreshResources() {
         SwingUtilities.invokeLater(() -> {
-            SourceResourceElement resFile = RFileOperations.getResources(this, SWPF.workspaceName());
+            SourceResourceElement resFile = RFileOperations.getResources(SWPF.workspaceName());
             ResourceInnerPanelView.removeAll();
             for (Map.Entry<String, String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
                 try {
@@ -453,11 +456,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void refreshElements() {
         SwingUtilities.invokeLater(() -> {
             ElementInnerPanelView.removeAll();
-            for (ElementFile<?> file : RFileOperations.getElementsFromWorkspace(this, SWPF.workspaceName())) {
+            for (ElementFile<?> file : RFileOperations.getElementsFromWorkspace(SWPF.workspaceName())) {
                 try {
                     ElementInnerPanelView
                             .add(new RElementFile(this, file, RFileOperations
-                                    .getFileFromElementFile(this, SWPF.workspaceName(), file).toString()));
+                                    .getFileFromElementFile(SWPF.workspaceName(), file).toString()));
 
                 } catch (Exception e) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -494,13 +497,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 case 1:
 
-                    RFileOperations.getResources(this, SWPF.getSerilized().WorkspaceName).Serilized
+                    RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.ITEM_TEXTURE,
                                     SWPF.getSerilized().WorkspaceName);
                     break;
                 case 2:
 
-                    RFileOperations.getResources(this, SWPF.getSerilized().WorkspaceName).Serilized
+                    RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
                             .importTexture(this, ResourceFile.BLOCK_TEXTURE,
                                     SWPF.getSerilized().WorkspaceName);
                     break;
@@ -512,8 +515,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         } else if (ac.equals("rebuild")) {
             buildElements(true);
         } else if (ac.equals("launch")) {
-            if (SettingsFile.load(this).comMojangPath != null) {
-                if (!new File(SettingsFile.load(this).comMojangPath).exists()) {
+            if (SettingsFile.load().comMojangPath != null) {
+                if (!new File(SettingsFile.load().comMojangPath).exists()) {
                     JOptionPane.showMessageDialog(this, "You... cant launch minecraft without it installed...",
                             "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -531,7 +534,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementDraft(ElementSource<?> element) {
-        element.buildJSONFile(this, (SWPF.getSerilized().WorkspaceName));
+        element.buildJSONFile((SWPF.getSerilized().WorkspaceName));
         refreshAll();
     }
 
@@ -542,7 +545,118 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementCreate(ElementSource<?> element) {
-        element.buildJSONFile(this, (SWPF.getSerilized().WorkspaceName));
+        element.buildJSONFile((SWPF.getSerilized().WorkspaceName));
         refreshAll();
+    }
+
+    /**
+     * Shows a popup asking the user to enable Minecraft Sync, overriding it if they
+     * already have it.
+     * 
+     * @param doingThis - the window to parent too
+     * @param WPF       - the workspace that is having mc sync enabled
+     */
+    public static void showMCSyncPopup(Component doingThis, SourceWorkspaceFile WPF) {
+        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
+        WPF.buildJSONFile( // rebuild
+                ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
+
+        String[] platforms = { "Windows (pre-1.21.120)", "Windows" };
+        var platformSelection = JOptionPane.showOptionDialog(
+                doingThis,
+                "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
+                "Platform Selection",
+                0,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                platforms,
+                "Windows");
+
+        var settings = SettingsFile.load();
+        switch (platformSelection) {
+            case 0:
+
+                settings.comMojangPath = System.getenv("LOCALAPPDATA")
+                        + "\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang";
+                if (!new File(settings.comMojangPath).exists()) {
+                    JOptionPane.showMessageDialog(doingThis,
+                            "Couldn't find com.mojang (pre-1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \n Retry by selecting the option in the File menu.",
+                            "oops", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                settings.save();
+
+                JOptionPane.showMessageDialog(doingThis,
+                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
+                        "yippe", JOptionPane.INFORMATION_MESSAGE);
+            case 1:
+
+                settings.comMojangPath = System.getenv("APPDATA")
+                        + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";
+                if (!new File(settings.comMojangPath).exists()) {
+                    JOptionPane.showMessageDialog(doingThis,
+                            "Couldn't find com.mojang (after 1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \\n"
+                                    + //
+                                    " Retry by selecting the option in the File menu.",
+                            "oops", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                settings.save();
+
+                JOptionPane.showMessageDialog(doingThis,
+                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
+                        "yippe", JOptionPane.INFORMATION_MESSAGE);
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Opens a workspace, showing the window, and doing all other nessesary steps
+     * too have a person be able to work on one
+     * 
+     * @param doingThis - the window to parent to, and hide once the window appears
+     * @param WPF       - The workspace to open
+     */
+    public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
+        new Thread(() -> {
+            RWorkspace workspaceView = new RWorkspace(WPF);
+
+            RLoadingScreen loading = new RLoadingScreen(doingThis);
+            loading.setAlwaysOnTop(true);
+            SwingUtilities.invokeLater(() -> {
+                loading.setVisible(true);
+            });
+
+            ReturnItemInfo.downloadVanillaItems();
+            ReturnItemInfo.downloadVanillaBlocks();
+
+            // get items ready for use
+            SwingUtilities.invokeLater(() -> {
+                loading.setVisible(false);
+                if (doingThis != null)
+                    doingThis.dispose();
+                workspaceView.setVisible(true);
+                if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
+                    var ask = JOptionPane.showConfirmDialog(doingThis,
+                            "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
+                            "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (ask == JOptionPane.YES_OPTION) {
+                        showMCSyncPopup(doingThis, WPF);
+                    }
+                } else if (!new File(SettingsFile.load().comMojangPath).exists()) {
+                    var ask = JOptionPane.showConfirmDialog(doingThis,
+                            "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
+                            "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (ask == JOptionPane.YES_OPTION) {
+                        showMCSyncPopup(doingThis, WPF);
+                    } else {
+                        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
+                    }
+                }
+                RFileOperations.setCurrentWorkspace(WPF);
+            });
+        }).start();
     }
 }

@@ -1,24 +1,11 @@
 package fn10.bedrockr.windows;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.naming.NameNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -30,62 +17,19 @@ import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.windows.RItemSelector.ReturnItemInfo;
 import fn10.bedrockr.windows.base.RDialog;
 
 public class RBlockSelector extends RDialog {
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    public class BlockJsonEntry implements Comparable<BlockJsonEntry> {
-        public int id;
-        public String name;
-        public String displayName;
-        public float hardness;
-        public float resistance;
-        public int stackSize;
-        public boolean diggable;
-        public String material;
-        public boolean transparent;
-        public int emitLight;
-        public int filterLight;
-        public int defaultState;
-        public int minStateId;
-        public int maxStateId;
-        public Map<String, Boolean> harvestTools;
-        public int[] drops;
-        public String boundingBox;
-
-        public ReturnItemInfo toReturnItemInfo() {
-            if (name.contains(":")) {
-                String[] splitId = name.split(":");
-                return new ReturnItemInfo(splitId[1], displayName, splitId[0]);
-            } else {
-                return new ReturnItemInfo(name, displayName, "");
-            }
-        }
-
-        @Override
-        public int compareTo(BlockJsonEntry o) {
-            return displayName.compareToIgnoreCase(o.displayName);
-        }
-    }
-
-    public class DataPathsJson {
-        public HashMap<String, HashMap<String, String>> pc;
-        public HashMap<String, HashMap<String, String>> bedrock;
-    }
-
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -102,87 +46,9 @@ public class RBlockSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    public static BlockJsonEntry[] vanillaBlocks;
-
-    /**
-     * 
-     * @param fullID        the id of the item. 'prefix':'id'
-     * @param workspaceName the name of the workspace.
-     * @return a ReturnItemInfo with the info of the item found, or null if it
-     *         wasent found.
-     * @throws IncorrectWorkspaceException if the prefix of the fullID isnt used in
-     *                                     the workspace
-     * @throws NameNotFoundException       if the item isnt found
-     */
-    public static ReturnItemInfo getBlockById(Window doing, String fullID, String workspaceName)
-            throws IncorrectWorkspaceException, NameNotFoundException {
-        // check the non-vanilla items
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(doing, workspaceName)) {
-            if (element instanceof ItemLikeElement ile) {
-                String Id = ile.getItemId();
-                String Name = ile.getDisplayName();
-                String Prefix = RFileOperations.getWorkspaceFile(doing, workspaceName).Prefix;
-                Image img = ile.getTexture(workspaceName);
-
-                if (fullID.equals(Prefix + ":" + Id)) {
-                    return new ReturnItemInfo(Id, Name, Prefix, img);
-                }
-            }
-        }
-
-        if (fullID.startsWith("minecraft")) {
-            for (BlockJsonEntry item : vanillaBlocks) {
-                if (item.name.equals(fullID)) {
-                    return item.toReturnItemInfo();
-                }
-            }
-        } else {
-            throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
-                    + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
-        }
-        throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist.");
-    }
-
-    public static void downloadVanillaBlocks() {
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
-
-            HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                    .get(RNewAddon.PICKABLE_VERSIONS[0]);
-
-            String path = versionPaths.get("blocks");
-
-            HttpRequest itemJsonReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                    + path
-                                    + "/blocks.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-
-            HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
-            BlockJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), BlockJsonEntry[].class);
-            ArrayList<BlockJsonEntry> parsedEntrys = new ArrayList<BlockJsonEntry>();
-            for (BlockJsonEntry entry : itemEntrys) {
-                BlockJsonEntry building = entry;
-                if (!building.name.startsWith("minecraft"))
-                    building.name = "minecraft:" + entry.name;
-                parsedEntrys.add(building);
-            }
-            vanillaBlocks = parsedEntrys.toArray(new BlockJsonEntry[0]);
-            Arrays.sort(vanillaBlocks);
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
-    }
-
     public void showBlocksWithTerm(String searchTerm, Frame parent, String Workspace) {
         InnerPanel.removeAll();
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(parent, Workspace)) {
+        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(Workspace)) {
             if (element instanceof BlockFile bf) {
                 if (!searchTerm.isEmpty())
                     if (!bf.Name.toLowerCase().contains(searchTerm))
@@ -193,9 +59,9 @@ public class RBlockSelector extends RDialog {
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                Image image = bf.getTexture(Workspace);
+                byte[] image = ArrayUtils.toPrimitive(bf.getTexture(Workspace));
                 ImageIcon icon = new ImageIcon(image);
-                if (image != null)
+                if (!ArrayUtils.isEmpty(image))
                     ToAdd.setIcon(icon);
                 else
                     ToAdd.setText(bf.getDisplayName());
@@ -208,20 +74,20 @@ public class RBlockSelector extends RDialog {
                     building.Name = bf.getDisplayName();
                     try {
                         building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(RFileOperations
-                                .getFileFromWorkspace(parent, Workspace, "/" + RFileOperations.WPFFILENAME, true)
+                                .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
                                 .toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
-                    building.Texture = icon;
+                    building.Texture = ArrayUtils.toObject(image);
                     selected = building;
                 });
                 InnerPanel.add(ToAdd);
             }
         }
 
-        for (BlockJsonEntry item : vanillaBlocks) {
+        for (BlockJsonEntry item : ReturnItemInfo.vanillaBlocks) {
             if (item.displayName.toLowerCase().contains(searchTerm))
                 try {
                     JButton ToAdd = new JButton();

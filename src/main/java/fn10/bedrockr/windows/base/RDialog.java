@@ -3,7 +3,7 @@ package fn10.bedrockr.windows.base;
 import java.awt.*;
 import javax.swing.*;
 
-import fn10.bedrockr.utils.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilites;
 
 public class RDialog extends JDialog {
 

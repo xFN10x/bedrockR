@@ -16,10 +16,10 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RWorkspace;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.util.ErrorShower;
 
 public class RElementFile extends RElement implements ActionListener {
 
@@ -118,7 +118,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(true);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.buildJSONFile(wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.buildJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -129,7 +129,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(false);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.buildJSONFile(wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.buildJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);

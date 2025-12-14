@@ -23,12 +23,12 @@ import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.utils.ErrorShower;
+import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SpringUtilities;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElement;
-import fn10.bedrockr.windows.interfaces.ElementCreationListener;
+import fn10.bedrockr.windows.util.ErrorShower;
 
 public class RNewElement extends RDialog implements ActionListener {
 
@@ -112,7 +112,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 return;
 
             if (Creating == SourceScriptElement.class) {
-                for (ElementFile<?> elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(Parent,
+                for (ElementFile<?> elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(
                         workspaceName)) {
                     if (elementsFromWorkspace.getClass() == ScriptFile.class) {
                         JOptionPane.showMessageDialog(Parent, "As of a1.2, you can only make 1 script in your addon.",
