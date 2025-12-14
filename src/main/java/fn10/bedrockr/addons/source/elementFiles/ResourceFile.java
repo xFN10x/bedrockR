@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,17 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RWorkspace;
-import fn10.bedrockr.windows.util.ErrorShower;
 
 public class ResourceFile implements ElementFile<SourceResourceElement> {
 
@@ -34,12 +27,10 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
      */
     public Map<String, String> ResourceIDs = new HashMap<String, String>();
 
-    public static RWorkspace ActiveWorkspace = null;
-
     public static final int ITEM_TEXTURE = 0;
     public static final int BLOCK_TEXTURE = 1;
 
-    public File getFileOfResource(Window doingThis, String workspaceName, String file, int resourceType)
+    public File getFileOfResource(String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
                 RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
@@ -69,7 +60,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
      * @throws IllegalAccessError    If the requested doesnt match the resource
      *                               type.
      */
-    public String getResource(java.awt.Window doingThis, String workspaceName, String file, int resourceType)
+    public String getResource(String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
         var dest = new File(
                 RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
@@ -88,32 +79,19 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     }
 
-    public boolean importTexture(Window doingThis, int Type, String workspaceName) {
-        var file = new JFileChooser();
-        file.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
-
-        if (file.showOpenDialog(doingThis) != JFileChooser.APPROVE_OPTION)
-            return false;
-        return addTexture(doingThis, file.getSelectedFile(), Type, workspaceName);
+    public boolean importTexture(File file, int Type, String workspaceName) {
+        return addTexture(file.getName(), file, Type, workspaceName);
     }
 
-    public boolean addTexture(Window doingThis, File filePNG, int type, String workspaceName) {
+    public boolean addTexture(String name, File filePNG, int type, String workspaceName) {
         try {
-            Object input = JOptionPane.showInputDialog(doingThis,
-                    "What do you want to name this texture? (" + filePNG.getName() + ")",
-                    "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null, filePNG.getName());
-            if (input == null)
+            if (name == null)
                 return false;
-            String finalName = (((String) input).contains(".png") ? input.toString() : input + ".png");
+            String finalName = (((String) name).contains(".png") ? name.toString() : name + ".png");
 
             File dest = Path.of(RFileOperations.getBaseDirectory("workspace").getPath(), workspaceName,
                     "resources", finalName).toFile();
-            if (dest.exists()) {
-                JOptionPane.showMessageDialog(doingThis, "Resource already exist. Please rename it.", "Naming Error",
-                        type);
-                return addTexture(doingThis, filePNG, type, workspaceName);
-            }
+
             FileUtils.copyFile(filePNG, dest);
             this.ResourceTypes.put(finalName, type);
             this.ResourceIDs.put(finalName, UUID.randomUUID().toString());
@@ -121,7 +99,6 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
             return true;
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(doingThis, "Failed to add resource.", e.getMessage(), e);
             return false;
         }
     }
@@ -134,11 +111,13 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
      */
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
-        if (ActiveWorkspace != null)
-            ActiveWorkspace.refreshResources();
+        /*
+         * if (ActiveWorkspace != null)
+         * ActiveWorkspace.refreshResources();
+         */
 
         var source = new SourceResourceElement(this);
-        source.buildJSONFile( rootPath);
+        source.buildJSONFile(rootPath);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,17 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
-
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockTexture;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture;
 import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTexture.TextureData;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
+import fn10.bedrockr.utils.RFileOperations;
 
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds
@@ -63,7 +59,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
             ItemTexturesFile.texture_data.put(plannedkey, new TextureData(textureName));
-        ItemTextures.add(Resource.getFileOfResource(null, WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
+        ItemTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
         return plannedkey;
     }
 
@@ -82,7 +78,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         if (BlockTexturesFile.texture_data.containsKey(plannedkey))
             BlockTexturesFile.texture_data.put(plannedkey, new BlockTexture.TextureData(textureName));
-        BlockTextures.add(Resource.getFileOfResource(null, WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
+        BlockTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
         return plannedkey;
     }
 
@@ -101,7 +97,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         var englishFile = new File(rootResPackPath + File.separator + "texts" + File.separator + "en_US.lang");
         // dont need to make parents, other file is already in the same dir
-        var englishLangStringBuilder = new StringBuilder("## Generated with bedrockR " + Launcher.VERSION + "\n");
+        var englishLangStringBuilder = new StringBuilder("## Generated with bedrockR " + RFileOperations.VERSION + "\n");
 
         for (Entry<String, String> ent : EnglishTexts.entrySet()) {
             englishLangStringBuilder.append(ent.getKey() + "=" + ent.getValue() + "\n");
@@ -119,10 +115,10 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         ItemTexturesFile.resource_pack_name = workspaceFile.WorkspaceName;
         ItemTexturesFile.texture_name = "atlas.items";
 
-        for (File file : ItemTextures) {
+        /*for (File file : ItemTextures) {
             FileUtils.copyFileToDirectory(file, ItemTextureFolder.toFile());
             // check texture size
-            BufferedImage testImage = ImageIO.read(file);
+            BufferedImage testImage = ImageIO.read(file); TODO: add this somewhere else
             if (Math.pow(testImage.getHeight(), 2) >= 512) {
                 JOptionPane.showMessageDialog(null,
                         "The texture " + file.getName()
@@ -133,7 +129,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
             testImage.getGraphics().dispose();
             ItemTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
                     new TextureData(file.getName()));
-        }
+        }*/
 
         Path dest = Path.of(rootResPackPath, "textures", "item_texture.json");
         String json = gson.toJson(ItemTexturesFile);
@@ -148,7 +144,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         Path BlockTextureFolder = Path.of(rootResPackPath, "textures", "blocks");
         Files.createDirectories(BlockTextureFolder);
 
-        for (File file : BlockTextures) {
+        /*for (File file : BlockTextures) {
             FileUtils.copyFileToDirectory(file, BlockTextureFolder.toFile());
             // check texture size
             BufferedImage testImage = ImageIO.read(file);
@@ -162,7 +158,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
             testImage.getGraphics().dispose();
             BlockTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
                     new BlockTexture.TextureData(file.getName()));
-        }
+        } TODO: and this*/ 
 
         // microsoft decided to make this werid
         Map<String, Object> ActualBlocksJSON = new HashMap<String, Object>();

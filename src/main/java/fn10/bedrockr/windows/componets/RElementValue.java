@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.File;
 
@@ -222,7 +224,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 }
                             }
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                             ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
                         }
                     }
@@ -233,14 +236,16 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         try {
                             RElementValue toAdd;
                             if (InputType.isArray()) {
-                                // java.util.logging.Logger.getGlobal().info("make an array value element with class: "
+                                // java.util.logging.Logger.getGlobal().info("make an array value element with
+                                // class: "
                                 // + InputType.getComponentType().getCanonicalName());
                                 toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter, null, "",
                                         false,
                                         null, WorkspaceName);
                             } else if (genericType != null) {
 
-                                // java.util.logging.Logger.getGlobal().info("make an list value element with class: "
+                                // java.util.logging.Logger.getGlobal().info("make an list value element with
+                                // class: "
                                 // + genericType.getCanonicalName());
                                 toAdd = new RElementValue(parentFrame, genericType, Filter, null,
                                         "",
@@ -295,7 +300,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             HashMapInnerPane.repaint();
 
                         } catch (Exception e1) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e1);
                             ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                         }
                     });
@@ -347,7 +353,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             if (!FromEmpty)
                                 if (TargetFile.getDraft())
                                     return;
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                             ErrorShower.showError(parentFrame,
                                     "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                     DisplayName, e);
@@ -369,7 +376,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             }
                         } catch (Exception e) {
 
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                             if (!FromEmpty)
                                 if (TargetFile.getDraft())
                                     return;
@@ -415,7 +423,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 HashMapInnerPane.add(ToAdd);
                             }
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
                             ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
                         }
                     }
@@ -445,7 +454,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 HashMapInnerPane.repaint();
 
                             } catch (Exception e1) {
-                                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                        "Exception thrown", e1);
                                 ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                             }
                     });
@@ -509,8 +519,33 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
 
                             AddButtonItem.addActionListener(ac -> {
+                                JFileChooser file = new JFileChooser();
+                                file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                                file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+
+                                if (file.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+                                    return;
+                                Object input = JOptionPane.showInputDialog(this,
+                                        "What do you want to name this texture? (" + file.getSelectedFile().getName()
+                                                + ")",
+                                        "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
+                                        file.getSelectedFile().getName());
+
+                                String finalName = (((String) input).contains(".png") ? input.toString()
+                                        : input + ".png");
+                                File dest = Path
+                                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), WorkspaceName,
+                                                "resources", finalName)
+                                        .toFile();
+                                if (dest.exists()) {
+                                    JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
+                                            "Naming Error",
+                                            JOptionPane.ERROR_MESSAGE);
+                                    AddButtonItem.doClick();
+                                    return;
+                                }
                                 RFileOperations.getResources(WorkspaceName).Serilized
-                                        .importTexture(parentFrame, ResourceFile.ITEM_TEXTURE,
+                                        .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
                                                 WorkspaceName);
                             });
                             SelectButtonItem.addActionListener(ac -> {
@@ -521,7 +556,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     if (Selected == null)
                                         return;
                                     var filename = MapUtilities.getKeyFromValue(
-                                            RFileOperations.getResources(                                                    WorkspaceName).Serilized.ResourceIDs,
+                                            RFileOperations.getResources(WorkspaceName).Serilized.ResourceIDs,
                                             Selected.getKey());
                                     NameItem.setText(
                                             filename);
@@ -531,7 +566,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     Input.setName(Selected.getKey());
 
                                 } catch (InterruptedException e1) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            "Exception thrown",
                                             e1);
                                 }
                             });
@@ -579,7 +615,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 } catch (IllegalArgumentException | IllegalAccessException e) {
                                     if (TargetFile.getDraft())
                                         return;
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            "Exception thrown",
                                             e);
                                     ErrorShower.showError(parentFrame,
                                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -604,13 +641,14 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 try {
                                     IconItem.setIcon(ImageUtilites.ResizeIcon(
                                             new ImageIcon(Files.readAllBytes(res.Serilized
-                                                    .getFileOfResource(parentFrame,
+                                                    .getFileOfResource(
                                                             WorkspaceName, NameItem.getText(),
                                                             ResourceFile.ITEM_TEXTURE)
                                                     .toPath())),
                                             64, 64));
                                 } catch (Exception e) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            "Exception thrown",
                                             e);
                                     ErrorShower.showError(parentFrame,
                                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -648,8 +686,33 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         RenderHandler.make6Sided(bi));
                             });
                             AddButtonBlock.addActionListener(ac -> {
+                                JFileChooser file = new JFileChooser();
+                                file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                                file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+
+                                if (file.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+                                    return;
+                                Object input = JOptionPane.showInputDialog(this,
+                                        "What do you want to name this texture? (" + file.getSelectedFile().getName()
+                                                + ")",
+                                        "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
+                                        file.getSelectedFile().getName());
+
+                                String finalName = (((String) input).contains(".png") ? input.toString()
+                                        : input + ".png");
+                                File dest = Path
+                                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), WorkspaceName,
+                                                "resources", finalName)
+                                        .toFile();
+                                if (dest.exists()) {
+                                    JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
+                                            "Naming Error",
+                                            JOptionPane.ERROR_MESSAGE);
+                                    AddButtonItem.doClick();
+                                    return;
+                                }
                                 RFileOperations.getResources(WorkspaceName).Serilized
-                                        .importTexture(parentFrame, ResourceFile.BLOCK_TEXTURE,
+                                        .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
                                                 WorkspaceName);
                             });
                             SelectButtonBlock.addActionListener(ac -> {
@@ -671,7 +734,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     Input.setName(Selected.getKey());
 
                                 } catch (InterruptedException e1) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            "Exception thrown",
                                             e1);
                                 }
                             });
@@ -726,7 +790,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 } catch (IllegalArgumentException | IllegalAccessException e) {
                                     if (TargetFile.getDraft())
                                         return;
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            "Exception thrown",
                                             e);
                                     ErrorShower.showError(parentFrame,
                                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -751,13 +816,14 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 try {
                                     IconBlock.setIcon(ImageUtilites.ResizeIcon(
                                             new ImageIcon(Files.readAllBytes(res.Serilized
-                                                    .getFileOfResource(parentFrame,
+                                                    .getFileOfResource(
                                                             WorkspaceName, NameBlock.getText(),
                                                             ResourceFile.BLOCK_TEXTURE)
                                                     .toPath())),
                                             64, 64));
                                 } catch (Exception e) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            "Exception thrown",
                                             e);
                                     ErrorShower.showError(parentFrame,
                                             "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -1030,7 +1096,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             IDBlock.setText(id);
             try {
                 IconBlock.setIcon(ImageUtilites.ResizeIcon(
-                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(parentFrame,
+                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(
                                 WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
@@ -1041,7 +1107,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             IDItem.setText(id);
             try {
                 IconItem.setIcon(ImageUtilites.ResizeIcon(
-                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(parentFrame,
+                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(
                                 WorkspaceName, NameItem.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
                         64, 64));
             } catch (Exception e) {
@@ -1052,7 +1118,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
             Input.setName(id);
         } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
                 || InputType == Float.class) { // int, float
-            // java.util.logging.Logger.getGlobal().info("this is an int, or float, and its getting set to a " +
+            // java.util.logging.Logger.getGlobal().info("this is an int, or float, and its
+            // getting set to a " +
             // value.getClass().getSimpleName());
             ((JSpinner) Input).setValue(value);
         } else {
@@ -1145,7 +1212,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         }
 
                     } catch (Exception ex) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                ex);
                         ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
                         return null;
                     }

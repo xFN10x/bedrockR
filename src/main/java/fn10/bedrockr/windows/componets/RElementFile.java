@@ -2,7 +2,6 @@ package fn10.bedrockr.windows.componets;
 
 import java.awt.Color;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -16,7 +15,6 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.util.ErrorShower;
@@ -74,10 +72,10 @@ public class RElementFile extends RElement implements ActionListener {
     protected void openWindow() {
         try {
             Class<? extends ElementSource<?>> srczz = file.getSourceClass();
-            ElementSource<?> newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource with file
-            ((RElementEditingScreen) srczz
-                    .getMethod("getBuilderWindow", Window.class, ElementCreationListener.class, String.class)
-                    .invoke(newsrc, wksp, wksp, ((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName)).setVisible(true);
+            ElementSource<?> newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource
+                                                                                               // with file
+            RElementEditingScreen.getElementsCreationScreen(newsrc, wksp, wksp, wksp.SWPF.getSerilized().WorkspaceName)
+                    .setVisible(true);
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
