@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URI;
 
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
+    
     private JPanel ProjectsPart = new JPanel();
     private JScrollPane ProjectsScrollPart = new JScrollPane(ProjectsPart, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -105,7 +106,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-
+        newaddonButton.setActionCommand("New Addon");
         addonsMenu.add(newaddonButton);
 
         helpMenu.add(helpButton);
@@ -165,12 +166,12 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        if (arg0.getActionCommand() == "New Addon") {
+        //if (arg0.getActionCommand().equals("New Addon")) {
             SwingUtilities.invokeLater(() -> {
                 RNewAddon newAddonPage = new RNewAddon(this);
                 newAddonPage.setVisible(true);
             });
-        }
+        //}
     }
 
     @Override

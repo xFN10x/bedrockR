@@ -5,7 +5,6 @@ import java.io.IOException;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import kotlin.NotImplementedError;
 
 public class SourceScriptElement implements ElementSource<ScriptFile> {
 
@@ -57,7 +56,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }*/
-       throw new NotImplementedError("Scripts are not avalible since a2.0");
+       throw new UnsupportedOperationException("Scripts are not avalible since a2.0");
     }
 
     @Override

@@ -40,26 +40,29 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
-    
-    protected Byte[] ChosenIcon = ArrayUtils.toObject(ImageUtilites.ImageToBytes(ImageUtilites.ResizeImage(
-            new ImageIcon(getClass().getResource("/addons/DefaultIcon.png")).getImage(),
-            250, 250)));
+
+    protected Byte[] ChosenIcon = ArrayUtils
+            .toObject(getClass().getResource("/addons/DefaultIcon.png").openStream().readAllBytes());
     protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
-    protected JLabel AddonIcon = new JLabel(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)));
+    protected JLabel AddonIcon = new JLabel(
+            ImageUtilites.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
     protected JTextField ModPrefixInput = new JTextField("my_mod");
-    protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(RFileOperations.PICKABLE_VERSIONS);
+    protected JComboBox<String> MinimumEngineVersionSelection = new JComboBox<String>(
+            RFileOperations.PICKABLE_VERSIONS);
     protected JButton CreateButton = new JButton("Create Addon!");
+
+    protected final JFrame Parent;
 
     public RNewAddon(JFrame Parent) {
         super(Parent,
                 DISPOSE_ON_CLOSE,
                 "New Addon",
                 new Dimension(459, 380));
-
+        this.Parent = Parent;
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
         AddonIcon.setVerticalAlignment(SwingConstants.CENTER);
@@ -161,7 +164,8 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 try {
                     File file = fileChooser.getSelectedFile();
                     ChosenIcon = ArrayUtils.toObject(Files.readAllBytes(file.toPath()));
-                    AddonIcon.setIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)));
+                    AddonIcon.setIcon(
+                            ImageUtilites.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
                     java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -183,7 +187,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
             // try {
             RLoadingScreen loading = new RLoadingScreen((JFrame) getParent());
-loading.changeText("Creating...");
+            loading.changeText("Creating...");
             // new Thread(() -> {
             // try {
             // SwingUtilities.invokeLater(() -> {
@@ -197,7 +201,7 @@ loading.changeText("Creating...");
                         ChosenIcon);
 
                 if (workspace != null) {
-                    RWorkspace.openWorkspace(loading, workspace);
+                    RWorkspace.openWorkspace(Parent, workspace);
                     loading.dispose();
                     this.dispose();
                 } else {

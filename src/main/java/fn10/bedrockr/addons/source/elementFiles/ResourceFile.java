@@ -51,7 +51,6 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
     /**
      * Get a resource
      * 
-     * @param doingThis
      * @param workspaceName
      * @param file
      * @param resourceType

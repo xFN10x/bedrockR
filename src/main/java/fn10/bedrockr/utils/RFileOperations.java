@@ -40,6 +40,12 @@ public class RFileOperations {
     private static WorkspaceFile CURRENT_WORKSPACE = null;
     @SuppressWarnings("unused")
     private static String COMMOJANG = null;
+    // make sure these are valid versions from here
+    // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
+    public final static String[] PICKABLE_VERSIONS = {
+            "1.21.130",
+            "1.21.124",
+    };
     static {
         SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
@@ -47,9 +53,7 @@ public class RFileOperations {
         ReturnItemInfo.downloadVanillaBlocks();
     }
 
-    public final static String[] PICKABLE_VERSIONS = {
-            "1.21.130",
-    };
+    
 
     /**
      * taken from https://stackoverflow.com/a/31976060
@@ -75,7 +79,7 @@ public class RFileOperations {
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
-        ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
+        //ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
         ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceRecipeElement.class);
         ELEMENT_EXTENSION_CLASSES.put("foodref", SourceFoodElement.class);
         ELEMENT_EXTENSION_CLASSES.put("biomeref", SourceBiomeElement.class);
@@ -250,7 +254,6 @@ public class RFileOperations {
     /**
      * Gets a directory from {@code .bedrockr}
      * 
-     * @param doingThis - the window to use for debugging
      * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
@@ -261,7 +264,6 @@ public class RFileOperations {
     /**
      * Gets a directory from {@code .bedrockr}
      * 
-     * @param doingThis - the window to use for debugging
      * @param strict    - if strict, it doesn't make the directory you specify
      * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
@@ -282,7 +284,6 @@ public class RFileOperations {
     /**
      * Gets the {@code .bedrockr} directory
      * 
-     * @param doingThis - the window to use for debugging
      * @return the file, being the directory that you specified,
      */
     public static File getBaseDirectory() {
@@ -301,7 +302,6 @@ public class RFileOperations {
     /**
      * Get a file from a workspace
      * 
-     * @param windowDoingThis - the window to use for debugging
      * @param WorkspaceName   - the name of the target workspace
      * @param ToCreate        - the file to get, creating it if it doesnt exist.
      *                        e.g. {@code icon.jpg}
@@ -323,7 +323,6 @@ public class RFileOperations {
     /**
      * Get a file from a workspace
      * 
-     * @param windowDoingThis - the Component to use for debugging
      * @param WorkspaceName   - the name of the target workspace
      * @param ToCreate        - the file to get, creating it if it doesnt exist.
      *                        e.g. {@code icon.jpg}
@@ -353,7 +352,6 @@ public class RFileOperations {
     /**
      * Get a workspace's folder
      * 
-     * @param windowDoingThis - the component to use for debugging
      * @param WorkspaceName   - the target workspace
      * @return a File, being the directory of the workspace
      */
@@ -484,7 +482,6 @@ public class RFileOperations {
     /**
      * Creates a workspace's folder to disk
      * 
-     * @param loading   - the loading screen to be used
      * @param wpf       - the workspace file to use
      * @param addonIcon - the icon to be written to disk
      * @return the new {@code SourceWorkspaceFile}
@@ -547,7 +544,6 @@ public class RFileOperations {
     /**
      * Gets the ElementFile's equivilant file on disk.
      * 
-     * @param doingThis   - the window to use for parenting
      * @param workspace   - the workspace the file is in
      * @param elementFile - the ElementFile to search for on disk
      * @return
