@@ -35,6 +35,7 @@ import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
+import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
@@ -215,8 +216,9 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             lay.putConstraint(SpringLayout.NORTH, compsVal, 5, SpringLayout.SOUTH, elementnameVal);
 
             return screen;
-        } /*else if (src.getClass().equals(SourceScriptElement.class)) {
-            ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so copying is easier
+        } else if (src.getClass().equals(SourceScriptElement.class)) {
+            JOptionPane.showMessageDialog(Parent, "Sadly, scripts are unavailable since a2.0.");
+            /*ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so copying is easier
 
             RElementValue elementName = new RElementValue(Parent, String.class,
                     new FieldFilters.FileNameLikeStringFilter(),
@@ -319,8 +321,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 }
             });
 
-            return frame;
-        }*/ else if (src.getClass().equals(SourceRecipeElement.class)) {
+            return frame;*/
+        } else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
                 RecipeFile serilized = (RecipeFile) src.getSerilized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
