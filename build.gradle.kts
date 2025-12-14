@@ -138,3 +138,41 @@ tasks.javadoc {
 tasks.withType<Jar>() {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "bedrockr"
+            groupId = "dev.xplate"
+            version = version
+            artifact(tasks.jar)
+            artifact(tasks.named<Jar>("sourcesJar"))
+            artifact(tasks.named<Jar>("javadocJar"))
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = "bedrockR"
+                description = "The librarys for bedrockR, a GUI-based addon maker for minecraft bedrock."
+                url = "https://bedrockr.xplate.dev"
+                licenses {
+                    license {
+                        name = "GNU GENERAL PUBLIC LICENSE v3"
+                        url = "https://github.com/xFN10x/bedrockR/tree/a1.5?tab=License-1-ov-file#"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "fn10"
+                        name = "xFN10x"
+                    }
+                }
+            }
+        }
+    }
+}
