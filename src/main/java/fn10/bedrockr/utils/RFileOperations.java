@@ -46,7 +46,8 @@ public class RFileOperations {
             "1.21.130",
             "1.21.124",
     };
-    static {
+
+    public static void init() {
         SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
         ReturnItemInfo.downloadVanillaItems();

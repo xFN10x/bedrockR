@@ -65,6 +65,7 @@ public class Launcher {
     public static HttpClient client = HttpClient.newBuilder().build();
 
     public static void main(String[] args) {
+        RFileOperations.init();
         String ver = System.getProperty("java.version");
         if (ver.startsWith("1.")) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
