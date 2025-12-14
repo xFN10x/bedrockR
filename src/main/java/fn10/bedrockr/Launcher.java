@@ -265,7 +265,7 @@ public class Launcher {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
                         RWorkspace.openWorkspace(loading,
-                                new SourceWorkspaceFile(Files.readString(file.toPath())));
+                                new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath()))));
                         return;
                     } catch (IOException e) {
                         java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);

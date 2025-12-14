@@ -167,7 +167,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         Path blocksJsonPath = Path.of(rootResPackPath, "blocks.json");
         blocksJsonPath.toFile().createNewFile();
-        Files.writeString(blocksJsonPath, gson.toJson(ActualBlocksJSON));
+        Files.write(blocksJsonPath, gson.toJson(ActualBlocksJSON).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         // do the terrian_texture.json
         BlockTexturesFile.resource_pack_name = WPF.WorkspaceName;
@@ -175,7 +175,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         Path terrainTexturePath = Path.of(rootResPackPath, "textures", "terrain_texture.json");
         terrainTexturePath.toFile().createNewFile();
-        Files.writeString(terrainTexturePath, gson.toJson(BlockTexturesFile));
+        Files.write(terrainTexturePath, gson.toJson(BlockTexturesFile).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         // #endregion
 

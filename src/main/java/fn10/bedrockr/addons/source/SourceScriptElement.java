@@ -50,7 +50,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
         var file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".scriptref");
         try {
-            Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             return file;
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);

@@ -41,7 +41,7 @@ public class SettingsFile {
             if (!file.toFile().exists()) {
                 new SettingsFile().save();
             }
-            return gson.fromJson(Files.readString(file), SettingsFile.class);
+            return gson.fromJson(new String(Files.readAllBytes(file)), SettingsFile.class);
         } catch (JsonSyntaxException | IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;

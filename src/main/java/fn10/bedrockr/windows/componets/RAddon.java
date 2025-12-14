@@ -62,11 +62,10 @@ public class RAddon extends JPanel implements MouseListener {
         Image resizedImage = null;
         int step = 0;
         try {
-            // dirty line of code coming up... "varibles? never hear of 'er"
-            WPFile = new SourceWorkspaceFile(Files.readString(RFileOperations
+            WPFile = new SourceWorkspaceFile(new String(Files.readAllBytes(RFileOperations
                     .getFileFromWorkspace(WPName, File.separator + RFileOperations.WPFFILENAME,
                             true)
-                    .toPath()));
+                    .toPath())));
             WPF = (WorkspaceFile) WPFile.getSerilized();
             step = 1;
             File iconFile = RFileOperations.getFileFromWorkspace(WPName,
