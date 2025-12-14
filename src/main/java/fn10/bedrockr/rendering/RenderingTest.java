@@ -39,7 +39,7 @@ public class RenderingTest extends SimpleApplication {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
             changeModel(assetManager.loadModel("models/StandardBlock.obj"));
         }).start();

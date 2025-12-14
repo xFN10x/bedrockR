@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 
-
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -85,7 +85,7 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setPreferredSize(new Dimension(70, 70));
         Icon.setSize(new Dimension(70, 70));
         if (clazz != null)
-            Icon.setIcon(ImageUtilites.ResizeIcon(details.Icon, 64, 64));
+            Icon.setIcon(ImageUtilites.ResizeIcon(new ImageIcon(details.Icon), 64, 64));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         if (clazz != null)

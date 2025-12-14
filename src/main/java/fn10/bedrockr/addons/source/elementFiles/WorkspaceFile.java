@@ -15,7 +15,6 @@ import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Header;
@@ -92,10 +91,10 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         } else {
             for (Entry<UUID,String> set : Scripts.entrySet()) {
                 try {
-                    Launcher.LOG.info("Deleting script that already exists: " + set.getValue());
+                    java.util.logging.Logger.getGlobal().info("Deleting script that already exists: " + set.getValue());
                     Files.deleteIfExists(Path.of(rootPath, set.getValue()));
                 } catch (IOException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         }

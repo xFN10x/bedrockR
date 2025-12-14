@@ -26,7 +26,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
@@ -165,11 +164,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                     AddonIcon.setIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
 
             } catch (Exception ex) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
             }
         } else if (e.getActionCommand() == "create") {
 
@@ -180,7 +179,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             }
 
             String name = NameInput.getText();
-            Launcher.LOG.info("Making new addon: " + name);
+            java.util.logging.Logger.getGlobal().info("Making new addon: " + name);
 
             // try {
             RLoadingScreen loading = new RLoadingScreen((JFrame) getParent());
@@ -205,12 +204,12 @@ loading.changeText("Creating...");
                     throw new Exception();
                 }
             } catch (Exception ex) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(((Frame) getParent()), "Failed to make new addon.", "Grrrr", ex);
             }
 
         } else {
-            Launcher.LOG.warning("No action event! " + getClass().getName());
+            java.util.logging.Logger.getGlobal().warning("No action event! " + getClass().getName());
             throw new UnsupportedOperationException("Action event not handled.");
         }
     }

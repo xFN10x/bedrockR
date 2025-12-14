@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source;
 
-import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -15,20 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
-import javax.swing.SpringLayout;
-
 import com.google.gson.internal.LinkedTreeMap;
 
 import fn10.bedrockr.addons.source.elementFiles.BiomeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.RBlockSelector.DataPathsJson;
-import fn10.bedrockr.windows.RElementEditingScreen;
-import fn10.bedrockr.windows.RNewAddon;
-import fn10.bedrockr.windows.componets.RElementValue;
 
 public class SourceBiomeElement implements ElementSource<BiomeFile> {
 
@@ -41,6 +32,7 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
         return prefixedVanillaBiomeNames;
     }
 
+    @SuppressWarnings("unchecked")
     public static String[] getVanillaBiomeNames() {
         if (vanillaBiomeNames != null) {
             return vanillaBiomeNames;
@@ -53,8 +45,8 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                         .version(HttpClient.Version.HTTP_2).GET().build();
                 HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
-                HashMap<String, String> versionPaths = gson.fromJson(dataPathsRes.body(), DataPathsJson.class).bedrock
-                        .get(RNewAddon.PICKABLE_VERSIONS[0]);
+                HashMap<String, String> versionPaths = ((HashMap<String,HashMap<String,String>>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
+                        .get(RFileOperations.PICKABLE_VERSIONS[0]);
 
                 String path = versionPaths.get("biomes");
 
@@ -77,7 +69,7 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                 prefixedVanillaBiomeNames = biomeNamesPrefix.toArray(vanillaBiomeNames);
                 return vanillaBiomeNames;
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
     }
@@ -98,10 +90,10 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
         this.serilized = (BiomeFile) getFromJSON(jsonString);
     }
 
-    public static ElementDetails getDetails() {
+    public static ElementDetails getDetails() throws IOException {
         return new ElementDetails("Biome",
                 "<html>A biome that replaced a vanilla one<br />partially, or completly.</html>",
-                new ImageIcon(ElementSource.class.getResource("/addons/element/Biome.png")));
+                ElementSource.class.getResource("/addons/element/Biome.png").openStream().readAllBytes());
     }
 
     @Override
@@ -121,7 +113,7 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                     "elements" + File.separator + serilized.getElementName() + ".biomeref").toPath(), getJSONString(),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE).toFile();
         } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -135,45 +127,4 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
     public BiomeFile getSerilized() {
         return serilized;
     }
-
-    @Override
-    //TODO: rework builder windows
-    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
-        RElementEditingScreen screen = new RElementEditingScreen(Parent, getDetails().Name, this, getSerilizedClass(),
-                parent2);
-        SpringLayout lay = new SpringLayout();
-        screen.InnerPane.setLayout(lay);
-
-        RElementValue elementnameVal = new RElementValue(screen, String.class,
-                new FieldFilters.FileNameLikeStringFilter(),
-                "ElementName", "Element Name", false, getSerilizedClass(), serilized, Workspace);
-        RElementValue idVal = new RElementValue(screen, String.class, new FieldFilters.IDStringFilter(),
-                "BiomeID", "Biome ID", false, getSerilizedClass(), serilized, Workspace);
-        RElementValue compsVal = new RElementValue(screen, HashMap.class, new FieldFilters.IDStringFilter(),
-                "Comps", "Biome Components", false, getSerilizedClass(), serilized, Workspace);
-        /*
-         * if (idVal.Input instanceof JComboBox input) {
-         * input.setModel(new DefaultComboBoxModel<String>(vanillaBiomeNames));
-         * input.setName("dd");
-         * input.setSelectedItem(serilized.BiomeID);
-         * }
-         */
-        screen.addField(elementnameVal);
-        screen.addField(idVal);
-        screen.addField(compsVal);
-
-        lay.putConstraint(SpringLayout.WEST, elementnameVal, 5, SpringLayout.WEST, screen.InnerPane);
-        lay.putConstraint(SpringLayout.NORTH, elementnameVal, 5, SpringLayout.NORTH, screen.InnerPane);
-
-        lay.putConstraint(SpringLayout.NORTH, idVal, 0, SpringLayout.NORTH, elementnameVal);
-        lay.putConstraint(SpringLayout.EAST, idVal, -5, SpringLayout.EAST, screen.InnerPane);
-
-        lay.putConstraint(SpringLayout.EAST, compsVal, -5, SpringLayout.EAST, screen.InnerPane);
-        lay.putConstraint(SpringLayout.WEST, compsVal, 5, SpringLayout.WEST, screen.InnerPane);
-        lay.putConstraint(SpringLayout.SOUTH, compsVal, -5, SpringLayout.SOUTH, screen.InnerPane);
-        lay.putConstraint(SpringLayout.NORTH, compsVal, 5, SpringLayout.SOUTH, elementnameVal);
-
-        return screen;
-    }
-
 }

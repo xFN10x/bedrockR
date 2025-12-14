@@ -5,7 +5,6 @@ import java.io.FileWriter;
 
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceResourceElement implements ElementSource<ResourceFile> {
@@ -46,7 +45,7 @@ public class SourceResourceElement implements ElementSource<ResourceFile> {
             fileWriter.close();
             return file;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -60,10 +59,4 @@ public class SourceResourceElement implements ElementSource<ResourceFile> {
     public ResourceFile getSerilized() {
         return this.Serilized;
     }
-
-    @Override
-    public RElementEditingScreen getBuilderWindow(ElementCreationListener parent2, String Workspace) {
-        return null;
-    }
-
 }

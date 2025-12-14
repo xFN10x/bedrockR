@@ -78,7 +78,7 @@ public class RMapValueAddingSelector extends RDialog {
                 InnerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
             } catch (Exception e1) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         }
 

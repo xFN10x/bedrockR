@@ -23,7 +23,6 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
@@ -81,7 +80,7 @@ public class RItemSelector extends RDialog {
                                 .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
                                 .toPath())).getSerilized()).Prefix;
                     } catch (IOException e1) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
                     // convert image to bytes
@@ -123,7 +122,7 @@ public class RItemSelector extends RDialog {
                     InnerPanel.add(ToAdd);
 
                 } catch (Exception e1) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
         }
         InnerPanel.revalidate();
@@ -218,7 +217,7 @@ public class RItemSelector extends RDialog {
         thiS.setVisible(true);
 
         if (thiS.choice == CANCEL_CHOICE) {
-            Launcher.LOG.info("canceled");
+            java.util.logging.Logger.getGlobal().info("canceled");
             return null;
         } else
             return thiS.getSelected();

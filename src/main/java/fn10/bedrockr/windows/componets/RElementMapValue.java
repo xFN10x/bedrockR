@@ -31,7 +31,6 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.internal.LinkedTreeMap;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
@@ -354,7 +353,7 @@ public class RElementMapValue extends JPanel {
             if (val instanceof LinkedTreeMap lrm) {
                 val = gson.fromJson(gson.toJsonTree(lrm), rMapElement.Type);
             }
-            Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
+            java.util.logging.Logger.getGlobal().info("Setting Value to class: " + val.getClass().getName());
             if (rMapElement.Type == Climate.class && val instanceof Climate climate) {
 
                 ((JSpinner) MultipleInputs.get("downfallVal")).setValue(climate.downfall);
@@ -447,7 +446,7 @@ public class RElementMapValue extends JPanel {
                                 + rMapElement.Type.getSimpleName());
             }
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(this, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
         }
     }
@@ -456,7 +455,7 @@ public class RElementMapValue extends JPanel {
     public Map.Entry<String, Object> getKeyAndVal() {
         Object val = null;
         try {
-            Launcher.LOG.info(rMapElement.Type.getName());
+            java.util.logging.Logger.getGlobal().info(rMapElement.Type.getName());
             if (rMapElement instanceof RStringDropdownMapElement) {
                 val = ((JComboBox<String>) InputField).getSelectedItem();
             }
@@ -575,7 +574,7 @@ public class RElementMapValue extends JPanel {
                 }
             }
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(this, "Failed to get value of Map Entry.", e.getMessage(), e);
             return null;
         }

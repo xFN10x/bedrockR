@@ -34,8 +34,6 @@ package fn10.bedrockr.utils;
 import javax.swing.*;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.Launcher;
-
 import java.awt.*;
 
 /**
@@ -50,9 +48,9 @@ public class SpringUtilities {
      * minimum, preferred, and maximum sizes.
      */
     public static void printSizes(Component c) {
-        Launcher.LOG.info("minimumSize = " + c.getMinimumSize());
-        Launcher.LOG.info("preferredSize = " + c.getPreferredSize());
-        Launcher.LOG.info("maximumSize = " + c.getMaximumSize());
+        java.util.logging.Logger.getGlobal().info("minimumSize = " + c.getMinimumSize());
+        java.util.logging.Logger.getGlobal().info("preferredSize = " + c.getPreferredSize());
+        java.util.logging.Logger.getGlobal().info("maximumSize = " + c.getMaximumSize());
     }
 
     /**

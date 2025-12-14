@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
@@ -102,7 +102,7 @@ public class RFileOperations {
             try {
                 return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(null,
                         "Invalid Element File", "Reloading Error", e);
                 return null;
@@ -125,7 +125,7 @@ public class RFileOperations {
         try {
             return getElementSourceClassFromFileExtension(fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(null, "Invalid Element File", "Reloading Error", e);
             return null;
         }
@@ -142,7 +142,7 @@ public class RFileOperations {
             return new String(RFileOperations.class.getResourceAsStream(resource).readAllBytes(),
                     StandardCharsets.UTF_8);
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
         }
     }
@@ -161,12 +161,12 @@ public class RFileOperations {
         for (int cha : proposed.chars().toArray()) {
             for (char c : ILLEGAL_CHARACTERS) {
                 if (c == cha) {
-                    Launcher.LOG.info("String: " + proposed + " had illegal folder char: " + cha);
+                    java.util.logging.Logger.getGlobal().info("String: " + proposed + " had illegal folder char: " + cha);
                     return false;
                 }
             }
         }
-        Launcher.LOG.info("String: " + proposed + " is a legal filename.");
+        java.util.logging.Logger.getGlobal().info("String: " + proposed + " is a legal filename.");
 
         return true;
     }
@@ -183,7 +183,7 @@ public class RFileOperations {
             try {
                 Files.createDirectories(folder);
             } catch (IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
@@ -193,7 +193,7 @@ public class RFileOperations {
             List<String> list = new ArrayList<String>();
             for (Path path : stream) {
                 if (Files.isDirectory(path)) {
-                    // Launcher.LOG.info(path.getFileName().toString());
+                    // java.util.logging.Logger.getGlobal().info(path.getFileName().toString());
                     list.add(path.getFileName().toString());
                 }
             }
@@ -219,7 +219,7 @@ public class RFileOperations {
                 var source = new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
                 return source;
             } catch (IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(null, "Failed to get resource file.", e.getMessage(), e);
                 return null;
             }
@@ -274,7 +274,7 @@ public class RFileOperations {
             } else
                 return file;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -287,13 +287,13 @@ public class RFileOperations {
      */
     public static File getBaseDirectory() {
         try {
-            // Launcher.LOG.info(BaseDirectory.toPath());
+            // java.util.logging.Logger.getGlobal().info(BaseDirectory.toPath());
             if (!BASE_DIRECTORY.exists()) {
                 return Files.createDirectories(BASE_DIRECTORY.toPath()).toFile();
             } else
                 return BASE_DIRECTORY;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -332,7 +332,7 @@ public class RFileOperations {
      */
     public static File getFileFromWorkspace(String WorkspaceName, String ToCreate,
             Boolean strict) {
-        // Launcher.LOG.warning("This file should start with the file seperator, or not
+        // java.util.logging.Logger.getGlobal().warning("This file should start with the file seperator, or not
         // at all! not '/'!");
         try {
             String proposed = BASE_DIRECTORY + File.separator + "workspace" + File.separator + WorkspaceName
@@ -344,7 +344,7 @@ public class RFileOperations {
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
             ErrorShower.showError(null, "IO Error", "Failed to get WP File", e);
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
 
@@ -379,11 +379,11 @@ public class RFileOperations {
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
             File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
             if (!comBpPath.exists()) {
-                Launcher.LOG.info("Making dev BP folder...");
+                java.util.logging.Logger.getGlobal().info("Making dev BP folder...");
                 Files.createDirectories(comBpPath.toPath());
             }
             if (!comRpPath.exists()) {
-                Launcher.LOG.info("Making dev RP folder...");
+                java.util.logging.Logger.getGlobal().info("Making dev RP folder...");
                 Files.createDirectories(comRpPath.toPath());
             }
             File[] comBpFiles = comBpPath.listFiles();
@@ -442,7 +442,7 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, bpDestPath);
                     } catch (IOException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", bpDestPath.getPath(),
                                 e);
                     }
@@ -467,14 +467,14 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, rpDestPath);
                     } catch (IOException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", rpDestPath.getPath(),
                                 e);
                     }
                 }
             }
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(doingThis, "Failed to execute Minecraft Sync", e.getMessage(), e);
         } finally {
             settings.save(); // finally
@@ -537,7 +537,7 @@ public class RFileOperations {
                 return srcWPF;
 
             } catch (Exception e) { // handle exception
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 throw e;
             }
         }
@@ -559,7 +559,7 @@ public class RFileOperations {
                 .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
-        Launcher.LOG.info("Found ElementFile on disk: " + proposed);
+        Logger.getGlobal().info("Found ElementFile on disk: " + proposed);
         return proposed;
     }
 
@@ -581,7 +581,7 @@ public class RFileOperations {
 
                 building.add(source.getFromJSON(Files.readString(file.toPath())));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         return building.toArray(new ElementFile[0]);

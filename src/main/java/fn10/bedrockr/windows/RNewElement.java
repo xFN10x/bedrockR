@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
@@ -71,7 +70,7 @@ public class RNewElement extends RDialog implements ActionListener {
                     }
                 }));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError((Frame) getParent(), "error", e);
                 continue;
             }
@@ -103,7 +102,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
             for (Component component : MainPane.getComponents()) { // for loop to check what is selected, then breaking
                 if (((RElement) component).getSelected()) {
-                    Launcher.LOG.info("Making new " + ((RElement) component).getElement());
+                    java.util.logging.Logger.getGlobal().info("Making new " + ((RElement) component).getElement());
                     Creating = ((RElement) component).getElement();
                     break;
                 }
@@ -132,7 +131,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 dispose();
 
             } catch (Exception ex) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 if (ex.getCause() != null) {
                     ErrorShower.showError((Frame) getParent(),
                             "Failed to create component. " + ex.getCause().getMessage() + "\n\n",

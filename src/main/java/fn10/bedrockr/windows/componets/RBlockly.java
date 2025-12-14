@@ -5,7 +5,6 @@ import java.net.URL;
 
 import javax.swing.JTextArea;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.util.ErrorShower;
 import jakarta.annotation.Nullable;
@@ -63,14 +62,14 @@ public class RBlockly extends JFXPanel {
                 try {
                     execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
                 } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             });
         else
             try {
                 execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
     }
 
@@ -141,16 +140,16 @@ public class RBlockly extends JFXPanel {
                                 } else if (newValue == Worker.State.FAILED) {
                                     Exception ex = new Exception("Blockly pane failed to load.");
 
-                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                                     ErrorShower.showError(getParent(), "Blockly Pane failed to load.", ex);
 
                                 } else {
-                                    Launcher.LOG.info("Unknown state: " + newValue);
+                                    java.util.logging.Logger.getGlobal().info("Unknown state: " + newValue);
                                 }
                             }
                         });
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
     }

@@ -77,7 +77,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://siege.hackclub.com/armory/1948"));
             } catch (IOException e) {
 
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         somButton.addActionListener(ac -> {
@@ -85,7 +85,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://summer.hackclub.com/projects/703"));
             } catch (IOException e) {
 
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 
@@ -94,7 +94,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
             } catch (IOException e) {
 
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpButton.addActionListener(ac -> {
@@ -102,7 +102,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
             } catch (IOException e) {
 
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 

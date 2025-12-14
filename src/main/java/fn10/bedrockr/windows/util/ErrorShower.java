@@ -6,8 +6,6 @@ import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
-import fn10.bedrockr.Launcher;
-
 public class ErrorShower {
 
     /**
@@ -18,7 +16,7 @@ public class ErrorShower {
      * @param ex     - the exception
      */
     public static void exception(Component parent, Exception ex) {
-        Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
         showError(parent, "", ex);
     }
 

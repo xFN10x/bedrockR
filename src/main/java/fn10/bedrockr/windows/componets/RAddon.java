@@ -34,7 +34,6 @@ import org.apache.commons.io.FileUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RFileOperations;
@@ -77,7 +76,7 @@ public class RAddon extends JPanel implements MouseListener {
             resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             if (step == 0) {
                 return;
             } else if (step == 1) {
@@ -102,7 +101,7 @@ public class RAddon extends JPanel implements MouseListener {
                     resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
                 } catch (Exception e2) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
+                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
                     BI = null;
                     resizedImage = null;
                     return;
@@ -187,13 +186,13 @@ public class RAddon extends JPanel implements MouseListener {
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
                     JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
-                    Launcher.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
+                    java.util.logging.Logger.getGlobal().info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
                     FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPFile.workspaceName()));
                     JOptionPane.showMessageDialog(parent,
                             "The Addon " + WPFile.workspaceName() + " has been deleted.");
                     parent.refresh();
                 } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         });
