@@ -25,7 +25,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu.Separator;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -42,6 +41,7 @@ import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
+import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
@@ -577,7 +577,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     RElementEditingScreen.DEFAULT_STYLE);
 
             for (Field field : src.getSerilizedClass().getFields()) { // try to get fields
-                if (field.getType().equals(Separator.class)) {
+                if (field.getType().equals(CreationScreenSeperator.class)) {
                     JSeparator sep = new JSeparator();
                     sep.setPreferredSize(new Dimension(700, 10));
                     frame.InnerPane.add(Box.createHorizontalStrut(1000));

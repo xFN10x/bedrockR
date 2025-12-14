@@ -152,6 +152,7 @@ val mavenJar by tasks.registering(Jar::class) {
     exclude("fn10/bedrockr/Launcher${'$'}2.class")
     exclude("fn10/bedrockr/Launcher${'$'}3.class")
     exclude("fn10/bedrockr/windows/**")
+    exclude("fn10/bedrockr/rendering/**")
 }
 
 publishing {

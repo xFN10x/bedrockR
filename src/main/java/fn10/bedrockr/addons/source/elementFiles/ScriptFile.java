@@ -1,28 +1,37 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.io.FileUtils;
-
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
-import fn10.bedrockr.utils.RAnnotation.HelpMessage;
-import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
-import fn10.bedrockr.windows.componets.RBlockly;
-import fn10.bedrockr.windows.componets.RBlockly.Bridge;
-import javafx.application.Platform;
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
 
 public class ScriptFile implements ElementFile<SourceScriptElement> {
 
+    @Override
+    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
+            GlobalBuildingVariables globalResVaribles) throws IOException {
+        throw new UnsupportedOperationException("Unimplemented method 'build'");
+    }
+
+    @Override
+    public Class<SourceScriptElement> getSourceClass() {
+        throw new UnsupportedOperationException("Unimplemented method 'getSourceClass'");
+    }
+
+    @Override
+    public String getElementName() {
+        throw new UnsupportedOperationException("Unimplemented method 'getElementName'");
+    }
+
+    @Override
+    public void setDraft(Boolean draft) {
+        throw new UnsupportedOperationException("Unimplemented method 'setDraft'");
+    }
+
+    @Override
+    public Boolean getDraft() {
+        throw new UnsupportedOperationException("Unimplemented method 'getDraft'");
+    }
+/* sadly, scripts will not be in the next updates until i rework them
     @UneditableByCreation
     @CantEditAfter
     @HelpMessage("The name of the element. This only shows up in the workspace view.")
@@ -33,9 +42,9 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
     public String ScriptName;
 
     @UneditableByCreation
-    /**
+    **
      * The JSON blockly content. NOT THE JAVASCRIPT
-     */
+     *
     public String Content;
 
     @UneditableByCreation
@@ -45,9 +54,9 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
     private transient Bridge bridge = new RBlockly.Bridge(null);
 
     @UneditableByCreation
-    /**
-     * format with; string version, elementname, scriptname, version (= 1.0.0)
-     */
+    
+     format with; string version, elementname, scriptname, version (= 1.0.0)
+     
     private transient String scriptHeader = "/*\r\n" + //
             "  This following code was generated with - bedrockR (https://github.com/xFN10x/bedrockR)\r\n" + //
             "  Version: %s\r\n" +
@@ -56,7 +65,7 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
             "    ElementName = %s\r\n" +
             "    ScriptName = %s\r\n" +
             "    Version = %s\r\n" +
-            "*/\r\n" +
+            "*\r\n" +
             "\r\n";
 
     @Override
@@ -114,5 +123,5 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
-
+*/
 }
