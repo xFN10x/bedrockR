@@ -7,6 +7,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -108,8 +110,8 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
     @Override
     public File buildJSONFile(String workspace) {
         try {
-            return Files.writeString(RFileOperations.getFileFromWorkspace(workspace,
-                    "elements" + File.separator + serilized.getElementName() + ".biomeref").toPath(), getJSONString(),
+            return Files.write(RFileOperations.getFileFromWorkspace(workspace,
+                    "elements" + File.separator + serilized.getElementName() + ".biomeref").toPath(), getJSONString().getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE).toFile();
         } catch (IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);

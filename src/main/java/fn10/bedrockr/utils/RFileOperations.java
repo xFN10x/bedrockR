@@ -23,7 +23,6 @@ import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceResourceElement;
-import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -319,7 +318,7 @@ public class RFileOperations {
     public static WorkspaceFile getWorkspaceFile(String WorkspaceName) {
         File file = getFileFromWorkspace(WorkspaceName, WPFFILENAME, true);
         try {
-            return ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(file.toPath())).getSerilized());
+            return ((WorkspaceFile) new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath()))).getSerilized());
         } catch (IOException e) {
             return null;
         }
@@ -580,7 +579,7 @@ public class RFileOperations {
                 ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
 
-                building.add(source.getFromJSON(Files.readString(file.toPath())));
+                building.add(source.getFromJSON(new String(Files.readAllBytes(file.toPath()))));
             } catch (Exception e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }

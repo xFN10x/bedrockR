@@ -56,7 +56,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
         File file = RFileOperations.getFileFromWorkspace(workspace,
                 Location + serilized.ElementName + ".reciperef");
         try {
-            Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(file.toPath(), string.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             return file;
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);

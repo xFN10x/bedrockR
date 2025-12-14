@@ -76,11 +76,14 @@ public class RItemSelector extends RDialog {
                     building.Id = bf.getItemId();
                     building.Name = bf.getDisplayName();
                     try {
-                        building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(Files.readString(RFileOperations
-                                .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
-                                .toPath())).getSerilized()).Prefix;
+                        building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(
+                                new String(Files.readAllBytes(RFileOperations
+                                        .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
+                                        .toPath())))
+                                .getSerilized()).Prefix;
                     } catch (IOException e1) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                e1);
                         building.Prefix = "error";
                     }
                     // convert image to bytes
