@@ -94,6 +94,10 @@ public class RFileOperations {
         BASE_PATH = folder.getAbsolutePath();
     }
 
+    public static void setComMojangDir(File folder) {
+        COMMOJANG = folder.getAbsolutePath();
+    }
+
     /**
      * Gets the class of the ElementSource linked with the ElementFile, based on the
      * extension

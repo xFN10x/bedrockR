@@ -10,7 +10,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +22,8 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceBiomeElement implements ElementSource<BiomeFile> {
 
-    private static transient String[] vanillaBiomeNames = null;
-    private static transient String[] prefixedVanillaBiomeNames = null;
+    public static transient String[] vanillaBiomeNames = null;
+    public static transient String[] prefixedVanillaBiomeNames = null;
 
     public static String[] getPrefixedVanillaBiomeNames() {
         if (prefixedVanillaBiomeNames == null)

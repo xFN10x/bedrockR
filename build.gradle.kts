@@ -35,6 +35,7 @@ dependencies {
     implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.0")
 
     implementation("commons-io:commons-io:2.21.0")
+    implementation("org.apache.commons:commons-lang3:3.20.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
@@ -45,7 +46,6 @@ dependencies {
     implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha5")
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.20.0")
 }
 
 java {
