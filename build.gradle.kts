@@ -140,6 +140,7 @@ tasks.withType<Jar>() {
 }
 
 val mavenJar by tasks.registering(Jar::class) {
+    destinationDirectory = layout.buildDirectory.dir("mavenLibs")
 
     // Use the output from the main source set as the input.
     from(sourceSets.main.get().output)
@@ -147,7 +148,7 @@ val mavenJar by tasks.registering(Jar::class) {
     // THIS IS THE KEY: Exclude the problematic classes.
     // Use forward slashes for paths.
     exclude("fn10/bedrockr/Launcher.class")
-    exclude("fn10/bedrockr/ui/**") 
+    exclude("fn10/bedrockr/ui/**")
 }
 
 publishing {
