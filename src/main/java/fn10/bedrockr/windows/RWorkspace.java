@@ -593,7 +593,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         WPF.buildJSONFile( // rebuild
                 ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
 
-        String[] platforms = { "Windows (pre-1.21.120)", "Windows" };
+        String[] platforms = {"Windows"};
         var platformSelection = JOptionPane.showOptionDialog(
                 doingThis,
                 "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
@@ -607,21 +607,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var settings = SettingsFile.load();
         switch (platformSelection) {
             case 0:
-
-                settings.comMojangPath = System.getenv("LOCALAPPDATA")
-                        + "\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang";
-                if (!new File(settings.comMojangPath).exists()) {
-                    JOptionPane.showMessageDialog(doingThis,
-                            "Couldn't find com.mojang (pre-1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \n Retry by selecting the option in the File menu.",
-                            "oops", JOptionPane.ERROR_MESSAGE);
-                    break;
-                }
-                settings.save();
-
-                JOptionPane.showMessageDialog(doingThis,
-                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
-                        "yippe", JOptionPane.INFORMATION_MESSAGE);
-            case 1:
 
                 settings.comMojangPath = System.getenv("APPDATA")
                         + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";

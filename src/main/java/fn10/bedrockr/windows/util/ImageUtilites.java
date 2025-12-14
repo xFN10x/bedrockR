@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -14,10 +15,15 @@ public class ImageUtilites {
 
     public static byte[] ImageToBytes(Image img) {
         // convert image to bytes
-        BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null),
-                BufferedImage.TYPE_INT_ARGB);
+        int width = img.getWidth(null);
+        int height = img.getHeight(null);
+        if (width <= 0 || height <= 0) {
+            return new byte[0];
+        }
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         bi.getGraphics().drawImage(img, 0, 0, null);
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            ImageIO.write(bi, "png", baos);
             return baos.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
