@@ -46,8 +46,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     protected JFileChooser fileChooser = new JFileChooser();
     protected String imageExtension = "png";
 
-    protected JLabel AddonIcon = new JLabel(
-            ImageUtilites.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
+    protected JLabel AddonIcon = new JLabel();
     protected JTextArea DescInput = new JTextArea("My new addon, made in bedrockR");
     protected JTextField NameInput = new JTextField("New AddonR");
     protected JTextField ModPrefixInput = new JTextField("my_mod");
@@ -63,18 +62,19 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 "New Addon",
                 new Dimension(459, 380));
         this.Parent = Parent;
-        
+
         try {
             ChosenIcon = ArrayUtils
-                .toObject(getClass().getResource("/addons/DefaultIcon.png").openStream().readAllBytes());
+                    .toObject(getClass().getResource("/addons/DefaultIcon.png").openStream().readAllBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
         AddonIcon.setVerticalAlignment(SwingConstants.CENTER);
         AddonIcon.setBorder(BorderFactory.createLineBorder(getForeground(), 3));
+        AddonIcon.setIcon(ImageUtilites.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
 
         var NameInputText = new JLabel("Addon Name");
 
