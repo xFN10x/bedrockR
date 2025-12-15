@@ -24,10 +24,10 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.SpringUtilities;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.SpringUtilities;
 
 public class RNewElement extends RDialog implements ActionListener {
 
@@ -124,9 +124,8 @@ public class RNewElement extends RDialog implements ActionListener {
             try {
                 ElementSource<?> instance = Creating.getDeclaredConstructor().newInstance();
 
-                RElementEditingScreen screen = (RElementEditingScreen) Creating
-                        .getMethod("getBuilderWindow", Window.class, ElementCreationListener.class, String.class)
-                        .invoke(instance, this.Parent, this.Parent, workspaceName);
+                RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(instance, this.Parent, ((ElementCreationListener)this.Parent), workspaceName);
+
                 screen.setVisible(true);
                 dispose();
 

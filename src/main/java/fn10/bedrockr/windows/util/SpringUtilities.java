@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-package fn10.bedrockr.utils;
+package fn10.bedrockr.windows.util;
 
 import javax.swing.*;
 import javax.swing.SpringLayout;
