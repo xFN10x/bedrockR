@@ -332,7 +332,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 // do mc sync
                 if (SWPF.getSerilized().MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
-                    RFileOperations.mcSync(this);
+                    RFileOperations.mcSync();
                 }
 
             } catch (Exception e) {
