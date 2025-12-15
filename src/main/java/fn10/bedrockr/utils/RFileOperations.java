@@ -28,7 +28,6 @@ import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.windows.util.ErrorShower;
 
 public class RFileOperations {
 
@@ -111,8 +110,6 @@ public class RFileOperations {
                 return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
             } catch (Exception e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(null,
-                        "Invalid Element File", "Reloading Error", e);
                 return null;
             }
         } else {
@@ -134,7 +131,6 @@ public class RFileOperations {
             return getElementSourceClassFromFileExtension(fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(null, "Invalid Element File", "Reloading Error", e);
             return null;
         }
     }
@@ -207,7 +203,6 @@ public class RFileOperations {
             }
             return list.toArray(new String[0]);
         } catch (IOException e) {
-            ErrorShower.showError(null, "IO Error", BASE_PATH, e);
             return null;
         }
     }
@@ -228,7 +223,6 @@ public class RFileOperations {
                 return source;
             } catch (IOException e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(null, "Failed to get resource file.", e.getMessage(), e);
                 return null;
             }
         else { // make a blank resource file
@@ -346,7 +340,6 @@ public class RFileOperations {
             } else
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
-            ErrorShower.showError(null, "IO Error", "Failed to get WP File", e);
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
@@ -366,9 +359,8 @@ public class RFileOperations {
     /**
      * Syncs all built RP and BP to com.mojang
      * 
-     * @param doingThis - the window to be used for debugging
      */
-    public static void mcSync(java.awt.Window doingThis) {
+    public static void mcSync() {
         SettingsFile settings = SettingsFile.load();
         try {
             String bpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "BP"
@@ -445,8 +437,6 @@ public class RFileOperations {
                         FileUtils.copyDirectory(f, bpDestPath);
                     } catch (IOException e) {
                         java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                        ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", bpDestPath.getPath(),
-                                e);
                     }
                 }
             }
@@ -470,14 +460,11 @@ public class RFileOperations {
                         FileUtils.copyDirectory(f, rpDestPath);
                     } catch (IOException e) {
                         java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                        ErrorShower.showError(doingThis, "Failed to copy addon to com.mojang.", rpDestPath.getPath(),
-                                e);
                     }
                 }
             }
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(doingThis, "Failed to execute Minecraft Sync", e.getMessage(), e);
         } finally {
             settings.save(); // finally
         }
