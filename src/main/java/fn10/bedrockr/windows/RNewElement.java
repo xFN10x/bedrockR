@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Window;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;

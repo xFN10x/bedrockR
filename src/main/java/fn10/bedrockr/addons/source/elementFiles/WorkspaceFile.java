@@ -24,8 +24,7 @@ import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 
-/**********************
- * The WPFile, is an ElementFile that handles workspace varibles, and building
+/* The WPFile, is an ElementFile that handles workspace varibles, and building
  * manifests, and other base stuff for both packs.
  */
 public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
@@ -43,6 +42,9 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
     public String uuid2;
     public String uuid3;
     public String uuid4;
+
+    public String RPSuffix = "";
+    public String BPSuffix = "";
 
     public Map<UUID, String> Scripts = new HashMap<UUID, String>();
 
@@ -89,7 +91,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         if (Scripts == null) {
             Scripts = new HashMap<UUID, String>();
         } else {
-            for (Entry<UUID,String> set : Scripts.entrySet()) {
+            for (Entry<UUID, String> set : Scripts.entrySet()) {
                 try {
                     java.util.logging.Logger.getGlobal().info("Deleting script that already exists: " + set.getValue());
                     Files.deleteIfExists(Path.of(rootPath, set.getValue()));
@@ -133,7 +135,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         manifest.formatVersion = 2;
         // header
         Header header = new Manifest.Header();
-        header.name = WorkspaceName;
+        header.name = WorkspaceName + BPSuffix;
         header.description = Description;
         header.uuid = this.uuid1;
         header.min_engine_version = VersionVector.fromString(MinimumEngineVersion);
@@ -198,7 +200,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         RPmanifest.formatVersion = 2;
         // header
         var RPheader = new Manifest.Header();
-        RPheader.name = WorkspaceName;
+        RPheader.name = WorkspaceName + RPSuffix;
         RPheader.description = Description;
         RPheader.uuid = this.uuid3;
         RPheader.min_engine_version = VersionVector.fromString(MinimumEngineVersion);
