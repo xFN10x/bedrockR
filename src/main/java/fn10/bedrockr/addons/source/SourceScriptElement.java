@@ -8,7 +8,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 
 public class SourceScriptElement implements ElementSource<ScriptFile> {
 
-    private final String Location = File.separator + "elements" + File.separator;
+    //private final String Location = File.separator + "elements" + File.separator;
     private ScriptFile serilized;
 
     public SourceScriptElement(ScriptFile obj) {

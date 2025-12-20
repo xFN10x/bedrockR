@@ -125,6 +125,7 @@ public class RBlockly extends JFXPanel {
 
                                     webEngine
                                             .executeScript(RFileOperations.readResourceAsString("/blockly/blockly.js"));
+                                    @SuppressWarnings("removal")
                                     JSObject window = (JSObject) webEngine.executeScript("window");
                                     window.setMember("rblockly", bridge);
 
