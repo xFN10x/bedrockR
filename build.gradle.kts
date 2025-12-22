@@ -41,9 +41,9 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 
     //3d stuff
-    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-alpha5")
-    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-alpha5")
-    implementation("org.jmonkeyengine:jme3-core:3.9.0-alpha5")
+    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-beta1")
+    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-beta1")
+    implementation("org.jmonkeyengine:jme3-core:3.9.0-beta1")
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 }
