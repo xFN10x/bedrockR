@@ -124,7 +124,8 @@ public class Launcher {
         LOG.info("Logging to " + logloc);
         LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
         LOG.info("Launch Args: " + String.join(",", args));
-        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", RFileOperations.VERSION, Runtime.version(),
+        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", RFileOperations.VERSION,
+                Runtime.version(),
                 System.getProperty("java.vm.name")));
 
         Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -165,7 +166,8 @@ public class Launcher {
 
             if (serilized.LatestVersion > CHECKVERSION && serilized.ShouldUse) {
                 int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
-                        "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION + ")",
+                        "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION
+                                + ")",
                         JOptionPane.YES_NO_OPTION);
                 if (op == JOptionPane.YES_OPTION) {
                     Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR/releases/latest"));
@@ -277,11 +279,26 @@ public class Launcher {
 
         // open app
         loading.ProgressText.setText("Launching...");
+        RLaunchPage launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
         SwingUtilities.invokeLater(() -> {
-            RLaunchPage launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
             launch.setVisible(true);
             loading.setVisible(false);
             launch.requestFocus(Cause.ACTIVATION);
         });
+
+        SettingsFile settings = SettingsFile.load();
+        if (settings.shareElementAndWorkspaceData == null) {
+            Object input = JOptionPane.showOptionDialog(loading,
+                    "<html> Would you like to share your created elements, and workspaces to the bedrockR Website?<br /><br />The following data will be shared with each workspace creation, and element creation:<ul><li>Your element's creation date</li><li>Your workspace's creation date</li><li>Your workspace's name</li><li>This version of bedrockR ("
+                            + RFileOperations.VERSION
+                            + ")</li></ul><br /> <b>This data is only shared once; on the creation of the target element/workspace</b> <br/><br/>This data is used for examples, and showcasing bedrockR's capibilitys.</html>",
+                    "Share Element & Workspace Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                    new String[] { "Yes", "No" }, "Yes");
+
+            if (input.equals("Yes")) {
+                settings.shareElementAndWorkspaceData = true;
+                settings.save();
+            }
+        }
     }
 }
