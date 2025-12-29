@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
+import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
 import jakarta.annotation.Nullable;
 
@@ -15,13 +16,13 @@ public class RAnnotation {
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface HelpMessage {
-        String value();
+        String value() default "No help provided.";
     }
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface FieldDetails {
-        boolean Optional();
+        boolean Optional() default true;
 
         Class<? extends FieldFilter> Filter() default RegularStringFilter.class;
 
@@ -32,7 +33,7 @@ public class RAnnotation {
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ResourcePackResourceType {
-        int value();
+        int value() default ResourceFile.ITEM_TEXTURE;
     }
 
     @Target({ ElementType.FIELD })

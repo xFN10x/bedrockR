@@ -1,7 +1,6 @@
 package fn10.bedrockr.addons.source.interfaces;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.google.gson.Gson;
 
@@ -15,23 +14,13 @@ import com.google.gson.Gson;
  * {@code public static ElementDetails getDetails()} if making a ElementSource
  * that is meant to be added as a workspace element.
  */
-public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
+public abstract class ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
 
     public static final Gson gson = ElementFile.gson;
 
-    // final Integer Type = 0; // 0 for BP, 1 for RP
-
-    public static ElementDetails getDetails() {
-        try {
-            return new ElementDetails("Element", "A cool new element, \nwhich SOME dumbass forgot to change.",
-                    ElementSource.class.getResource("/addons/element/Element.png").openStream().readAllBytes());
-        } catch (IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
+    public String getJSONString() {
+        return gson.toJson(getSerilized());
     }
-
-    abstract String getJSONString();
 
     /**
      * THIS SHOULD NOT SET SERILIZED
@@ -39,25 +28,20 @@ public interface ElementSource<T extends ElementFile<? extends ElementSource<T>>
      * @param jsonString the string, which is a json, that is serilized
      * @return the ElementFile.
      */
-    abstract T getFromJSON(String jsonString);
+    public abstract T getFromJSON(String jsonString);
 
-    abstract File buildJSONFile(String workspace);
+    public abstract File buildJSONFile(String workspace);
 
-    abstract Class<T> getSerilizedClass();
+    public abstract Class<T> getSerilizedClass();
 
     /**
      * Gets the ElementFile linked to this ElementSource object.
      * 
      * @return the ElementFile
      */
-    abstract T getSerilized();
+    public abstract T getSerilized();
 
-    /**
-     * You should use this instad of toString()
-     * 
-     * @return The name, description, and the JSON of the element file.
-     */
-    default String ToString() {
+    public String toString() {
         try {
             ElementDetails details = ((ElementDetails) this.getClass().getMethod("getDetails").invoke(null));
             return details.Name + ", " + details.Description + "\n" + getJSONString();
