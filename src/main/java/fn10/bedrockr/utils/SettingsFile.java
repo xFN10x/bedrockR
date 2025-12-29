@@ -20,7 +20,11 @@ public class SettingsFile {
     public List<String> currentBPSynced = new ArrayList<String>();
     public List<String> currentRPSynced = new ArrayList<String>();
     public List<String> ignored = new ArrayList<String>();
+
     public Long LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = null;
+
+    public Boolean shareElementAndWorkspaceData = null; 
+    public Boolean shareExtraData = null; 
 
     public void save() {
 
