@@ -116,7 +116,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
          */
 
         var source = new SourceResourceElement(this);
-        source.buildJSONFile(rootPath);
+        source.saveJSONFile(rootPath);
     }
 
     @Override

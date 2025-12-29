@@ -1,14 +1,12 @@
 package fn10.bedrockr.addons.source;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
-import jakarta.annotation.Nullable;
 
 public class SourceBlockElement extends ElementSource<BlockFile> {
     private final String Location = File.separator + "elements" + File.separator;
@@ -46,25 +44,13 @@ public class SourceBlockElement extends ElementSource<BlockFile> {
     }
 
     @Override
-    @Nullable
-    public File buildJSONFile(String workspace) {
-        var string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".blockref");
-        file.setWritable(true);
-        try {
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(string);
-            fileWriter.close();
-            return file;
-        } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
+    public BlockFile getSerilized() {
+        return this.serilized;
     }
 
     @Override
-    public BlockFile getSerilized() {
-        return this.serilized;
+    public File getLocation(String workspace) {
+        return RFileOperations.getFileFromWorkspace(workspace,
+                Location + serilized.ElementName + ".blockref");
     }
 }

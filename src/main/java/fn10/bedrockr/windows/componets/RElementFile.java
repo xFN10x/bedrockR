@@ -118,7 +118,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(true);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.buildJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.saveJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -129,7 +129,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(false);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.buildJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.saveJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);

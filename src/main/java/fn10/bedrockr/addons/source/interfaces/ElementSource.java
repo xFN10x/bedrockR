@@ -1,8 +1,14 @@
 package fn10.bedrockr.addons.source.interfaces;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 import com.google.gson.Gson;
+
+import jakarta.annotation.Nonnull;
 
 /**
  * the interface used for Source Classes of Elements. Element Sources are
@@ -30,7 +36,22 @@ public abstract class ElementSource<T extends ElementFile<? extends ElementSourc
      */
     public abstract T getFromJSON(String jsonString);
 
-    public abstract File buildJSONFile(String workspace);
+    /**
+     * Gets the location of where the ElementFile linked to this will save. This
+     * path doesn't need to exist.
+     * 
+     * @param workspace The workspace that this element is in
+     * @return the File, which may or may not exist, being that of where the
+     *         ElementFile will save.
+     */
+    public abstract @Nonnull File getLocation(String workspace);
+
+    public File saveJSONFile(String workspace) throws IOException {
+        File saveLoc = getLocation(workspace);
+        byte[] bytes = getJSONString().getBytes(StandardCharsets.UTF_8);
+        return Files.write(saveLoc.toPath(), bytes,
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE).toFile();
+    }
 
     public abstract Class<T> getSerilizedClass();
 

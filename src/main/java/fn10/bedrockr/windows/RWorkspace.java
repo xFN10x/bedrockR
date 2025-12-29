@@ -18,6 +18,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -568,7 +569,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementDraft(ElementSource<?> element) {
-        element.buildJSONFile((SWPF.getSerilized().WorkspaceName));
+        try {
+            element.saveJSONFile((SWPF.getSerilized().WorkspaceName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         refreshAll();
     }
 
@@ -579,7 +584,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementCreate(ElementSource<?> element) {
-        element.buildJSONFile((SWPF.getSerilized().WorkspaceName));
+        try {
+            element.saveJSONFile((SWPF.getSerilized().WorkspaceName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         refreshAll();
     }
 
@@ -591,11 +600,15 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
      * @param WPF       - the workspace that is having mc sync enabled
      */
     public static void showMCSyncPopup(Component doingThis, SourceWorkspaceFile WPF) {
-        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = true; // enable
-        WPF.buildJSONFile( // rebuild
-                ((WorkspaceFile) WPF.getSerilized()).WorkspaceName);
+        WPF.getSerilized().MinecraftSync = true; // enable
+        try {
+            WPF.saveJSONFile( // save the workspace file again
+                    WPF.workspaceName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        String[] platforms = {"Windows"};
+        String[] platforms = { "Windows" };
         var platformSelection = JOptionPane.showOptionDialog(
                 doingThis,
                 "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",

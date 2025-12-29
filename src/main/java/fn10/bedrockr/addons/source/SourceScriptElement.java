@@ -8,7 +8,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 
 public class SourceScriptElement extends ElementSource<ScriptFile> {
 
-    //private final String Location = File.separator + "elements" + File.separator;
+    // private final String Location = File.separator + "elements" + File.separator;
     private ScriptFile serilized;
 
     public SourceScriptElement(ScriptFile obj) {
@@ -22,8 +22,6 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
     public SourceScriptElement(String jsonString) {
         this.serilized = (ScriptFile) getFromJSON(jsonString);
     }
-
-    
 
     @Override
     public ScriptFile getFromJSON(String jsonString) {
@@ -42,18 +40,22 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
     }
 
     @Override
-    public File buildJSONFile(String workspace) {
-        /*String string = getJSONString();
-        var file = RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".scriptref");
-        try {
-            Files.write(file.toPath(), string, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-            return file;
-        } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }*/
-       throw new UnsupportedOperationException("Scripts are not avalible since a2.0");
+    public File saveJSONFile(String workspace) {
+        /*
+         * String string = getJSONString();
+         * var file = RFileOperations.getFileFromWorkspace(workspace,
+         * Location + serilized.ElementName + ".scriptref");
+         * try {
+         * Files.write(file.toPath(), string, StandardOpenOption.CREATE,
+         * StandardOpenOption.TRUNCATE_EXISTING);
+         * return file;
+         * } catch (Exception e) {
+         * java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+         * "Exception thrown", e);
+         * return null;
+         * }
+         */
+        throw new UnsupportedOperationException("Scripts are not avalible since a2.0");
     }
 
     @Override
@@ -64,5 +66,10 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
     @Override
     public ScriptFile getSerilized() {
         return serilized;
+    }
+
+    @Override
+    public File getLocation(String workspace) {
+        return null;
     }
 }
