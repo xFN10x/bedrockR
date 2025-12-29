@@ -43,6 +43,12 @@ public class RLogFormatter extends Formatter {
                     + " @ "
                     + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
                     + record.getMessage() + "\n" + ANSI_RESET;
+        } else if (record.getLevel() == Level.SEVERE) {
+            return ANSI_RED + "("
+                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+                    + " @ "
+                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+                    + record.getMessage() + "\n" + ANSI_RESET;
         } else {
             return ANSI_GREEN + "("
                     + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
