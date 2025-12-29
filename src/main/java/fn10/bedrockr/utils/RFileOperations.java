@@ -227,7 +227,11 @@ public class RFileOperations {
             }
         else { // make a blank resource file
             var source = new SourceResourceElement("{}");
-            source.saveJSONFile(workspaceName);
+            try {
+                source.saveJSONFile(workspaceName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return source;
         }
     }
