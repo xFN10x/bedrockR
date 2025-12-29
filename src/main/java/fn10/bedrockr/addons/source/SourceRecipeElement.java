@@ -2,9 +2,6 @@ package fn10.bedrockr.addons.source;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
@@ -48,20 +45,6 @@ public class SourceRecipeElement extends ElementSource<RecipeFile> {
     }
 
     @Override
-    public File buildJSONFile(String workspace) {
-        String string = getJSONString();
-        File file = RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".reciperef");
-        try {
-            Files.write(file.toPath(), string.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-            return file;
-        } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
-    }
-
-    @Override
     public Class<RecipeFile> getSerilizedClass() {
         return RecipeFile.class;
     }
@@ -69,5 +52,11 @@ public class SourceRecipeElement extends ElementSource<RecipeFile> {
     @Override
     public RecipeFile getSerilized() {
         return serilized;
+    }
+
+    @Override
+    public File getLocation(String workspace) {
+        return RFileOperations.getFileFromWorkspace(workspace,
+                Location + serilized.ElementName + ".reciperef");
     }
 }

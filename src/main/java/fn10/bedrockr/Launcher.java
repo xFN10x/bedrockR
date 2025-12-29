@@ -66,7 +66,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         RFileOperations.init();
-        String ver = System.getProperty("java.version");
+        /*String ver = System.getProperty("java.version");
         if (ver.startsWith("1.")) {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
                     + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
@@ -75,13 +75,12 @@ public class Launcher {
             JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
                     + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
             return;
-        }
+        }*/
         try {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui/Icon_huge.png"));
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(null, "Failed to load icon(s)", "IO Error", e);
         }
         RSplashScreen loading = new RSplashScreen();
         loading.ProgressText.setText("Loading icon...");
@@ -113,6 +112,12 @@ public class Launcher {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
+        try {
+            throw new Exception("test");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 for (var h : LOG.getHandlers()) {
@@ -129,12 +134,10 @@ public class Launcher {
                 System.getProperty("java.vm.name")));
 
         Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 LOG.log(Level.WARNING, "Uncaught Exception!", e);
             }
-
         });
 
         // setup theme

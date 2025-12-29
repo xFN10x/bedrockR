@@ -227,7 +227,7 @@ public class RFileOperations {
             }
         else { // make a blank resource file
             var source = new SourceResourceElement("{}");
-            source.buildJSONFile(workspaceName);
+            source.saveJSONFile(workspaceName);
             return source;
         }
     }
@@ -511,7 +511,7 @@ public class RFileOperations {
 
 
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
-                srcWPF.buildJSONFile(wpf.WorkspaceName);
+                srcWPF.saveJSONFile(wpf.WorkspaceName);
 
                 File srcIcon = Path.of(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension).toFile();
                 if (!srcIcon.exists())

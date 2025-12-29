@@ -7,9 +7,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -104,18 +101,6 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
     }
 
     @Override
-    public File buildJSONFile(String workspace) {
-        try {
-            return Files.write(RFileOperations.getFileFromWorkspace(workspace,
-                    "elements" + File.separator + serilized.getElementName() + ".biomeref").toPath(), getJSONString().getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE).toFile();
-        } catch (IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
-    }
-
-    @Override
     public Class<BiomeFile> getSerilizedClass() {
         return BiomeFile.class;
     }
@@ -123,5 +108,11 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
     @Override
     public BiomeFile getSerilized() {
         return serilized;
+    }
+
+    @Override
+    public File getLocation(String workspace) {
+        return RFileOperations.getFileFromWorkspace(workspace,
+                    "elements" + File.separator + serilized.getElementName() + ".biomeref");
     }
 }
