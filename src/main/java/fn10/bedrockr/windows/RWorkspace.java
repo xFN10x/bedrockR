@@ -390,7 +390,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                 "What size do you want this image to be?",
                                 "Resize " + entry.getKey(), JOptionPane.QUESTION_MESSAGE,
                                 null, new String[] {
+                                        "8x8",
                                         "16x16",
+                                        "18x18",
                                         "32x32",
                                         "64x64",
                                         "96x96",

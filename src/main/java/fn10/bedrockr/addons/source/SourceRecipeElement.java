@@ -10,7 +10,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class SourceRecipeElement implements ElementSource<RecipeFile> {
+public class SourceRecipeElement extends ElementSource<RecipeFile> {
 
     public static enum RecipeType {
         Shaped,
@@ -32,10 +32,7 @@ public class SourceRecipeElement implements ElementSource<RecipeFile> {
         this.serilized = (RecipeFile) getFromJSON(jsonString);
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(serilized);
-    }
+    
 
     @Override
     public RecipeFile getFromJSON(String jsonString) {

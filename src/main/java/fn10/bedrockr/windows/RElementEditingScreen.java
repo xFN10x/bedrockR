@@ -325,7 +325,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             return frame;*/
         } else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
-                RecipeFile serilized = (RecipeFile) src.getSerilized();
+                RecipeFile serilized = (RecipeFile) ((SourceRecipeElement)src).getSerilized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
                         parent2,
                         RElementEditingScreen.DEFAULT_STYLE);
@@ -493,7 +493,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                     @Override
                     public void itemStateChanged(ItemEvent e) {
-                        RecipeFile Serilized = (RecipeFile) src.getSerilized();
+                        RecipeFile Serilized = (RecipeFile) ((SourceRecipeElement)src).getSerilized();
 
                         try {
                             ShapedOutput shaped = grid.getShapedRecipe();
@@ -566,7 +566,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return null;
             }
         } else if (src.getClass().equals(SourceFoodElement.class)) {
-            FoodFile serilized = (FoodFile) src.getSerilized();
+            FoodFile serilized = (FoodFile) ((SourceFoodElement)src).getSerilized();
             RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", src, src.getSerilizedClass(),
                     parent2,
                     RElementEditingScreen.DEFAULT_STYLE);

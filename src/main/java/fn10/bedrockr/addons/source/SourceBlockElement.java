@@ -10,7 +10,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nullable;
 
-public class SourceBlockElement implements ElementSource<BlockFile> {
+public class SourceBlockElement extends ElementSource<BlockFile> {
     private final String Location = File.separator + "elements" + File.separator;
     private Class<BlockFile> serilizedClass = BlockFile.class;
     private BlockFile serilized;
@@ -33,10 +33,7 @@ public class SourceBlockElement implements ElementSource<BlockFile> {
                 ElementSource.class.getResource("/addons/element/Element.png").openStream().readAllBytes());
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(serilized);
-    }
+    
 
     @Override
     public Class<BlockFile> getSerilizedClass() {

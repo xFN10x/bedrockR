@@ -7,7 +7,7 @@ import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class SourceResourceElement implements ElementSource<ResourceFile> {
+public class SourceResourceElement extends ElementSource<ResourceFile> {
 
     public ResourceFile Serilized;
 
@@ -23,10 +23,7 @@ public class SourceResourceElement implements ElementSource<ResourceFile> {
         this.Serilized = gson.fromJson(json, ResourceFile.class);
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(Serilized);
-    }
+    
 
     @Override
     public ResourceFile getFromJSON(String jsonString) {

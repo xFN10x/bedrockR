@@ -31,7 +31,7 @@ import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 
 public class RFileOperations {
 
-    public static String VERSION = "a2.0";
+    public static final String VERSION = "a2.0";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);

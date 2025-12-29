@@ -10,7 +10,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nullable;
 
-public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
+public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
     private WorkspaceFile serilized;
 
@@ -41,10 +41,7 @@ public class SourceWorkspaceFile implements ElementSource<WorkspaceFile> {
         }
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(serilized);
-    }
+    
 
     @Override
     public Class<WorkspaceFile> getSerilizedClass() {

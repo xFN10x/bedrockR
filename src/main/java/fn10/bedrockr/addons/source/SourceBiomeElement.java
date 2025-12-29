@@ -21,7 +21,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class SourceBiomeElement implements ElementSource<BiomeFile> {
+public class SourceBiomeElement extends ElementSource<BiomeFile> {
 
     public static transient String[] vanillaBiomeNames = null;
     public static transient String[] prefixedVanillaBiomeNames = null;
@@ -96,10 +96,7 @@ public class SourceBiomeElement implements ElementSource<BiomeFile> {
                 ElementSource.class.getResource("/addons/element/Biome.png").openStream().readAllBytes());
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(serilized);
-    }
+    
 
     @Override
     public BiomeFile getFromJSON(String jsonString) {

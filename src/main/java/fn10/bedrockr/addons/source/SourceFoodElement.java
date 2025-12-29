@@ -9,7 +9,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nullable;
 
-public class SourceFoodElement implements ElementSource<FoodFile> {
+public class SourceFoodElement extends ElementSource<FoodFile> {
     private final String Location = File.separator + "elements" + File.separator;
     private Class<FoodFile> serilizedClass = FoodFile.class;
     private FoodFile serilized;
@@ -33,10 +33,7 @@ public class SourceFoodElement implements ElementSource<FoodFile> {
 
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(serilized);
-    }
+    
 
     @Override
     public Class<FoodFile> getSerilizedClass() {

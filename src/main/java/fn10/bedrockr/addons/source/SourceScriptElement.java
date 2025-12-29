@@ -6,7 +6,7 @@ import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 
-public class SourceScriptElement implements ElementSource<ScriptFile> {
+public class SourceScriptElement extends ElementSource<ScriptFile> {
 
     //private final String Location = File.separator + "elements" + File.separator;
     private ScriptFile serilized;
@@ -23,10 +23,7 @@ public class SourceScriptElement implements ElementSource<ScriptFile> {
         this.serilized = (ScriptFile) getFromJSON(jsonString);
     }
 
-    @Override
-    public String getJSONString() {
-        return gson.toJson(serilized);
-    }
+    
 
     @Override
     public ScriptFile getFromJSON(String jsonString) {
