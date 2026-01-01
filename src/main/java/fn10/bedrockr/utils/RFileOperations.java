@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -23,13 +24,33 @@ import fn10.bedrockr.addons.source.SourceFoodElement;
 import fn10.bedrockr.addons.source.SourceItemElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceResourceElement;
+import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import jakarta.annotation.Nullable;
 
 public class RFileOperations {
+
+    public static record ElementMade(Date timeMade, @Nullable ElementFile<?> elementData, int bedrockRVersion,
+            @Nullable String workspaceName) implements Comparable<ElementMade> {
+
+        @Override
+        public int compareTo(ElementMade o) {
+            return timeMade.compareTo(o.timeMade);
+        }
+    }
+
+    public static record WorkspaceMade(Date timeMade, @Nullable WorkspaceFile workspaceData, int bedrockRVersion,
+            @Nullable Object[] elementDatas) implements Comparable<WorkspaceMade> {
+
+        @Override
+        public int compareTo(WorkspaceMade o) {
+            return timeMade.compareTo(o.timeMade);
+        }
+    }
 
     public static final String VERSION = "a2.0";
     private static final String USER_DIR = System.getProperty("user.home");
@@ -52,8 +73,6 @@ public class RFileOperations {
         ReturnItemInfo.downloadVanillaBlocks();
     }
 
-    
-
     /**
      * taken from https://stackoverflow.com/a/31976060
      */
@@ -74,15 +93,22 @@ public class RFileOperations {
             3,
             4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     };
-    private static final Map<String, Class<? extends ElementSource<?>>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
+    public static final Map<String, Class<? extends ElementSource<?>>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
-        //ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
+        // ELEMENT_EXTENSION_CLASSES.put("scriptref", SourceScriptElement.class);
         ELEMENT_EXTENSION_CLASSES.put("reciperef", SourceRecipeElement.class);
         ELEMENT_EXTENSION_CLASSES.put("foodref", SourceFoodElement.class);
         ELEMENT_EXTENSION_CLASSES.put("biomeref", SourceBiomeElement.class);
     }
+
+    public static final List<Class<? extends ElementSource<?>>> ELEMENTS = List.of(SourceItemElement.class,
+            SourceBlockElement.class,
+            SourceScriptElement.class,
+            SourceRecipeElement.class,
+            SourceFoodElement.class,
+            SourceBiomeElement.class);
 
     public static final String WPFFILENAME = "workspace.WPF";
     public static final String RESOURCE_FILE_NAME = "resources.json";
@@ -165,7 +191,8 @@ public class RFileOperations {
         for (int cha : proposed.chars().toArray()) {
             for (char c : ILLEGAL_CHARACTERS) {
                 if (c == cha) {
-                    java.util.logging.Logger.getGlobal().info("String: " + proposed + " had illegal folder char: " + cha);
+                    java.util.logging.Logger.getGlobal()
+                            .info("String: " + proposed + " had illegal folder char: " + cha);
                     return false;
                 }
             }
@@ -238,6 +265,7 @@ public class RFileOperations {
 
     /**
      * Sets the current workspace.
+     * 
      * @param WPF - the SourceWorkspaceFile of the workspace.
      */
     public static void setCurrentWorkspace(SourceWorkspaceFile WPF) {
@@ -256,7 +284,7 @@ public class RFileOperations {
     /**
      * Gets a directory from {@code .bedrockr}
      * 
-     * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
+     * @param Folders - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
     public static File getBaseDirectory(String... Folders) {
@@ -266,8 +294,8 @@ public class RFileOperations {
     /**
      * Gets a directory from {@code .bedrockr}
      * 
-     * @param strict    - if strict, it doesn't make the directory you specify
-     * @param Folders   - the path of folder to go to. e.g. Folders = "build, rp"
+     * @param strict  - if strict, it doesn't make the directory you specify
+     * @param Folders - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
     public static File getBaseDirectory(Boolean strict, String... Folders) {
@@ -304,9 +332,9 @@ public class RFileOperations {
     /**
      * Get a file from a workspace
      * 
-     * @param WorkspaceName   - the name of the target workspace
-     * @param ToCreate        - the file to get, creating it if it doesnt exist.
-     *                        e.g. {@code icon.jpg}
+     * @param WorkspaceName - the name of the target workspace
+     * @param ToCreate      - the file to get, creating it if it doesnt exist.
+     *                      e.g. {@code icon.jpg}
      * @return the file
      */
     public static File getFileFromWorkspace(String WorkspaceName, String ToCreate) {
@@ -316,7 +344,8 @@ public class RFileOperations {
     public static WorkspaceFile getWorkspaceFile(String WorkspaceName) {
         File file = getFileFromWorkspace(WorkspaceName, WPFFILENAME, true);
         try {
-            return ((WorkspaceFile) new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath()))).getSerilized());
+            return ((WorkspaceFile) new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath())))
+                    .getSerilized());
         } catch (IOException e) {
             return null;
         }
@@ -325,15 +354,16 @@ public class RFileOperations {
     /**
      * Get a file from a workspace
      * 
-     * @param WorkspaceName   - the name of the target workspace
-     * @param ToCreate        - the file to get, creating it if it doesnt exist.
-     *                        e.g. {@code icon.jpg}
-     * @param strict          - if true, it doesnt create the file, and returns null
+     * @param WorkspaceName - the name of the target workspace
+     * @param ToCreate      - the file to get, creating it if it doesnt exist.
+     *                      e.g. {@code icon.jpg}
+     * @param strict        - if true, it doesnt create the file, and returns null
      * @return the file
      */
     public static File getFileFromWorkspace(String WorkspaceName, String ToCreate,
             Boolean strict) {
-        // java.util.logging.Logger.getGlobal().warning("This file should start with the file seperator, or not
+        // java.util.logging.Logger.getGlobal().warning("This file should start with the
+        // file seperator, or not
         // at all! not '/'!");
         try {
             String proposed = BASE_DIRECTORY + File.separator + "workspace" + File.separator + WorkspaceName
@@ -353,7 +383,7 @@ public class RFileOperations {
     /**
      * Get a workspace's folder
      * 
-     * @param WorkspaceName   - the target workspace
+     * @param WorkspaceName - the target workspace
      * @return a File, being the directory of the workspace
      */
     public static File getWorkspace(String WorkspaceName) {
@@ -483,7 +513,7 @@ public class RFileOperations {
      * @throws IOException if the folder already exists
      */
     public static SourceWorkspaceFile createWorkspace( // String workspaceName, String
-                                                                              // minimumVersion)
+                                                       // minimumVersion)
             WorkspaceFile wpf, Byte[] addonIcon) throws IOException {
 
         String[] wsFolders = {
@@ -505,14 +535,12 @@ public class RFileOperations {
 
                 trying = wsFolder;
 
-
                 Files.createDirectories(wsFolder.toPath());
 
                 for (String string : wsFolders) {
                     trying = new File(wsFolder.getAbsolutePath() + File.separator + string);
                     Files.createDirectories(trying.toPath());
                 }
-
 
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
                 srcWPF.saveJSONFile(wpf.WorkspaceName);
@@ -524,7 +552,8 @@ public class RFileOperations {
 
                 trying = srcIcon;
 
-                Files.write(srcIcon.toPath(), ArrayUtils.toPrimitive(addonIcon), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                Files.write(srcIcon.toPath(), ArrayUtils.toPrimitive(addonIcon), StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING);
 
                 return srcWPF;
 
