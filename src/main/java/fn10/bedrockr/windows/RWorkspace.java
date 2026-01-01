@@ -20,8 +20,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +51,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FileUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceResourceElement;
@@ -58,6 +66,9 @@ import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.utils.RFileOperations.ElementMade;
+import fn10.bedrockr.utils.http.Format1Latest;
+import fn10.bedrockr.utils.typeAdapters.XplateAPIDateSerializer;
 import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
@@ -584,8 +595,34 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementCreate(ElementSource<?> element) {
+        SettingsFile settings = SettingsFile.load();
+        if (!element.getLocation(SWPF.workspaceName()).exists() && settings.shareElementAndWorkspaceData) {
+            // this is the first time
+            Gson gson = new GsonBuilder().setPrettyPrinting()
+                    .registerTypeAdapter(Date.class, new XplateAPIDateSerializer()).create();
+            HttpClient client = HttpClient.newBuilder().build();
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
+                    .version(HttpClient.Version.HTTP_2)
+                    .POST(BodyPublishers.ofString(
+                            gson.toJson(
+                                    new ElementMade(Date.from(Instant.now()),
+                                            settings.shareExtraData ? element.getSerilized() : null,
+                                            Launcher.CHECKVERSION, SWPF.workspaceName()))))
+                    .setHeader("Content-Type", "application/json")
+                    .build();
+            Launcher.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
+                    gson.toJson(new ElementMade(Date.from(Instant.now()),
+                            settings.shareExtraData ? element.getSerilized() : null,
+                            Launcher.CHECKVERSION, SWPF.workspaceName())));
+            try {
+                client.send(req, BodyHandlers.ofString());
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            element.saveJSONFile((SWPF.getSerilized().WorkspaceName));
+            element.saveJSONFile((SWPF.workspaceName()));
         } catch (IOException e) {
             e.printStackTrace();
         }
