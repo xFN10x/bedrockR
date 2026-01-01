@@ -12,11 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.source.SourceBiomeElement;
-import fn10.bedrockr.addons.source.SourceBlockElement;
-import fn10.bedrockr.addons.source.SourceFoodElement;
-import fn10.bedrockr.addons.source.SourceItemElement;
-import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -38,16 +33,6 @@ public class RNewElement extends RDialog implements ActionListener {
     private Frame Parent;
     private String workspaceName;
 
-    @SuppressWarnings("unchecked")
-    public static final Class<? extends ElementSource<?>>[] ELEMENTS = new Class[] {
-            SourceItemElement.class,
-            SourceBlockElement.class,
-            SourceScriptElement.class,
-            SourceRecipeElement.class,
-            SourceFoodElement.class,
-            SourceBiomeElement.class,
-    };
-
     public RNewElement(Frame Parent, String WorkspaceName) {
         super(
                 Parent,
@@ -61,7 +46,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
         MainScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        for (Class<? extends ElementSource<?>> class1 : ELEMENTS) {
+        for (Class<? extends ElementSource<?>> class1 : RFileOperations.ELEMENTS) {
             try {
                 MainPane.add(new RElement(class1, () -> {
                     for (Component c : MainPane.getComponents()) {
@@ -78,7 +63,7 @@ public class RNewElement extends RDialog implements ActionListener {
         CreateAsNormalButton.setActionCommand("create");
         CreateAsNormalButton.addActionListener(this);
 
-        SpringUtilities.makeCompactGrid(MainPane, ELEMENTS.length, 1, 5, 5, 5, 5);
+        SpringUtilities.makeCompactGrid(MainPane, RFileOperations.ELEMENTS.size(), 1, 5, 5, 5, 5);
 
         Lay.putConstraint(SpringLayout.EAST, MainScrollPane, -10, SpringLayout.EAST, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, MainScrollPane, 10, SpringLayout.WEST, getContentPane());
