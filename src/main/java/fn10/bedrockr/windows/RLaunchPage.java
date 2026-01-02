@@ -48,6 +48,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     private JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
     private JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
     private JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
+    private JMenuItem websiteButton = new JMenuItem("bedrockR Website", KeyEvent.VK_E);
 
     public RLaunchPage(Dimension Size) {
         super(
@@ -106,13 +107,22 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
+        websiteButton.addActionListener(ac -> {
+            try {
+                desk.browse(URI.create("https://bedrockr.xplate.dev"));
+            } catch (IOException e) {
+
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
         newaddonButton.setActionCommand("New Addon");
         addonsMenu.add(newaddonButton);
 
+        helpMenu.add(websiteButton);
         helpMenu.add(helpButton);
         helpMenu.add(gitButton);
-        helpMenu.add(somButton);
-        helpMenu.add(siegeButton);
+        //helpMenu.add(somButton);
+        //helpMenu.add(siegeButton);
 
         fileMenu.add("Render Blocks").addActionListener(ac -> {
             BlockTextures.downloadAllBlockTextures(this);

@@ -24,8 +24,7 @@ public class RFrame extends JFrame {
 
     public static final JLabel verText = new JLabel(RFileOperations.VERSION);
 
-    public final JButton siegeButton = new JButton(
-            ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/siege.png")), 32, 32));
+    public final JButton websiteButton = new JButton(new ImageIcon(RFrame.class.getResource("/website.png")));
     public final JButton ghButton = new JButton(
             ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/gh.png")), 32, 32));
 
@@ -58,26 +57,26 @@ public class RFrame extends JFrame {
         Lay2.putConstraint(SpringLayout.WEST, titleImg, 5, SpringLayout.WEST, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, titleImg, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, ghButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
-        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, siegeButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
+        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, websiteButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
 
-        Lay2.putConstraint(SpringLayout.EAST, siegeButton, -5, SpringLayout.EAST, BottomBar);
-        Lay2.putConstraint(SpringLayout.EAST, ghButton, -5, SpringLayout.WEST, siegeButton);
+        Lay2.putConstraint(SpringLayout.EAST, websiteButton, -5, SpringLayout.EAST, BottomBar);
+        Lay2.putConstraint(SpringLayout.EAST, ghButton, -5, SpringLayout.WEST, websiteButton);
 
         Lay2.putConstraint(SpringLayout.SOUTH, verText, 0, SpringLayout.SOUTH, titleImg);
         Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, ghButton);
 
-        siegeButton.setMaximumSize(new Dimension(32, 32));
+        websiteButton.setMaximumSize(new Dimension(32, 32));
         ghButton.setMaximumSize(new Dimension(32, 32));
 
-        siegeButton.setBackground(Color.white);
+        websiteButton.setBackground(Color.white);
         ghButton.setBackground(Color.white);
 
-        siegeButton.setToolTipText("bedrockR's Siege Page");
+        websiteButton.setToolTipText("bedrockR's Website");
         ghButton.setToolTipText("bedrockR's Github Repository");
 
-        siegeButton.addActionListener(e -> {
+        websiteButton.addActionListener(e -> {
             try {
-                Desktop.getDesktop().browse(new URI("https://siege.hackclub.com/armory/1948"));
+                Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev"));
             } catch (IOException e1) {
 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -99,7 +98,7 @@ public class RFrame extends JFrame {
             }
         });
 
-        siegeButton.setBorder(new LineBorder(Color.green.darker(), 3));
+        websiteButton.setBorder(new LineBorder(Color.green.darker(), 3));
         ghButton.setBorder(new LineBorder(Color.green.darker(), 3));
 
         verText.setForeground(Color.white);
@@ -107,7 +106,7 @@ public class RFrame extends JFrame {
         if (hasBottomBar)
             add(BottomBar);
 
-        BottomBar.add(siegeButton);
+        BottomBar.add(websiteButton);
         BottomBar.add(ghButton);
         BottomBar.add(verText);
 
