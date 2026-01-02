@@ -4,31 +4,64 @@
 ![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR)
 ![Dependabot](https://img.shields.io/badge/dependabot-025E8C?logo=dependabot&logoColor=white)
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white)
+[![JitPack](https://jitpack.io/v/xFN10x/bedrockR.svg)](https://jitpack.io/#xFN10x/bedrockR)
 
-A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Chromebook.
+A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Mobile.
 
-[bedrockR Youtube Channel](https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA)
+[bedrockR Youtube Channel](https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA) | [bedrockR Website](https://bedrockr.xplate.dev)
+
+(Mobile repository is here: <https://github.com/xFN10x/bedrockR-Mobile>, but most of the info is on this repo.)
 
 ## Why?
 
-Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavliy inspired by MCreator, and how it doesn't have the best Bedrock modding in it.
+Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavily inspired by MCreator, and how it doesn't have the best Bedrock modding in it.
 
 **bedrockR is still in alpha, things can change and feedback is greatly appreciated!**
 
 **(A bedrockR tutorial is [on the wiki](https://github.com/xFN10x/bedrockR/wiki))**
 
-**Tip: Using the Jar**
-Using the Release Jar can be useful if there isn't a build for your platform, or for if you just want to try out bedrockR. If you already have a JDK installed, make sure it is Java 25, most downloads will just lead straight to java 8.
+## Installing
 
-Go [to Microsoft's builds of java](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-25) for a JDK I reccomend.
+Since bedrockR is made in Java, it is available for any computer that can run Java 25. If you want an easy installation, you can download one of the installers, or portable version in the [releases section](https://github.com/xFN10x/bedrockR/releases).
+
+Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.xplate.dev/download) to download the latest version
+
+### Mobile (WIP)
+
+Since a2.0, bedrockR is now available for Android, and it can be downloaded on [the bedrockR Website](https://bedrockr.xplate.dev/download), or on the [bedrockR Mobile Repository's release page.](https://github.com/xFN10x/bedrockR-Mobile/releases)
+
+bedrockR Mobile is a separate repository from bedrockR, and its source code is available on the [bedrockR Mobile Repo](https://github.com/xFN10x/bedrockR-Mobile)
+
+bedrockR Mobile is planned to be released on the Google Play Store at some point.
+
+### Using the JAR (Other Platforms)
+
+If none of these builds are for your platform, you can use the universal JAR file, which you can download along side the other version.
 
 ## Source Code
 
-bedrockR is made with Java 21, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-21).
+bedrockR is made with Java 25, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-25) (it's what I use for testing).
 
-### Debugging/Contributing
+bedrockR was made in VSCode with the built in Java extension, and it uses Gradle (with kotlin DSL) for dependency management.
 
-bedrockR is made with Java 21, and uses Gradle, with its Koltin DSL.
+> [!IMPORTANT]
+> bedrockR Mobile is a seperate program, read its source code instructions on [its repository](https://github.com/xFN10x/bedrockR-Mobile)
+
+### Maven
+
+_(since a2.0)_
+You can use bedrockR's addon creation code in your own projects! This code can be used for:
+
+- Porting bedrockR to other platforms
+- Creating a CLI interface
+- and more!
+
+[![Jitpack](https://jitpack.io/v/xFN10x/bedrockR.svg)](https://jitpack.io/#xFN10x/bedrockR)
+
+Click the badge above to go to the Jitpack page where it will tell you on how to use bedrockR on your project.
+
+> [!WARNING]
+> bedrockR versions released before a2.0 will > not work on Jitpack, and are highly discouraged to be used as libraries
 
 ### Building
 
@@ -49,10 +82,18 @@ Building a JAR can be done with one command.
 
 #### Distribution copies
 
-The following commands can be used to make certain builds of bedrockR. (You can only run an OS' build command on the target os. e.g., you can only run `jpackageWIN` on Windows.)
+The following commands can be used to make certain builds of bedrockR.
 
 `./gradlew jpackage` - Make an installer based on your OS.
 
 `./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR for your platform.
 
 Now check `build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
+
+#### Libraries
+
+Since, a2.0, bedrockR is now made to be used in other programs as well. With the following command, you can make a JAR that doesn't include and UI related stuff. This means that you can port bedrockR to any device that can run Java 25.
+
+Use `./gradlew mavenJar` to make this jar. It will be found in `build/mavenLibs`.
+
+**This isn't the recommended way to use this jar. You should use the Maven library from Jitpack instead.**
