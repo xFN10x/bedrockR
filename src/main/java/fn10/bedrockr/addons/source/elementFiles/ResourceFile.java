@@ -88,7 +88,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
                 return false;
             String finalName = (((String) name).contains(".png") ? name.toString() : name + ".png");
 
-            File dest = Path.of(RFileOperations.getBaseDirectory("workspace").getPath(), workspaceName,
+            File dest = java.nio.file.Paths.get(RFileOperations.getBaseDirectory("workspace").getPath(), workspaceName,
                     "resources", finalName).toFile();
 
             FileUtils.copyFile(filePNG, dest);

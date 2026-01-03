@@ -94,7 +94,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
             for (Entry<UUID, String> set : Scripts.entrySet()) {
                 try {
                     java.util.logging.Logger.getGlobal().info("Deleting script that already exists: " + set.getValue());
-                    Files.deleteIfExists(Path.of(rootPath, set.getValue()));
+                    Files.deleteIfExists(java.nio.file.Paths.get(rootPath, set.getValue()));
                 } catch (IOException e) {
                     java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
@@ -119,10 +119,10 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
             Scripts = new HashMap<UUID, String>();
         }
         if (Scripts.containsValue(name)) // return if its already here
-            return Path.of(rootPath, "scripts", name);
+            return java.nio.file.Paths.get(rootPath, "scripts", name);
 
         Scripts.put(UUID.randomUUID(), "scripts/" + name);
-        return Path.of(rootPath, "scripts", name);
+        return java.nio.file.Paths.get(rootPath, "scripts", name);
     }
 
     @Override

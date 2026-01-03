@@ -164,7 +164,7 @@ public class RenderHandler extends SimpleApplication {
         screenShotState.setFileName(name);
         screenShotState.takeScreenshot();
 
-        return Path.of(sspath, name + ".png");
+        return java.nio.file.Paths.get(sspath, name + ".png");
     }
 
     public void showPreviewWindow(Window parent, Texture tex) {
