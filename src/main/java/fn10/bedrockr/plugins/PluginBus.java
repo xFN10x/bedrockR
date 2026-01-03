@@ -7,7 +7,7 @@ import fn10.bedrockr.utils.RFileOperations;
 
 /**
  * An object of this class is passed to every plugin loaded. With this, you can
- * register custom ElementSources & ElementFiles.
+ * register custom ElementSources and ElementFiles.
  */
 public class PluginBus {
 
