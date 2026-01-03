@@ -41,7 +41,7 @@ public class SourceRecipeElement extends ElementSource<RecipeFile> {
 
                 // ------------------------------------------------| new line there
                 "<html>A Crafting table recipe that you <br>edit with a visual guide.</html>",
-                ElementSource.class.getResource("/addons/element/Recipe.png").openStream().readAllBytes());
+                RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Recipe.png").openStream()));
     }
 
     @Override

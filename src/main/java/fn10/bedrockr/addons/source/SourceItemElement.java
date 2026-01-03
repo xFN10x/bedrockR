@@ -27,7 +27,7 @@ public class SourceItemElement extends ElementSource<ItemFile> {
     public static ElementDetails getDetails() throws IOException {
                 return new ElementDetails("Item ",
                 "<html>A basic item. Can be made as a block<br>placer, and have custom visuals</html>",
-                ElementSource.class.getResource("/addons/element/Item.png").openStream().readAllBytes());
+                RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Item.png").openStream()));
     }
 
     

@@ -31,8 +31,8 @@ public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
     public static ElementDetails getDetails() {
         try {
             return new ElementDetails("Workspace File", "dont use this cause it will break",
-                    ElementSource.class.getResource("/addons"
-                            + "/element" + "/Element.png").openStream().readAllBytes());
+                    RFileOperations.readAllBytes(ElementSource.class.getResource("/addons"
+                            + "/element" + "/Element.png").openStream()));
         } catch (IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
