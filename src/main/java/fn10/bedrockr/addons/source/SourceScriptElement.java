@@ -5,6 +5,7 @@ import java.io.IOException;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceScriptElement extends ElementSource<ScriptFile> {
 
@@ -32,7 +33,7 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
         try {
             return new ElementDetails("Script",
                     "<html>A JavaScript Script, you can edit<br>with block coding.</html>",
-                    ElementSource.class.getResource("/addons/element/Script.png").openStream().readAllBytes());
+                    RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Script.png").openStream()));
         } catch (IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;

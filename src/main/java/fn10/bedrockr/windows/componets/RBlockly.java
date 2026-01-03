@@ -60,14 +60,14 @@ public class RBlockly extends JFXPanel {
         if (!Platform.isFxApplicationThread())
             Platform.runLater(() -> {
                 try {
-                    execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
+                    execute(new String(RFileOperations.readAllBytes(scriptURL.openConnection().getInputStream())));
                 } catch (Exception e) {
                     java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             });
         else
             try {
-                execute(new String(scriptURL.openConnection().getInputStream().readAllBytes()));
+                execute(new String(RFileOperations.readAllBytes(scriptURL.openConnection().getInputStream())));
             } catch (Exception e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }

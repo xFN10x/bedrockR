@@ -28,7 +28,7 @@ public class SourceBlockElement extends ElementSource<BlockFile> {
     public static ElementDetails getDetails() throws IOException {
         return new ElementDetails("Block",
                 "<html>A block. Can have a custom texture<br>and custom sounds.</html>",
-                ElementSource.class.getResource("/addons/element/Element.png").openStream().readAllBytes());
+                RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Element.png").openStream()));
     }
 
     

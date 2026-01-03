@@ -27,7 +27,7 @@ public class SourceFoodElement extends ElementSource<FoodFile> {
     public static ElementDetails getDetails() throws IOException {
         return new ElementDetails("Food",
                 "<html>A food, can give custom effects<br /> and run certain commands</html>",
-                ElementSource.class.getResource("/addons/element/Food.png").openStream().readAllBytes());
+                RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Food.png").openStream()));
 
     }
     

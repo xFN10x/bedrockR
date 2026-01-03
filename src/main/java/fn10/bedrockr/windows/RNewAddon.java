@@ -65,7 +65,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
         try {
             ChosenIcon = ArrayUtils
-                    .toObject(getClass().getResource("/addons/DefaultIcon.png").openStream().readAllBytes());
+                    .toObject(RFileOperations.readAllBytes(getClass().getResource("/addons/DefaultIcon.png").openStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -90,7 +90,7 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
     public static ElementDetails getDetails() throws IOException {
         return new ElementDetails("Biome",
                 "<html>A biome that replaced a vanilla one<br />partially, or completly.</html>",
-                ElementSource.class.getResource("/addons/element/Biome.png").openStream().readAllBytes());
+                RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Biome.png").openStream()));
     }
 
     

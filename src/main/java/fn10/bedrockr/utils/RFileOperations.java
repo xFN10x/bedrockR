@@ -32,6 +32,9 @@ import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import jakarta.annotation.Nullable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 public class RFileOperations {
 
     public static record ElementMade(Date timeMade, @Nullable ElementFile<?> elementData, int bedrockRVersion,
@@ -169,12 +172,30 @@ public class RFileOperations {
      */
     public static String readResourceAsString(String resource) {
         try {
-            return new String(RFileOperations.class.getResourceAsStream(resource).readAllBytes(),
+            return new String(readAllBytes(RFileOperations.class.getResourceAsStream(resource)),
                     StandardCharsets.UTF_8);
         } catch (Exception e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
         }
+    }
+
+    /**
+     * (This function was made by ai.)
+     * Reads all bytes from an InputStream using read() method.
+     * 
+     * @param is the InputStream to read from
+     * @return the byte array containing all bytes
+     * @throws IOException if an I/O error occurs
+     */
+    public static byte[] readAllBytes(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int len;
+        while ((len = is.read(buffer)) != -1) {
+            baos.write(buffer, 0, len);
+        }
+        return baos.toByteArray();
     }
 
     /**
@@ -566,7 +587,7 @@ public class RFileOperations {
     }
 
     /**
-     * Gets the ElementFile's equivilant file on disk.
+     * Gets the ElementFile's equivalent file on disk.
      * 
      * @param workspace   - the workspace the file is in
      * @param elementFile - the ElementFile to search for on disk
