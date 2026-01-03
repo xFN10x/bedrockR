@@ -109,7 +109,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         // #endregion
 
         // #region Item Textures
-        Path ItemTextureFolder = Path.of(rootResPackPath, "textures", "items");
+        Path ItemTextureFolder = java.nio.file.Paths.get(rootResPackPath, "textures", "items");
         Files.createDirectories(ItemTextureFolder);
 
         ItemTexturesFile.resource_pack_name = workspaceFile.WorkspaceName;
@@ -131,7 +131,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
                     new TextureData(file.getName()));
         }*/
 
-        Path dest = Path.of(rootResPackPath, "textures", "item_texture.json");
+        Path dest = java.nio.file.Paths.get(rootResPackPath, "textures", "item_texture.json");
         String json = gson.toJson(ItemTexturesFile);
 
         Files.write(dest, json.getBytes());
@@ -141,7 +141,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         // #region Block RP
 
         // move textures
-        Path BlockTextureFolder = Path.of(rootResPackPath, "textures", "blocks");
+        Path BlockTextureFolder = java.nio.file.Paths.get(rootResPackPath, "textures", "blocks");
         Files.createDirectories(BlockTextureFolder);
 
         /*for (File file : BlockTextures) {
@@ -165,7 +165,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         ActualBlocksJSON.put("format_version", "1.21.40");
         ActualBlocksJSON.putAll(BlockRPEntrys);
 
-        Path blocksJsonPath = Path.of(rootResPackPath, "blocks.json");
+        Path blocksJsonPath = java.nio.file.Paths.get(rootResPackPath, "blocks.json");
         blocksJsonPath.toFile().createNewFile();
         Files.write(blocksJsonPath, gson.toJson(ActualBlocksJSON).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
@@ -173,7 +173,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         BlockTexturesFile.resource_pack_name = WPF.WorkspaceName;
         BlockTexturesFile.texture_name = "atlas.terrain";
 
-        Path terrainTexturePath = Path.of(rootResPackPath, "textures", "terrain_texture.json");
+        Path terrainTexturePath = java.nio.file.Paths.get(rootResPackPath, "textures", "terrain_texture.json");
         terrainTexturePath.toFile().createNewFile();
         Files.write(terrainTexturePath, gson.toJson(BlockTexturesFile).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 

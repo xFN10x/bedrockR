@@ -112,7 +112,7 @@ public class RecipeFile implements ElementFile<SourceRecipeElement> {
 
         // build file
         String json = gson.toJson(recipe);
-        Path path = Path.of(rootPath, "recipes", RecipeID + ".json");
+        Path path = java.nio.file.Paths.get(rootPath, "recipes", RecipeID + ".json");
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);

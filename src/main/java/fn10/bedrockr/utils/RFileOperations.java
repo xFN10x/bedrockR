@@ -299,7 +299,7 @@ public class RFileOperations {
      * @return the file, being the directory that you specified,
      */
     public static File getBaseDirectory(Boolean strict, String... Folders) {
-        File file = Path.of(BASE_PATH, Folders).toFile();
+        File file = java.nio.file.Paths.get(BASE_PATH, Folders).toFile();
         try {
             if (!file.exists() && !strict) {
                 return Files.createDirectories(file.toPath()).toFile();
@@ -401,7 +401,7 @@ public class RFileOperations {
                     + File.separator;
             String rpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "RP"
                     + File.separator;
-            if (!Path.of(settings.comMojangPath).toFile().exists()) {
+            if (!java.nio.file.Paths.get(settings.comMojangPath).toFile().exists()) {
                 return;
             }
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
@@ -545,7 +545,7 @@ public class RFileOperations {
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
                 srcWPF.saveJSONFile(wpf.WorkspaceName);
 
-                File srcIcon = Path.of(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension).toFile();
+                File srcIcon = java.nio.file.Paths.get(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension).toFile();
                 if (!srcIcon.exists())
                     if (!srcIcon.createNewFile())
                         throw new IOException("Failed to create source addon icon file");
@@ -573,7 +573,7 @@ public class RFileOperations {
      * @return
      */
     public static Path getFileFromElementFile(String workspace, ElementFile<?> elementFile) {
-        Path proposed = Path.of(RFileOperations
+        Path proposed = java.nio.file.Paths.get(RFileOperations
                 .getFileFromWorkspace(workspace,
                         File.separator + "elements" + File.separator)
                 .getAbsolutePath(),

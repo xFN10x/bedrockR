@@ -38,6 +38,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -263,7 +264,7 @@ public class Launcher {
         loading.ProgressText.setText("Checking if opening workspace...");
         if (args.length >= 1) {
             File file;
-            if ((file = Path.of(args[0]).toFile()).exists()) {
+            if ((file = Paths.get(args[0]).toFile()).exists()) {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
                         RWorkspace.openWorkspace(loading,

@@ -156,7 +156,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     DisplayName, e);
             return;
         }
-
+ 
         // dont do this if its set manually
         if (Input == null)
             // do corrisponding actions depending on the type
