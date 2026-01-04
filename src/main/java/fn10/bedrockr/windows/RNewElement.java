@@ -108,8 +108,12 @@ public class RNewElement extends RDialog implements ActionListener {
             try {
                 ElementSource<?> instance = Creating.getDeclaredConstructor().newInstance();
 
-                RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(instance, this.Parent, ((ElementCreationListener)this.Parent), workspaceName);
-
+                RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(instance, this.Parent,
+                        ((ElementCreationListener) this.Parent), workspaceName);
+                if (screen == null) {
+                    dispose();
+                    return;
+                }
                 screen.setVisible(true);
                 dispose();
 

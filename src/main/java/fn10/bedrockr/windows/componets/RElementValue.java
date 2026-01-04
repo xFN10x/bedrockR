@@ -913,9 +913,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
             EnableDis.setEnabled(false);
         try {
             if (SourceFileClass != null) {
-                var tg = SourceFileClass.getField(TargetField);
+                Field tg = SourceFileClass.getField(TargetField);
                 if (tg.getAnnotation(RAnnotation.CantEditAfter.class) != null) {
-                    if (tg.get(TargetFile) != null) {
+                    if (TargetFile != null && tg.get(TargetFile) != null) {
                         Input.setEnabled(false);
                     }
                 }
