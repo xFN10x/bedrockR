@@ -10,6 +10,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
+import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
@@ -184,7 +186,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     }
 
     public static RElementEditingScreen getElementsCreationScreen(ElementSource<?> src, Window Parent,
-            ElementCreationListener parent2, String Workspace) throws IOException {
+            ElementCreationListener parent2, String Workspace) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (src.getClass().equals(SourceBiomeElement.class)) {
             RElementEditingScreen screen = new RElementEditingScreen(Parent, SourceBiomeElement.getDetails().Name, src,
                     src.getSerilizedClass(),
@@ -672,7 +674,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             return frame;
         } else {
             // do the automatic creation
-            var frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(), parent2,
+            var frame = new RElementEditingScreen(Parent, ((ElementDetails) src.getClass().getMethod("getDetails").invoke(null)).Name, src, src.getSerilizedClass(), parent2,
                     RElementEditingScreen.SPECIAL_AREA_STYLE);
 
             for (Field field : src.getSerilizedClass().getFields()) { // try to get fields

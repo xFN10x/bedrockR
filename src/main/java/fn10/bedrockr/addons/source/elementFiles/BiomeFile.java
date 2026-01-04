@@ -10,29 +10,37 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome.minecraftBiome;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome.minecraftBiome.description;
+import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
+import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
+import fn10.bedrockr.utils.RAnnotation.Order;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 public class BiomeFile implements ElementFile<SourceBiomeElement> {
 
     @CantEditAfter
+    @Order(0)
     @VeryImportant
     @HelpMessage("The name of the element in bedrockR")
+    @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public String ElementName;
 
     public boolean Draft = false;
 
     @StringDropdownField({"_VANILLABIOMES"})
     @HelpMessage("The ID of the biome. Used in /locate, and debugging. Make this ID a vanilla one, like \"plains\", to make it override that biome.")
+    @FieldDetails(Optional = false, displayName = "Biome ID", Filter = FieldFilters.IDStringFilter.class)
+    @Order(1)
     public String BiomeID;
 
     @MapFieldSelectables(BiomeComponents.class)
+    @Order(2)
     public HashMap<String, Object> Comps = new HashMap<String, Object>();
 
     @Override

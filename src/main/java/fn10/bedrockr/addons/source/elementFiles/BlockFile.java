@@ -26,6 +26,7 @@ import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
+import fn10.bedrockr.utils.RAnnotation.Order;
 import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
 import fn10.bedrockr.utils.RAnnotation.SpecialField;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
@@ -38,27 +39,33 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @Order(0)
     public String ElementName;
 
     @HelpMessage("The name of the block. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Block Name", Filter = FieldFilters.RegularStringFilter.class)
+    @Order(1)
     public String Name;
 
     @HelpMessage("The Unique ID for this block. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'\nThis is the name of the block in commands, and it will look like this in commands: (addon prefix):(idenifier)")
     @FieldDetails(Optional = false, displayName = "Block Idenifier", Filter = FieldFilters.IDStringFilter.class)
+    @Order(2)
     public String ID;
 
     @HelpMessage("Specfies if this block hidden in commands.")
     @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
+    @Order(3)
     public boolean Hidden;
 
     @HelpMessage("The Creative Tab is this block on.")
     @FieldDetails(Optional = false, displayName = "Category", Filter = FieldFilters.CommonFilter1.class)
     @StringDropdownField({ "construction", "equipment", "items", "nature" })
+    @Order(4)
     public String Category;
 
     @HelpMessage("The group that this block is put into. These groups are not in all categorys, so make sure you select a group in the category.")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
+    @Order(5)
     // avalible groups 1.21.70
     @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
@@ -90,11 +97,13 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @MapFieldSelectables(BlockComponents.class)
     @HelpMessage("Defining parts of a block. This is were you would specify ")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @Order(6)
     public HashMap<String, Object> Components;
 
     @HelpMessage("<html>The texture for the block.<br><br><b>As of a1.1, you can only make blocks with 1 texture.</b></html>")
     @ResourcePackResourceType(ResourceFile.BLOCK_TEXTURE)
     @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Block Texture")
+    @Order(7)
     public UUID TextureUUID;
 
     @HelpMessage("The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
@@ -116,6 +125,7 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
             "slime", "small_amethyst_bud", "snow", "soul_sand", "soul_soil", "sponge", "spore_blossom", "stem", "stone",
             "suspicious_gravel", "suspicious_sand", "sweet_berry_bush", "trial_spawner", "tuff", "tuff_bricks",
             "turtle_egg", "vault", "vines", "web", "weeping_vines", "wet_sponge", "wood" })
+    @Order(8)
     public String Sound;
 
     @UneditableByCreation

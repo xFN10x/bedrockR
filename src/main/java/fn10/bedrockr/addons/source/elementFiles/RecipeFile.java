@@ -25,11 +25,11 @@ import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 /**
- * use as referance
+ * use as reference
  * https://wiki.bedrock.dev/loot/recipes
  */
 public class RecipeFile implements ElementFile<SourceRecipeElement> {
-
+    // dont add order anno cause this doesnt use auto
     @CantEditAfter
     @VeryImportant
     @HelpMessage("The name of the element. This only shows up in the workspace view.")

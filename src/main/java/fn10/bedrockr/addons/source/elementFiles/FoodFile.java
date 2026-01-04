@@ -28,27 +28,33 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @Order(1)
     public String ElementName;
 
     @HelpMessage("The name of the item. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Item Name", Filter = FieldFilters.RegularStringFilter.class)
+    @Order(2)
     public String Name;
 
     @HelpMessage("The Unique ID for this item. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'")
     @FieldDetails(Optional = false, displayName = "Item Idenifier", Filter = FieldFilters.IDStringFilter.class)
+    @Order(3)
     public String ID;
 
     @HelpMessage("Specfiys if this item hidden in commands.")
     @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
+    @Order(4)
     public boolean Hidden;
 
     @HelpMessage("The Creative Tab is this item on.")
     @FieldDetails(Optional = true, displayName = "Item Category", Filter = FieldFilters.CommonFilter1.class)
     @StringDropdownField({ "construction", "equipment", "items", "nature" })
+    @Order(5)
     public String Category;
 
     @HelpMessage("The group that this item is put into.")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
+    @Order(6)
     // avalible groups 1.21.70
     @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
@@ -79,6 +85,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @HelpMessage("The texture for the item.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
     @FieldDetails(Optional = false, displayName = "Item Texture")
+    @Order(7)
     public UUID TextureUUID;
 
     public transient CreationScreenSeperator sep;
@@ -95,41 +102,51 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
             "brush",
             "spear",
             "spyglass" }, strict = true)
+    @Order(8)
     public String EatAnimation;
 
     @HelpMessage("Specifies how long it takes to eat this. Default: 1.6")
     @FieldDetails(Optional = false, displayName = "Eating Length")
+    @Order(9)
     public Float EatTime = 1.6f;
 
     @HelpMessage("Specifies how fast you move when eating this, in a percentage. A value of 1 lets you eat it at walk speed. 0 stops you from moving while eating this. Default: 0.33")
     @FieldDetails(Optional = false, displayName = "Eating Movement Speed")
     @NumberRange(max = 1f, min = 0f)
+    @Order(10)
     public Float EatMovementSpeed = 0.33f;
 
     @HelpMessage("Specifes if this food is meat. Probably used for letting dogs eat it (?)")
     @FieldDetails(Optional = false, displayName = "Is Meat")
+    @Order(11)
     public boolean IsMeat = false;
 
     @HelpMessage("Specifes if this food is cooked. While I couldn't find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
     @FieldDetails(Optional = false, displayName = "Is Cooked")
+    @Order(12)
     public boolean IsCooked = false;
 
+    @Order(13)
     public transient CreationScreenSeperator sep2;
 
     @UneditableByCreation // this is added manually
+    @Order(14)
     public String EatingTurnsInto = null;
 
     @HelpMessage("Specifes if this food can be eaten in creative, or if at max hunger")
     @FieldDetails(Optional = false, displayName = "Can Always Be Eaten")
+    @Order(15)
     public boolean CanAlwaysBeEaten = false;
 
     @HelpMessage("Saturation is the first statistic to decrease when a player performs energy-intensive actions, and it must be completely depleted before the visible hunger meter begins decreasing. Although the current saturation level is generally hidden, the player can tell that their saturation level is completely depleted if the visible hunger meter begins displaying a jittering effect. \n\n Taken from https://minecraft.wiki/w/Food#Saturation \n\n Golden carrots have a saturation of 1.2, the highest in the game")
     @FieldDetails(Optional = false, displayName = "Saturation")
     @NumberRange(max = Float.MAX_VALUE, min = 0)
+    @Order(16)
     public float Saturation = 0.6f;
 
     @HelpMessage("How much hunger the player gets after eating this food. Golden carrots replenish 6, 3 whole hunger icons.")
     @FieldDetails(Optional = false, displayName = "Nutrition")
+    @Order(17)
     public int Nutrition = 3;
 
     @UneditableByCreation
