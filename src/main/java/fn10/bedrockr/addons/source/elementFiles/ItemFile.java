@@ -25,27 +25,33 @@ public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @Order(0)
     public String ElementName;
 
     @HelpMessage("The name of the item. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Item Name", Filter = FieldFilters.RegularStringFilter.class)
+    @Order(1)
     public String Name;
 
     @HelpMessage("The Unique ID for this item. It must be all lowercase, with no spaces. e.g. 'diamond_block', 'wooden_sword', 'grass'")
-    @FieldDetails(Optional = false, displayName = "Item Idenifier", Filter = FieldFilters.IDStringFilter.class)
+    @FieldDetails(Optional = false, displayName = "Item Identifier", Filter = FieldFilters.IDStringFilter.class)
+    @Order(2)
     public String ID;
 
-    @HelpMessage("Specfiys if this item hidden in commands.")
+    @HelpMessage("Specifies if this item hidden in commands.")
     @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
+    @Order(3)
     public boolean Hidden;
 
     @HelpMessage("The Creative Tab is this item on.")
     @FieldDetails(Optional = true, displayName = "Item Category", Filter = FieldFilters.CommonFilter1.class)
     @StringDropdownField({ "construction", "equipment", "items", "nature" })
+    @Order(4)
     public String Category;
 
     @HelpMessage("The group that this item is put into. These groups ")
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
+    @Order(5)
     // avalible groups 1.21.70
     @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
@@ -77,11 +83,13 @@ public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement
     @MapFieldSelectables(ItemComponents.class)
     @HelpMessage("Main parts of an item. Components are basicly the options for an item. Like duribility, if its a weapon, etc.")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @Order(6)
     public HashMap<String, Object> Components;
 
     @HelpMessage("The texture for the item.")
     @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
     @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
+    @Order(7)
     public UUID TextureUUID;
 
     @UneditableByCreation

@@ -32,6 +32,17 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    /**
+     * Used to define the order in which fields are automatically added to a creation screen.
+     * 
+     * @since a2.0
+     */
+    public @interface Order {
+        int value() default 0;
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface ResourcePackResourceType {
         int value() default ResourceFile.ITEM_TEXTURE;
     }
