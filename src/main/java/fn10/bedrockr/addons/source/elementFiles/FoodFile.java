@@ -88,6 +88,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @Order(7)
     public UUID TextureUUID;
 
+    @Order(8)
     public transient CreationScreenSeperator sep;
 
     @HelpMessage("Determines the animation that is used when eating this item. Soups use eat, potions use drink. They are the same animation, but the sounds are different.")
@@ -102,51 +103,51 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
             "brush",
             "spear",
             "spyglass" }, strict = true)
-    @Order(8)
+    @Order(9)
     public String EatAnimation;
 
     @HelpMessage("Specifies how long it takes to eat this. Default: 1.6")
     @FieldDetails(Optional = false, displayName = "Eating Length")
-    @Order(9)
+    @Order(10)
     public Float EatTime = 1.6f;
 
     @HelpMessage("Specifies how fast you move when eating this, in a percentage. A value of 1 lets you eat it at walk speed. 0 stops you from moving while eating this. Default: 0.33")
     @FieldDetails(Optional = false, displayName = "Eating Movement Speed")
     @NumberRange(max = 1f, min = 0f)
-    @Order(10)
+    @Order(11)
     public Float EatMovementSpeed = 0.33f;
 
     @HelpMessage("Specifes if this food is meat. Probably used for letting dogs eat it (?)")
     @FieldDetails(Optional = false, displayName = "Is Meat")
-    @Order(11)
+    @Order(12)
     public boolean IsMeat = false;
 
     @HelpMessage("Specifes if this food is cooked. While I couldn't find exactly what this did, you should probably use it anyways, for if this is a cooked version of a meat or something.")
     @FieldDetails(Optional = false, displayName = "Is Cooked")
-    @Order(12)
+    @Order(13)
     public boolean IsCooked = false;
 
-    @Order(13)
+    @Order(14)
     public transient CreationScreenSeperator sep2;
 
     @UneditableByCreation // this is added manually
-    @Order(14)
+    @Order(15)
     public String EatingTurnsInto = null;
 
     @HelpMessage("Specifes if this food can be eaten in creative, or if at max hunger")
     @FieldDetails(Optional = false, displayName = "Can Always Be Eaten")
-    @Order(15)
+    @Order(16)
     public boolean CanAlwaysBeEaten = false;
 
     @HelpMessage("Saturation is the first statistic to decrease when a player performs energy-intensive actions, and it must be completely depleted before the visible hunger meter begins decreasing. Although the current saturation level is generally hidden, the player can tell that their saturation level is completely depleted if the visible hunger meter begins displaying a jittering effect. \n\n Taken from https://minecraft.wiki/w/Food#Saturation \n\n Golden carrots have a saturation of 1.2, the highest in the game")
     @FieldDetails(Optional = false, displayName = "Saturation")
     @NumberRange(max = Float.MAX_VALUE, min = 0)
-    @Order(16)
+    @Order(17)
     public float Saturation = 0.6f;
 
     @HelpMessage("How much hunger the player gets after eating this food. Golden carrots replenish 6, 3 whole hunger icons.")
     @FieldDetails(Optional = false, displayName = "Nutrition")
-    @Order(17)
+    @Order(18)
     public int Nutrition = 3;
 
     @UneditableByCreation
