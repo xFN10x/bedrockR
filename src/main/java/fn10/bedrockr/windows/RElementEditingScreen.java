@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -186,7 +187,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     }
 
     public static RElementEditingScreen getElementsCreationScreen(ElementSource<?> src, Window Parent,
-            ElementCreationListener parent2, String Workspace) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+            ElementCreationListener parent2, String Workspace)
+            throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (src.getClass().equals(SourceBiomeElement.class)) {
             RElementEditingScreen screen = new RElementEditingScreen(Parent, SourceBiomeElement.getDetails().Name, src,
                     src.getSerilizedClass(),
@@ -221,113 +223,134 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         } else if (src.getClass().equals(SourceScriptElement.class)) {
             JOptionPane.showMessageDialog(Parent, "Sadly, scripts are unavailable since a2.0.");
             return null;
-            /*ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so copying is easier
-
-            RElementValue elementName = new RElementValue(Parent, String.class,
-                    new FieldFilters.FileNameLikeStringFilter(),
-                    "ElementName", "Element Name", false, src.getSerilizedClass(), serilized, Workspace);
-            elementName.setMaximumSize(new Dimension(300, 40));
-            RElementValue scriptName = new RElementValue(Parent, String.class, new FieldFilters.IDStringFilter(),
-                    "ScriptName", "Script Name", false, src.getSerilizedClass(), serilized, Workspace);
-            scriptName.setMaximumSize(new Dimension(300, 40));
-
-            JTextArea preview = new JTextArea();
-            preview.setEditable(false);
-
-            JLabel loading = new JLabel("Loading...");
-
-            JPanel rightStuff = new JPanel();
-            JPanel toprightStuff = new JPanel();
-
-            toprightStuff.setLayout(new BoxLayout(toprightStuff, BoxLayout.X_AXIS));
-            rightStuff.setLayout(new BoxLayout(rightStuff, BoxLayout.Y_AXIS));
-
-            rightStuff.add(preview);
-            rightStuff.add(toprightStuff);
-
-            toprightStuff.add(elementName);
-            toprightStuff.add(Box.createHorizontalStrut(5));
-            toprightStuff.add(scriptName);
-
-            RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
-                    parent2,
-                    RElementEditingScreen.DEFAULT_STYLE);
-
-            frame.CreateButton.setEnabled(false);
-            JButton DebugButton = (JButton) frame.add(new JButton("Debug"));
-            frame.Lay.putConstraint(SpringLayout.WEST, DebugButton, 10, SpringLayout.EAST, frame.CancelButton);
-            frame.Lay.putConstraint(SpringLayout.SOUTH, DebugButton, 0, SpringLayout.SOUTH, frame.CancelButton);
-            frame.DraftButton.setEnabled(false);
-
-            RBlockly rblockly = new RBlockly(preview, serilized != null ? serilized.Content : null, () -> {
-                frame.CreateButton.setEnabled(true);
-                frame.DraftButton.setEnabled(true);
-            });
-
-            DebugButton.addActionListener(ac -> {
-                rblockly.execute("fixRendering(150)");
-            });
-
-            frame.setCustomCreateFunction(new CustomCreateFunction() {
-
-                @Override
-                public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
-                        boolean isDraft) {
-                    try {
-                        Platform.runLater(() -> {
-                            ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so copying is
-                                                                                    // easier
-                            if (serilized == null)
-                                serilized = new ScriptFile();
-
-                            serilized.ElementName = elementName.getValue().toString();
-                            serilized.ScriptName = scriptName.getValue().toString();
-                            serilized.Content = rblockly.getJson();
-                            serilized.setDraft(isDraft);
-
-                            Listener.onElementCreate(src); // create
-                            Sindow.dispose();
-                        });
-                    } catch (Exception ex) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
-                                ex);
-                        ErrorShower.showError(Sindow, "Failed to create ElementSource",
-                                "Source Creation Error", ex);
-                    }
-                }
-
-            }).addVaildations(elementName, scriptName);
-            SpringLayout lay = new SpringLayout();
-
-            lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH, frame.InnerPane);
-            lay.putConstraint(SpringLayout.SOUTH, rightStuff, 0, SpringLayout.SOUTH, frame.InnerPane);
-            lay.putConstraint(SpringLayout.EAST, rightStuff, 0, SpringLayout.EAST, frame.InnerPane);
-            lay.putConstraint(SpringLayout.WEST, rightStuff, 855, SpringLayout.WEST, frame.InnerPane);
-
-            lay.putConstraint(SpringLayout.NORTH, rblockly, 0, SpringLayout.NORTH, frame.InnerPane);
-            lay.putConstraint(SpringLayout.SOUTH, rblockly, 0, SpringLayout.SOUTH, frame.InnerPane);
-            lay.putConstraint(SpringLayout.WEST, rblockly, 0, SpringLayout.WEST, frame.InnerPane);
-
-            frame.InnerPane.setLayout(lay);
-
-            frame.InnerPane.add(rblockly);
-            frame.InnerPane.add(rightStuff);
-            frame.InnerPane.add(loading);
-
-            frame.setSize(new Dimension(1500, 800));
-            frame.setLocation(ImageUtilites.getScreenCenter(frame));
-
-            frame.addWindowListener(new WindowAdapter() {
-                @SuppressWarnings("unused")
-                public void windowClosed(WindowEvent e) {
-                    rblockly.dispose();
-                }
-            });
-
-            return frame;*/
+            /*
+             * ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so
+             * copying is easier
+             * 
+             * RElementValue elementName = new RElementValue(Parent, String.class,
+             * new FieldFilters.FileNameLikeStringFilter(),
+             * "ElementName", "Element Name", false, src.getSerilizedClass(), serilized,
+             * Workspace);
+             * elementName.setMaximumSize(new Dimension(300, 40));
+             * RElementValue scriptName = new RElementValue(Parent, String.class, new
+             * FieldFilters.IDStringFilter(),
+             * "ScriptName", "Script Name", false, src.getSerilizedClass(), serilized,
+             * Workspace);
+             * scriptName.setMaximumSize(new Dimension(300, 40));
+             * 
+             * JTextArea preview = new JTextArea();
+             * preview.setEditable(false);
+             * 
+             * JLabel loading = new JLabel("Loading...");
+             * 
+             * JPanel rightStuff = new JPanel();
+             * JPanel toprightStuff = new JPanel();
+             * 
+             * toprightStuff.setLayout(new BoxLayout(toprightStuff, BoxLayout.X_AXIS));
+             * rightStuff.setLayout(new BoxLayout(rightStuff, BoxLayout.Y_AXIS));
+             * 
+             * rightStuff.add(preview);
+             * rightStuff.add(toprightStuff);
+             * 
+             * toprightStuff.add(elementName);
+             * toprightStuff.add(Box.createHorizontalStrut(5));
+             * toprightStuff.add(scriptName);
+             * 
+             * RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src,
+             * src.getSerilizedClass(),
+             * parent2,
+             * RElementEditingScreen.DEFAULT_STYLE);
+             * 
+             * frame.CreateButton.setEnabled(false);
+             * JButton DebugButton = (JButton) frame.add(new JButton("Debug"));
+             * frame.Lay.putConstraint(SpringLayout.WEST, DebugButton, 10,
+             * SpringLayout.EAST, frame.CancelButton);
+             * frame.Lay.putConstraint(SpringLayout.SOUTH, DebugButton, 0,
+             * SpringLayout.SOUTH, frame.CancelButton);
+             * frame.DraftButton.setEnabled(false);
+             * 
+             * RBlockly rblockly = new RBlockly(preview, serilized != null ?
+             * serilized.Content : null, () -> {
+             * frame.CreateButton.setEnabled(true);
+             * frame.DraftButton.setEnabled(true);
+             * });
+             * 
+             * DebugButton.addActionListener(ac -> {
+             * rblockly.execute("fixRendering(150)");
+             * });
+             * 
+             * frame.setCustomCreateFunction(new CustomCreateFunction() {
+             * 
+             * @Override
+             * public void onCreate(RElementEditingScreen Sindow, ElementCreationListener
+             * Listener,
+             * boolean isDraft) {
+             * try {
+             * Platform.runLater(() -> {
+             * ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so
+             * copying is
+             * // easier
+             * if (serilized == null)
+             * serilized = new ScriptFile();
+             * 
+             * serilized.ElementName = elementName.getValue().toString();
+             * serilized.ScriptName = scriptName.getValue().toString();
+             * serilized.Content = rblockly.getJson();
+             * serilized.setDraft(isDraft);
+             * 
+             * Listener.onElementCreate(src); // create
+             * Sindow.dispose();
+             * });
+             * } catch (Exception ex) {
+             * java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+             * "Exception thrown",
+             * ex);
+             * ErrorShower.showError(Sindow, "Failed to create ElementSource",
+             * "Source Creation Error", ex);
+             * }
+             * }
+             * 
+             * }).addVaildations(elementName, scriptName);
+             * SpringLayout lay = new SpringLayout();
+             * 
+             * lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH,
+             * frame.InnerPane);
+             * lay.putConstraint(SpringLayout.SOUTH, rightStuff, 0, SpringLayout.SOUTH,
+             * frame.InnerPane);
+             * lay.putConstraint(SpringLayout.EAST, rightStuff, 0, SpringLayout.EAST,
+             * frame.InnerPane);
+             * lay.putConstraint(SpringLayout.WEST, rightStuff, 855, SpringLayout.WEST,
+             * frame.InnerPane);
+             * 
+             * lay.putConstraint(SpringLayout.NORTH, rblockly, 0, SpringLayout.NORTH,
+             * frame.InnerPane);
+             * lay.putConstraint(SpringLayout.SOUTH, rblockly, 0, SpringLayout.SOUTH,
+             * frame.InnerPane);
+             * lay.putConstraint(SpringLayout.WEST, rblockly, 0, SpringLayout.WEST,
+             * frame.InnerPane);
+             * 
+             * frame.InnerPane.setLayout(lay);
+             * 
+             * frame.InnerPane.add(rblockly);
+             * frame.InnerPane.add(rightStuff);
+             * frame.InnerPane.add(loading);
+             * 
+             * frame.setSize(new Dimension(1500, 800));
+             * frame.setLocation(ImageUtilites.getScreenCenter(frame));
+             * 
+             * frame.addWindowListener(new WindowAdapter() {
+             * 
+             * @SuppressWarnings("unused")
+             * public void windowClosed(WindowEvent e) {
+             * rblockly.dispose();
+             * }
+             * });
+             * 
+             * return frame;
+             */
         } else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
-                RecipeFile serilized = (RecipeFile) ((SourceRecipeElement)src).getSerilized();
+                RecipeFile serilized = (RecipeFile) ((SourceRecipeElement) src).getSerilized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
                         parent2,
                         RElementEditingScreen.DEFAULT_STYLE);
@@ -495,7 +518,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                     @Override
                     public void itemStateChanged(ItemEvent e) {
-                        RecipeFile Serilized = (RecipeFile) ((SourceRecipeElement)src).getSerilized();
+                        RecipeFile Serilized = (RecipeFile) ((SourceRecipeElement) src).getSerilized();
 
                         try {
                             ShapedOutput shaped = grid.getShapedRecipe();
@@ -568,7 +591,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return null;
             }
         } else if (src.getClass().equals(SourceFoodElement.class)) {
-            FoodFile serilized = (FoodFile) ((SourceFoodElement)src).getSerilized();
+            FoodFile serilized = (FoodFile) ((SourceFoodElement) src).getSerilized();
             RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", src, src.getSerilizedClass(),
                     parent2,
                     RElementEditingScreen.DEFAULT_STYLE);
@@ -674,10 +697,21 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             return frame;
         } else {
             // do the automatic creation
-            var frame = new RElementEditingScreen(Parent, ((ElementDetails) src.getClass().getMethod("getDetails").invoke(null)).Name, src, src.getSerilizedClass(), parent2,
+            var frame = new RElementEditingScreen(Parent,
+                    ((ElementDetails) src.getClass().getMethod("getDetails").invoke(null)).Name, src,
+                    src.getSerilizedClass(), parent2,
                     RElementEditingScreen.SPECIAL_AREA_STYLE);
-
-            for (Field field : src.getSerilizedClass().getFields()) { // try to get fields
+            List<Field> fields = List.of(src.getSerilizedClass().getFields());
+            fields.sort((f1, f2) -> {
+                int o1 = f1.isAnnotationPresent(RAnnotation.Order.class)
+                        ? f1.getAnnotation(RAnnotation.Order.class).value()
+                        : -1;
+                int o2 = f2.isAnnotationPresent(RAnnotation.Order.class)
+                        ? f2.getAnnotation(RAnnotation.Order.class).value()
+                        : -1;
+                return Integer.compare(o1, o2);
+            });
+            for (Field field : fields) { // try to get fields
                 try { // then add them
                     RElementValue rev = null;
                     var details = field.getAnnotation(RAnnotation.FieldDetails.class);
