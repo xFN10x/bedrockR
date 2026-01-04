@@ -123,7 +123,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 Parent,
                 DISPOSE_ON_CLOSE,
                 "Editing " + elementName,
-                new Dimension(800, 600));
+                new Dimension(800, 450));
 
         this.Listener = listenier;
         this.SourceClass = sourceClass;
@@ -630,7 +630,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             }
 
             RItemValue turnsInto = new RItemValue(Workspace, RItemValue.Type.Single, false);
-            if (serilized.EatingTurnsInto != null) {
+            if (serilized != null && serilized.EatingTurnsInto != null) {
                 try {
                     turnsInto.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.EatingTurnsInto, Workspace));
                 } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
@@ -657,14 +657,16 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 @Override
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
 
-                    try { // handle if there is no constructor
+                    try {
+                        FoodFile creating = serilized == null ? new FoodFile() : serilized;
+
                         for (ValidatableValue validatable : frame.Fields) { // add the fields
                             if (validatable instanceof RElementValue elementValue) {
                                 if (!elementValue.getOptionallyEnabled()) { // if its not enabled, continue
                                     continue;
                                 } else
                                     try {
-                                        src.getSerilizedClass().getField(elementValue.getTarget()).set(serilized,
+                                        src.getSerilizedClass().getField(elementValue.getTarget()).set(creating,
                                                 elementValue.getValue());
                                         // try to set field ^
                                     } catch (Exception e) {
@@ -678,11 +680,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             }
                         }
                         if (!turnsInto.getItems().isEmpty())
-                            serilized.EatingTurnsInto = turnsInto.getItems().get(0).item;
+                            creating.EatingTurnsInto = turnsInto.getItems().get(0).item;
 
-                        serilized.setDraft(isDraft);
+                        creating.setDraft(isDraft);
 
-                        Listener.onElementCreate(src); // create
+                        Listener.onElementCreate(new SourceFoodElement(serilized)); // create
                         Sindow.dispose();
                     } catch (Exception ex) {
                         java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
@@ -701,7 +703,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     ((ElementDetails) src.getClass().getMethod("getDetails").invoke(null)).Name, src,
                     src.getSerilizedClass(), parent2,
                     RElementEditingScreen.SPECIAL_AREA_STYLE);
-            List<Field> fields = List.of(src.getSerilizedClass().getFields());
+            List<Field> fields = new ArrayList<Field>(List.of(src.getSerilizedClass().getFields()));
             fields.sort((f1, f2) -> {
                 int o1 = f1.isAnnotationPresent(RAnnotation.Order.class)
                         ? f1.getAnnotation(RAnnotation.Order.class).value()
