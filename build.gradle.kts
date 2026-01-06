@@ -4,7 +4,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("org.panteleyev.jpackageplugin") version "1.7.3"
-    id("com.gradleup.shadow") version "9.3.0"
+    id("com.gradleup.shadow") version "9.3.1"
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -31,7 +31,7 @@ dependencies {
     //flat laf
     implementation("com.formdev:flatlaf:3.7")
 
-    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.0")
+    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.1")
 
     implementation("commons-io:commons-io:2.21.0")
     implementation("org.apache.commons:commons-lang3:3.20.0")
