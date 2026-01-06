@@ -126,7 +126,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     @Override
     public String getElementName() {
-        return "Resouces";
+        return "Resources";
     }
 
     @Override
