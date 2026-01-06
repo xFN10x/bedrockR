@@ -82,7 +82,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     public boolean addTexture(String name, File filePNG, int type, String workspaceName) {
         if (type != ITEM_TEXTURE || type != BLOCK_TEXTURE)
-            throw new IllegalAccessError("Resource Type: " + type + " is not a texture ")
+            throw new IllegalAccessError("Resource Type: " + type + " is not a texture ");
         try {
             if (name == null)
                 return false;
