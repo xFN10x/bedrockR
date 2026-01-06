@@ -29,21 +29,19 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     public static final int ITEM_TEXTURE = 0;
     public static final int BLOCK_TEXTURE = 1;
+    public static final int STRUCTURE_FILE = 2;
 
     public File getFileOfResource(String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
-        var dest = new File(
+        File dest = new File(
                 RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
                         + File.separator + workspaceName + File.separator + "resources" + File.separator
                         + file);
-        if (ResourceTypes.get(file) != null) {
+        if (ResourceTypes.get(file) != null && dest.exists()) {
             if (ResourceTypes.get(file) != resourceType)
                 throw new IllegalAccessError(
                         "The resource, '" + file + "' is not the resource type '" + resourceType + "'");
-            if (dest.exists())
                 return dest;
-            else
-                throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
         } else
             throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
     }
@@ -83,6 +81,8 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
     }
 
     public boolean addTexture(String name, File filePNG, int type, String workspaceName) {
+        if (type != ITEM_TEXTURE || type != BLOCK_TEXTURE)
+            throw new IllegalAccessError("Resource Type: " + type + " is not a texture ")
         try {
             if (name == null)
                 return false;
