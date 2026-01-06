@@ -115,10 +115,10 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         ItemTexturesFile.resource_pack_name = workspaceFile.WorkspaceName;
         ItemTexturesFile.texture_name = "atlas.items";
 
-        /*for (File file : ItemTextures) {
+        for (File file : ItemTextures) {
             FileUtils.copyFileToDirectory(file, ItemTextureFolder.toFile());
             // check texture size
-            BufferedImage testImage = ImageIO.read(file); TODO: add this somewhere else
+            /*BufferedImage testImage = ImageIO.read(file);
             if (Math.pow(testImage.getHeight(), 2) >= 512) {
                 JOptionPane.showMessageDialog(null,
                         "The texture " + file.getName()
@@ -126,10 +126,10 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
                         "Image is Giant: " + testImage.getWidth() + "x" + testImage.getHeight(),
                         JOptionPane.WARNING_MESSAGE);
             }
-            testImage.getGraphics().dispose();
+            testImage.getGraphics().dispose();*/
             ItemTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
                     new TextureData(file.getName()));
-        }*/
+        }
 
         Path dest = java.nio.file.Paths.get(rootResPackPath, "textures", "item_texture.json");
         String json = gson.toJson(ItemTexturesFile);
@@ -144,10 +144,10 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         Path BlockTextureFolder = java.nio.file.Paths.get(rootResPackPath, "textures", "blocks");
         Files.createDirectories(BlockTextureFolder);
 
-        /*for (File file : BlockTextures) {
+        for (File file : BlockTextures) {
             FileUtils.copyFileToDirectory(file, BlockTextureFolder.toFile());
             // check texture size
-            BufferedImage testImage = ImageIO.read(file);
+            /*BufferedImage testImage = ImageIO.read(file);
             if (Math.pow(testImage.getHeight(), 2) >= 512) {
                 JOptionPane.showMessageDialog(null,
                         "The texture " + file.getName()
@@ -155,10 +155,10 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
                         "Image is Giant: " + testImage.getWidth() + "x" + testImage.getHeight(),
                         JOptionPane.WARNING_MESSAGE);
             }
-            testImage.getGraphics().dispose();
+            testImage.getGraphics().dispose();*/
             BlockTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
                     new BlockTexture.TextureData(file.getName()));
-        } TODO: and this*/ 
+        }
 
         // microsoft decided to make this werid
         Map<String, Object> ActualBlocksJSON = new HashMap<String, Object>();
