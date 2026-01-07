@@ -11,7 +11,7 @@ public class Manifest {
     public static enum ModuleTypes {
         RESOURCES("resources"),
         DATA("data"),
-        WORLDTEMPLATE("world_template"),
+        WORLD_TEMPLATE("world_template"),
         SCRIPT("script");
 
         private final String text;
@@ -79,14 +79,14 @@ public class Manifest {
     }
     public static class Metadata {
         //even INNER class
-        public class GeneratedWithR {
+        public static class GeneratedWithBedrockR {
             public String[] bedrockR;
         }
 
         public String[] authors;
         public String license;
         public String url;
-        public GeneratedWithR generated_with;
+        public GeneratedWithBedrockR generated_with;
     }
 
 

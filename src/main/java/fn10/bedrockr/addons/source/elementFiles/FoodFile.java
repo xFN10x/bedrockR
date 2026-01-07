@@ -134,7 +134,7 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @Order(15)
     public String EatingTurnsInto = null;
 
-    @HelpMessage("Specifes if this food can be eaten in creative, or if at max hunger")
+    @HelpMessage("Specifies if this food can be eaten in creative, or if at max hunger")
     @FieldDetails(Optional = false, displayName = "Can Always Be Eaten")
     @Order(16)
     public boolean CanAlwaysBeEaten = false;
