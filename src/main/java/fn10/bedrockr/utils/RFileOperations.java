@@ -18,6 +18,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.google.common.collect.ImmutableList;
+
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;
@@ -55,6 +57,7 @@ public class RFileOperations {
         }
     }
 
+    public static final String SEM_VERSION = "0.7.0";
     public static final String VERSION = "a2.0";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
@@ -285,12 +288,48 @@ public class RFileOperations {
     }
 
     /**
+     * Adds an object to a list if it isn't inside of it.
+     * 
+     * @param <T>   The list type
+     * @param list  The list the element is being added too
+     * @param toAdd The object being added to the list
+     * @return that object, or null if it fails
+     */
+    public static <T> T addIfAbsent(List<T> list, T toAdd) {
+        if (list == null)
+            return null;
+        if (!list.contains(toAdd))
+            list.add(toAdd);
+        return toAdd;
+    }
+
+    /**
      * Sets the current workspace.
+     * 
+     * <p>
+     * Set the current workspace when opening it for editing. You should
+     * only be able to edit one workspace at a time. When opening a workspace, make
+     * sure to check the {@code WorkspaceFile.Format}, and
+     * {@code WorkspaceFile.bedrockRVersion} to make sure its safe to load.
      * 
      * @param WPF - the SourceWorkspaceFile of the workspace.
      */
     public static void setCurrentWorkspace(SourceWorkspaceFile WPF) {
-        CURRENT_WORKSPACE = WPF.getSerilized();
+        // update version things
+        WorkspaceFile serilized = WPF.getSerilized();
+        serilized.LatestBedrockRVersion = SEM_VERSION;
+        if (serilized.ModifiedWithBedrockRVersions == null) {
+            serilized.ModifiedWithBedrockRVersions = new ArrayList<String>();
+        }
+        addIfAbsent(serilized.ModifiedWithBedrockRVersions, VERSION);
+
+        try {
+            new SourceWorkspaceFile(serilized).saveJSONFile(WPF.workspaceName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        CURRENT_WORKSPACE = serilized;
     }
 
     /**
@@ -566,7 +605,8 @@ public class RFileOperations {
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
                 srcWPF.saveJSONFile(wpf.WorkspaceName);
 
-                File srcIcon = java.nio.file.Paths.get(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension).toFile();
+                File srcIcon = java.nio.file.Paths.get(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension)
+                        .toFile();
                 if (!srcIcon.exists())
                     if (!srcIcon.createNewFile())
                         throw new IOException("Failed to create source addon icon file");

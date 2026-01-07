@@ -8,7 +8,6 @@ plugins {
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
-
 repositories {
     mavenCentral()
 }
@@ -31,8 +30,6 @@ dependencies {
     //flat laf
     implementation("com.formdev:flatlaf:3.7")
 
-    implementation("com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.0")
-
     implementation("commons-io:commons-io:2.21.0")
     implementation("org.apache.commons:commons-lang3:3.20.0")
 
@@ -40,9 +37,7 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 
     //3d stuff
-    implementation("org.jmonkeyengine:jme3-desktop:3.9.0-beta1")
     implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-beta1")
-    implementation("org.jmonkeyengine:jme3-core:3.9.0-beta1")
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 }
@@ -170,12 +165,12 @@ publishing {
             }
             pom {
                 name = "bedrockR"
-                description = "The librarys for bedrockR, a GUI-based addon maker for minecraft bedrock."
+                description = "The libraries for bedrockR, an addon maker for minecraft bedrock."
                 url = "https://bedrockr.xplate.dev"
                 licenses {
                     license {
                         name = "GNU GENERAL PUBLIC LICENSE v3"
-                        url = "https://github.com/xFN10x/bedrockR/tree/a1.5?tab=License-1-ov-file#"
+                        url = "https://github.com/xFN10x/bedrockR/tree/a2.0?tab=License-1-ov-file#"
                     }
                 }
                 developers {

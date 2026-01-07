@@ -1,10 +1,8 @@
 package fn10.bedrockr.addons.addon.jsonClasses.BP;
 
-import java.util.Map;
-
-import com.google.gson.annotations.SerializedName;
-
 /**
+ * TODO: finish this in a2.1
+ * 
  * taken from https://learn.microsoft.com/en-us/minecraft/creator/reference/content/featuresreference/examples/features/minecraftstructure_template_feature?view=minecraft-bedrock-stable
  */
 public class Feature {

@@ -96,7 +96,7 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
                 StandardOpenOption.WRITE);
 
         var englishFile = new File(rootResPackPath + File.separator + "texts" + File.separator + "en_US.lang");
-        // dont need to make parents, other file is already in the same dir
+
         var englishLangStringBuilder = new StringBuilder("## Generated with bedrockR " + RFileOperations.VERSION + "\n");
 
         for (Entry<String, String> ent : EnglishTexts.entrySet()) {
@@ -117,16 +117,6 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         for (File file : ItemTextures) {
             FileUtils.copyFileToDirectory(file, ItemTextureFolder.toFile());
-            // check texture size
-            /*BufferedImage testImage = ImageIO.read(file);
-            if (Math.pow(testImage.getHeight(), 2) >= 512) {
-                JOptionPane.showMessageDialog(null,
-                        "The texture " + file.getName()
-                                + " is bigger than 512 pixels, which is really big, it is not reccomened to do this as this item may cause lag.",
-                        "Image is Giant: " + testImage.getWidth() + "x" + testImage.getHeight(),
-                        JOptionPane.WARNING_MESSAGE);
-            }
-            testImage.getGraphics().dispose();*/
             ItemTexturesFile.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
                     new TextureData(file.getName()));
         }
