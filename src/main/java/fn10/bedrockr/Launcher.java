@@ -15,11 +15,11 @@ import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.laf.BedrockrDark;
 import fn10.bedrockr.windows.util.ErrorShower;
-import javafx.application.Platform;
+/*import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
-import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebEngine;*/
 
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -55,7 +55,7 @@ public class Launcher {
     public static int CHECKVERSION = 8;
     public static Image ICON;
 
-    public static WebEngine BLOCKLY_MINI_WEBENGINE;
+    //public static WebEngine BLOCKLY_MINI_WEBENGINE;
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getGlobal();
@@ -179,7 +179,7 @@ public class Launcher {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
-        loading.ProgressText.setText("Setting up Blockly...");
+        /*loading.ProgressText.setText("Setting up Blockly...");
         try {
             CountDownLatch latch = new CountDownLatch(1);
             Platform.setImplicitExit(false);
@@ -234,7 +234,7 @@ public class Launcher {
             }
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
-        }
+        }*/
 
         loading.ProgressText.setText("Setting up 3D...");
         RenderHandler.startup();

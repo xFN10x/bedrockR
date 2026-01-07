@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
     id("org.panteleyev.jpackageplugin") version "1.7.3"
     id("com.gradleup.shadow") version "9.3.0"
-    id("org.openjfx.javafxplugin") version "0.1.0"
+    //id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 repositories {
@@ -17,10 +17,10 @@ sourceSets["main"].resources {
     srcDir("src/main/java")
 }
 
-javafx {
+/*javafx {
     version = "25"
     modules("javafx.controls", "javafx.swing", "javafx.web")
-}
+}*/
 
 dependencies {
     implementation(libs.guava)
