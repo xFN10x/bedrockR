@@ -1,5 +1,5 @@
 package fn10.bedrockr.windows.componets;
-
+/* 
 import java.net.URL;
 
 
@@ -27,7 +27,7 @@ public class RBlockly extends JFXPanel {
 
     /**
      * this is here to stop the GC from collecting it
-     */
+     *
     private final Bridge bridge;
 
     private final JTextArea preview;
@@ -156,3 +156,4 @@ public class RBlockly extends JFXPanel {
     }
 
 }
+*/
