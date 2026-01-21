@@ -81,7 +81,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public SourceWorkspaceFile SWPF;
 
     // components
-    private JSeparator VerticleSep = new JSeparator(JSeparator.VERTICAL);
+    private JSeparator VerticalSep = new JSeparator(JSeparator.VERTICAL);
 
     private JTabbedPane Tabs = new JTabbedPane();
 
@@ -169,16 +169,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        helpMenu.add("bedrockR on Summer Of Making").addActionListener(ac -> {
+        helpMenu.add("bedrockR Website").addActionListener(ac -> {
             try {
-                desk.browse(new URI("https://summer.hackclub.com/projects/703"));
-            } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
-        helpMenu.add("bedrockR on Siege").addActionListener(ac -> {
-            try {
-                desk.browse(new URI("https://siege.hackclub.com/armory/1948"));
+                desk.browse(new URI("https://bedrockr.xplate.dev"));
             } catch (Exception e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
@@ -234,12 +227,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Lay.putConstraint(SpringLayout.NORTH, Tabs, 70, SpringLayout.NORTH, CP);
         Lay.putConstraint(SpringLayout.SOUTH, Tabs, -10, SpringLayout.SOUTH, CP);
         // verticle seperator
-        Lay.putConstraint(SpringLayout.NORTH, VerticleSep, 70, SpringLayout.NORTH, CP);
-        Lay.putConstraint(SpringLayout.SOUTH, VerticleSep, -10, SpringLayout.SOUTH, CP);
-        Lay.putConstraint(SpringLayout.EAST, VerticleSep, -10, SpringLayout.WEST, Tabs);
+        Lay.putConstraint(SpringLayout.NORTH, VerticalSep, 70, SpringLayout.NORTH, CP);
+        Lay.putConstraint(SpringLayout.SOUTH, VerticalSep, -10, SpringLayout.SOUTH, CP);
+        Lay.putConstraint(SpringLayout.EAST, VerticalSep, -10, SpringLayout.WEST, Tabs);
         // add button
         Lay.putConstraint(SpringLayout.NORTH, AddElement, 70, SpringLayout.NORTH, CP);
-        Lay.putConstraint(SpringLayout.EAST, AddElement, -15, SpringLayout.WEST, VerticleSep);
+        Lay.putConstraint(SpringLayout.EAST, AddElement, -15, SpringLayout.WEST, VerticalSep);
         // addtexture button
         Lay.putConstraint(SpringLayout.NORTH, AddTextureResource, 10, SpringLayout.SOUTH, AddElement);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddTextureResource, 0, SpringLayout.HORIZONTAL_CENTER,
@@ -266,7 +259,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         ElementView.getVerticalScrollBar().setUnitIncrement(18);
 
         add(Tabs);
-        add(VerticleSep);
+        add(VerticalSep);
 
         add(AddElement);
         add(AddTextureResource);
@@ -681,13 +674,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     /**
-     * Opens a workspace, showing the window, and doing all other nessesary steps
+     * Opens a workspace, showing the window, and doing all other necessary steps
      * too have a person be able to work on one
      * 
      * @param doingThis - the window to parent to, and hide once the window appears
      * @param WPF       - The workspace to open
      */
     public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
+        RFileOperations.setCurrentWorkspace(WPF);
         new Thread(() -> {
             RWorkspace workspaceView = new RWorkspace(WPF);
 
@@ -723,7 +717,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
                     }
                 }
-                RFileOperations.setCurrentWorkspace(WPF);
             });
         }).start();
     }

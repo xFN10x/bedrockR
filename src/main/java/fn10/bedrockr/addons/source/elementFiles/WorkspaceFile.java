@@ -18,18 +18,22 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Header;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Metadata;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Module;
+import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Metadata.GeneratedWithBedrockR;
 import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses.VersionVector;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 
-/* The WPFile, is an ElementFile that handles workspace varibles, and building
+/* The WPFile, is an ElementFile that handles workspace variables, and building
  * manifests, and other base stuff for both packs.
  */
 public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
 
     public int Format;
+    public String LatestBedrockRVersion;
+    public ArrayList<String> ModifiedWithBedrockRVersions = new ArrayList<String>();
     public String WorkspaceName;
     public String MinimumEngineVersion;
     public String BPVersion = "1.0.0";
@@ -84,8 +88,8 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
     }
 
     /**
-     * This should be called everytime you rebuild your addon. Since some stuff
-     * doesnt reset automaticly.
+     * This should be called every time you rebuild your addon. Since some stuff
+     * doesn't reset automatically.
      */
     public void reset(String rootPath) {
         if (Scripts == null) {
@@ -129,7 +133,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
 
-        // build BP manifest
+        // #region build BP manifest
         // --------------------------------------------------------------------
         Manifest manifest = new Manifest();
         manifest.formatVersion = 2;
@@ -140,8 +144,11 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         header.uuid = this.uuid1;
         header.min_engine_version = VersionVector.fromString(MinimumEngineVersion);
         header.version = VersionVector.fromString(BPVersion);
-        // add header
-        manifest.header = header;
+        // metadata
+        Metadata metadata = new Metadata();
+        GeneratedWithBedrockR generatedWithBedrockR = new GeneratedWithBedrockR();
+        generatedWithBedrockR.bedrockR = ModifiedWithBedrockRVersions.toArray(new String[0]);
+        metadata.generated_with = generatedWithBedrockR;
         // modules
         List<Module> mods = new ArrayList<>();
         Module dataModule = new Manifest.Module();
@@ -173,8 +180,10 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
                 depndences.add(mcserver);
             }
         // add to manifest
+        manifest.header = header;
         manifest.modules = mods.toArray(new Module[0]);
         manifest.dependencies = depndences.toArray(new Dependence[0]);
+        manifest.metadata = metadata;
 
         // build manifest
         // var gson = new GsonBuilder().setPrettyPrinting().create();
@@ -193,9 +202,8 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
                         .toPath());
         var imgpath = new File(rootPath + File.separator + "pack_icon.png").toPath();
         Files.write(imgpath, img, StandardOpenOption.CREATE);
-
-        // build RP manifest
-        // ---------------------------------------------------------------
+        // #endregion
+        // #region build RP manifest
         var RPmanifest = new Manifest();
         RPmanifest.formatVersion = 2;
         // header
@@ -205,6 +213,13 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         RPheader.uuid = this.uuid3;
         RPheader.min_engine_version = VersionVector.fromString(MinimumEngineVersion);
         RPheader.version = VersionVector.fromString(RPVersion);
+        // metadata
+        Metadata metadata2 = new Metadata();
+        GeneratedWithBedrockR generatedWithBedrockR2 = new GeneratedWithBedrockR();
+        generatedWithBedrockR2.bedrockR = ModifiedWithBedrockRVersions.toArray(new String[0]);
+        metadata2.generated_with = generatedWithBedrockR;
+        // i guess we are adding immediately with rp
+        RPmanifest.metadata = metadata2;
         // add header
         RPmanifest.header = RPheader;
         // modules
@@ -234,5 +249,6 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
                         .toPath());
         var imgpath2 = new File(rootResPackPath + File.separator + "pack_icon.png").toPath();
         Files.write(imgpath2, img2, StandardOpenOption.CREATE);
+        // #endregion
     }
 }
