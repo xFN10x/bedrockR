@@ -58,13 +58,13 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 false);
 
         // Add things to the window.
-        greetingText.setFont(RFonts.RegMinecraftFont.deriveFont(2, greeting.Size));
+        greetingText.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, greeting.Size));
         greetingText.setSize(Size.width, 100);
         greetingText.setHorizontalTextPosition(SwingConstants.LEFT);
 
         seperater.setPreferredSize(new Dimension(400, 3));
 
-        othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(1, 9));
+        othergreeting.setFont(RFonts.RegMinecraftFont.deriveFont(Font.PLAIN, 9));
 
         ProjectsScrollPart.setPreferredSize(new Dimension(540, 180));
         ProjectsPart.setBackground(Color.darkGray.darker());
