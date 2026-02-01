@@ -39,8 +39,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 
 import javax.imageio.ImageIO;
@@ -54,8 +52,6 @@ public class Launcher {
 
     public static int CHECKVERSION = 8;
     public static Image ICON;
-
-    //public static WebEngine BLOCKLY_MINI_WEBENGINE;
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     public static Logger LOG = Logger.getGlobal();
