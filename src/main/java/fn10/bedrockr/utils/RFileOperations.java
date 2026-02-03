@@ -18,8 +18,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.SourceFoodElement;

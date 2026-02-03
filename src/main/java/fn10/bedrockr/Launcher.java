@@ -59,16 +59,6 @@ public class Launcher {
 
     public static void main(String[] args) {
         RFileOperations.init();
-        /*String ver = System.getProperty("java.version");
-        if (ver.startsWith("1.")) {
-            JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
-                    + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
-            return;
-        } else if (Integer.parseInt(ver.substring(0, 2)) < 25) {
-            JOptionPane.showConfirmDialog(null, "Woah! This version of java is out of date.\n\nYour version: " + ver
-                    + "\n Required version: 25.0.0", "Java error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }*/
         try {
             ICON = ImageIO.read(Launcher.class
                     .getResourceAsStream("/ui/Icon_huge.png"));
@@ -103,12 +93,6 @@ public class Launcher {
             LOG.addHandler(fileHandler);
         } catch (SecurityException | IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
-
-        try {
-            throw new Exception("test");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
