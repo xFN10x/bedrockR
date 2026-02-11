@@ -1,8 +1,3 @@
-"Minecraft" and its logo are trademarks of Mojang AB. (bedrockR is not associated with Mojang AB, or Microsoft Corp.)
-
-------------------------------------------------------------------------
-
-bedrockR, is licensed in:
                     GNU GENERAL PUBLIC LICENSE
                       Version 3, 29 June 2007
 
