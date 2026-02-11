@@ -17,10 +17,13 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import java.awt.Image;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import com.google.gson.Gson;
@@ -44,6 +47,7 @@ public class BlockTextures {
             "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/blocks.json");
     private static URI terrianJsonUrl = URI.create(
             "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/textures/terrain_texture.json");
+    private static int downloaded = 0;
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Map<String, Object>> getBlocksJson() throws IOException, InterruptedException {
@@ -93,17 +97,22 @@ public class BlockTextures {
         SwingUtilities.invokeLater(() -> {
             loading.setVisible(true);
         });
+
         SwingUtilities.invokeLater(() -> {
             loading.Steps = ReturnItemInfo.vanillaBlocks.length;
-            new Thread(() -> {
-                for (BlockJsonEntry vanillaItems : ReturnItemInfo.vanillaBlocks) {
-                    String name = vanillaItems.name.split(":")[1];
+            downloaded = 0;
+            Thread downloadThread = new Thread(() -> {
+                for (BlockJsonEntry block : ReturnItemInfo.vanillaBlocks) {
+                    String name = block.name.split(":")[1];
                     try {
                         loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
                     } catch (IllegalAccessException e) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
+                    if (Thread.interrupted())
+                        return;
                     renderBlock(name);
+                    downloaded++;
                 }
                 latch.countDown();
                 SettingsFile settings = SettingsFile.load();
@@ -122,7 +131,23 @@ public class BlockTextures {
                 SwingUtilities.invokeLater(() -> {
                     loading.setVisible(false);
                 });
-            }).start();
+            });
+            downloadThread.setName("Downloading-Thread");
+            downloadThread.start();
+            loading.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
+                            + (ReturnItemInfo.vanillaBlocks.length - downloaded) + " blocks left!",
+                            "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
+                    if (op == JOptionPane.YES_OPTION) {
+                        latch.countDown();
+                        downloadThread.interrupt();
+                        SwingUtilities.invokeLater(() -> {
+                            loading.setVisible(false);
+                        });
+                    }
+                }
+            });
         });
         return latch;
     }
