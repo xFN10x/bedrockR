@@ -104,3 +104,7 @@ Since, a2.0, bedrockR is now made to be used in other programs as well. With the
 Use `./gradlew mavenJar` to make this jar. It will be found in `build/mavenLibs`.
 
 **This isn't the recommended way to use this jar. You should use the Maven library from Jitpack instead.**
+
+>_bedrockR is not assocaited with Mojang AB, or Microsoft Corp._
+>
+>_"Minecraft" and the Minecraft Logo are trademarks of Mojang AB._
