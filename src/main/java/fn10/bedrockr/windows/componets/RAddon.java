@@ -17,7 +17,6 @@ import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,12 +26,11 @@ import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.apache.commons.io.FileUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
+import com.formdev.flatlaf.util.SystemFileChooser;
 
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
@@ -86,10 +84,10 @@ public class RAddon extends JPanel implements MouseListener {
                             + ", is missing an icon. Would you like to add one?  (this message will go away ;) )",
                             "Addon Error", JOptionPane.YES_NO_OPTION);
                     if (op == JOptionPane.YES_OPTION) {
-                        var bic = new JFileChooser();
+                        SystemFileChooser bic = new SystemFileChooser();
                         bic.setFileFilter(
-                                new FileNameExtensionFilter("Addon's Supported Image Files", WPF.IconExtension));
-                        if (bic.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                                new SystemFileChooser.FileNameExtensionFilter("Addon's Supported Image Files", WPF.IconExtension));
+                        if (bic.showOpenDialog(this) == SystemFileChooser.APPROVE_OPTION) {
                             BI = ImageIO.read(bic.getSelectedFile());
                             ImageIO.write(BI, WPF.IconExtension, RFileOperations
                                     .getFileFromWorkspace(WPName,

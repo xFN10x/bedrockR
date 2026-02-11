@@ -12,7 +12,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,9 +22,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.apache.commons.lang3.ArrayUtils;
+
+import com.formdev.flatlaf.util.SystemFileChooser;
 
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
@@ -43,7 +42,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
 
     protected Byte[] ChosenIcon;
-    protected JFileChooser fileChooser = new JFileChooser();
+    protected SystemFileChooser fileChooser = new SystemFileChooser();
     protected String imageExtension = "png";
 
     protected JLabel AddonIcon = new JLabel();
@@ -167,7 +166,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         if (e.getActionCommand() == "changeIcon") {
             try {
                 fileChooser.setDialogTitle("Choose Addon's Icon");
-                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image files", "png"));
+                fileChooser.addChoosableFileFilter(new SystemFileChooser.FileNameExtensionFilter("Image files", "png"));
                 fileChooser.showOpenDialog(this);
                 try {
                     File file = fileChooser.getSelectedFile();
