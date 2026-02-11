@@ -36,7 +36,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -47,10 +46,9 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.apache.commons.io.FileUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.SystemFileChooser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -502,11 +500,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     options,
                     options[0]);
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+            SystemFileChooser file = new SystemFileChooser();
+            file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+            file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
 
-            if (file.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+            if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
                 return;
             Object input = JOptionPane.showInputDialog(this,
                     "What do you want to name this texture? (" + file.getSelectedFile().getName()

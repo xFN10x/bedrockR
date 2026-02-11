@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import com.formdev.flatlaf.util.SystemFileChooser;
 
 import java.io.File;
 
@@ -519,11 +519,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
 
                             AddButtonItem.addActionListener(ac -> {
-                                JFileChooser file = new JFileChooser();
-                                file.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                                file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+                                SystemFileChooser file = new SystemFileChooser();
+                                file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
 
-                                if (file.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+                                if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
                                     return;
                                 Object input = JOptionPane.showInputDialog(this,
                                         "What do you want to name this texture? (" + file.getSelectedFile().getName()
@@ -686,11 +686,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         RenderHandler.make6Sided(bi));
                             });
                             AddButtonBlock.addActionListener(ac -> {
-                                JFileChooser file = new JFileChooser();
-                                file.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                                file.setFileFilter(new FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+                                SystemFileChooser file = new SystemFileChooser();
+                                file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
 
-                                if (file.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+                                if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
                                     return;
                                 Object input = JOptionPane.showInputDialog(this,
                                         "What do you want to name this texture? (" + file.getSelectedFile().getName()
