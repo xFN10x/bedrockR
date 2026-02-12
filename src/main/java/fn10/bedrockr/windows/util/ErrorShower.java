@@ -20,6 +20,19 @@ public class ErrorShower {
         showError(parent, "", ex);
     }
 
+    /**
+     * Shows an error message, and prints the stack trace to the log
+     * 
+     * @param parent - the component closet related to the process this is thrown
+     *               from
+     * @param message - the message to log with the exception, and to also show on screen.
+     * @param ex     - the exception
+     */
+    public static void exception(Component parent, String message, Exception ex) {
+        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, message, ex);
+        showError(parent, message, ex);
+    }
+
     public static void showError(Component parent, String msg, Exception ex) {
         showError(parent, msg, ex.getMessage(), ex);
     }

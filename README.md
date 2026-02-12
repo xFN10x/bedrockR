@@ -33,13 +33,9 @@ Since bedrockR is made in Java, it is available for any computer that can run Ja
 
 Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.xplate.dev/download) to download the latest version
 
-### Mobile (WIP)
+### Mobile
 
-Since a2.0, bedrockR is now available for Android, and it can be downloaded on [the bedrockR Website](https://bedrockr.xplate.dev/download), or on the [bedrockR Mobile Repository's release page.](https://github.com/xFN10x/bedrockR-Mobile/releases)
-
-bedrockR Mobile is a separate repository from bedrockR, and its source code is available on the [bedrockR Mobile Repo](https://github.com/xFN10x/bedrockR-Mobile)
-
-bedrockR Mobile is planned to be released on the Google Play Store at some point.
+bedrockR Mobile for Android is stopped development for the foreseeable future. If someone wants to create it instead, you can email me. _([mathdudex09@gmail.com](mailto:mathdudex09@gmail.com?subject=bedrockR%20Mobile))_
 
 ### Using the JAR (Other Platforms)
 

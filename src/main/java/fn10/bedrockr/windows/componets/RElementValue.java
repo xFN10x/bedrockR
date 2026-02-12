@@ -14,12 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import javax.swing.border.LineBorder;
 import com.formdev.flatlaf.util.SystemFileChooser;
 
 import java.io.File;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
@@ -30,6 +32,7 @@ import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.NumberRange;
@@ -156,7 +159,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     DisplayName, e);
             return;
         }
- 
+
         // dont do this if its set manually
         if (Input == null)
             // do corrisponding actions depending on the type
@@ -521,7 +524,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             AddButtonItem.addActionListener(ac -> {
                                 SystemFileChooser file = new SystemFileChooser();
                                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
-                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter(
+                                        "PNG Image Files (*.png)", "png"));
 
                                 if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
                                     return;
@@ -544,9 +548,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     AddButtonItem.doClick();
                                     return;
                                 }
-                                RFileOperations.getResources(WorkspaceName).Serilized
-                                        .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
-                                                WorkspaceName);
+                                try {
+                                    RFileOperations.getResources(WorkspaceName).Serilized
+                                            .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
+                                                    WorkspaceName);
+                                } catch (WrongResourceTypeException e) {
+                                    ErrorShower.exception(this, "Failed to import texture", e);
+                                }
                             });
                             SelectButtonItem.addActionListener(ac -> {
                                 try {
@@ -688,7 +696,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             AddButtonBlock.addActionListener(ac -> {
                                 SystemFileChooser file = new SystemFileChooser();
                                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
-                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter(
+                                        "PNG Image Files (*.png)", "png"));
 
                                 if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
                                     return;
@@ -711,9 +720,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     AddButtonItem.doClick();
                                     return;
                                 }
-                                RFileOperations.getResources(WorkspaceName).Serilized
-                                        .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
-                                                WorkspaceName);
+                                try {
+                                    RFileOperations.getResources(WorkspaceName).Serilized
+                                            .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
+                                                    WorkspaceName);
+                                } catch (WrongResourceTypeException e) {
+                                    ErrorShower.exception(this, "Failed to import texture", e);
+                                }
                             });
                             SelectButtonBlock.addActionListener(ac -> {
                                 try {

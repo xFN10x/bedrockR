@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import fn10.bedrockr.addons.source.SourceResourceElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 
 public class ResourceFile implements ElementFile<SourceResourceElement> {
 
@@ -40,7 +41,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
             if (ResourceTypes.get(file) != resourceType)
                 throw new IllegalAccessError(
                         "The resource, '" + file + "' is not the resource type '" + resourceType + "'");
-                return dest;
+            return dest;
         } else
             throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
     }
@@ -55,17 +56,17 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
      * @throws FileNotFoundException If the resource isnt found.
      * @throws IllegalAccessError    If the requested doesnt match the resource
      *                               type.
+     * @throws WrongResourceTypeException 
      */
     public String getResource(String workspaceName, String file, int resourceType)
-            throws FileNotFoundException, IllegalAccessError {
+            throws FileNotFoundException, WrongResourceTypeException {
         var dest = new File(
                 RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
                         + File.separator + workspaceName + File.separator + "resources" + File.separator
                         + file);
         if (ResourceTypes.get(file) != null) {
             if (ResourceTypes.get(file) != resourceType)
-                throw new IllegalAccessError(
-                        "The resource, '" + file + "' is not the resource type '" + resourceType + "'");
+                throw new WrongResourceTypeException(resourceType, ResourceTypes.get(file));
             if (dest.exists())
                 return ResourceIDs.get(file);
             else
@@ -75,13 +76,13 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     }
 
-    public boolean importTexture(File file, int Type, String workspaceName) {
+    public boolean importTexture(File file, int Type, String workspaceName) throws WrongResourceTypeException {
         return addTexture(file.getName(), file, Type, workspaceName);
     }
 
-    public boolean addTexture(String name, File filePNG, int type, String workspaceName) {
-        if (type != ITEM_TEXTURE || type != BLOCK_TEXTURE)
-            throw new IllegalAccessError("Resource Type: " + type + " is not a texture ");
+    public boolean addTexture(String name, File filePNG, int type, String workspaceName) throws WrongResourceTypeException {
+        if (type != ITEM_TEXTURE && type != BLOCK_TEXTURE)
+            throw new WrongResourceTypeException(type, ITEM_TEXTURE, BLOCK_TEXTURE);
         try {
             if (name == null)
                 return false;
@@ -114,7 +115,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
          * ActiveWorkspace.refreshResources();
          */
 
-        var source = new SourceResourceElement(this);
+        SourceResourceElement source = new SourceResourceElement(this);
         source.saveJSONFile(rootPath);
     }
 
