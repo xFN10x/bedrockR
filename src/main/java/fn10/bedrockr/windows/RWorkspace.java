@@ -64,6 +64,7 @@ import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.typeAdapters.XplateAPIDateSerializer;
 import fn10.bedrockr.windows.base.RFrame;
@@ -533,15 +534,23 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 case 1:
 
-                    RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
-                            .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
-                                    SWPF.getSerilized().WorkspaceName);
+                    try {
+                        RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
+                                .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
+                                        SWPF.getSerilized().WorkspaceName);
+                    } catch (WrongResourceTypeException e) {
+                        ErrorShower.exception(this, "Failed to import texture", e);
+                    }
                     break;
                 case 2:
 
-                    RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
-                            .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
-                                    SWPF.getSerilized().WorkspaceName);
+                    try {
+                        RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
+                                .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
+                                        SWPF.getSerilized().WorkspaceName);
+                    } catch (WrongResourceTypeException e) {
+                        ErrorShower.exception(this, "Failed to import texture", e);
+                    }
                     break;
                 default:
                     break;
