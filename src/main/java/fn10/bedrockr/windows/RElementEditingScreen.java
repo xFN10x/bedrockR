@@ -657,7 +657,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
 
                     try {
-                        FoodFile creating = serilized == null ? new FoodFile() : serilized;
+                        FoodFile creating = (serilized == null ? new FoodFile() : serilized);
 
                         for (ValidatableValue validatable : frame.Fields) { // add the fields
                             if (validatable instanceof RElementValue elementValue) {
@@ -679,11 +679,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             }
                         }
                         if (!turnsInto.getItems().isEmpty())
-                            creating.EatingTurnsInto = turnsInto.getItems().get(0).item;
+                            creating.EatingTurnsInto = turnsInto.getItems().getFirst().item;
 
                         creating.setDraft(isDraft);
 
-                        Listener.onElementCreate(new SourceFoodElement(serilized)); // create
+                        Listener.onElementCreate(new SourceFoodElement(creating)); // create
                         Sindow.dispose();
                     } catch (Exception ex) {
                         java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
