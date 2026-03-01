@@ -55,8 +55,8 @@ public class RFileOperations {
         }
     }
 
-    public static final String SEM_VERSION = "0.7.0";
-    public static final String VERSION = "a2.0";
+    public static final String SEM_VERSION = "0.7.1";
+    public static final String VERSION = "a2.0.1";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
