@@ -45,22 +45,22 @@ import fn10.bedrockr.windows.util.ImageUtilites;
 import fn10.bedrockr.windows.util.RFonts;
 
 /**
- * The main Components for <code>RElementCreationScreen</code>.
+ * The main Components for {@code RElementCreationScreen}.
  * This class includes lots of useful tools for making a field for a user to
- * edit, and to save certain <code>java.reflect.Field</code>s.
+ * edit, and to save certain {@code java.reflect.Field}s.
  */
 public class RElementValue extends JPanel implements ValidatableValue {
 
-    private SpringLayout Lay = new SpringLayout();
-    private JLabel Name = new JLabel();
+    private final SpringLayout Lay = new SpringLayout();
+    private final JLabel Name = new JLabel();
     public JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
     public Component Input = null;
-    private JCheckBox EnableDis = new JCheckBox();
+    private final JCheckBox EnableDis = new JCheckBox();
 
     private String Target = "";
-    private FieldFilter Filter;
-    private Class<?> InputType;
-    private Class<?> SourceFileClass;
+    private final FieldFilter Filter;
+    private final Class<?> InputType;
+    private final Class<?> SourceFileClass;
     private final String WorkspaceName;
 
     // componets used for uuid of block texture
@@ -189,9 +189,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         if (field == null) {
                             return;
                         }
-                        if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
-                            java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
-                                    .getGenericType();
+                        if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType pt) {
                             genericType = (Class<?>) pt.getActualTypeArguments()[0];
                         } else
                             genericType = null;
@@ -276,8 +274,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 toAdd.Input = newInput;
 
                                 if (anno.strict()) {
-                                    ((JComboBox<String>) newInput).setEditable(false);
-                                    ((JComboBox<String>) newInput).setSelectedIndex(0);
+                                    newInput.setEditable(false);
+                                    newInput.setSelectedIndex(0);
                                 }
                             }
 
@@ -477,7 +475,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             anno != null ? (int) anno.max() : Integer.MAX_VALUE, 1));
 
                     if (!FromEmpty)
-                        ((JSpinner) Input).setValue(((Integer) field.get(TargetFile)));
+                        ((JSpinner) Input).setValue(field.get(TargetFile));
 
                 } else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
@@ -490,7 +488,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                     if (!FromEmpty)
-                        ((JSpinner) Input).setValue(((Float) field.get(TargetFile)));
+                        ((JSpinner) Input).setValue(field.get(TargetFile));
                 } else if (UUID.class.isAssignableFrom(InputType)) { // resource
 
                     final ResourcePackResourceType anno;
@@ -970,8 +968,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
     @SuppressWarnings("unchecked")
     public void setValue(Object value) throws ClassNotFoundException {
-        if (value == null)
-            return;
+        if (value == null) {
+        }
         else if (!InputType.isAssignableFrom(value.getClass())) {
             throw new ClassNotFoundException("This ElementValue isnt the class of the object. ("
                     + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
@@ -995,9 +993,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     if (field == null) {
                         return;
                     }
-                    if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType) {
-                        java.lang.reflect.ParameterizedType pt = (java.lang.reflect.ParameterizedType) field
-                                .getGenericType();
+                    if (field.getGenericType() instanceof java.lang.reflect.ParameterizedType pt) {
                         genericType = (Class<?>) pt.getActualTypeArguments()[0];
                     } else
                         genericType = null;
@@ -1039,9 +1035,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         toAdd.Input = newInput;
 
                         if (anno.strict()) {
-                            ((JComboBox<String>) newInput).setEditable(false);
+                            newInput.setEditable(false);
                         }
-                        ((JComboBox<String>) newInput).setSelectedItem(entry);
+                        newInput.setSelectedItem(entry);
                     }
 
                     JButton removeButton = new JButton("-");
@@ -1140,18 +1136,15 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 if (Input instanceof JComboBox jcb) // if its a drop down
                 {
                     jcb.setSelectedItem(value);
-                    return;
                 } else if (Input instanceof JTextField)
                     ((JTextField) Input).setText(String.valueOf(value));
                 // else is called when the input is a JLabel, its only that when not supported
                 else {
                     // just ignore unsupported fields
-                    return;
                 }
             } catch (Exception ex) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(parentFrame, "There was a problem setting a field.", "Error", ex);
-                return;
             }
 
         }

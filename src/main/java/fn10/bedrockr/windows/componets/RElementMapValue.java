@@ -375,8 +375,8 @@ public class RElementMapValue extends JPanel {
 
             } else if (rMapElement.Type == MapTints.class && val instanceof MapTints mapTints) {
 
-                ((JButton) MultipleInputs.get("foliageColour")).setForeground(Color.decode(mapTints.foliage));
-                ((JButton) MultipleInputs.get("grassColour")).setForeground(Color.decode(mapTints.grass.tint));
+                MultipleInputs.get("foliageColour").setForeground(Color.decode(mapTints.foliage));
+                MultipleInputs.get("grassColour").setForeground(Color.decode(mapTints.grass.tint));
 
             } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) {
 
@@ -411,7 +411,6 @@ public class RElementMapValue extends JPanel {
 
             } else if (rMapElement instanceof RStringDropdownMapElement) {
                 ((JComboBox<String>) InputField).setSelectedItem(val);
-                return;
             } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                 ((JSpinner) InputField).setValue(val);
             } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
@@ -439,7 +438,7 @@ public class RElementMapValue extends JPanel {
                 ((JSpinner) InputField).setValue(val);
 
             } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
-                ((JComboBox<String>) InputField).setSelectedIndex(((Boolean) val) == true ? 0 : 1);
+                ((JComboBox<String>) InputField).setSelectedIndex(((Boolean) val) ? 0 : 1);
             } else { // else
                 throw new IllegalArgumentException(
                         "Class " + val.getClass().getSimpleName() + ", cannot be used on this RElementMapValue of type "
@@ -484,18 +483,18 @@ public class RElementMapValue extends JPanel {
                 } else if (rMapElement.Type == Humidity.class) {
 
                     val = new Humidity();
-                    ((Humidity) val).is_humid = ((JComboBox<String>) InputField).getSelectedIndex() == 0 ? true : false;
+                    ((Humidity) val).is_humid = ((JComboBox<String>) InputField).getSelectedIndex() == 0;
 
                 } else if (rMapElement.Type == MapTints.class) {
                     val = new MapTints();
                     GrassTint grassTint = new GrassTint();
 
-                    Color foliageColor = ((JButton) MultipleInputs.get("foliageColour")).getForeground();
+                    Color foliageColor = MultipleInputs.get("foliageColour").getForeground();
                     ((MapTints) val).foliage = String.format("#%02x%02x%02x", foliageColor.getRed(),
                             foliageColor.getGreen(),
                             foliageColor.getBlue());
 
-                    Color grassColor = ((JButton) MultipleInputs.get("grassColour")).getForeground();
+                    Color grassColor = MultipleInputs.get("grassColour").getForeground();
                     grassTint.tint = String.format("#%02x%02x%02x", grassColor.getRed(),
                             grassColor.getGreen(),
                             grassColor.getBlue());

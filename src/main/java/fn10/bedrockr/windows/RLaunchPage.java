@@ -23,32 +23,32 @@ import java.net.URI;
 
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
     
-    private JPanel ProjectsPart = new JPanel();
-    private JScrollPane ProjectsScrollPart = new JScrollPane(ProjectsPart, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    private final JPanel ProjectsPart = new JPanel();
+    private final JScrollPane ProjectsScrollPart = new JScrollPane(ProjectsPart, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private Greeting greeting = Greetings.GetGreeting();
-    private JLabel greetingText = new JLabel(greeting.Text);
+    private final Greeting greeting = Greetings.GetGreeting();
+    private final JLabel greetingText = new JLabel(greeting.Text);
 
-    private JSeparator seperater = new JSeparator(JSeparator.HORIZONTAL);
+    private final JSeparator seperater = new JSeparator(JSeparator.HORIZONTAL);
 
-    private JLabel othergreeting = new JLabel(
+    private final JLabel othergreeting = new JLabel(
             "<html>Welcome back to bedrockR! Below are your current addons. Have none? Create a new one, and <br>maybe check out the wiki.</html>");
-    private WrapLayout InnerLay = new WrapLayout(1, 8, 6);
+    private final WrapLayout InnerLay = new WrapLayout(1, 8, 6);
 
-    private JMenuBar menuBar = new JMenuBar();
+    private final JMenuBar menuBar = new JMenuBar();
 
-    private JMenu fileMenu = new JMenu("File");
-    private JMenu addonsMenu = new JMenu("Addons");
-    private JMenu helpMenu = new JMenu("Help");
+    private final JMenu fileMenu = new JMenu("File");
+    private final JMenu addonsMenu = new JMenu("Addons");
+    private final JMenu helpMenu = new JMenu("Help");
 
-    private Desktop desk = Desktop.getDesktop();
-    private JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
-    private JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
-    private JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
-    private JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
-    private JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
-    private JMenuItem websiteButton = new JMenuItem("bedrockR Website", KeyEvent.VK_E);
+    private final Desktop desk = Desktop.getDesktop();
+    private final JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
+    private final JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
+    private final JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
+    private final JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
+    private final JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
+    private final JMenuItem websiteButton = new JMenuItem("bedrockR Website", KeyEvent.VK_E);
 
     public RLaunchPage(Dimension Size) {
         super(

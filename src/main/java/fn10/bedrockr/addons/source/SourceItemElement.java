@@ -9,8 +9,8 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceItemElement extends ElementSource<ItemFile> {
     private final String Location = File.separator + "elements" + File.separator;
-    private Class<ItemFile> serilizedClass = ItemFile.class;
-    private ItemFile serilized;
+    private final Class<ItemFile> serilizedClass = ItemFile.class;
+    private final ItemFile serilized;
 
     public SourceItemElement(ItemFile obj) {
         this.serilized = obj;
@@ -21,7 +21,7 @@ public class SourceItemElement extends ElementSource<ItemFile> {
     }
 
     public SourceItemElement(String jsonString) {
-        this.serilized = (ItemFile) getFromJSON(jsonString);
+        this.serilized = getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() throws IOException {

@@ -9,8 +9,8 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceFoodElement extends ElementSource<FoodFile> {
     private final String Location = File.separator + "elements" + File.separator;
-    private Class<FoodFile> serilizedClass = FoodFile.class;
-    private FoodFile serilized;
+    private final Class<FoodFile> serilizedClass = FoodFile.class;
+    private final FoodFile serilized;
 
     public SourceFoodElement(FoodFile obj) {
         this.serilized = obj;

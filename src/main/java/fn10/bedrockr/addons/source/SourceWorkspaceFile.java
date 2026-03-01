@@ -10,7 +10,7 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
-    private WorkspaceFile serilized;
+    private final WorkspaceFile serilized;
 
     public String workspaceName() {
         return serilized.WorkspaceName;
@@ -25,7 +25,7 @@ public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
     }
 
     public SourceWorkspaceFile(String jsonString) {
-        this.serilized = (WorkspaceFile) getFromJSON(jsonString);
+        this.serilized = getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() {

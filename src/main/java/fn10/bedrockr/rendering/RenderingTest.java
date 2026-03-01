@@ -20,12 +20,12 @@ import com.jme3.texture.Texture.MagFilter;
 public class RenderingTest extends SimpleApplication {
 
     private FrameBuffer buffer;
-    private int size = 64;
-    private Texture2D renderTarget = new Texture2D(size, size, Image.Format.ARGB8);
+    private final int size = 64;
+    private final Texture2D renderTarget = new Texture2D(size, size, Image.Format.ARGB8);
     private Spatial model;
-    private ScreenshotAppState screenShotState = new ScreenshotAppState();
+    private final ScreenshotAppState screenShotState = new ScreenshotAppState();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         new RenderingTest().run();
     }
 

@@ -79,7 +79,6 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
 
     @Override
     public void setDraft(Boolean draft) {
-        return;
     }
 
     @Override

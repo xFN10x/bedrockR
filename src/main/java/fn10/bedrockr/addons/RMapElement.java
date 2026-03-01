@@ -17,7 +17,7 @@ public class RMapElement {
     public String HelpDescription;
     public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
 
-    public static enum MapValueFilter {
+    public enum MapValueFilter {
         NotNegitive, Between0And1
     }
 

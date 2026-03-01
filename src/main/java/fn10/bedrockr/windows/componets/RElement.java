@@ -27,7 +27,7 @@ public class RElement extends JPanel implements MouseListener {
     public JLabel Name = new JLabel();
     public JLabel Desc = new JLabel();
 
-    private Runnable func;
+    private final Runnable func;
     protected boolean selected;
     protected Color outlineColour = Color.green;
     private Class<? extends ElementSource<?>> clasz;
@@ -51,12 +51,12 @@ public class RElement extends JPanel implements MouseListener {
      * 
      * @param clazz
      *                         Used for unmodified versions of this, this can be
-     *                         <code>null</code> if you want to customize it.
+     *                         {@code null} if you want to customize it.
      * @param selectedFunction
      *                         Runs before making this selected. Used for managing
      *                         how many you can select in a list for example.
      * @param borderColour
-     *                         Default is <code>Color.green</code>
+     *                         Default is {@code Color.green}
      * @param icon
      *                         Declares if this has an icon.
      * @throws IllegalAccessException

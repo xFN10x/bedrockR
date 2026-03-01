@@ -8,11 +8,11 @@ public class FieldFilters {
 
         Boolean getValid(String subject);
 
-        public static boolean isEmptyString(String subject) {
+        static boolean isEmptyString(String subject) {
             return subject.isBlank();
         }
 
-        public static boolean containsAnOccurance(String Target, String... chars) {
+        static boolean containsAnOccurance(String Target, String... chars) {
             for (String string : chars) {
                 if (Target.contains(string))
                     return true;
@@ -26,10 +26,7 @@ public class FieldFilters {
 
         @Override
         public Boolean getValid(String subject) {
-            if (FieldFilter.isEmptyString(subject)) {
-                return false;
-            } else
-                return true;
+            return !FieldFilter.isEmptyString(subject);
         }
 
     }
@@ -42,10 +39,7 @@ public class FieldFilters {
             if (subject.chars().anyMatch(Character::isUpperCase))
                 return false;
             // check if the id is valid
-            else if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
-                return false;
-            else
-                return true;
+            else return RFileOperations.validFolderName(subject) && !FieldFilter.isEmptyString(subject);
         }
 
     }
@@ -55,16 +49,13 @@ public class FieldFilters {
         @Override
         public Boolean getValid(String subject) {
             // check if there are any spaces, or uppercases
-            if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
-                return false;
-            else
-                return true;
+            return RFileOperations.validFolderName(subject) && !FieldFilter.isEmptyString(subject);
         }
 
     }
 
     /**
-     * This filter is a FileNameLikeStringFilter, but it allowed <code>(none)</code>
+     * This filter is a FileNameLikeStringFilter, but it allowed {@code (none)}
      */
     public static class CommonFilter1 implements FieldFilter {
 
@@ -74,10 +65,7 @@ public class FieldFilters {
             if (subject.equals("(none)")) // none is allowed
                 return true;
 
-            if (!RFileOperations.validFolderName(subject) || FieldFilter.isEmptyString(subject))
-                return false;
-            else
-                return true;
+            return RFileOperations.validFolderName(subject) && !FieldFilter.isEmptyString(subject);
         }
     }
 

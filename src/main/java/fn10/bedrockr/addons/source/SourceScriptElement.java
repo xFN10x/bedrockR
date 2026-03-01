@@ -10,7 +10,7 @@ import fn10.bedrockr.utils.RFileOperations;
 public class SourceScriptElement extends ElementSource<ScriptFile> {
 
     // private final String Location = File.separator + "elements" + File.separator;
-    private ScriptFile serilized;
+    private final ScriptFile serilized;
 
     public SourceScriptElement(ScriptFile obj) {
         this.serilized = obj;
@@ -21,7 +21,7 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
     }
 
     public SourceScriptElement(String jsonString) {
-        this.serilized = (ScriptFile) getFromJSON(jsonString);
+        this.serilized = getFromJSON(jsonString);
     }
 
     @Override

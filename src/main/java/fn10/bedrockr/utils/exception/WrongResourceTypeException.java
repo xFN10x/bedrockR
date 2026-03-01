@@ -10,9 +10,9 @@ public class WrongResourceTypeException extends Exception {
     public WrongResourceTypeException(int got, int... expected) {
         StringBuilder sb = new StringBuilder("Expected Resource type: (");
         for (int expect : expected) {
-            sb.append(String.valueOf(expect) + ",");
+            sb.append(expect + ",");
         }
-        sb.append(") got: " + String.valueOf(got));
+        sb.append(") got: " + got);
         super(sb.toString());
     }
 }

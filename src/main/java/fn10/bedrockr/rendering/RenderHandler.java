@@ -52,11 +52,11 @@ public class RenderHandler extends SimpleApplication {
             0.369643827011f);
 
     private FrameBuffer buffer;
-    private int size = 150;
-    private Texture2D renderTarget = new Texture2D(size, size, Format.ARGB8);
+    private final int size = 150;
+    private final Texture2D renderTarget = new Texture2D(size, size, Format.ARGB8);
     private Spatial model;
-    private String sspath = RFileOperations.getBaseDirectory("cache", "renders").getAbsolutePath();
-    private ScreenshotAppState screenShotState = new ScreenshotAppState(
+    private final String sspath = RFileOperations.getBaseDirectory("cache", "renders").getAbsolutePath();
+    private final ScreenshotAppState screenShotState = new ScreenshotAppState(
             sspath + File.separator);
     private boolean started = false;
 

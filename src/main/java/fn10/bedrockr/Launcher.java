@@ -57,7 +57,7 @@ public class Launcher {
     public static Logger LOG = Logger.getGlobal();
     public static HttpClient client = HttpClient.newBuilder().build();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         RFileOperations.init();
         try {
             ICON = ImageIO.read(Launcher.class

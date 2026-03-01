@@ -180,7 +180,9 @@ public class BiomeComponents implements RMapElementProvider {
 
                 new RMapElement("Tags", "minecraft:tags", Tags.class,
                         """
-                                Attach arbitrary string tags to this\nbiome. Most biome tags are referenced\nby JSON settings, but some meanings of tags are directly implemented in the game's code.
+                                Attach arbitrary string tags to this
+                                biome. Most biome tags are referenced
+                                by JSON settings, but some meanings of tags are directly implemented in the game's code.
 
                                 These tags are listed here:
 

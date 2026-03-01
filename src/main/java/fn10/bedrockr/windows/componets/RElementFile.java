@@ -118,18 +118,17 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(true);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.saveJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.saveJSONFile(wksp.SWPF.getSerilized().WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
             }
-            ;
         } else if (ac.equals("undraft")) {
             try {
                 file.setDraft(false);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.saveJSONFile(((WorkspaceFile) wksp.SWPF.getSerilized()).WorkspaceName);
+                src.saveJSONFile(wksp.SWPF.getSerilized().WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);

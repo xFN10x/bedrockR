@@ -9,13 +9,13 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceRecipeElement extends ElementSource<RecipeFile> {
 
-    public static enum RecipeType {
+    public enum RecipeType {
         Shaped,
         Shapeless,
     }
 
     private final String Location = File.separator + "elements" + File.separator;
-    private RecipeFile serilized;
+    private final RecipeFile serilized;
 
     public SourceRecipeElement(RecipeFile obj) {
         this.serilized = obj;
@@ -26,7 +26,7 @@ public class SourceRecipeElement extends ElementSource<RecipeFile> {
     }
 
     public SourceRecipeElement(String jsonString) {
-        this.serilized = (RecipeFile) getFromJSON(jsonString);
+        this.serilized = getFromJSON(jsonString);
     }
 
     

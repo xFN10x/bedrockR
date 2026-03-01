@@ -216,7 +216,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 }
             } catch (Exception ex) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
-                ErrorShower.showError(((Frame) getParent()), "Failed to make new addon.", "Grrrr", ex);
+                ErrorShower.showError(getParent(), "Failed to make new addon.", "Grrrr", ex);
             }
 
         } else {

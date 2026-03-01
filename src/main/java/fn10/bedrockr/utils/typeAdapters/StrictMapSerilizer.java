@@ -27,7 +27,7 @@ public class StrictMapSerilizer implements JsonSerializer<Map<String, Object>> {
             } else if (value instanceof Boolean) {
                 jsonObject.addProperty(key, (Boolean) value);
             } else if (value instanceof Double) {
-                if (((Double) value).toString().endsWith(".0"))
+                if (value.toString().endsWith(".0"))
                     jsonObject.addProperty(key, ((Double) value).intValue());
                 else
                     jsonObject.addProperty(key, (Double) value);
