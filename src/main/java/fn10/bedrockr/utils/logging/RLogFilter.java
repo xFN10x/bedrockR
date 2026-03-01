@@ -8,9 +8,7 @@ public class RLogFilter implements Filter {
 
     @Override
     public boolean isLoggable(LogRecord arg0) {
-        if (arg0.getLevel() == Level.CONFIG)
-            return false;
-        return true;
+        return arg0.getLevel() != Level.CONFIG;
     }
 
 }

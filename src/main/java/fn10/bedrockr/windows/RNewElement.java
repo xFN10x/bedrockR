@@ -25,13 +25,13 @@ import fn10.bedrockr.windows.util.SpringUtilities;
 
 public class RNewElement extends RDialog implements ActionListener {
 
-    private JPanel MainPane = new JPanel();
-    private JScrollPane MainScrollPane = new JScrollPane(MainPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    private final JPanel MainPane = new JPanel();
+    private final JScrollPane MainScrollPane = new JScrollPane(MainPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private JButton CreateAsNormalButton = new JButton("Create!");
-    private Frame Parent;
-    private String workspaceName;
+    private final JButton CreateAsNormalButton = new JButton("Create!");
+    private final Frame Parent;
+    private final String workspaceName;
 
     public RNewElement(Frame Parent, String WorkspaceName) {
         super(
@@ -55,7 +55,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 }));
             } catch (Exception e) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError((Frame) getParent(), "error", e);
+                ErrorShower.showError(getParent(), "error", e);
                 continue;
             }
         }
@@ -120,14 +120,13 @@ public class RNewElement extends RDialog implements ActionListener {
             } catch (Exception ex) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 if (ex.getCause() != null) {
-                    ErrorShower.showError((Frame) getParent(),
+                    ErrorShower.showError(getParent(),
                             "Failed to create component. " + ex.getCause().getMessage() + "\n\n",
                             "Erorrrrrrrrrr", ex);
                 } else {
-                    ErrorShower.showError((Frame) getParent(), "Failed to create component. ",
+                    ErrorShower.showError(getParent(), "Failed to create component. ",
                             "Erorrrrrrrrrr", ex);
                 }
-                return;
             }
         }
     }

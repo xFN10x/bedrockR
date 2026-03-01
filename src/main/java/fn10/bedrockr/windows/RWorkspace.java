@@ -80,35 +80,35 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public SourceWorkspaceFile SWPF;
 
     // components
-    private JSeparator VerticalSep = new JSeparator(JSeparator.VERTICAL);
+    private final JSeparator VerticalSep = new JSeparator(JSeparator.VERTICAL);
 
-    private JTabbedPane Tabs = new JTabbedPane();
+    private final JTabbedPane Tabs = new JTabbedPane();
 
-    private JPanel ElementInnerPanelView = new JPanel();
-    private JPanel ResourceInnerPanelView = new JPanel();
-    private JScrollPane ElementView = new JScrollPane(ElementInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    private final JPanel ElementInnerPanelView = new JPanel();
+    private final JPanel ResourceInnerPanelView = new JPanel();
+    private final JScrollPane ElementView = new JScrollPane(ElementInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    private JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    private final JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private JButton AddElement = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/NewElement.png")));
-    private JButton AddTextureResource = new JButton(
+    private final JButton AddElement = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/NewElement.png")));
+    private final JButton AddTextureResource = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/NewResource.png")));
-    private JButton LaunchMC = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/LaunchMC.png")));
-    private JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
-    private JButton ReBuildElements = new JButton(
+    private final JButton LaunchMC = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/LaunchMC.png")));
+    private final JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
+    private final JButton ReBuildElements = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
-    private JButton HelpWikiButton = new JButton(
+    private final JButton HelpWikiButton = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/Help.png")));
 
-    private JMenuBar menuBar = new JMenuBar();
-    private JMenu fileMenu = new JMenu("File");
-    private JMenu helpMenu = new JMenu("Help");
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu fileMenu = new JMenu("File");
+    private final JMenu helpMenu = new JMenu("Help");
 
     public RWorkspace(SourceWorkspaceFile WPF) {
         super(
                 DO_NOTHING_ON_CLOSE,
-                ((WorkspaceFile) WPF.getSerilized()).WorkspaceName,
+                WPF.getSerilized().WorkspaceName,
                 Toolkit.getDefaultToolkit().getScreenSize(),
                 true,
                 false);
@@ -302,7 +302,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(RPdir));
                 }
                 refreshAll();
-                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables((WorkspaceFile) SWPF.getSerilized(),
+                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables(SWPF.getSerilized(),
                         RFileOperations.getResources(SWPF.workspaceName()).Serilized);
                 List<ElementFile<?>> ToBuild = List
                         .of(RFileOperations.getElementsFromWorkspace(SWPF.workspaceName()));
@@ -589,7 +589,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void onElementCancel() {
-        return;
     }
 
     @Override
@@ -656,27 +655,22 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 "Windows");
 
         var settings = SettingsFile.load();
-        switch (platformSelection) {
-            case 0:
-
-                settings.comMojangPath = System.getenv("APPDATA")
-                        + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";
-                if (!new File(settings.comMojangPath).exists()) {
-                    JOptionPane.showMessageDialog(doingThis,
-                            "Couldn't find com.mojang (after 1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \\n"
-                                    + //
-                                    " Retry by selecting the option in the File menu.",
-                            "oops", JOptionPane.ERROR_MESSAGE);
-                    break;
-                }
-                settings.save();
-
+        if (platformSelection == 0) {
+            settings.comMojangPath = System.getenv("APPDATA")
+                    + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";
+            if (!new File(settings.comMojangPath).exists()) {
                 JOptionPane.showMessageDialog(doingThis,
-                        "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
-                        "yippe", JOptionPane.INFORMATION_MESSAGE);
+                        "Couldn't find com.mojang (after 1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \\n"
+                                + //
+                                " Retry by selecting the option in the File menu.",
+                        "oops", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            settings.save();
 
-            default:
-                break;
+            JOptionPane.showMessageDialog(doingThis,
+                    "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
+                    "yippe", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -707,7 +701,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 if (doingThis != null)
                     doingThis.dispose();
                 workspaceView.setVisible(true);
-                if (!((WorkspaceFile) WPF.getSerilized()).MinecraftSync) { // ask to enable mc sync if not enabled
+                if (!WPF.getSerilized().MinecraftSync) { // ask to enable mc sync if not enabled
                     var ask = JOptionPane.showConfirmDialog(doingThis,
                             "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
                             "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -721,7 +715,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     if (ask == JOptionPane.YES_OPTION) {
                         showMCSyncPopup(doingThis, WPF);
                     } else {
-                        ((WorkspaceFile) WPF.getSerilized()).MinecraftSync = false;
+                        WPF.getSerilized().MinecraftSync = false;
                     }
                 }
             });

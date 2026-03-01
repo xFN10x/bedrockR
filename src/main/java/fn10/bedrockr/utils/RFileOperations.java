@@ -37,8 +37,8 @@ import java.io.InputStream;
 
 public class RFileOperations {
 
-    public static record ElementMade(Date timeMade, @Nullable ElementFile<?> elementData, int bedrockRVersion,
-            @Nullable String workspaceName) implements Comparable<ElementMade> {
+    public record ElementMade(Date timeMade, @Nullable ElementFile<?> elementData, int bedrockRVersion,
+                              @Nullable String workspaceName) implements Comparable<ElementMade> {
 
         @Override
         public int compareTo(ElementMade o) {
@@ -46,8 +46,8 @@ public class RFileOperations {
         }
     }
 
-    public static record WorkspaceMade(Date timeMade, @Nullable WorkspaceFile workspaceData, int bedrockRVersion,
-            @Nullable Object[] elementDatas) implements Comparable<WorkspaceMade> {
+    public record WorkspaceMade(Date timeMade, @Nullable WorkspaceFile workspaceData, int bedrockRVersion,
+                                @Nullable Object[] elementDatas) implements Comparable<WorkspaceMade> {
 
         @Override
         public int compareTo(WorkspaceMade o) {
@@ -401,8 +401,8 @@ public class RFileOperations {
     public static WorkspaceFile getWorkspaceFile(String WorkspaceName) {
         File file = getFileFromWorkspace(WorkspaceName, WPFFILENAME, true);
         try {
-            return ((WorkspaceFile) new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath())))
-                    .getSerilized());
+            return new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath())))
+                    .getSerilized();
         } catch (IOException e) {
             return null;
         }

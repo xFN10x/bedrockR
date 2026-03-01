@@ -42,7 +42,7 @@ import fn10.bedrockr.windows.util.ImageUtilites;
 public class RAddon extends JPanel implements MouseListener {
 
     private final static Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
-    private SpringLayout Lay = new SpringLayout();
+    private final SpringLayout Lay = new SpringLayout();
     protected JLabel Icon = new JLabel();
     protected JSeparator Div = new JSeparator();
     protected JPopupMenu Popup = new JPopupMenu();
@@ -64,7 +64,7 @@ public class RAddon extends JPanel implements MouseListener {
                     .getFileFromWorkspace(WPName, File.separator + RFileOperations.WPFFILENAME,
                             true)
                     .toPath())));
-            WPF = (WorkspaceFile) WPFile.getSerilized();
+            WPF = WPFile.getSerilized();
             step = 1;
             File iconFile = RFileOperations.getFileFromWorkspace(WPName,
                     File.separator + "icon." + WPF.IconExtension, true);
@@ -77,7 +77,7 @@ public class RAddon extends JPanel implements MouseListener {
             if (step == 0) {
                 return;
             } else if (step == 1) {
-                WPF = (WorkspaceFile) WPFile.getSerilized();
+                WPF = WPFile.getSerilized();
                 try {
                     BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
                     var op = JOptionPane.showConfirmDialog(this, "Woah! The addon " + WPName
@@ -221,12 +221,12 @@ public class RAddon extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent arg0) {
-        return; // dont need this
+        // dont need this
     }
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
-        return; // dont need this
+        // dont need this
     }
 
 }

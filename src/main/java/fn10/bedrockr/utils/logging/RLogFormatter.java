@@ -29,13 +29,13 @@ public class RLogFormatter extends Formatter {
                         + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
                         + " @ "
                         + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                        + record.getMessage() + "\n" + sw.toString() + ANSI_RESET;
+                        + record.getMessage() + "\n" + sw + ANSI_RESET;
             else {
                 return ANSI_RED + "("
                         + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
                         + " @ "
                         + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                        + sw.toString() + ANSI_RESET;
+                        + sw + ANSI_RESET;
             }
         } else if (record.getLevel() == Level.WARNING) {
             return ANSI_ORANGE + "("

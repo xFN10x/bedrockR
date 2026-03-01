@@ -16,10 +16,10 @@ import java.util.logging.Logger;
  */
 public class LoggingOutputStream extends ByteArrayOutputStream {
 
-    private String lineSeparator;
+    private final String lineSeparator;
 
-    private Logger logger;
-    private Level level;
+    private final Logger logger;
+    private final Level level;
 
     /**
      * Constructor

@@ -123,7 +123,7 @@ public class RTextureAddingSelector extends RDialog {
 
                 @Override
                 public ImageIcon getValue() {
-                    return (ImageIcon) ((JButton) selected).getIcon();
+                    return (ImageIcon) selected.getIcon();
                 }
 
                 @Override

@@ -20,8 +20,8 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceBiomeElement extends ElementSource<BiomeFile> {
 
-    public static transient String[] vanillaBiomeNames = null;
-    public static transient String[] prefixedVanillaBiomeNames = null;
+    public static String[] vanillaBiomeNames = null;
+    public static String[] prefixedVanillaBiomeNames = null;
 
     public static String[] getPrefixedVanillaBiomeNames() {
         if (prefixedVanillaBiomeNames == null)
@@ -84,7 +84,7 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
 
     public SourceBiomeElement(String jsonString) {
         this();
-        this.serilized = (BiomeFile) getFromJSON(jsonString);
+        this.serilized = getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() throws IOException {

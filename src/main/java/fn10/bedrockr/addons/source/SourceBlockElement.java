@@ -10,8 +10,8 @@ import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceBlockElement extends ElementSource<BlockFile> {
     private final String Location = File.separator + "elements" + File.separator;
-    private Class<BlockFile> serilizedClass = BlockFile.class;
-    private BlockFile serilized;
+    private final Class<BlockFile> serilizedClass = BlockFile.class;
+    private final BlockFile serilized;
 
     public SourceBlockElement(BlockFile obj) {
         this.serilized = obj;
@@ -22,7 +22,7 @@ public class SourceBlockElement extends ElementSource<BlockFile> {
     }
 
     public SourceBlockElement(String jsonString) {
-        this.serilized = (BlockFile) getFromJSON(jsonString);
+        this.serilized = getFromJSON(jsonString);
     }
 
     public static ElementDetails getDetails() throws IOException {

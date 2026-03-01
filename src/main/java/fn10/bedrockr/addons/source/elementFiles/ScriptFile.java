@@ -24,7 +24,6 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
 
     @Override
     public void setDraft(Boolean draft) {
-        return;
     }
 
     @Override

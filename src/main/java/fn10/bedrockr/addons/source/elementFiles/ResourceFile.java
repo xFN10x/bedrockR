@@ -86,7 +86,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
         try {
             if (name == null)
                 return false;
-            String finalName = (((String) name).contains(".png") ? name.toString() : name + ".png");
+            String finalName = (name.contains(".png") ? name : name + ".png");
 
             File dest = java.nio.file.Paths.get(RFileOperations.getBaseDirectory("workspace").getPath(), workspaceName,
                     "resources", finalName).toFile();
@@ -131,7 +131,6 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
 
     @Override
     public void setDraft(Boolean draft) {
-        return;
     }
 
     @Override

@@ -76,11 +76,11 @@ public class RItemSelector extends RDialog {
                     building.Id = bf.getItemId();
                     building.Name = bf.getDisplayName();
                     try {
-                        building.Prefix = ((WorkspaceFile) new SourceWorkspaceFile(
+                        building.Prefix = new SourceWorkspaceFile(
                                 new String(Files.readAllBytes(RFileOperations
                                         .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
                                         .toPath())))
-                                .getSerilized()).Prefix;
+                                .getSerilized().Prefix;
                     } catch (IOException e1) {
                         java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
                                 e1);

@@ -15,7 +15,7 @@ import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
 
 public interface SourcelessElementFile {
     @UneditableByCreation
-    public static final Gson gson = new GsonBuilder()
+    Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
             .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {

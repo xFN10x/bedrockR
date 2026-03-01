@@ -39,13 +39,13 @@ import fn10.bedrockr.windows.*;
 public class BlockTextures {
     private static final Gson gson = new GsonBuilder().create();
 
-    private static HttpClient client = HttpClient.newBuilder().build();
-    private static Map<String, ImageIcon> preloadedIcons = new HashMap<String, ImageIcon>();
+    private static final HttpClient client = HttpClient.newBuilder().build();
+    private static final Map<String, ImageIcon> preloadedIcons = new HashMap<String, ImageIcon>();
     private static Map<String, Map<String, Object>> blocksJson = null;
     private static Map<String, Map<String, Map<String, Object>>> terrianTextureJson = null;
-    private static URI blocksJsonUrl = URI.create(
+    private static final URI blocksJsonUrl = URI.create(
             "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/blocks.json");
-    private static URI terrianJsonUrl = URI.create(
+    private static final URI terrianJsonUrl = URI.create(
             "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/textures/terrain_texture.json");
     private static int downloaded = 0;
 

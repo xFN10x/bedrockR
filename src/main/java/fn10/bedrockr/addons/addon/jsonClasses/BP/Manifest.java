@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class Manifest {
 
     // inner classes
-    public static enum ModuleTypes {
+    public enum ModuleTypes {
         RESOURCES("resources"),
         DATA("data"),
         WORLD_TEMPLATE("world_template"),
@@ -22,8 +22,7 @@ public class Manifest {
 
         /**
          * (non-Javadoc)
-         * 
-         * @see java.lang.Enum#toString()
+         *
          */
         @Override
         public String toString() {
@@ -60,8 +59,8 @@ public class Manifest {
         public String uuid;
         public Vector<Integer> version;
         /**
-         * add this only if this is a <code>"script"</code>
-         * and if it is, only accepted value is <code>"javascript"</code>
+         * add this only if this is a {@code "script"}
+         * and if it is, only accepted value is {@code "javascript"}
          */
         public String language; // only if type is "script", if it is, only value is "javascript"
         public String entry;

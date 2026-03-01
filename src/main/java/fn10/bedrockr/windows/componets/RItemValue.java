@@ -46,7 +46,7 @@ import fn10.bedrockr.windows.RItemSelector;
 
 public class RItemValue extends JPanel implements ValidatableValue {
 
-    public static enum Type {
+    public enum Type {
         CraftingTable,
         Single,
         ListOfItems,
@@ -350,7 +350,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             }
             String str = string.toString().stripTrailing();
             if ((!str.isBlank() && !str.isEmpty()) || i == 1) {
-                patternRows.add(str.toString());
+                patternRows.add(str);
             }
         }
         if (patternRows.size() >= 3) { // if there are 3 rows
@@ -572,11 +572,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 if (strict) {
                     if (needsItems) {
                         try {
-                            if (getItems().size() >= 1) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return getItems().size() >= 1;
                         } catch (WrongItemValueTypeException e) {
 
                             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);

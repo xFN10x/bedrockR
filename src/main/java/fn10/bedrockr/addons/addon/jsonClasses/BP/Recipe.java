@@ -11,9 +11,9 @@ import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 
 public class Recipe {
 
-    public transient static final Item NULL_ITEM = new Item(
+    public static final Item NULL_ITEM = new Item(
             "you_should_never_see_this:report-a-github-bug-if-you-see-this");
-    public transient static final ReturnItemInfo NULL_RETURN_ITEM = new ReturnItemInfo(
+    public static final ReturnItemInfo NULL_RETURN_ITEM = new ReturnItemInfo(
             "report-a-github-bug-if-you-see-this", "NULL", "you_should_never_see_this");
 
     // classes

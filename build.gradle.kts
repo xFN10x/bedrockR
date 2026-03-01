@@ -129,7 +129,7 @@ tasks.javadoc {
     }
 }
 
-tasks.withType<Jar>() {
+tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 

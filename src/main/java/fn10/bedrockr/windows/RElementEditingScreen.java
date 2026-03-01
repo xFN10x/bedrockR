@@ -62,12 +62,12 @@ import fn10.bedrockr.windows.util.WrapLayout;
  */
 public class RElementEditingScreen extends RDialog implements ActionListener {
 
-    private ElementCreationListener Listener;
+    private final ElementCreationListener Listener;
     public JPanel InnerPane = new JPanel();
-    private JScrollPane Pane = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    private final JScrollPane Pane = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     private JPanel SpecialPane = null;
-    private SpringLayout SpecialPaneLay = new SpringLayout();
+    private final SpringLayout SpecialPaneLay = new SpringLayout();
     public BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
 
     public Class<?> SourceClass;
@@ -87,7 +87,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     public final JButton DraftButton = new JButton("Save as draft");
     public final JButton CancelButton = new JButton("Cancel");
 
-    public static interface CustomCreateFunction {
+    public interface CustomCreateFunction {
         void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft);
 
     }
@@ -349,7 +349,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              */
         } else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
-                RecipeFile serilized = (RecipeFile) ((SourceRecipeElement) src).getSerilized();
+                RecipeFile serilized = ((SourceRecipeElement) src).getSerilized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
                         parent2,
                         RElementEditingScreen.DEFAULT_STYLE);
@@ -517,7 +517,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                     @Override
                     public void itemStateChanged(ItemEvent e) {
-                        RecipeFile Serilized = (RecipeFile) ((SourceRecipeElement) src).getSerilized();
+                        RecipeFile Serilized = ((SourceRecipeElement) src).getSerilized();
 
                         try {
                             ShapedOutput shaped = grid.getShapedRecipe();
@@ -590,7 +590,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return null;
             }
         } else if (src.getClass().equals(SourceFoodElement.class)) {
-            FoodFile serilized = (FoodFile) ((SourceFoodElement) src).getSerilized();
+            FoodFile serilized = ((SourceFoodElement) src).getSerilized();
             RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", src, src.getSerilizedClass(),
                     parent2,
                     RElementEditingScreen.DEFAULT_STYLE);
@@ -823,7 +823,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             this.dispose();
         } catch (Exception ex) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
-            ErrorShower.showError((Frame) getParent(), "Failed to create ElementSource",
+            ErrorShower.showError(getParent(), "Failed to create ElementSource",
                     "Source Creation Error", ex);
         }
     }
@@ -868,7 +868,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             this.dispose();
         } else {
             var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");
-            ErrorShower.showError((Frame) getParent(),
+            ErrorShower.showError(getParent(),
                     "woah mate, button dont fit, dont fit, button, it dont fit, wont fit", "I did an oppsie", ex);
 
             throw new IllegalAccessError();
