@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.List;
 
+import fn10.bedrockr.Launcher;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -55,8 +56,8 @@ public class RFileOperations {
         }
     }
 
-    public static final String SEM_VERSION = "0.7.1";
-    public static final String VERSION = "a2.0.1";
+    public static final String SEM_VERSION = "0.7.2";
+    public static final String VERSION = "a2.0.2";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
@@ -142,9 +143,9 @@ public class RFileOperations {
                 return null;
             }
         } else {
-            throw new UnsupportedOperationException("This Element extension isnt avaliable in this version");
+            Logger.getGlobal().warning("Element: " + fileExtension + " not supported in: " + RFileOperations.VERSION);
+            return null;
         }
-
     }
 
     /**
