@@ -7,10 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
@@ -45,6 +42,17 @@ public class RElement extends JPanel implements MouseListener {
         this(clazz, selectedFunction, borderColour, true);
     }
 
+    protected RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour,
+                       boolean icon) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ElementDetails tempDetails = null;
+        if (clazz != null) {
+            this.clasz = clazz;
+
+            tempDetails = (ElementDetails) clazz.getMethod("getDetails").invoke(null);
+        }
+        this(clazz, selectedFunction, borderColour, icon, tempDetails != null ? new ImageIcon(tempDetails.Icon) : null);
+    }
+
     /**
      * A ui-component with an icon, name and description. Can be easily changed to
      * make it custom.
@@ -64,7 +72,7 @@ public class RElement extends JPanel implements MouseListener {
      * @throws NoSuchMethodException
      */
     protected RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour,
-            boolean icon)
+            boolean icon, ImageIcon iicon)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         super();
 
@@ -85,7 +93,7 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setPreferredSize(new Dimension(70, 70));
         Icon.setSize(new Dimension(70, 70));
         if (clazz != null)
-            Icon.setIcon(ImageUtilites.ResizeIcon(new ImageIcon(details.Icon), 64, 64));
+            Icon.setIcon(ImageUtilites.ResizeIcon(iicon, 64, 64));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         if (clazz != null)
@@ -122,6 +130,10 @@ public class RElement extends JPanel implements MouseListener {
         }
 
         addMouseListener(this);
+    }
+
+    public void setIcon(ImageIcon ico) {
+        Icon.setIcon(ImageUtilites.ResizeIcon(ico, 64, 64));
     }
 
     public boolean getSelected() {

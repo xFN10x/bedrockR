@@ -7,17 +7,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.windows.RElementEditingScreen;
 import fn10.bedrockr.windows.RWorkspace;
 import fn10.bedrockr.windows.util.ErrorShower;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class RElementFile extends RElement implements ActionListener {
 
@@ -41,6 +42,10 @@ public class RElementFile extends RElement implements ActionListener {
             Name.setForeground(clr.brighter());
             Desc.setForeground(clr.brighter());
             this.setBackground(clr.darker().darker());
+        }
+
+        if (file instanceof ItemLikeElement) {
+            setIcon(new ImageIcon(ArrayUtils.toPrimitive(((ItemLikeElement) file).getTexture(wksp.SWPF.workspaceName()))));
         }
 
         JPopupMenu popup = new JPopupMenu(File.getElementName());
