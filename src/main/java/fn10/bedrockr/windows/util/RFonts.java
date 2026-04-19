@@ -1,10 +1,11 @@
 package fn10.bedrockr.windows.util;
 
+import jakarta.annotation.Nonnull;
+
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.annotation.Nonnull;
 
 public class RFonts {
 
