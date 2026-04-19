@@ -67,6 +67,7 @@ public class RFileOperations {
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
     public final static String[] PICKABLE_VERSIONS = {
+            "26.10",
             "1.26.0",
     };
 
