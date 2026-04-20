@@ -198,11 +198,7 @@ public class BlockTextures {
                 Object texId = terrianTextureJson.get("texture_data").get(textures).get("textures");
                 // System.out.println("texture file name: " + texId.toString());
                 if (texId instanceof String) {
-                    try {
-                        RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texId.toString()));
-                    } catch (IOException | InterruptedException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                    }
+                    //RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texId.toString()));
                 }
             } else {
                 if (((LinkedTreeMap<String, String>) textures).containsKey("side")) {
@@ -226,8 +222,8 @@ public class BlockTextures {
                         texIdDown = list.get(0);
                     }
 
-                    RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
-                            downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
+                    //RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
+                    //        downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
 
                 } else if (((LinkedTreeMap<String, String>) textures).containsKey("east")) {
                     Object texIdTop = terrianTextureJson.get("texture_data")
@@ -272,10 +268,10 @@ public class BlockTextures {
                         texIdDown = list.get(0);
                     }
 
-                    RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
-                            downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
-                            downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString()),
-                            downloadTexture(texIdSouth.toString()));
+                    //RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
+                   //         downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
+                    //        downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString()),
+                    //        downloadTexture(texIdSouth.toString()));
 
                 }
             }

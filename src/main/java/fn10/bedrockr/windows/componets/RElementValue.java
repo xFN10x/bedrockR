@@ -688,8 +688,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 BufferedImage bi = new BufferedImage(icon.getWidth(parentFrame), icon.getHeight(null),
                                         BufferedImage.TYPE_INT_RGB);
                                 bi.getGraphics().drawImage(icon, 0, 0, parentFrame);
-                                RenderHandler.CurrentHandler.showPreviewWindow(parentFrame,
-                                        RenderHandler.make6Sided(bi));
+                                //RenderHandler.CurrentHandler.showPreviewWindow(parentFrame,
+                                //        RenderHandler.make6Sided(bi));
                             });
                             AddButtonBlock.addActionListener(ac -> {
                                 SystemFileChooser file = new SystemFileChooser();
