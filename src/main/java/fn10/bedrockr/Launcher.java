@@ -217,7 +217,7 @@ public class Launcher {
         }*/
 
         loading.ProgressText.setText("Setting up 3D...");
-        RenderHandler.startup();
+        //RenderHandler.startup();
 
         loading.ProgressText.setText("Downloading Block textures...");
         try {
