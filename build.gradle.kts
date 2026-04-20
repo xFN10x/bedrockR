@@ -23,8 +23,15 @@ sourceSets["main"].resources {
     modules("javafx.controls", "javafx.swing", "javafx.web")
 }*/
 
+val lwjglVersion = "3.4.1"
+val jomlVersion = "1.10.8"
+val lwjglNatives = "natives-windows"
+
+val version = "a2.1.0"
+val winver = "0.8.0"
+
 dependencies {
-    implementation(libs.guava)
+    implementation("com.google.guava:guava:33.6.0-jre")
 
     //gson
     implementation("com.google.code.gson:gson:2.13.1")
@@ -38,9 +45,21 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 
     //3d stuff
-    implementation("org.jmonkeyengine:jme3-lwjgl3:3.9.0-stable")
+    implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
-    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation("org.lwjgl", "lwjgl")
+    implementation("org.lwjgl", "lwjgl-assimp")
+    implementation("org.lwjgl", "lwjgl-glfw")
+    implementation("org.lwjgl", "lwjgl-spng")
+    implementation("org.lwjgl", "lwjgl-stb")
+    implementation("org.lwjgl", "lwjgl-vma")
+    implementation("org.lwjgl", "lwjgl-vulkan")
+    implementation ("org.lwjgl", "lwjgl", classifier = lwjglNatives)
+    implementation ("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
+    implementation ("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
+    implementation ("org.lwjgl", "lwjgl-spng", classifier = lwjglNatives)
+    implementation ("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+    implementation("org.joml", "joml", jomlVersion)
 }
 
 java {
@@ -54,9 +73,6 @@ java {
 application {
     mainClass = "fn10.bedrockr.Launcher"
 }
-
-val version = "a2.0.2"
-val winver = "0.7.2"
 
 tasks.test {
     failOnNoDiscoveredTests = false
