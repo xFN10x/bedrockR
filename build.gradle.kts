@@ -38,7 +38,7 @@ dependencies {
     //flat laf
     implementation("com.formdev:flatlaf:3.7.1")
 
-    implementation("commons-io:commons-io:2.21.0")
+    implementation("commons-io:commons-io:2.22.0")
     implementation("org.apache.commons:commons-lang3:3.20.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
