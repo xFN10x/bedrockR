@@ -34,7 +34,7 @@ dependencies {
     implementation("com.google.guava:guava:33.6.0-jre")
 
     //gson
-    implementation("com.google.code.gson:gson:2.13.1")
+    implementation("com.google.code.gson:gson:2.14.0")
     //flat laf
     implementation("com.formdev:flatlaf:3.7.1")
 
