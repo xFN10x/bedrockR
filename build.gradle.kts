@@ -48,17 +48,11 @@ dependencies {
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
     implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-assimp")
     implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-spng")
-    implementation("org.lwjgl", "lwjgl-stb")
-    implementation("org.lwjgl", "lwjgl-vma")
-    implementation("org.lwjgl", "lwjgl-vulkan")
+    implementation("org.lwjgl", "lwjgl-opengl")
     implementation ("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    implementation ("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
     implementation ("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    implementation ("org.lwjgl", "lwjgl-spng", classifier = lwjglNatives)
-    implementation ("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+    implementation ("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
     implementation("org.joml", "joml", jomlVersion)
 }
 
