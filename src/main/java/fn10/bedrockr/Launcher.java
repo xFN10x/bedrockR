@@ -150,7 +150,7 @@ public class Launcher {
                                 + ")",
                         JOptionPane.YES_NO_OPTION);
                 if (op == JOptionPane.YES_OPTION) {
-                    Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR/releases/latest"));
+                    Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev/download"));
                     System.exit(0);
                 }
             }

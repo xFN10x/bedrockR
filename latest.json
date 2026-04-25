@@ -1,7 +1,7 @@
 {
     "valid": true,
     "format": 1,
-    "currentVersion": 7,
-    "message": "<html>Your version of bedrockR is out of date. <br> Latest version: <b>a1.5</b><br><br> Download latest version? <b>(This version adds biomes!)</b> </html>",
-    "currentStringVersion": "a1.5"
+    "currentVersion": 8,
+    "message": "<html>Your version of bedrockR is out of date. <br> Latest version: <b>a2.0.2</b><br><br> Download latest version? <b>(I forgot to change this json for a while!)</b> </html>",
+    "currentStringVersion": "a2.0.2"
 }
