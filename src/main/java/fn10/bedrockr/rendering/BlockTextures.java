@@ -1,5 +1,20 @@
 package fn10.bedrockr.rendering;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.windows.RLoadingScreen;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,26 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import java.awt.Image;
-import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.internal.LinkedTreeMap;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry;
-import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.windows.*;
 
 public class BlockTextures {
     private static final Gson gson = new GsonBuilder().create();
@@ -107,6 +102,7 @@ public class BlockTextures {
                         loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
                     } catch (IllegalAccessException e) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        return;
                     }
                     if (Thread.interrupted())
                         return;
@@ -136,7 +132,7 @@ public class BlockTextures {
             loading.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
                     int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
-                            + (ReturnItemInfo.vanillaBlocks.length - downloaded) + " blocks left!",
+                                    + (ReturnItemInfo.vanillaBlocks.length - downloaded) + " blocks left!",
                             "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
                     if (op == JOptionPane.YES_OPTION) {
                         latch.countDown();
@@ -153,12 +149,12 @@ public class BlockTextures {
 
     /**
      * Download a texture, process it and add it to the list
-     * 
+     *
      * @param id
      * @throws InterruptedException
      * @throws IOException
      */
-    public static Image downloadTexture(String id) throws IOException, InterruptedException {
+    public static BufferedImage downloadTexture(String id) throws IOException, InterruptedException {
         if (!id.startsWith("textures/blocks")) {
             id = "textures/blocks/" + id;
         }
@@ -198,7 +194,7 @@ public class BlockTextures {
                 Object texId = terrianTextureJson.get("texture_data").get(textures).get("textures");
                 // System.out.println("texture file name: " + texId.toString());
                 if (texId instanceof String) {
-                    //RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texId.toString()));
+                    RenderHandler.render6SideBlock(blockId, downloadTexture(texId.toString()));
                 }
             } else {
                 if (((LinkedTreeMap<String, String>) textures).containsKey("side")) {
@@ -222,8 +218,8 @@ public class BlockTextures {
                         texIdDown = list.get(0);
                     }
 
-                    //RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
-                    //        downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
+                    RenderHandler.render6SideBlock(blockId, downloadTexture(texIdTop.toString()),
+                            downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
 
                 } else if (((LinkedTreeMap<String, String>) textures).containsKey("east")) {
                     Object texIdTop = terrianTextureJson.get("texture_data")
@@ -268,10 +264,10 @@ public class BlockTextures {
                         texIdDown = list.get(0);
                     }
 
-                    //RenderHandler.CurrentHandler.renderBlock(blockId, downloadTexture(texIdTop.toString()),
-                   //         downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
-                    //        downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString()),
-                    //        downloadTexture(texIdSouth.toString()));
+                    RenderHandler.render6SideBlock(blockId, downloadTexture(texIdTop.toString()),
+                            downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
+                            downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString()),
+                            downloadTexture(texIdSouth.toString()));
 
                 }
             }

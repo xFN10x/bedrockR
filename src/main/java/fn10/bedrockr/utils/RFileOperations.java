@@ -668,4 +668,10 @@ public class RFileOperations {
         return building.toArray(new ElementFile[0]);
     }
 
+    public static boolean anyNull(Object... objs) {
+        for (Object obj : objs) {
+            if (obj == null) return true;
+        }
+        return false;
+    }
 }

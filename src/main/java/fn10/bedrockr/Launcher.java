@@ -212,9 +212,6 @@ public class Launcher {
             // this throws if javafx is already started. idk how to check if it is
         }*/
 
-        loading.ProgressText.setText("Setting up 3D...");
-        //RenderHandler.startup();
-
         loading.ProgressText.setText("Downloading Block textures...");
         try {
             HttpRequest latestMCDataVerReq = HttpRequest.newBuilder()
