@@ -6,13 +6,6 @@
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white)
 [![JitPack](https://jitpack.io/v/xFN10x/bedrockR.svg)](https://jitpack.io/#xFN10x/bedrockR)
 
-<sub>_Mobile_</sub>
-
-[![Android CI](https://github.com/xFN10x/bedrockR-Mobile/actions/workflows/android.yml/badge.svg)](https://github.com/xFN10x/bedrockR-Mobile/actions/workflows/android.yml)
-![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockRMobile
-) ![Dependabot](https://img.shields.io/badge/dependabot-025E8C?logo=dependabot&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white)
-
 A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Mobile.
 
 [bedrockR Youtube Channel](https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA) | [bedrockR Website](https://bedrockr.xplate.dev)
