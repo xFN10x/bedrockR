@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -17,9 +18,9 @@ public class SettingsFile {
     protected static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
     public String comMojangPath = "";
-    public List<String> currentBPSynced = new ArrayList<String>();
-    public List<String> currentRPSynced = new ArrayList<String>();
-    public List<String> ignored = new ArrayList<String>();
+    public List<String> currentBPSynced = new ArrayList<>();
+    public List<String> currentRPSynced = new ArrayList<>();
+    public List<String> ignored = new ArrayList<>();
 
     public Long LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = null;
 
@@ -39,7 +40,7 @@ public class SettingsFile {
 
     }
 
-    public static SettingsFile load() {
+    public static @Nonnull SettingsFile load() {
         var file = new File(RFileOperations.getBaseDirectory().getPath() +File.separator+"settings.json").toPath();
         try {
             if (!file.toFile().exists()) {
@@ -48,7 +49,7 @@ public class SettingsFile {
             return gson.fromJson(new String(Files.readAllBytes(file)), SettingsFile.class);
         } catch (JsonSyntaxException | IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
+            return new SettingsFile();
         }
     }
 
