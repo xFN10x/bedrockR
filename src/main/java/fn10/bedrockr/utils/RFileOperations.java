@@ -7,6 +7,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,8 +39,8 @@ import java.io.InputStream;
 
 public class RFileOperations {
 
-    public record ElementMade(Date timeMade, @Nullable ElementFile<?> elementData, int bedrockRVersion,
-                              @Nullable String workspaceName) implements Comparable<ElementMade> {
+    public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,
+                                                                                 @Nullable String workspaceName) implements Comparable<ElementMade<T>> {
 
         @Override
         public int compareTo(ElementMade o) {

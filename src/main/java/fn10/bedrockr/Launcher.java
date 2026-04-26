@@ -50,7 +50,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 public class Launcher {
 
-    public static int CHECKVERSION = 8;
+    public static int CHECKVERSION = 9;
     public static Image ICON;
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
@@ -110,12 +110,8 @@ public class Launcher {
                 Runtime.version(),
                 System.getProperty("java.vm.name")));
 
-        Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                LOG.log(Level.WARNING, "Uncaught Exception!", e);
-            }
-        });
+        Thread.currentThread().setUncaughtExceptionHandler((t, e) ->
+                LOG.log(Level.WARNING, "Uncaught Exception!", e));
 
         // setup theme
 
@@ -277,10 +273,8 @@ public class Launcher {
 
             if (input == 0) {
                 settings.shareElementAndWorkspaceData = true;
-                settings.save();
             } else {
                 settings.shareElementAndWorkspaceData = true;
-                settings.save();
             }
         }
         if (settings.shareExtraData == null) {
@@ -291,11 +285,10 @@ public class Launcher {
 
             if (input == 0) {
                 settings.shareExtraData = true;
-                settings.save();
             } else {
                 settings.shareExtraData = true;
-                settings.save();
             }
         }
+        settings.save();
     }
 }
