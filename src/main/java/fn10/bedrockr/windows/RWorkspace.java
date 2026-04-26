@@ -603,10 +603,10 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             if (!alreadyExists && settings.shareElementAndWorkspaceData) {
                 // this is the first time
                 Gson gson = new GsonBuilder().setPrettyPrinting()
-                        .registerTypeAdapter(XplateAPIDateSerializer.class, new XplateAPIDateSerializer()).create();
+                        .registerTypeAdapter(Date.class, new XplateAPIDateSerializer()).create();
                 HttpClient client = HttpClient.newBuilder().build();
                 final T elementData = settings.shareExtraData ? element.getSerilized() : null;
-                final ElementMade<T> src = new ElementMade<T>(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)),
+                final ElementMade<T> src = new ElementMade<>(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)),
                         elementData,
                         Launcher.CHECKVERSION, SWPF.workspaceName());
                 final String body = gson.toJson(
