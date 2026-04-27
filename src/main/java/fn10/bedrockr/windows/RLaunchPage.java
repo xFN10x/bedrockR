@@ -47,6 +47,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     private final JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
     private final JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
     private final JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
+    private final JMenuItem ftButton = new JMenuItem("bedrockR on Flavourtown", KeyEvent.VK_F);
     private final JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
     private final JMenuItem websiteButton = new JMenuItem("bedrockR Website", KeyEvent.VK_E);
 
@@ -74,7 +75,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         ProjectsScrollPart.getVerticalScrollBar().setUnitIncrement(16);
 
         newaddonButton.addActionListener(this);
-        siegeButton.addActionListener(ac -> {
+        siegeButton.addActionListener(_ -> {
             try {
                 desk.browse(URI.create("https://siege.hackclub.com/armory/1948"));
             } catch (IOException e) {
@@ -82,7 +83,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        somButton.addActionListener(ac -> {
+        somButton.addActionListener(_ -> {
             try {
                 desk.browse(URI.create("https://summer.hackclub.com/projects/703"));
             } catch (IOException e) {
@@ -91,7 +92,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
             }
         });
 
-        gitButton.addActionListener(ac -> {
+        gitButton.addActionListener(_ -> {
             try {
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
             } catch (IOException e) {
@@ -99,7 +100,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        helpButton.addActionListener(ac -> {
+        helpButton.addActionListener(_ -> {
             try {
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
             } catch (IOException e) {
@@ -107,9 +108,17 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
-        websiteButton.addActionListener(ac -> {
+        websiteButton.addActionListener(_ -> {
             try {
                 desk.browse(URI.create("https://bedrockr.xplate.dev"));
+            } catch (IOException e) {
+
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        ftButton.addActionListener(_ -> {
+            try {
+                desk.browse(URI.create("https://flavortown.hackclub.com/projects/3844"));
             } catch (IOException e) {
 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -121,6 +130,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         helpMenu.add(websiteButton);
         helpMenu.add(helpButton);
         helpMenu.add(gitButton);
+        helpMenu.add(ftButton);
         //helpMenu.add(somButton);
         //helpMenu.add(siegeButton);
 

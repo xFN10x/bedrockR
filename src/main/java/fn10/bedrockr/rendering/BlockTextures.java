@@ -86,30 +86,30 @@ public class BlockTextures {
     public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
         if (ReturnItemInfo.vanillaBlocks == null)
             ReturnItemInfo.downloadVanillaBlocks();
-        CountDownLatch latch = new CountDownLatch(1);
         RLoadingScreen loading = new RLoadingScreen(doingThis);
+        final int blocks = ReturnItemInfo.vanillaBlocks.length;
+        loading.Steps = blocks;
+        CountDownLatch latch = new CountDownLatch(blocks);
         SwingUtilities.invokeLater(() -> {
             loading.setVisible(true);
         });
 
         SwingUtilities.invokeLater(() -> {
-            loading.Steps = ReturnItemInfo.vanillaBlocks.length;
             downloaded = 0;
             Thread downloadThread = new Thread(() -> {
                 for (BlockJsonEntry block : ReturnItemInfo.vanillaBlocks) {
-                    String name = block.name.split(":")[1];
-                    try {
-                        loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
-                    } catch (IllegalAccessException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                        return;
-                    }
-                    if (Thread.interrupted())
-                        return;
-                    renderBlock(name);
-                    downloaded++;
+                        String name = block.name.split(":")[1];
+                        try {
+                            loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (Thread.interrupted())
+                            return;
+                        renderBlock(name);
+                        downloaded++;
+                        latch.countDown();
                 }
-                latch.countDown();
                 SettingsFile settings = SettingsFile.load();
                 HttpRequest latestVerReq = HttpRequest.newBuilder()
                         .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
@@ -132,14 +132,12 @@ public class BlockTextures {
             loading.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
                     int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
-                                    + (ReturnItemInfo.vanillaBlocks.length - downloaded) + " blocks left!",
+                                    + (blocks - downloaded) + " blocks left!",
                             "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
                     if (op == JOptionPane.YES_OPTION) {
                         latch.countDown();
                         downloadThread.interrupt();
-                        SwingUtilities.invokeLater(() -> {
-                            loading.setVisible(false);
-                        });
+                        SwingUtilities.invokeLater(() -> loading.setVisible(false));
                     }
                 }
             });
@@ -163,7 +161,7 @@ public class BlockTextures {
                         + id + ".png");
         HttpRequest dataPathsReq = HttpRequest.newBuilder()
                 .uri(loc)
-                .version(HttpClient.Version.HTTP_2).GET().build();
+                .version(HttpClient.Version.HTTP_1_1).GET().build();
         HttpResponse<InputStream> response = client.send(dataPathsReq, BodyHandlers.ofInputStream());
         // System.out.println(
         // "https://raw.githubusercontent.com/Mojang/bedrock-samples/refs/heads/main/resource_pack/"
