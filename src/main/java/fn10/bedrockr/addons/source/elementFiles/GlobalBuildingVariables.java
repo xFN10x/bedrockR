@@ -171,4 +171,14 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
     }
 
+    @Override
+    public void setDraft(Boolean draft) {
+        return;
+    }
+
+    @Override
+    public Boolean getDraft() {
+        return false;
+    }
+
 }

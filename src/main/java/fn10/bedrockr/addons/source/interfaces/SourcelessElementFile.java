@@ -34,4 +34,8 @@ public interface SourcelessElementFile {
     void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles)
             throws IOException;
+
+    void setDraft(Boolean draft);
+
+    Boolean getDraft();
 }
