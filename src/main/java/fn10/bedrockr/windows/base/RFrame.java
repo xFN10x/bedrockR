@@ -27,6 +27,8 @@ public class RFrame extends JFrame {
     public final JButton websiteButton = new JButton(new ImageIcon(RFrame.class.getResource("/website.png")));
     public final JButton ghButton = new JButton(
             ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/gh.png")), 32, 32));
+    public final JButton ftButton = new JButton(
+            ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/ft.png")), 32, 32));
 
     public final JLabel titleImg = new JLabel(ImageUtilites
             .ResizeImageByURL(RFrame.class.getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH,
@@ -57,31 +59,32 @@ public class RFrame extends JFrame {
         Lay2.putConstraint(SpringLayout.WEST, titleImg, 5, SpringLayout.WEST, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, titleImg, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, ghButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
+        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, ftButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, websiteButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
 
         Lay2.putConstraint(SpringLayout.EAST, websiteButton, -5, SpringLayout.EAST, BottomBar);
         Lay2.putConstraint(SpringLayout.EAST, ghButton, -5, SpringLayout.WEST, websiteButton);
+        Lay2.putConstraint(SpringLayout.EAST, ftButton, -5, SpringLayout.WEST, ghButton);
 
         Lay2.putConstraint(SpringLayout.SOUTH, verText, 0, SpringLayout.SOUTH, titleImg);
-        Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, ghButton);
+        Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, ftButton);
 
         websiteButton.setMaximumSize(new Dimension(32, 32));
         ghButton.setMaximumSize(new Dimension(32, 32));
+        ftButton.setMaximumSize(new Dimension(32, 32));
 
         websiteButton.setBackground(Color.white);
         ghButton.setBackground(Color.white);
+        ftButton.setBackground(Color.white);
 
         websiteButton.setToolTipText("bedrockR's Website");
         ghButton.setToolTipText("bedrockR's Github Repository");
+        ftButton.setToolTipText("bedrockR's Flavourtown Page");
 
         websiteButton.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev"));
-            } catch (IOException e1) {
-
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            } catch (URISyntaxException e1) {
-
+            } catch (IOException | URISyntaxException e1) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
 
@@ -89,10 +92,14 @@ public class RFrame extends JFrame {
         ghButton.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR"));
-            } catch (IOException e1) {
-
+            } catch (IOException | URISyntaxException e1) {
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            } catch (URISyntaxException e1) {
+            }
+        });
+        ftButton.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(new URI("https://flavortown.hackclub.com/projects/3844"));
+            } catch (IOException | URISyntaxException e1) {
 
                 java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
@@ -100,6 +107,7 @@ public class RFrame extends JFrame {
 
         websiteButton.setBorder(new LineBorder(Color.green.darker(), 3));
         ghButton.setBorder(new LineBorder(Color.green.darker(), 3));
+        ftButton.setBorder(new LineBorder(Color.green.darker(), 3));
 
         verText.setForeground(Color.white);
 
@@ -108,6 +116,7 @@ public class RFrame extends JFrame {
 
         BottomBar.add(websiteButton);
         BottomBar.add(ghButton);
+        BottomBar.add(ftButton);
         BottomBar.add(verText);
 
         setLayout(Lay);

@@ -21,6 +21,16 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    public @interface SettingsCategory {
+        enum SettingsCategorys {
+            Misc,
+            Network
+        }
+        SettingsCategorys value() default SettingsCategorys.Misc;
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface FieldDetails {
         boolean Optional() default true;
 

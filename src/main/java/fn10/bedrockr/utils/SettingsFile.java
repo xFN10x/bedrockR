@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import fn10.bedrockr.addons.source.FieldFilters;
 import jakarta.annotation.Nonnull;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class SettingsFile {
 
     public Long LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = null;
 
+    @RAnnotation.HelpMessage("The ID of the biome. Used in /locate, and debugging.")
+    @RAnnotation.FieldDetails(Optional = false, displayName = "Biome ID", Filter = FieldFilters.IDStringFilter.class)
+    @RAnnotation.Order(1)
     public Boolean shareElementAndWorkspaceData = null; 
     public Boolean shareExtraData = null; 
 
