@@ -7,8 +7,4 @@ public interface ElementFile<T extends ElementSource<? extends ElementFile<T>>> 
 
     String getElementName();
 
-    void setDraft(Boolean draft);
-
-    Boolean getDraft();
-
 }

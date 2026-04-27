@@ -35,7 +35,7 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
                     "<html>A JavaScript Script, you can edit<br>with block coding.</html>",
                     RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Script.png").openStream()));
         } catch (IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -51,7 +51,7 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
          * StandardOpenOption.TRUNCATE_EXISTING);
          * return file;
          * } catch (Exception e) {
-         * java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+         * fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
          * "Exception thrown", e);
          * return null;
          * }

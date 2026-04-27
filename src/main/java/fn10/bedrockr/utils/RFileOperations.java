@@ -141,7 +141,7 @@ public class RFileOperations {
             try {
                 return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         } else {
@@ -162,7 +162,7 @@ public class RFileOperations {
         try {
             return getElementSourceClassFromFileExtension(fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -178,7 +178,7 @@ public class RFileOperations {
             return new String(readAllBytes(RFileOperations.class.getResourceAsStream(resource)),
                     StandardCharsets.UTF_8);
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return "";
         }
     }
@@ -215,13 +215,13 @@ public class RFileOperations {
         for (int cha : proposed.chars().toArray()) {
             for (char c : ILLEGAL_CHARACTERS) {
                 if (c == cha) {
-                    java.util.logging.Logger.getGlobal()
+                    fn10.bedrockr.Launcher.LOG
                             .info("String: " + proposed + " had illegal folder char: " + cha);
                     return false;
                 }
             }
         }
-        java.util.logging.Logger.getGlobal().info("String: " + proposed + " is a legal filename.");
+        fn10.bedrockr.Launcher.LOG.info("String: " + proposed + " is a legal filename.");
 
         return true;
     }
@@ -238,7 +238,7 @@ public class RFileOperations {
             try {
                 Files.createDirectories(folder);
             } catch (IOException e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
@@ -248,7 +248,7 @@ public class RFileOperations {
             List<String> list = new ArrayList<String>();
             for (Path path : stream) {
                 if (Files.isDirectory(path)) {
-                    // java.util.logging.Logger.getGlobal().info(path.getFileName().toString());
+                    // fn10.bedrockr.Launcher.LOG.info(path.getFileName().toString());
                     list.add(path.getFileName().toString());
                 }
             }
@@ -273,7 +273,7 @@ public class RFileOperations {
                 var source = new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
                 return source;
             } catch (IOException e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         else { // make a blank resource file
@@ -366,7 +366,7 @@ public class RFileOperations {
             } else
                 return file;
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -378,13 +378,13 @@ public class RFileOperations {
      */
     public static File getBaseDirectory() {
         try {
-            // java.util.logging.Logger.getGlobal().info(BaseDirectory.toPath());
+            // fn10.bedrockr.Launcher.LOG.info(BaseDirectory.toPath());
             if (!BASE_DIRECTORY.exists()) {
                 return Files.createDirectories(BASE_DIRECTORY.toPath()).toFile();
             } else
                 return BASE_DIRECTORY;
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -422,7 +422,7 @@ public class RFileOperations {
      */
     public static File getFileFromWorkspace(String WorkspaceName, String ToCreate,
             Boolean strict) {
-        // java.util.logging.Logger.getGlobal().warning("This file should start with the
+        // fn10.bedrockr.Launcher.LOG.warning("This file should start with the
         // file seperator, or not
         // at all! not '/'!");
         try {
@@ -434,7 +434,7 @@ public class RFileOperations {
             } else
                 return Files.createFile(proposedFile.toPath()).toFile();
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
 
@@ -467,11 +467,11 @@ public class RFileOperations {
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
             File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
             if (!comBpPath.exists()) {
-                java.util.logging.Logger.getGlobal().info("Making dev BP folder...");
+                fn10.bedrockr.Launcher.LOG.info("Making dev BP folder...");
                 Files.createDirectories(comBpPath.toPath());
             }
             if (!comRpPath.exists()) {
-                java.util.logging.Logger.getGlobal().info("Making dev RP folder...");
+                fn10.bedrockr.Launcher.LOG.info("Making dev RP folder...");
                 Files.createDirectories(comRpPath.toPath());
             }
             File[] comBpFiles = comBpPath.listFiles();
@@ -530,7 +530,7 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, bpDestPath);
                     } catch (IOException e) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
             }
@@ -553,12 +553,12 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, rpDestPath);
                     } catch (IOException e) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
             }
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         } finally {
             settings.save(); // finally
         }
@@ -619,7 +619,7 @@ public class RFileOperations {
                 return srcWPF;
 
             } catch (Exception e) { // handle exception
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 throw e;
             }
         }
@@ -662,7 +662,7 @@ public class RFileOperations {
 
                 building.add(source.getFromJSON(new String(Files.readAllBytes(file.toPath()))));
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         return building.toArray(new ElementFile[0]);

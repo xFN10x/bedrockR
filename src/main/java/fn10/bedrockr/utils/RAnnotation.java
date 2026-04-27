@@ -23,8 +23,13 @@ public class RAnnotation {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface SettingsCategory {
         enum SettingsCategorys {
-            Misc,
-            Network
+            Misc("Misc."),
+            Network("Network");
+
+            public final String Name;
+            SettingsCategorys(String name) {
+                this.Name = name;
+            }
         }
         SettingsCategorys value() default SettingsCategorys.Misc;
     }

@@ -134,9 +134,9 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         //helpMenu.add(somButton);
         //helpMenu.add(siegeButton);
 
-        fileMenu.add("Render Blocks").addActionListener(ac -> {
-            BlockTextures.downloadAllBlockTextures(this);
-        });
+        fileMenu.add("Render Blocks").addActionListener(_ -> BlockTextures.downloadAllBlockTextures(this));
+
+        fileMenu.add("Settings").addActionListener(_ -> new RSettingsScreen(this).setVisible(true));
 
         menuBar.add(fileMenu);
         menuBar.add(addonsMenu);

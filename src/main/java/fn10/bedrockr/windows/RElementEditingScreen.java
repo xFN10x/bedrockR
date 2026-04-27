@@ -301,7 +301,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              * Sindow.dispose();
              * });
              * } catch (Exception ex) {
-             * java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+             * fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
              * "Exception thrown",
              * ex);
              * ErrorShower.showError(Sindow, "Failed to create ElementSource",
@@ -379,7 +379,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                             ReturnItemInfo.getItemById(item.item, Workspace));
                                 } catch (WrongItemValueTypeException | NameNotFoundException
                                         | IncorrectWorkspaceException e1) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                             });
@@ -497,7 +497,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 Listener.onElementCreate(new SourceRecipeElement(building));
                             }
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                     e);
                         }
                     }
@@ -528,7 +528,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                             Serilized.ShapelessIngredients = grid.getItems();
                         } catch (WrongItemValueTypeException e1) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                     e1);
                         }
 
@@ -539,14 +539,14 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 try {
                                     grid.empty();
                                 } catch (WrongItemValueTypeException e1) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                                 if (Serilized != null) {
                                     try {
                                         grid.setShapedRecipe(Parent, new ShapedOutput(Serilized), Workspace);
                                     } catch (WrongItemValueTypeException e1) {
-                                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                                 "Exception thrown", e1);
                                     }
                                 }
@@ -558,7 +558,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 try {
                                     grid.empty();
                                 } catch (WrongItemValueTypeException e1) {
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                                 if (Serilized != null) {
@@ -568,7 +568,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                                     ReturnItemInfo.getItemById(item.item, Workspace));
                                         } catch (WrongItemValueTypeException | NameNotFoundException
                                                 | IncorrectWorkspaceException e1) {
-                                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                                     "Exception thrown", e1);
                                         }
                                     });
@@ -586,7 +586,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 return frame;
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         } else if (src.getClass().equals(SourceFoodElement.class)) {
@@ -623,7 +623,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     }
 
                 } catch (Exception e) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(frame, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
@@ -633,7 +633,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 try {
                     turnsInto.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.EatingTurnsInto, Workspace));
                 } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(frame, "Failed to set item value.", e);
                 }
             }
@@ -669,7 +669,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                                 elementValue.getValue());
                                         // try to set field ^
                                     } catch (Exception e) {
-                                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE,
+                                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
                                                 "Exception thrown", e);
                                         ErrorShower.showError(null, "Failed to change a field; continuing",
                                                 e.getMessage(),
@@ -686,7 +686,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         Listener.onElementCreate(new SourceFoodElement(creating)); // create
                         Sindow.dispose();
                     } catch (Exception ex) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                 ex);
                         ErrorShower.showError(Parent, "Failed to create ElementSource",
                                 "Source Creation Error", ex);
@@ -746,7 +746,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     }
 
                 } catch (Exception e) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
@@ -808,7 +808,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     ((RElementValue) validatable).getValue());
                             // try to set field ^
                         } catch (Exception e) {
-                            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
                             continue;
@@ -822,7 +822,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass)); // create
             this.dispose();
         } catch (Exception ex) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
             ErrorShower.showError(getParent(), "Failed to create ElementSource",
                     "Source Creation Error", ex);
         }

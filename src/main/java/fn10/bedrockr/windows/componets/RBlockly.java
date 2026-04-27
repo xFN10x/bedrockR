@@ -62,14 +62,14 @@ public class RBlockly extends JFXPanel {
                 try {
                     execute(new String(RFileOperations.readAllBytes(scriptURL.openConnection().getInputStream())));
                 } catch (Exception e) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             });
         else
             try {
                 execute(new String(RFileOperations.readAllBytes(scriptURL.openConnection().getInputStream())));
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
     }
 
@@ -141,16 +141,16 @@ public class RBlockly extends JFXPanel {
                                 } else if (newValue == Worker.State.FAILED) {
                                     Exception ex = new Exception("Blockly pane failed to load.");
 
-                                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                                     ErrorShower.showError(getParent(), "Blockly Pane failed to load.", ex);
 
                                 } else {
-                                    java.util.logging.Logger.getGlobal().info("Unknown state: " + newValue);
+                                    fn10.bedrockr.Launcher.LOG.info("Unknown state: " + newValue);
                                 }
                             }
                         });
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
     }

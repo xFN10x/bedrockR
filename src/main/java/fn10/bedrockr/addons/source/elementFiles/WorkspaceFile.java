@@ -160,7 +160,7 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
                 for (Entry<UUID, String> entry : Scripts.entrySet()) {
                     Module mod = new Module();
                     mod.uuid = entry.getKey().toString();
-                    mod.version = new Vector<Integer>(List.of(new Integer[] { 1, 0, 0 }));
+                    mod.version = new Vector<>(List.of(new Integer[]{1, 0, 0}));
                     mod.type = "script";
                     mod.language = "javascript";
                     mod.entry = entry.getValue();
