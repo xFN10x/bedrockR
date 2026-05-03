@@ -21,6 +21,5 @@ public class BedrockrDark
 	@Override
 	public String getName() {
 		return NAME;
-		
 	}
 }
