@@ -24,6 +24,7 @@ public class RAnnotation {
     public @interface SettingsCategory {
         enum SettingsCategorys {
             Misc("Misc."),
+            Appearance("Appearance"),
             Network("Network");
 
             public final String Name;

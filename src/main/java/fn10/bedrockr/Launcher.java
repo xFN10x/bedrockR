@@ -6,6 +6,7 @@ import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.utils.Theme;
 import fn10.bedrockr.utils.http.Format1Latest;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
@@ -68,7 +69,10 @@ public class Launcher {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         RSplashScreen loading = new RSplashScreen();
-        loading.ProgressText.setText("Loading icon...");
+        loading.ProgressText.setText("Loading settings...");
+
+        SettingsFile settings = SettingsFile
+                .load();
 
         // set up logging
         loading.ProgressText.setText("Setting up logging...");
@@ -124,7 +128,7 @@ public class Launcher {
             GraphicsEnvironment.getLocalGraphicsEnvironment()
                     .registerFont(
                             Font.createFont(Font.TRUETYPE_FONT, Launcher.class.getResourceAsStream("/ui/font.otf")));
-            BedrockrDark.setup();
+            Theme.getThemeFromName(settings.theme).setupTheme();
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(loading, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error",
@@ -220,8 +224,6 @@ public class Launcher {
                     .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
                     .version(HttpClient.Version.HTTP_2).GET().build();
             HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
-            SettingsFile settings = SettingsFile
-                    .load();
             if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                     || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
                             .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
@@ -261,7 +263,6 @@ public class Launcher {
             launch.requestFocus(Cause.ACTIVATION);
         });
 
-        SettingsFile settings = SettingsFile.load();
         if (settings.shareElementAndWorkspaceData == null) {
             int input = JOptionPane.showOptionDialog(loading,
                     "<html> Would you like to share your created elements, and workspaces to the bedrockR Website?<br /><br />The following data will be shared with each workspace creation, and element creation:<ul><li>Your element's creation date</li><li>Your workspace's creation date</li><li>Your workspace's name</li><li>This version of bedrockR ("

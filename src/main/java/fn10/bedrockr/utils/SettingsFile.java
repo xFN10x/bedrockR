@@ -21,7 +21,15 @@ public class SettingsFile implements SourcelessElementFile {
     public List<String> ignored = new ArrayList<>();
 
     public Long LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = null;
+    //Appearance
+    @RAnnotation.HelpMessage("Whether or not you want to share the name of each element, you make. Along with the name of your workspace, the date, and the bedrockR version used to create the element.")
+    @RAnnotation.FieldDetails(Optional = false, displayName = "Theme")
+    @RAnnotation.StringDropdownField(strict = true, value = "_THEMENAMES")
+    @RAnnotation.Order(1)
+    @RAnnotation.SettingsCategory(RAnnotation.SettingsCategory.SettingsCategorys.Appearance)
+    public String theme = Theme.BedrockRDark.getName();
 
+    //Network
     @RAnnotation.HelpMessage("Whether or not you want to share the name of each element, you make. Along with the name of your workspace, the date, and the bedrockR version used to create the element.")
     @RAnnotation.FieldDetails(Optional = false, displayName = "Share Element & Workspace Data")
     @RAnnotation.Order(1)

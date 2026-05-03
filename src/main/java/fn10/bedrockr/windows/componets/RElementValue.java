@@ -12,6 +12,7 @@ import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.Theme;
 import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
@@ -249,11 +250,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 toAdd.remove(toAdd.Input);
                                 JComboBox<String> newInput;
                                 if (anno.value()[0].equals("_VANILLABIOMES"))
-                                    newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                                    newInput = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
                                 else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES"))
-                                    newInput = new JComboBox<String>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
+                                    newInput = new JComboBox<>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
+                                else if (anno.value()[0].equals("_THEMENAMES"))
+                                    newInput = new JComboBox<>(Theme.getNames());
                                 else
-                                    newInput = new JComboBox<String>(anno.value());
+                                    newInput = new JComboBox<>(anno.value());
 
                                 toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
                                 toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
@@ -299,7 +302,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                     Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-                } else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) { // if
+                }
+                else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
+                    // if
                     // bool,
                     // its
                     // dropdown
@@ -351,11 +356,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         }
                     } else if (anno != null && field != null) { // dropdown string
                         if (anno.value()[0].equals("_VANILLABIOMES"))
-                            Input = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
+                            Input = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
                         else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES"))
-                            Input = new JComboBox<String>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
+                            Input = new JComboBox<>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
+                        else if (anno.value()[0].equals("_THEMENAMES"))
+                            Input = new JComboBox<>(Theme.getNames());
                         else
-                            Input = new JComboBox<String>(anno.value());
+                            Input = new JComboBox<>(anno.value());
                         try {
                             // if its strict, dont make it editable
                             ((JComboBox<String>) Input).setEditable(!anno.strict());
@@ -376,7 +383,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     DisplayName, e);
                         }
                     }
-                } else if (Map.class.isAssignableFrom(InputType)) {
+                }
+                else if (Map.class.isAssignableFrom(InputType)) {
                     Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                     ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
@@ -453,7 +461,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                     Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-                } else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
+                }
+                else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
                     if (field != null) {
                         anno = field.getAnnotation(RAnnotation.NumberRange.class);
@@ -466,7 +475,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     if (!FromEmpty)
                         ((JSpinner) Input).setValue(field.get(TargetFile));
 
-                } else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
+                }
+                else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
                     if (field != null) {
                         anno = field.getAnnotation(RAnnotation.NumberRange.class);
@@ -478,7 +488,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                     if (!FromEmpty)
                         ((JSpinner) Input).setValue(field.get(TargetFile));
-                } else if (UUID.class.isAssignableFrom(InputType)) { // resource
+                }
+                else if (UUID.class.isAssignableFrom(InputType)) { // resource
 
                     final ResourcePackResourceType anno;
                     if (field != null) {
