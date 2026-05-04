@@ -1,5 +1,6 @@
 package fn10.bedrockr;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.rendering.RenderHandler;
@@ -45,8 +46,8 @@ import java.time.Duration;
 import java.util.logging.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 import com.formdev.flatlaf.FlatLaf;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -123,7 +124,10 @@ public class Launcher {
 
         loading.ProgressText.setText("Setting up theme...");
         FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
-
+        if( SystemInfo.isLinux ) {
+            JFrame.setDefaultLookAndFeelDecorated( true );
+            JDialog.setDefaultLookAndFeelDecorated( true );
+        }
         try {
             GraphicsEnvironment.getLocalGraphicsEnvironment()
                     .registerFont(
