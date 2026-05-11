@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
@@ -24,9 +25,9 @@ public class RAnnotation {
     public @interface SettingsCategory {
         enum SettingsCategorys {
             Misc("Misc."),
+            File("Files"),
             Appearance("Appearance"),
             Network("Network");
-
             public final String Name;
             SettingsCategorys(String name) {
                 this.Name = name;
@@ -119,6 +120,13 @@ public class RAnnotation {
         String[] value();
 
         boolean strict() default false;
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface PathType {
+
+        int value() default SystemFileChooser.FILES_ONLY;
     }
 
     @Target({ ElementType.FIELD })

@@ -84,7 +84,7 @@ public class RAddon extends JPanel implements MouseListener {
                             + ", is missing an icon. Would you like to add one?  (this message will go away ;) )",
                             "Addon Error", JOptionPane.YES_NO_OPTION);
                     if (op == JOptionPane.YES_OPTION) {
-                        SystemFileChooser bic = new SystemFileChooser();
+                        SystemFileChooser bic = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
                         bic.setFileFilter(
                                 new SystemFileChooser.FileNameExtensionFilter("Addon's Supported Image Files", WPF.IconExtension));
                         if (bic.showOpenDialog(this) == SystemFileChooser.APPROVE_OPTION) {

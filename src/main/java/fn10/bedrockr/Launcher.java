@@ -1,9 +1,11 @@
 package fn10.bedrockr;
 
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.rendering.BlockTextures;
-import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -15,25 +17,16 @@ import fn10.bedrockr.utils.logging.RLogHandler;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RSplashScreen;
 import fn10.bedrockr.windows.RWorkspace;
-import fn10.bedrockr.windows.laf.BedrockrDark;
 import fn10.bedrockr.windows.util.ErrorShower;
-/*import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
-import javafx.scene.web.WebEngine;*/
 
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusEvent.Cause;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -43,14 +36,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.time.Duration;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import com.formdev.flatlaf.FlatLaf;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+/*import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
+import javafx.scene.web.WebEngine;*/
 
 public class Launcher {
 
@@ -63,7 +58,7 @@ public class Launcher {
 
     static void main(String[] args) {
         RFileOperations.init();
-        try(final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png");) {
+        try (final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png")) {
             if (stream != null)
                 ICON = ImageIO.read(stream);
         } catch (Exception e) {
@@ -113,25 +108,24 @@ public class Launcher {
         LOG.info("Logging to " + logloc);
         LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
         LOG.info("Launch Args: " + String.join(",", args));
-        LOG.info(MessageFormat.format("bedrockR version: {0}, Java version: {1}, JVM: {2}", RFileOperations.VERSION,
+        LOG.info(MessageFormat.format("bedrockR version: {0} ({1}), Java version: {2}, JVM: {3}, OS: {4}",
+                RFileOperations.VERSION,
+                RFileOperations.SEM_VERSION,
                 Runtime.version(),
-                System.getProperty("java.vm.name")));
+                System.getProperty("java.vm.name"),
+                System.getProperty("os.name")));
 
         Thread.currentThread().setUncaughtExceptionHandler((t, e) ->
                 LOG.log(Level.WARNING, "Uncaught Exception!", e));
 
         // setup theme
-
         loading.ProgressText.setText("Setting up theme...");
         FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
-        if( SystemInfo.isLinux ) {
-            JFrame.setDefaultLookAndFeelDecorated( true );
-            JDialog.setDefaultLookAndFeelDecorated( true );
+        if (SystemInfo.isLinux) {
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            JDialog.setDefaultLookAndFeelDecorated(true);
         }
         try {
-            GraphicsEnvironment.getLocalGraphicsEnvironment()
-                    .registerFont(
-                            Font.createFont(Font.TRUETYPE_FONT, Launcher.class.getResourceAsStream("/ui/font.otf")));
             Theme.getThemeFromName(settings.theme).setupTheme();
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -230,7 +224,7 @@ public class Launcher {
             HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
             if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                     || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
-                            .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
+                    .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
                 try {
                     BlockTextures.downloadAllBlockTextures(loading).await();
                 } catch (InterruptedException e) {
@@ -273,7 +267,7 @@ public class Launcher {
                             + RFileOperations.VERSION
                             + ")</li></ul><br /> <b>This data is only shared once; on the creation of the target element/workspace</b> <br/><br/>This data is used for examples, and showcasing bedrockR's capibilitys.</html>",
                     "Share Element & Workspace Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                    new String[] { "Yes", "No" }, "Yes");
+                    new String[]{"Yes", "No"}, "Yes");
 
             if (input == 0) {
                 settings.shareElementAndWorkspaceData = true;
@@ -285,7 +279,7 @@ public class Launcher {
             int input = JOptionPane.showOptionDialog(loading,
                     "<html> Would you like to share extra data about your elements? That data being: <ul><li>Your element's data (all values of all fields)</li><li>Your workspace's data (name, description, and more)</li></ul><br /> <b>This data is only shared once; on the creation of the target element/workspace</b> <br/><br/>This data is used for examples, and showcasing bedrockR's capibilitys.</html>",
                     "Share Extra Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                    new String[] { "Yes", "No" }, "Yes");
+                    new String[]{"Yes", "No"}, "Yes");
 
             if (input == 0) {
                 settings.shareExtraData = true;

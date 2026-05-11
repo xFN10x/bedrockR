@@ -34,8 +34,7 @@ public class ReturnItemInfo {
     public static ItemJsonEntry[] vanillaItems;
 
     public static void downloadVanillaItems() {
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
+        try (HttpClient client = HttpClient.newBuilder().build()) {
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
                     .uri(new URI(
                             "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
@@ -74,7 +73,7 @@ public class ReturnItemInfo {
         }
     }
 
-    public class BlockJsonEntry implements Comparable<BlockJsonEntry> {
+    public static class BlockJsonEntry implements Comparable<BlockJsonEntry> {
         public int id;
         public String name;
         public String displayName;

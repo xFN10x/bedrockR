@@ -23,10 +23,6 @@ sourceSets["main"].resources {
     modules("javafx.controls", "javafx.swing", "javafx.web")
 }*/
 
-val lwjglVersion = "3.4.1"
-val jomlVersion = "1.10.8"
-val lwjglNatives = "natives-windows"
-
 val version = "a2.1.0"
 val winver = "0.8.0"
 
@@ -43,17 +39,6 @@ dependencies {
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
-
-    //3d stuff
-    implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-
-    implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-opengl")
-    implementation ("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    implementation ("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    implementation ("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
-    implementation("org.joml", "joml", jomlVersion)
 }
 
 java {

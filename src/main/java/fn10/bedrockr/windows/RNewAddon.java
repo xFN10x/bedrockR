@@ -42,7 +42,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
 
     protected Byte[] ChosenIcon;
-    protected SystemFileChooser fileChooser = new SystemFileChooser();
+    protected SystemFileChooser fileChooser = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
     protected String imageExtension = "png";
 
     protected JLabel AddonIcon = new JLabel();
