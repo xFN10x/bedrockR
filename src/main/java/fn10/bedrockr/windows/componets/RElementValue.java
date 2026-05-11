@@ -1,11 +1,11 @@
 package fn10.bedrockr.windows.componets;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.utils.MapUtilities;
@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * The main Components for {@code RElementCreationScreen}.
@@ -41,6 +42,7 @@ import java.util.List;
  */
 public class RElementValue extends JPanel implements ValidatableValue {
 
+    private final static String No_Path_Chosen_Text = "(Click to set path)";
     private final SpringLayout Lay = new SpringLayout();
     private final JLabel Name = new JLabel();
     public JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
@@ -69,6 +71,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private JButton SelectButtonItem;
     private JLabel IconItem;
 
+    private Object initValue;
+
     public Window parentFrame;
 
     protected JPanel HashMapInnerPane = new JPanel();
@@ -76,6 +80,23 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
     public boolean Required = false;
     public String Problem = "No problem here!";
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        final String editedPrefix = "(*) ";
+        if (initValue == null) return;
+        if (!Objects.equals(getValue(), initValue)) {
+            if (!Name.getText().startsWith(editedPrefix)) {
+                Name.setText(editedPrefix + Name.getText());
+            }
+            Name.setForeground(Color.red);
+        } else {
+            if (Name.getText().startsWith(editedPrefix)) {
+                Name.setText(Name.getText().replace(editedPrefix, ""));
+            }
+            Name.setForeground(getForeground());
+        }
+    }
 
     public RElementValue(Window parentFrame, Class<?> InputType, FieldFilter Filter, String TargetField,
                          String DisplayName,
@@ -150,11 +171,30 @@ public class RElementValue extends JPanel implements ValidatableValue {
             return;
         }
 
-        // dont do this if its set manually
+        // don't do this if its set manually
         if (Input == null)
             // do corrisponding actions depending on the type
             try {
-                if (List.class.isAssignableFrom(InputType)) {
+                if (Path.class.isAssignableFrom(InputType)) {
+                    if (field == null) {
+                        return;
+                    }
+                    final JButton button = new JButton(No_Path_Chosen_Text);
+                    PathType type = field.getAnnotation(PathType.class);
+                    button.setHorizontalAlignment(SwingConstants.LEFT);
+                    button.addActionListener(_ -> {
+                        // new SystemFileChooser(RFileOperations.getFileChooserDefaultPath())
+                        // new SystemFileChooser(RFileOperations.getFileChooserDefaultPath())
+                        final SystemFileChooser chooser = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
+                        chooser.setFileSelectionMode(type == null ? SystemFileChooser.FILES_ONLY : type.value());
+                        chooser.showOpenDialog(this);
+                        final File sel = chooser.getSelectedFile();
+                        if (sel != null) {
+                            button.setText(sel.getPath());
+                        }
+                    });
+                    Input = button;
+                } else if (List.class.isAssignableFrom(InputType)) {
                     /*
                      * im just stealing most of the hash map stuff, since it is basicly already a
                      * list view.
@@ -302,21 +342,15 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                     Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-                }
-                else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
+                } else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
                     // if
                     // bool,
                     // its
                     // dropdown
                     String[] vals = {"true", "false"};
-                    Input = new JComboBox<String>(vals);
+                    Input = new JComboBox<>(vals);
                     try {
-                        if (!FromEmpty)
-                            ((JComboBox<String>) Input).setSelectedIndex((boolean) field.get(TargetFile)
-                                    ? 0 // convert bool to index
-                                    : 1);
-                        else
-                            ((JComboBox<String>) Input).setSelectedItem("false");
+                        ((JComboBox<String>) Input).setSelectedItem("false");
                     } catch (Exception e) {
 
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -340,8 +374,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     if (anno == null && field != null) { // normal string
                         Input = new JTextField();
                         try {
-                            if (!FromEmpty)
-                                ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string in
+                            ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string in
                             // field,
                             // if it is editing
                         } catch (Exception e) {
@@ -366,11 +399,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         try {
                             // if its strict, dont make it editable
                             ((JComboBox<String>) Input).setEditable(!anno.strict());
-                            if (!FromEmpty) {
-                                ((JComboBox<String>) Input).setSelectedItem(field.get(TargetFile));
-                            } else if (anno.strict()) {
-                                ((JComboBox<String>) Input).setSelectedIndex(0);
-                            }
+                            ((JComboBox<String>) Input).setSelectedIndex(0);
+
                         } catch (Exception e) {
 
                             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
@@ -383,8 +413,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     DisplayName, e);
                         }
                     }
-                }
-                else if (Map.class.isAssignableFrom(InputType)) {
+                } else if (Map.class.isAssignableFrom(InputType)) {
                     Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                     ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
@@ -461,8 +490,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                     Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-                }
-                else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
+                } else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
                     if (field != null) {
                         anno = field.getAnnotation(RAnnotation.NumberRange.class);
@@ -472,11 +500,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JSpinner(new SpinnerNumberModel(0, anno != null ? (int) anno.min() : Integer.MIN_VALUE,
                             anno != null ? (int) anno.max() : Integer.MAX_VALUE, 1));
 
-                    if (!FromEmpty)
-                        ((JSpinner) Input).setValue(field.get(TargetFile));
+                    ((JSpinner) Input).setValue(field.get(TargetFile));
 
-                }
-                else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
+                } else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
                     if (field != null) {
                         anno = field.getAnnotation(RAnnotation.NumberRange.class);
@@ -486,10 +512,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
-                    if (!FromEmpty)
-                        ((JSpinner) Input).setValue(field.get(TargetFile));
-                }
-                else if (UUID.class.isAssignableFrom(InputType)) { // resource
+                    ((JSpinner) Input).setValue(field.get(TargetFile));
+                } else if (UUID.class.isAssignableFrom(InputType)) { // resource
 
                     final ResourcePackResourceType anno;
                     if (field != null) {
@@ -520,7 +544,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
 
                             AddButtonItem.addActionListener(ac -> {
-                                SystemFileChooser file = new SystemFileChooser();
+                                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
                                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
                                 file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter(
                                         "PNG Image Files (*.png)", "png"));
@@ -692,7 +716,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 //        RenderHandler.make6Sided(bi));
                             });
                             AddButtonBlock.addActionListener(ac -> {
-                                SystemFileChooser file = new SystemFileChooser();
+                                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
                                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
                                 file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter(
                                         "PNG Image Files (*.png)", "png"));
@@ -949,7 +973,12 @@ public class RElementValue extends JPanel implements ValidatableValue {
         if (SourceFileClass != null && anno != null) {
             add(Help);
         }
-
+        if (field != null)
+            try {
+                setValue(field.get(TargetFile));
+            } catch (Exception e) {
+                Launcher.LOG.log(Level.SEVERE, "Exception", e);
+            }
     }
 
     /**
@@ -968,8 +997,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
     @SuppressWarnings("unchecked")
     public void setValue(Object value) throws ClassNotFoundException {
-        if (value == null) {
-        } else if (!InputType.isAssignableFrom(value.getClass())) {
+        if (value == null) return;
+        initValue = value;
+        if (!InputType.isAssignableFrom(value.getClass())) {
             throw new ClassNotFoundException("This ElementValue isnt the class of the object. ("
                     + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
         } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
@@ -1132,7 +1162,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             ((JSpinner) Input).setValue(value);
         } else {
             try {
-                if (Input instanceof JComboBox jcb) // if its a drop down
+                if (Input instanceof JComboBox<?> jcb) // if it's a dropdown
                 {
                     jcb.setSelectedItem(value);
                 } else if (Input instanceof JTextField)

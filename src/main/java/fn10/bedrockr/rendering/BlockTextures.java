@@ -93,41 +93,50 @@ public class BlockTextures {
         SwingUtilities.invokeLater(() -> {
             loading.setVisible(true);
         });
-
+        final boolean[] stop = {false};
         SwingUtilities.invokeLater(() -> {
             downloaded = 0;
             Thread downloadThread = new Thread(() -> {
                 for (BlockJsonEntry block : ReturnItemInfo.vanillaBlocks) {
-                        String name = block.name.split(":")[1];
-                        try {
-                            loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
-                        if (Thread.interrupted())
-                            return;
-                        renderBlock(name);
-                        downloaded++;
+                    String name = block.name.split(":")[1];
+                    try {
+                        loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (stop[0]) {
                         latch.countDown();
+                        continue;
+                    }
+                    renderBlock(name);
+                    downloaded++;
+                    latch.countDown();
                 }
                 SettingsFile settings = SettingsFile.load();
                 HttpRequest latestVerReq = HttpRequest.newBuilder()
                         .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
                         .version(HttpClient.Version.HTTP_2).GET().build();
+                HttpResponse<String> response = null;
                 try {
-                    HttpResponse<String> response = client.send(latestVerReq, BodyHandlers.ofString());
-                    settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Double) gson
-                            .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
+                    response = client.send(latestVerReq, BodyHandlers.ofString());
                 } catch (IOException | InterruptedException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                    return;
+                    throw new RuntimeException(e);
                 }
+                settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Double) gson
+                        .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
+
                 settings.save();
                 SwingUtilities.invokeLater(() -> {
                     loading.setVisible(false);
                 });
             });
             downloadThread.setName("Downloading-Thread");
+            downloadThread.setUncaughtExceptionHandler((t, e) -> {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                for (int i = 0; i < latch.getCount(); i++) {
+                    latch.countDown();
+                }
+            });
             downloadThread.start();
             loading.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
@@ -135,8 +144,7 @@ public class BlockTextures {
                                     + (blocks - downloaded) + " blocks left!",
                             "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
                     if (op == JOptionPane.YES_OPTION) {
-                        latch.countDown();
-                        downloadThread.interrupt();
+                        stop[0] = true;
                         SwingUtilities.invokeLater(() -> loading.setVisible(false));
                     }
                 }

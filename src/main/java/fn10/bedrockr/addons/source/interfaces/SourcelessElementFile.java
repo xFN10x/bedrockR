@@ -1,6 +1,7 @@
 package fn10.bedrockr.addons.source.interfaces;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import com.google.common.reflect.TypeToken;
@@ -11,6 +12,7 @@ import com.google.gson.ToNumberPolicy;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
+import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
 
 public interface SourcelessElementFile {
@@ -21,6 +23,7 @@ public interface SourcelessElementFile {
             .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
             }.getClass(),
                     new StrictMapSerilizer())
+            .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
             .create();
 
     /**

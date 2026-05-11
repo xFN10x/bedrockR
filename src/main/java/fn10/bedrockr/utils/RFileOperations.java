@@ -8,14 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
-import java.util.List;
 
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemInfo;
 import fn10.bedrockr.Launcher;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -63,13 +60,18 @@ public class RFileOperations {
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
     private static WorkspaceFile CURRENT_WORKSPACE = null;
+    public static final Map<String, Path> MC_SYNC_OPTIONS = Map.of(
+            "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"),"Minecraft Bedrock","Users","Shared","games","com.mojang"),
+            "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local","share","mcpelauncher","games","com.mojang")
+    );
     @SuppressWarnings("unused")
-    private static String COMMOJANG = null;
+    private static Path COMMOJANG = null;
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
+    // element 0 must be latest
     public final static String[] PICKABLE_VERSIONS = {
-            "26.10",
-            "1.26.0",
+            "1.26.20",
+            "1.26.10",
     };
 
     public static void init() {
@@ -125,7 +127,7 @@ public class RFileOperations {
     }
 
     public static void setComMojangDir(File folder) {
-        COMMOJANG = folder.getAbsolutePath();
+        COMMOJANG = folder.toPath();
     }
 
     /**
@@ -411,6 +413,10 @@ public class RFileOperations {
         }
     }
 
+    public static String getFileChooserDefaultPath() {
+        return SystemInfo.isWindows ? SystemFileChooser.WINDOWS_DEFAULT_FOLDER : System.getProperty("user.home");
+    }
+
     /**
      * Get a file from a workspace
      * 
@@ -461,7 +467,7 @@ public class RFileOperations {
                     + File.separator;
             String rpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "RP"
                     + File.separator;
-            if (!java.nio.file.Paths.get(settings.comMojangPath).toFile().exists()) {
+            if (!settings.comMojangPath.toFile().exists()) {
                 return;
             }
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");

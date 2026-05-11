@@ -18,13 +18,16 @@ public class RSettingsScreen extends RDialog {
     public final JTabbedPane tabs = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
 
     public RSettingsScreen(Window parent) {
-        super(parent, JFrame.DISPOSE_ON_CLOSE, "Settings", new Dimension(565, 700));
+        super(parent, JFrame.DISPOSE_ON_CLOSE, "Settings", new Dimension(565, 600));
 
         Lay.putConstraint(SpringLayout.SOUTH, tabs, 0, SpringLayout.SOUTH, getContentPane());
         Lay.putConstraint(SpringLayout.NORTH, tabs, 0, SpringLayout.NORTH, getContentPane());
         Lay.putConstraint(SpringLayout.EAST, tabs, 0, SpringLayout.EAST, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, tabs, 0, SpringLayout.WEST, getContentPane());
 
+        JButton SaveButton = new JButton("Save");
+        JButton CloseButton = new JButton("Close");
+        JButton SaveCloseButton = new JButton("Save & Close");
         add(tabs);
 
         try {

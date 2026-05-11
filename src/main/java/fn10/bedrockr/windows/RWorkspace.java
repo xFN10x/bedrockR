@@ -502,7 +502,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         options,
                         options[0]);
 
-                SystemFileChooser file = new SystemFileChooser();
+                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
                 file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
 
@@ -557,7 +557,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             case "rebuild" -> buildElements(true);
             case "launch" -> {
                 if (SettingsFile.load().comMojangPath != null) {
-                    if (!new File(SettingsFile.load().comMojangPath).exists()) {
+                    if (!SettingsFile.load().comMojangPath.toFile().exists()) {
                         JOptionPane.showMessageDialog(this, "You... cant launch minecraft without it installed...",
                                 "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -649,8 +649,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             e.printStackTrace();
         }
 
-        String[] platforms = { "Windows" };
-        var platformSelection = JOptionPane.showOptionDialog(
+        String[] platforms = RFileOperations.MC_SYNC_OPTIONS.keySet().toArray(new String[0]);
+        int platformSelection = JOptionPane.showOptionDialog(
                 doingThis,
                 "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
                 "Platform Selection",
@@ -660,24 +660,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 platforms,
                 "Windows");
 
-        var settings = SettingsFile.load();
-        if (platformSelection == 0) {
-            settings.comMojangPath = System.getenv("APPDATA")
-                    + "\\Minecraft Bedrock\\Users\\Shared\\games\\com.mojang";
-            if (!new File(settings.comMojangPath).exists()) {
-                JOptionPane.showMessageDialog(doingThis,
-                        "Couldn't find com.mojang (after 1.21.120 / windows). Did you pick the right version? Do you have Minecraft Bedrock installed? \\n"
-                                + //
-                                " Retry by selecting the option in the File menu.",
-                        "oops", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            settings.save();
-
-            JOptionPane.showMessageDialog(doingThis,
-                    "Minecraft Sync is now enabled. You only need to reload your world to test now! (after you build of course!)",
-                    "yippe", JOptionPane.INFORMATION_MESSAGE);
-        }
+        SettingsFile settings = SettingsFile.load();
+        String selected = platforms[platformSelection];
+        settings.comMojangPath = RFileOperations.MC_SYNC_OPTIONS.get(selected);
     }
 
     /**
@@ -712,7 +697,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     if (ask == JOptionPane.YES_OPTION) {
                         showMCSyncPopup(doingThis, WPF);
                     }
-                } else if (!new File(SettingsFile.load().comMojangPath).exists()) {
+                } else if (!SettingsFile.load().comMojangPath.toFile().exists()) {
                     var ask = JOptionPane.showConfirmDialog(doingThis,
                             "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
                             "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);

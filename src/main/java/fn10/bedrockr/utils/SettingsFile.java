@@ -1,5 +1,6 @@
 package fn10.bedrockr.utils;
 
+import com.formdev.flatlaf.util.SystemFileChooser;
 import com.google.gson.JsonSyntaxException;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
@@ -9,20 +10,29 @@ import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsFile implements SourcelessElementFile {
 
-    public String comMojangPath = "";
+    //This is used in load() if its not saved yet.
+    private static SettingsFile CACHE = null;
+
+    @RAnnotation.HelpMessage("The path to the com.mojang folder. Do not change unless you know what you are doing.")
+    @RAnnotation.FieldDetails(Optional = false, displayName = "com.mojang Path")
+    @RAnnotation.Order(1)
+    @RAnnotation.PathType(SystemFileChooser.DIRECTORIES_ONLY)
+    @RAnnotation.SettingsCategory(RAnnotation.SettingsCategory.SettingsCategorys.File)
+    public Path comMojangPath = Path.of("thisfiledoesntexistifitdoesyouarestupid");
     public List<String> currentBPSynced = new ArrayList<>();
     public List<String> currentRPSynced = new ArrayList<>();
     public List<String> ignored = new ArrayList<>();
 
     public Long LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = null;
     //Appearance
-    @RAnnotation.HelpMessage("Whether or not you want to share the name of each element, you make. Along with the name of your workspace, the date, and the bedrockR version used to create the element.")
+    @RAnnotation.HelpMessage("The appearance of bedrockR")
     @RAnnotation.FieldDetails(Optional = false, displayName = "Theme")
     @RAnnotation.StringDropdownField(strict = true, value = "_THEMENAMES")
     @RAnnotation.Order(1)
@@ -42,7 +52,7 @@ public class SettingsFile implements SourcelessElementFile {
     public Boolean shareExtraData = null;
 
     public void save() {
-
+        CACHE = null;
         var json = gson.toJson(this);
         var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
@@ -55,12 +65,16 @@ public class SettingsFile implements SourcelessElementFile {
     }
 
     public static @Nonnull SettingsFile load() {
+        if (CACHE != null) return CACHE;
         var file = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
             if (!file.toFile().exists()) {
                 new SettingsFile().save();
             }
-            return gson.fromJson(new String(Files.readAllBytes(file)), SettingsFile.class);
+
+            final SettingsFile sf = gson.fromJson(new String(Files.readAllBytes(file)), SettingsFile.class);
+            CACHE = sf;
+            return sf;
         } catch (JsonSyntaxException | IOException e) {
             java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return new SettingsFile();
