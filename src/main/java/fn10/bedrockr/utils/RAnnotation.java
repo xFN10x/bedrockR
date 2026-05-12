@@ -131,6 +131,11 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    public @interface RequiresRestart {
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     /**
      * Used to specify that a Number; like an Integer/int, or Float/float; has
      * bounds.
