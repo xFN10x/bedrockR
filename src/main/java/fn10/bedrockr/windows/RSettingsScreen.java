@@ -1,5 +1,6 @@
 package fn10.bedrockr.windows;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.windows.base.RDialog;
@@ -12,10 +13,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class RSettingsScreen extends RDialog {
 
     public final JTabbedPane tabs = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
+    private final SettingsFile settings = SettingsFile.load();
+
+    private final HashMap<RElementValue, Boolean> changedNeedingRestart = new HashMap<>();
+    private final ArrayList<RElementValue> vals = new ArrayList<>();
 
     public RSettingsScreen(Window parent) {
         super(parent, JFrame.DISPOSE_ON_CLOSE, "Settings", new Dimension(565, 600));
@@ -28,11 +34,37 @@ public class RSettingsScreen extends RDialog {
         JButton SaveButton = new JButton("Save");
         JButton CloseButton = new JButton("Close");
         JButton SaveCloseButton = new JButton("Save & Close");
+
+        SaveButton.addActionListener(_ -> {
+            vals.forEach(val -> {
+                try {
+                    final Field field = SettingsFile.class.getField(val.getTarget());
+                    field.set(settings, val.getValue());
+                    settings.save();
+                    load();
+                } catch (Exception e) {
+                    Launcher.LOG.log(Level.SEVERE, "Failed to save settings", e);
+                }
+            });
+        });
+        add(SaveButton);
+        add(CloseButton);
+        add(SaveCloseButton);
         add(tabs);
+
+        Lay.putConstraint(SpringLayout.SOUTH, SaveButton, -10, SpringLayout.SOUTH, getContentPane());
+        Lay.putConstraint(SpringLayout.EAST, SaveButton, -15, SpringLayout.EAST, getContentPane());
+
+        Lay.putConstraint(SpringLayout.SOUTH, CloseButton, 0, SpringLayout.SOUTH, SaveButton);
+        Lay.putConstraint(SpringLayout.EAST, CloseButton, -6, SpringLayout.WEST, SaveButton);
+
+        Lay.putConstraint(SpringLayout.SOUTH, SaveCloseButton, 0, SpringLayout.SOUTH, CloseButton);
+        Lay.putConstraint(SpringLayout.EAST, SaveCloseButton, -6, SpringLayout.WEST, CloseButton);
 
         try {
             load();
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -42,6 +74,7 @@ public class RSettingsScreen extends RDialog {
         final Field[] fields = SettingsFile.class.getFields();
         final ArrayList<RAnnotation.SettingsCategory.SettingsCategorys> categories = new ArrayList<>();
         final HashMap<RAnnotation.SettingsCategory.SettingsCategorys, JPanel> panels = new HashMap<>();
+        tabs.removeAll();
 
         for (Field field : fields) {
             if (!field.isAnnotationPresent(RAnnotation.SettingsCategory.class)
@@ -58,6 +91,27 @@ public class RSettingsScreen extends RDialog {
             }
             final JPanel panel = panels.get(category.value());
             final RElementValue elementV = new RElementValue(this, field.getType(), details.Filter().getConstructor().newInstance(), field.getName(), details.displayName(), details.Optional(), SettingsFile.class, null);
+            RAnnotation.RequiresRestart requiresRestartAnno;
+            if (field.isAnnotationPresent(RAnnotation.RequiresRestart.class)) {
+                requiresRestartAnno = field.getAnnotation(RAnnotation.RequiresRestart.class);
+            } else {
+                requiresRestartAnno = null;
+            }
+            elementV.setChangedStatusChangedListener(v -> {
+                if (v) {
+                    changedNeedingRestart.putIfAbsent(elementV, requiresRestartAnno != null);
+                } else {
+                    changedNeedingRestart.remove(elementV);
+                }
+            });
+
+            try {
+                elementV.setValue(field.get(settings));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+            vals.add(elementV);
             panel.add(elementV);
         }
     }

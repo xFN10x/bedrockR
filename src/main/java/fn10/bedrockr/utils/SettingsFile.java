@@ -25,7 +25,7 @@ public class SettingsFile implements SourcelessElementFile {
     @RAnnotation.Order(1)
     @RAnnotation.PathType(SystemFileChooser.DIRECTORIES_ONLY)
     @RAnnotation.SettingsCategory(RAnnotation.SettingsCategory.SettingsCategorys.File)
-    public Path comMojangPath = Path.of("thisfiledoesntexistifitdoesyouarestupid");
+    public Path comMojangPath = null;
     public List<String> currentBPSynced = new ArrayList<>();
     public List<String> currentRPSynced = new ArrayList<>();
     public List<String> ignored = new ArrayList<>();
@@ -36,6 +36,7 @@ public class SettingsFile implements SourcelessElementFile {
     @RAnnotation.FieldDetails(Optional = false, displayName = "Theme")
     @RAnnotation.StringDropdownField(strict = true, value = "_THEMENAMES")
     @RAnnotation.Order(1)
+    @RAnnotation.RequiresRestart
     @RAnnotation.SettingsCategory(RAnnotation.SettingsCategory.SettingsCategorys.Appearance)
     public String theme = Theme.BedrockRDark.getName();
 
