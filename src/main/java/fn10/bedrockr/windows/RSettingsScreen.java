@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 public class RSettingsScreen extends RDialog {
@@ -38,6 +39,13 @@ public class RSettingsScreen extends RDialog {
         SaveButton.addActionListener(_ -> {
             vals.forEach(val -> {
                 try {
+                    if (!changedNeedingRestart.isEmpty()) {
+                        List<String> names;
+                        for (RElementValue rval : changedNeedingRestart.keySet()) {
+                            names.add(rval.getDisplayName());
+                        }
+                        JOptionPane.showMessageDialog(this, "The following settings require a restart to take effect: " + String.join(names.toArray(new String[0]), ", "));
+                    }
                     final Field field = SettingsFile.class.getField(val.getTarget());
                     field.set(settings, val.getValue());
                     settings.save();
