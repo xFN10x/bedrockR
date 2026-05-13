@@ -1402,6 +1402,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
         return Problem;
     }
 
+    public String getDisplayName() {
+        return Name.getText();
+    }
+
     @Override
     public String getName() {
         return getTarget();

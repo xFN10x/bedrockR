@@ -15,7 +15,7 @@ public enum Theme {
 
     public static Theme getThemeFromName(String name) {
         for (Theme theme : values()) {
-            if (theme.name().equalsIgnoreCase(name)) {return theme;}
+            if (theme.getName().equalsIgnoreCase(name)) {return theme;}
         }
         return Theme.BedrockRDark;
     }
