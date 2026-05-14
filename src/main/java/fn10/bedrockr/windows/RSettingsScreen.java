@@ -36,43 +36,56 @@ public class RSettingsScreen extends RDialog {
         JButton CloseButton = new JButton("Close");
         JButton SaveCloseButton = new JButton("Save & Close");
 
-        SaveButton.addActionListener(_ -> {
-            vals.forEach(val -> {
-                try {
-                    if (!changedNeedingRestart.isEmpty()) {
-                        List<String> names;
-                        for (RElementValue rval : changedNeedingRestart.keySet()) {
-                            names.add(rval.getDisplayName());
-                        }
-                        JOptionPane.showMessageDialog(this, "The following settings require a restart to take effect: " + String.join(names.toArray(new String[0]), ", "));
-                    }
-                    final Field field = SettingsFile.class.getField(val.getTarget());
-                    field.set(settings, val.getValue());
-                    settings.save();
-                    load();
-                } catch (Exception e) {
-                    Launcher.LOG.log(Level.SEVERE, "Failed to save settings", e);
-                }
-            });
+        SaveButton.addActionListener(_ ->
+                save()
+        );
+        CloseButton.addActionListener(_ -> setVisible(false));
+        SaveCloseButton.addActionListener(e -> {
+            save();
+            setVisible(false);
         });
         add(SaveButton);
         add(CloseButton);
         add(SaveCloseButton);
         add(tabs);
 
-        Lay.putConstraint(SpringLayout.SOUTH, SaveButton, -10, SpringLayout.SOUTH, getContentPane());
-        Lay.putConstraint(SpringLayout.EAST, SaveButton, -15, SpringLayout.EAST, getContentPane());
+        Lay.putConstraint(SpringLayout.SOUTH, SaveCloseButton, -10, SpringLayout.SOUTH, getContentPane());
+        Lay.putConstraint(SpringLayout.EAST, SaveCloseButton, -15, SpringLayout.EAST, getContentPane());
+
+        Lay.putConstraint(SpringLayout.SOUTH, SaveButton, 0, SpringLayout.SOUTH, SaveCloseButton);
+        Lay.putConstraint(SpringLayout.EAST, SaveButton, -6, SpringLayout.WEST, SaveCloseButton);
 
         Lay.putConstraint(SpringLayout.SOUTH, CloseButton, 0, SpringLayout.SOUTH, SaveButton);
         Lay.putConstraint(SpringLayout.EAST, CloseButton, -6, SpringLayout.WEST, SaveButton);
-
-        Lay.putConstraint(SpringLayout.SOUTH, SaveCloseButton, 0, SpringLayout.SOUTH, CloseButton);
-        Lay.putConstraint(SpringLayout.EAST, SaveCloseButton, -6, SpringLayout.WEST, CloseButton);
 
         try {
             load();
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void save() {
+        vals.forEach(val -> {
+            try {
+                final Field field = SettingsFile.class.getField(val.getTarget());
+                field.set(settings, val.getValue());
+            } catch (Exception e) {
+                Launcher.LOG.log(Level.SEVERE, "Failed to save settings", e);
+            }
+        });
+        try {
+            if (!changedNeedingRestart.isEmpty()) {
+                List<String> names = new ArrayList<>();
+                for (RElementValue rval : changedNeedingRestart.keySet()) {
+                    names.add(rval.getDisplayName());
+                }
+                JOptionPane.showMessageDialog(this, "The following settings require a restart to take effect: " + String.join(", ", names.toArray(new String[0])));
+            }
+            settings.save();
+            load();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -83,6 +96,8 @@ public class RSettingsScreen extends RDialog {
         final ArrayList<RAnnotation.SettingsCategory.SettingsCategorys> categories = new ArrayList<>();
         final HashMap<RAnnotation.SettingsCategory.SettingsCategorys, JPanel> panels = new HashMap<>();
         tabs.removeAll();
+        vals.clear();
+        changedNeedingRestart.clear();
 
         for (Field field : fields) {
             if (!field.isAnnotationPresent(RAnnotation.SettingsCategory.class)
