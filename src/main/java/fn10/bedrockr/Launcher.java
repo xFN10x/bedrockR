@@ -41,12 +41,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
-import javafx.scene.web.WebEngine;*/
-
 public class Launcher {
 
     public static int CHECKVERSION = 9;
@@ -73,9 +67,8 @@ public class Launcher {
         // set up logging
         loading.ProgressText.setText("Setting up logging...");
 
-        String logloc = RFileOperations.getBaseDirectory("logs").getAbsolutePath()
-                + File.separator + "bedrockR-log-"
-                + System.currentTimeMillis() + ".log";
+        String logloc = RFileOperations.getBaseDirectory("logs").toPath().resolve("bedrockR-log-"
+                + System.currentTimeMillis() + ".log").toString();
 
         for (var h : LOG.getHandlers()) {
             LOG.removeHandler(h);
@@ -85,7 +78,7 @@ public class Launcher {
         LOG.setLevel(Level.FINE);
         LOG.addHandler(new RLogHandler());
         Logger.getLogger("javafx").addHandler(new RLogHandler());
-        System.setOut(new PrintStream(new LoggingOutputStream(LOG, Level.ALL)));
+        System.setOut(new PrintStream(new LoggingOutputStream(LOG, Level.INFO)));
         System.setErr(new PrintStream(new LoggingOutputStream(LOG, Level.SEVERE)));
         // try to add file handler
         try {
@@ -115,7 +108,7 @@ public class Launcher {
                 System.getProperty("java.vm.name"),
                 System.getProperty("os.name")));
 
-        Thread.currentThread().setUncaughtExceptionHandler((t, e) ->
+        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
                 LOG.log(Level.WARNING, "Uncaught Exception!", e));
 
         // setup theme
