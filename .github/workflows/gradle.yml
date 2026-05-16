@@ -2,13 +2,13 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "*" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "*" ]
     
 env:
-  vector_ver: '0.7.2'
-  string_ver: 'a2.0.2'
+  vector_ver: '0.7.3'
+  string_ver: 'a2.0.3'
 
 jobs:
   build:
