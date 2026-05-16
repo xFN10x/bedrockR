@@ -1018,7 +1018,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
         } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
-            casted.setSelectedItem(value);
+            casted.setSelectedItem(value.toString());
         } else if (Path.class.isAssignableFrom(InputType)) {
             ((JButton) Input).setText(((Path) value).toString());
         } else if (List.class.isAssignableFrom(InputType)) {
@@ -1183,10 +1183,6 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     jcb.setSelectedItem(value);
                 } else if (Input instanceof JTextField)
                     ((JTextField) Input).setText(String.valueOf(value));
-                    // else is called when the input is a JLabel, its only that when not supported
-                else {
-                    // just ignore unsupported fields
-                }
             } catch (Exception ex) {
                 Launcher.LOG.log(Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(parentFrame, "There was a problem setting a field.", "Error", ex);
@@ -1364,12 +1360,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     }
                     if (Input instanceof JTextField) {
                         String text = ((JTextField) Input).getText(); // get the text if its not specilized
-                        if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
-                            Problem = "Failed to turn into Float";
-                            log.info(Target + ": Parseing to float (Scary!)");
-
-                            Float.parseFloat(text);
-                        } else if (InputType.equals(String.class)) { // string
+                        if (InputType.equals(String.class)) { // string
 
                             Problem = "String is not valid.";
                             log.info(Target + ": String is checking if vaild");
