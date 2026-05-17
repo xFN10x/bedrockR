@@ -528,16 +528,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                     ((JSpinner) Input).setValue(field.get(TargetFile));
                 } else if (UUID.class.isAssignableFrom(InputType)) { // resource
-
                     final ResourcePackResourceType anno;
                     if (field != null) {
                         anno = field.getAnnotation(ResourcePackResourceType.class);
-                    } else {
-                        anno = null;
-                    }
-                    if (anno == null)
+                    } else
                         return;
                     switch (anno.value()) {
+                        //#region item texture
                         case ResourceFile.ITEM_TEXTURE: // if its an item texture
                             SpringLayout layout = new SpringLayout();
                             Input = new JPanel();
@@ -701,12 +698,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 Input.setName(id);
                             }
                             break;
+                        //#endregion
 
                         case ResourceFile.BLOCK_TEXTURE: // if its an item texture
                             SpringLayout layoutBlock = new SpringLayout();
                             Input = new JPanel();
                             Input.setName("null");
-                            ((JPanel) Input).setBorder(new LineBorder(Color.darkGray));
+                            ((JPanel) Input).setBorder(new LineBorder(ImageUtilites.brighter(getBackground(), 0.5f)));
                             ((JPanel) Input).setLayout(layoutBlock);
 
                             NameBlock = new JLabel("(Select a texture.)");
@@ -829,10 +827,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             add(AddButtonBlock);
                             add(PreviewButtonBlock);
 
-                            setMaximumSize(new Dimension(350, 80));
-                            setPreferredSize(new Dimension(350, 80));
+                            setMaximumSize(new Dimension(350, 180));
+                            setPreferredSize(new Dimension(350, 180));
 
-                            if (!FromEmpty && field != null) {
+                            if (!FromEmpty) {
                                 UUID Id;
                                 try {
                                     Id = (UUID) field.get(TargetFile);

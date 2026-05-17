@@ -38,6 +38,12 @@ public class RAnnotation {
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    public @interface CreationMenuTab {
+        String value() default "";
+    }
+
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface FieldDetails {
         boolean Optional() default true;
 
@@ -96,14 +102,6 @@ public class RAnnotation {
     public @interface VeryImportant {
     }
 
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
-    /**
-     * This annotation is used to mark a field for automatic builder window
-     * creations. Don't use if not doing automatic creation.
-     */
-    public @interface SpecialField {
-    }
 
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
