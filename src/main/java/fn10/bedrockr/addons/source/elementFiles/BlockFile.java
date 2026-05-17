@@ -28,7 +28,6 @@ import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.Order;
 import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
-import fn10.bedrockr.utils.RAnnotation.SpecialField;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
@@ -93,7 +92,6 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
             "itemGroup.name.wool", "itemGroup.name.woolCarpet" })
     public String Group;
 
-    @SpecialField
     @MapFieldSelectables(BlockComponents.class)
     @HelpMessage("Defining parts of a block. This is were you would specify ")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)

@@ -1,42 +1,10 @@
 package fn10.bedrockr.windows;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.naming.NameNotFoundException;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.SpringLayout;
-
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
-import fn10.bedrockr.addons.source.FieldFilters;
+import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.source.SourceBiomeElement;
-import fn10.bedrockr.addons.source.SourceFoodElement;
-import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
-import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
@@ -56,19 +24,32 @@ import fn10.bedrockr.windows.componets.RItemValue.ShapedOutput;
 import fn10.bedrockr.windows.util.ErrorShower;
 import fn10.bedrockr.windows.util.WrapLayout;
 
+import javax.naming.NameNotFoundException;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An RDialog that provides the basic parts to make a source element builder
  * window. Fields, and field generation is up to the source element.
  */
 public class RElementEditingScreen extends RDialog implements ActionListener {
 
+    private final static String DEFAULT_PANE = "Basic";
     private final ElementCreationListener Listener;
-    public JPanel InnerPane = new JPanel();
-    private final JScrollPane Pane = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    private JPanel SpecialPane = null;
-    private final SpringLayout SpecialPaneLay = new SpringLayout();
-    public BoxLayout PaneLay = new BoxLayout(InnerPane, BoxLayout.PAGE_AXIS);
+    private final JTabbedPane tabs = new JTabbedPane();
+    private final HashMap<String, JPanel> panes = new HashMap<>();
 
     public Class<?> SourceClass;
     public Class<? extends ElementSource<?>> SourceElementClass;
@@ -78,9 +59,6 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     public List<ValidatableValue> RequiredFields = new ArrayList<ValidatableValue>();
     public List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
 
-    public static final Integer DEFAULT_STYLE = 0;
-    public static final Integer SPECIAL_AREA_STYLE = 1;
-
     private CustomCreateFunction createFunction = null;
 
     public final JButton CreateButton = new JButton("Create!");
@@ -89,7 +67,6 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public interface CustomCreateFunction {
         void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft);
-
     }
 
     public RElementEditingScreen addVaildations(ValidatableValue... values) {
@@ -99,7 +76,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     /**
      * Replaces the Fields array, with a custom one.
-     * 
+     *
      * @param func - the {@code CustomCreateFunction} to use for creation.
      * @return the {@code RElementEditingScreen}
      */
@@ -108,16 +85,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         return this;
     }
 
-    public RElementEditingScreen(Window Parent, String elementName, ElementSource<?> sourceElementClass,
-            Class<?> sourceClass,
-            ElementCreationListener listenier) {
-        this(Parent, elementName, sourceElementClass, sourceClass, listenier, DEFAULT_STYLE);
-    }
-
     @SuppressWarnings("unchecked")
     public RElementEditingScreen(Window Parent, String elementName, ElementSource<?> sourceElementClass,
-            Class<?> sourceClass,
-            ElementCreationListener listenier, Integer layout) {
+                                 Class<?> sourceClass,
+                                 ElementCreationListener listenier) {
         super(
                 Parent,
                 DISPOSE_ON_CLOSE,
@@ -152,48 +123,30 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         Lay.putConstraint(SpringLayout.WEST, Sep, 5, SpringLayout.WEST, getContentPane());
         Lay.putConstraint(SpringLayout.EAST, Sep, -5, SpringLayout.EAST, getContentPane());
 
-        Lay.putConstraint(SpringLayout.SOUTH, Pane, -5, SpringLayout.NORTH, Sep);
-        Lay.putConstraint(SpringLayout.NORTH, Pane, 5, SpringLayout.NORTH, getContentPane());
-        Lay.putConstraint(SpringLayout.WEST, Pane, 5, SpringLayout.WEST, getContentPane());
-        if (layout == DEFAULT_STYLE) {
-            InnerPane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
+        Lay.putConstraint(SpringLayout.SOUTH, tabs, -5, SpringLayout.NORTH, Sep);
+        Lay.putConstraint(SpringLayout.NORTH, tabs, 5, SpringLayout.NORTH, getContentPane());
+        Lay.putConstraint(SpringLayout.WEST, tabs, 5, SpringLayout.WEST, getContentPane());
 
-            Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.EAST, getContentPane());
-        } else if (layout == SPECIAL_AREA_STYLE) {
-            InnerPane.setLayout(new BoxLayout(InnerPane, BoxLayout.Y_AXIS));
-            InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
+        Lay.putConstraint(SpringLayout.EAST, tabs, -5, SpringLayout.EAST, getContentPane());
 
-            Lay.putConstraint(SpringLayout.EAST, Pane, -5, SpringLayout.HORIZONTAL_CENTER, getContentPane());
-            SpecialPane = new JPanel();
-            SpecialPane.setLayout(SpecialPaneLay);
-
-            Lay.putConstraint(SpringLayout.SOUTH, SpecialPane, 0, SpringLayout.NORTH, Sep);
-            Lay.putConstraint(SpringLayout.NORTH, SpecialPane, 0, SpringLayout.NORTH, getContentPane());
-            Lay.putConstraint(SpringLayout.WEST, SpecialPane, 0, SpringLayout.EAST, Pane); // only one not copied
-            Lay.putConstraint(SpringLayout.EAST, SpecialPane, 0, SpringLayout.EAST, getContentPane());
-
-            add(SpecialPane);
-        }
-
-        Pane.getVerticalScrollBar().setUnitIncrement(16);
 
         add(CreateButton);
         add(DraftButton);
         add(CancelButton);
         add(Sep);
-        add(Pane);
+        add(tabs);
         setModal(true);
     }
 
     public static RElementEditingScreen getElementsCreationScreen(ElementSource<?> src, Window Parent,
-            ElementCreationListener parent2, String Workspace)
+                                                                  ElementCreationListener parent2, String Workspace)
             throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (src.getClass().equals(SourceBiomeElement.class)) {
             RElementEditingScreen screen = new RElementEditingScreen(Parent, SourceBiomeElement.getDetails().Name, src,
                     src.getSerilizedClass(),
                     parent2);
             SpringLayout lay = new SpringLayout();
-            screen.InnerPane.setLayout(lay);
+            screen.getDefaultPane().setLayout(lay);
 
             RElementValue elementnameVal = new RElementValue(screen, String.class,
                     new FieldFilters.FileNameLikeStringFilter(),
@@ -207,25 +160,26 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             screen.addField(idVal);
             screen.addField(compsVal);
 
-            lay.putConstraint(SpringLayout.WEST, elementnameVal, 5, SpringLayout.WEST, screen.InnerPane);
-            lay.putConstraint(SpringLayout.NORTH, elementnameVal, 5, SpringLayout.NORTH, screen.InnerPane);
+            lay.putConstraint(SpringLayout.WEST, elementnameVal, 5, SpringLayout.WEST, screen.getDefaultPane());
+            lay.putConstraint(SpringLayout.NORTH, elementnameVal, 5, SpringLayout.NORTH, screen.getDefaultPane());
 
             lay.putConstraint(SpringLayout.NORTH, idVal, 0, SpringLayout.NORTH, elementnameVal);
-            lay.putConstraint(SpringLayout.EAST, idVal, -5, SpringLayout.EAST, screen.InnerPane);
+            lay.putConstraint(SpringLayout.EAST, idVal, -5, SpringLayout.EAST, screen.getDefaultPane());
 
-            lay.putConstraint(SpringLayout.EAST, compsVal, -5, SpringLayout.EAST, screen.InnerPane);
-            lay.putConstraint(SpringLayout.WEST, compsVal, 5, SpringLayout.WEST, screen.InnerPane);
-            lay.putConstraint(SpringLayout.SOUTH, compsVal, -5, SpringLayout.SOUTH, screen.InnerPane);
+            lay.putConstraint(SpringLayout.EAST, compsVal, -5, SpringLayout.EAST, screen.getDefaultPane());
+            lay.putConstraint(SpringLayout.WEST, compsVal, 5, SpringLayout.WEST, screen.getDefaultPane());
+            lay.putConstraint(SpringLayout.SOUTH, compsVal, -5, SpringLayout.SOUTH, screen.getDefaultPane());
             lay.putConstraint(SpringLayout.NORTH, compsVal, 5, SpringLayout.SOUTH, elementnameVal);
 
             return screen;
-        } else if (src.getClass().equals(SourceScriptElement.class)) {
+        }
+        else if (src.getClass().equals(SourceScriptElement.class)) {
             JOptionPane.showMessageDialog(Parent, "Sadly, scripts are unavailable since a2.0.");
             return null;
             /*
              * ScriptFile serilized = (ScriptFile) src.getSerilized(); // put this here so
              * copying is easier
-             * 
+             *
              * RElementValue elementName = new RElementValue(Parent, String.class,
              * new FieldFilters.FileNameLikeStringFilter(),
              * "ElementName", "Element Name", false, src.getSerilizedClass(), serilized,
@@ -236,30 +190,30 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              * "ScriptName", "Script Name", false, src.getSerilizedClass(), serilized,
              * Workspace);
              * scriptName.setMaximumSize(new Dimension(300, 40));
-             * 
+             *
              * JTextArea preview = new JTextArea();
              * preview.setEditable(false);
-             * 
+             *
              * JLabel loading = new JLabel("Loading...");
-             * 
+             *
              * JPanel rightStuff = new JPanel();
              * JPanel toprightStuff = new JPanel();
-             * 
+             *
              * toprightStuff.setLayout(new BoxLayout(toprightStuff, BoxLayout.X_AXIS));
              * rightStuff.setLayout(new BoxLayout(rightStuff, BoxLayout.Y_AXIS));
-             * 
+             *
              * rightStuff.add(preview);
              * rightStuff.add(toprightStuff);
-             * 
+             *
              * toprightStuff.add(elementName);
              * toprightStuff.add(Box.createHorizontalStrut(5));
              * toprightStuff.add(scriptName);
-             * 
+             *
              * RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src,
              * src.getSerilizedClass(),
              * parent2,
              * RElementEditingScreen.DEFAULT_STYLE);
-             * 
+             *
              * frame.CreateButton.setEnabled(false);
              * JButton DebugButton = (JButton) frame.add(new JButton("Debug"));
              * frame.Lay.putConstraint(SpringLayout.WEST, DebugButton, 10,
@@ -267,19 +221,19 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              * frame.Lay.putConstraint(SpringLayout.SOUTH, DebugButton, 0,
              * SpringLayout.SOUTH, frame.CancelButton);
              * frame.DraftButton.setEnabled(false);
-             * 
+             *
              * RBlockly rblockly = new RBlockly(preview, serilized != null ?
              * serilized.Content : null, () -> {
              * frame.CreateButton.setEnabled(true);
              * frame.DraftButton.setEnabled(true);
              * });
-             * 
+             *
              * DebugButton.addActionListener(ac -> {
              * rblockly.execute("fixRendering(150)");
              * });
-             * 
+             *
              * frame.setCustomCreateFunction(new CustomCreateFunction() {
-             * 
+             *
              * @Override
              * public void onCreate(RElementEditingScreen Sindow, ElementCreationListener
              * Listener,
@@ -291,12 +245,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              * // easier
              * if (serilized == null)
              * serilized = new ScriptFile();
-             * 
+             *
              * serilized.ElementName = elementName.getValue().toString();
              * serilized.ScriptName = scriptName.getValue().toString();
              * serilized.Content = rblockly.getJson();
              * serilized.setDraft(isDraft);
-             * 
+             *
              * Listener.onElementCreate(src); // create
              * Sindow.dispose();
              * });
@@ -308,51 +262,51 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              * "Source Creation Error", ex);
              * }
              * }
-             * 
+             *
              * }).addVaildations(elementName, scriptName);
              * SpringLayout lay = new SpringLayout();
-             * 
+             *
              * lay.putConstraint(SpringLayout.NORTH, rightStuff, 0, SpringLayout.NORTH,
-             * frame.InnerPane);
+             * frame.getDefaultPane());
              * lay.putConstraint(SpringLayout.SOUTH, rightStuff, 0, SpringLayout.SOUTH,
-             * frame.InnerPane);
+             * frame.getDefaultPane());
              * lay.putConstraint(SpringLayout.EAST, rightStuff, 0, SpringLayout.EAST,
-             * frame.InnerPane);
+             * frame.getDefaultPane());
              * lay.putConstraint(SpringLayout.WEST, rightStuff, 855, SpringLayout.WEST,
-             * frame.InnerPane);
-             * 
+             * frame.getDefaultPane());
+             *
              * lay.putConstraint(SpringLayout.NORTH, rblockly, 0, SpringLayout.NORTH,
-             * frame.InnerPane);
+             * frame.getDefaultPane());
              * lay.putConstraint(SpringLayout.SOUTH, rblockly, 0, SpringLayout.SOUTH,
-             * frame.InnerPane);
+             * frame.getDefaultPane());
              * lay.putConstraint(SpringLayout.WEST, rblockly, 0, SpringLayout.WEST,
-             * frame.InnerPane);
-             * 
-             * frame.InnerPane.setLayout(lay);
-             * 
-             * frame.InnerPane.add(rblockly);
-             * frame.InnerPane.add(rightStuff);
-             * frame.InnerPane.add(loading);
-             * 
+             * frame.getDefaultPane());
+             *
+             * frame.getDefaultPane().setLayout(lay);
+             *
+             * frame.getDefaultPane().add(rblockly);
+             * frame.getDefaultPane().add(rightStuff);
+             * frame.getDefaultPane().add(loading);
+             *
              * frame.setSize(new Dimension(1500, 800));
              * frame.setLocation(ImageUtilites.getScreenCenter(frame));
-             * 
+             *
              * frame.addWindowListener(new WindowAdapter() {
-             * 
+             *
              * @SuppressWarnings("unused")
              * public void windowClosed(WindowEvent e) {
              * rblockly.dispose();
              * }
              * });
-             * 
+             *
              * return frame;
              */
-        } else if (src.getClass().equals(SourceRecipeElement.class)) {
+        }
+        else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
                 RecipeFile serilized = ((SourceRecipeElement) src).getSerilized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
-                        parent2,
-                        RElementEditingScreen.DEFAULT_STYLE);
+                        parent2);
 
                 SpringLayout Layout = new SpringLayout();
 
@@ -364,7 +318,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         new FieldFilters.IDStringFilter(),
                         "RecipeID", "Recipe ID", false, src.getSerilizedClass(), serilized, Workspace);
 
-                frame.InnerPane.setLayout(Layout);
+                frame.getDefaultPane().setLayout(Layout);
                 RItemValue grid = new RItemValue(Workspace, RItemValue.Type.CraftingTable, true);
                 if (serilized != null) {
                     switch (serilized.recipeType) {
@@ -378,8 +332,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     grid.setButtonToItem(serilized.ShapelessIngredients.indexOf(item),
                                             ReturnItemInfo.getItemById(item.item, Workspace));
                                 } catch (WrongItemValueTypeException | NameNotFoundException
-                                        | IncorrectWorkspaceException e1) {
-                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+                                         | IncorrectWorkspaceException e1) {
+                                    Launcher.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                             });
@@ -423,15 +377,15 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 lowerFields.add(RecipeID);
                 lowerFields.add(Box.createHorizontalGlue());
 
-                Layout.putConstraint(SpringLayout.EAST, lowerFields, 0, SpringLayout.EAST, frame.InnerPane);
-                Layout.putConstraint(SpringLayout.WEST, lowerFields, 0, SpringLayout.WEST, frame.InnerPane);
-                Layout.putConstraint(SpringLayout.SOUTH, lowerFields, 0, SpringLayout.SOUTH, frame.InnerPane);
+                Layout.putConstraint(SpringLayout.EAST, lowerFields, 0, SpringLayout.EAST, frame.getDefaultPane());
+                Layout.putConstraint(SpringLayout.WEST, lowerFields, 0, SpringLayout.WEST, frame.getDefaultPane());
+                Layout.putConstraint(SpringLayout.SOUTH, lowerFields, 0, SpringLayout.SOUTH, frame.getDefaultPane());
                 Layout.putConstraint(SpringLayout.NORTH, lowerFields, 40, SpringLayout.SOUTH, grid);
 
-                Layout.putConstraint(SpringLayout.EAST, unlockItems, -5, SpringLayout.EAST, frame.InnerPane);
+                Layout.putConstraint(SpringLayout.EAST, unlockItems, -5, SpringLayout.EAST, frame.getDefaultPane());
                 Layout.putConstraint(SpringLayout.WEST, unlockItems, 30, SpringLayout.EAST, outputSlot);
                 Layout.putConstraint(SpringLayout.SOUTH, unlockItems, -5, SpringLayout.NORTH, lowerFields);
-                Layout.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.NORTH, frame.InnerPane);
+                Layout.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.NORTH, frame.getDefaultPane());
 
                 Layout.putConstraint(SpringLayout.EAST, extraResults, 0, SpringLayout.EAST, outputSlot);
                 Layout.putConstraint(SpringLayout.WEST, extraResults, 0, SpringLayout.WEST, arrow);
@@ -442,16 +396,16 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 Layout.putConstraint(SpringLayout.SOUTH, TypeDropdownText, 1, SpringLayout.NORTH, TypeDropdown);
 
                 Layout.putConstraint(SpringLayout.WEST, TypeDropdown, 0, SpringLayout.WEST, grid);
-                Layout.putConstraint(SpringLayout.NORTH, TypeDropdown, 15, SpringLayout.NORTH, frame.InnerPane);
+                Layout.putConstraint(SpringLayout.NORTH, TypeDropdown, 15, SpringLayout.NORTH, frame.getDefaultPane());
                 Layout.putConstraint(SpringLayout.SOUTH, TypeDropdown, -20, SpringLayout.NORTH, grid);
 
                 Layout.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, -70, SpringLayout.VERTICAL_CENTER,
-                        frame.InnerPane);
+                        frame.getDefaultPane());
                 Layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, -50, SpringLayout.HORIZONTAL_CENTER,
-                        frame.InnerPane);
+                        frame.getDefaultPane());
 
                 Layout.putConstraint(SpringLayout.VERTICAL_CENTER, grid, 0, SpringLayout.VERTICAL_CENTER,
-                        frame.InnerPane);
+                        frame.getDefaultPane());
                 Layout.putConstraint(SpringLayout.EAST, grid, -40, SpringLayout.WEST, arrow);
 
                 Layout.putConstraint(SpringLayout.VERTICAL_CENTER, outputSlot, 0, SpringLayout.VERTICAL_CENTER,
@@ -462,7 +416,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                     @Override
                     public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
-                            boolean isDraft) {
+                                         boolean isDraft) {
                         try {
                             ShapedOutput shaped = grid.getShapedRecipe();
                             RecipeFile building = new RecipeFile();
@@ -497,21 +451,21 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 Listener.onElementCreate(new SourceRecipeElement(building));
                             }
                         } catch (Exception e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                         }
                     }
 
                 }).addVaildations(ElementName, RecipeID, grid, outputSlot, unlockItems, extraResults);
 
-                frame.InnerPane.add(grid);
-                frame.InnerPane.add(outputSlot);
-                frame.InnerPane.add(arrow);
-                frame.InnerPane.add(lowerFields);
-                frame.InnerPane.add(unlockItems);
-                frame.InnerPane.add(extraResults);
-                frame.InnerPane.add(TypeDropdown);
-                frame.InnerPane.add(TypeDropdownText);
+                frame.getDefaultPane().add(grid);
+                frame.getDefaultPane().add(outputSlot);
+                frame.getDefaultPane().add(arrow);
+                frame.getDefaultPane().add(lowerFields);
+                frame.getDefaultPane().add(unlockItems);
+                frame.getDefaultPane().add(extraResults);
+                frame.getDefaultPane().add(TypeDropdown);
+                frame.getDefaultPane().add(TypeDropdownText);
 
                 TypeDropdown.addItemListener(new ItemListener() {
 
@@ -528,7 +482,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                             Serilized.ShapelessIngredients = grid.getItems();
                         } catch (WrongItemValueTypeException e1) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
                                     e1);
                         }
 
@@ -539,14 +493,14 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 try {
                                     grid.empty();
                                 } catch (WrongItemValueTypeException e1) {
-                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+                                    Launcher.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                                 if (Serilized != null) {
                                     try {
                                         grid.setShapedRecipe(Parent, new ShapedOutput(Serilized), Workspace);
                                     } catch (WrongItemValueTypeException e1) {
-                                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+                                        Launcher.LOG.log(Level.SEVERE,
                                                 "Exception thrown", e1);
                                     }
                                 }
@@ -558,7 +512,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 try {
                                     grid.empty();
                                 } catch (WrongItemValueTypeException e1) {
-                                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+                                    Launcher.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                                 if (Serilized != null) {
@@ -567,8 +521,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                             grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
                                                     ReturnItemInfo.getItemById(item.item, Workspace));
                                         } catch (WrongItemValueTypeException | NameNotFoundException
-                                                | IncorrectWorkspaceException e1) {
-                                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+                                                 | IncorrectWorkspaceException e1) {
+                                            Launcher.LOG.log(Level.SEVERE,
                                                     "Exception thrown", e1);
                                         }
                                     });
@@ -586,22 +540,23 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 return frame;
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
                 return null;
             }
-        } else if (src.getClass().equals(SourceFoodElement.class)) {
+        }
+        else if (src.getClass().equals(SourceFoodElement.class)) {
             FoodFile serilized = ((SourceFoodElement) src).getSerilized();
             RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", src, src.getSerilizedClass(),
-                    parent2,
-                    RElementEditingScreen.DEFAULT_STYLE);
+                    parent2
+            );
 
             for (Field field : src.getSerilizedClass().getFields()) { // try to get fields
                 if (field.getType().equals(CreationScreenSeperator.class)) {
                     JSeparator sep = new JSeparator();
                     sep.setPreferredSize(new Dimension(700, 10));
-                    frame.InnerPane.add(Box.createHorizontalStrut(1000));
-                    frame.InnerPane.add(sep);
-                    frame.InnerPane.add(Box.createHorizontalStrut(1000));
+                    frame.getDefaultPane().add(Box.createHorizontalStrut(1000));
+                    frame.getDefaultPane().add(sep);
+                    frame.getDefaultPane().add(Box.createHorizontalStrut(1000));
                     continue;
                 }
                 try { // then add them
@@ -623,7 +578,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     }
 
                 } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(frame, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
@@ -633,19 +588,19 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 try {
                     turnsInto.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.EatingTurnsInto, Workspace));
                 } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(frame, "Failed to set item value.", e);
                 }
             }
-            frame.InnerPane.add(new JLabel("Eating Turns Into"));
-            frame.InnerPane.add(turnsInto);
+            frame.getDefaultPane().add(new JLabel("Eating Turns Into"));
+            frame.getDefaultPane().add(turnsInto);
             JButton help = new JButton("?");
             help.putClientProperty("JButton.buttonType", "help");
             help.addActionListener(ac -> {
                 JOptionPane.showMessageDialog(frame,
                         "Specifies what this item turns into after eating. For example, a soup turns into a bowl. Leave blank to turn into nothing");
             });
-            frame.InnerPane.add(help);
+            frame.getDefaultPane().add(help);
 
             frame.addVaildations(turnsInto);
             frame.setCustomCreateFunction(new CustomCreateFunction() {
@@ -669,7 +624,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                                 elementValue.getValue());
                                         // try to set field ^
                                     } catch (Exception e) {
-                                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE,
+                                        Launcher.LOG.log(Level.SEVERE,
                                                 "Exception thrown", e);
                                         ErrorShower.showError(null, "Failed to change a field; continuing",
                                                 e.getMessage(),
@@ -686,7 +641,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         Listener.onElementCreate(new SourceFoodElement(creating)); // create
                         Sindow.dispose();
                     } catch (Exception ex) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                        Launcher.LOG.log(Level.SEVERE, "Exception thrown",
                                 ex);
                         ErrorShower.showError(Parent, "Failed to create ElementSource",
                                 "Source Creation Error", ex);
@@ -696,12 +651,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             });
 
             return frame;
-        } else {
+        }
+        else {
             // do the automatic creation
             var frame = new RElementEditingScreen(Parent,
                     ((ElementDetails) src.getClass().getMethod("getDetails").invoke(null)).Name, src,
-                    src.getSerilizedClass(), parent2,
-                    RElementEditingScreen.SPECIAL_AREA_STYLE);
+                    src.getSerilizedClass(), parent2);
             List<Field> fields = new ArrayList<Field>(List.of(src.getSerilizedClass().getFields()));
             fields.sort((f1, f2) -> {
                 int o1 = f1.isAnnotationPresent(RAnnotation.Order.class)
@@ -715,7 +670,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             for (Field field : fields) { // try to get fields
                 try { // then add them
                     RElementValue rev = null;
-                    var details = field.getAnnotation(RAnnotation.FieldDetails.class);
+                    String tab = DEFAULT_PANE;
+                    if (field.isAnnotationPresent(RAnnotation.CreationMenuTab.class)) {
+                        RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);
+                        tab = anno.value();
+                    }
+                    RAnnotation.FieldDetails details = field.getAnnotation(RAnnotation.FieldDetails.class);
                     if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                         if (src.getSerilized() != null) // create field with a file already there
                             rev = new RElementValue(Parent, field.getType(),
@@ -730,7 +690,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     src.getSerilized(),
                                     Workspace);
                         else // create file without anything there
-                             // ---------------------------------------------------------------------
+                            // ---------------------------------------------------------------------
                             rev = new RElementValue(Parent, field.getType(),
                                     details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                             : field.getType() == String.class ? new RegularStringFilter() : null,
@@ -739,14 +699,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     details.Optional(),
                                     src.getSerilizedClass(),
                                     Workspace);
-                        if (field.getAnnotation(RAnnotation.SpecialField.class) != null)
-                            frame.setSpecialField(rev);
-                        else
-                            frame.addField(rev);
+                        frame.addField(rev, tab);
                     }
 
                 } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
@@ -756,24 +713,30 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     }
 
     public void addField(RElementValue Field) {
-        InnerPane.add(Field);
-        InnerPane.add(Box.createRigidArea(new Dimension(0, 4)));
-        Fields.add(Field);
-        if (Field.Required)
-            RequiredFields.add(Field);
+        addField(Field, DEFAULT_PANE);
+    }
+    
+    public JPanel getScrollPane(String tab) {
+        int tabI = tabs.indexOfTab(tab);
+        if (tabI == -1) {
+            JPanel InnerPane = new JPanel();
+            JScrollPane Pane = new JScrollPane(InnerPane);
+            Pane.getVerticalScrollBar().setUnitIncrement(14);
+            InnerPane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
+            tabs.addTab(tab, Pane);
+            panes.put(tab, InnerPane);
+        }
+        return panes.get(tab);
+    }
+    
+    public JPanel getDefaultPane() {
+        return getScrollPane(DEFAULT_PANE);
     }
 
-    // make sure to meet at mercedes
-    public void setSpecialField(RElementValue Field) throws IllegalAccessError {
-        if (SpecialPane == null)
-            throw new IllegalAccessError("This Element Creation Screen was not set to be the special layout.");
-        SpecialPane.add(Field);
-        // put field all over
-        SpecialPaneLay.putConstraint(SpringLayout.SOUTH, Field, 0, SpringLayout.SOUTH, SpecialPane);
-        SpecialPaneLay.putConstraint(SpringLayout.NORTH, Field, 0, SpringLayout.NORTH, SpecialPane);
-        SpecialPaneLay.putConstraint(SpringLayout.WEST, Field, 0, SpringLayout.WEST, SpecialPane);
-        SpecialPaneLay.putConstraint(SpringLayout.EAST, Field, 0, SpringLayout.EAST, SpecialPane);
-
+    public void addField(RElementValue Field, String tab) {
+        JPanel pane = getScrollPane(tab);
+        pane.add(Field);
+        pane.add(Box.createRigidArea(new Dimension(0, 4)));
         Fields.add(Field);
         if (Field.Required)
             RequiredFields.add(Field);
@@ -808,7 +771,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     ((RElementValue) validatable).getValue());
                             // try to set field ^
                         } catch (Exception e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
                             continue;
@@ -822,7 +785,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass)); // create
             this.dispose();
         } catch (Exception ex) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+            Launcher.LOG.log(Level.SEVERE, "Exception thrown", ex);
             ErrorShower.showError(getParent(), "Failed to create ElementSource",
                     "Source Creation Error", ex);
         }

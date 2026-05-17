@@ -79,7 +79,7 @@ public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement
             "itemGroup.name.wool", "itemGroup.name.woolCarpet" })
     public String Group;
 
-    @SpecialField
+    @CreationMenuTab("Components")
     @MapFieldSelectables(ItemComponents.class)
     @HelpMessage("Main parts of an item. Components are basicly the options for an item. Like duribility, if its a weapon, etc.")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
