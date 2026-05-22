@@ -2,6 +2,7 @@ package fn10.bedrockr.windows;
 
 import javax.swing.*;
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
@@ -137,6 +138,10 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         fileMenu.add("Render Blocks").addActionListener(_ -> BlockTextures.downloadAllBlockTextures(this));
 
         fileMenu.add("Settings").addActionListener(_ -> new RSettingsScreen(this).setVisible(true));
+        fileMenu.add("Restart").addActionListener(_ -> {
+            dispose();
+            Launcher.main(new String[0]);
+        });
 
         menuBar.add(fileMenu);
         menuBar.add(addonsMenu);

@@ -1,11 +1,12 @@
 package fn10.bedrockr.windows.laf;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import java.awt.*;
 
 public class BedrockrLight
-	extends FlatDarkLaf
+	extends FlatLightLaf
 {
 	public static final String NAME = "BedrockrLight";
 	public static final Color BEDROCKR_GREEN = new Color(76, 255, 0);

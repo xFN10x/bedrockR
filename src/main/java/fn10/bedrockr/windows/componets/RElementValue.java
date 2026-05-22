@@ -402,14 +402,13 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     DisplayName, e);
                         }
                     } else if (anno != null && field != null) { // dropdown string
-                        if (anno.value()[0].equals("_VANILLABIOMES"))
-                            Input = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
-                        else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES"))
-                            Input = new JComboBox<>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
-                        else if (anno.value()[0].equals("_THEMENAMES"))
-                            Input = new JComboBox<>(Theme.getNames());
-                        else
-                            Input = new JComboBox<>(anno.value());
+                        switch (anno.value()[0]) {
+                            case "_VANILLABIOMES" -> Input = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
+                            case "_PREFIXEDVANILLABIOMES" ->
+                                    Input = new JComboBox<>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
+                            case "_THEMENAMES" -> Input = new JComboBox<>(Theme.getNames());
+                            default -> Input = new JComboBox<>(anno.value());
+                        }
                         try {
                             // if its strict, dont make it editable
                             ((JComboBox<String>) Input).setEditable(!anno.strict());
