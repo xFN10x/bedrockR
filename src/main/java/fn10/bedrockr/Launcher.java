@@ -47,10 +47,11 @@ public class Launcher {
     public static Image ICON;
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
-    public static Logger LOG = Logger.getGlobal();
+    public static Logger LOG = Logger.getLogger("bedrockR");
+    private static boolean setuplogging = false;
     public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         RFileOperations.init();
         try (final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png")) {
             if (stream != null)
@@ -64,53 +65,56 @@ public class Launcher {
         SettingsFile settings = SettingsFile
                 .load();
 
-        // set up logging
-        loading.ProgressText.setText("Setting up logging...");
+        if (!setuplogging) {
+            // set up logging
+            loading.ProgressText.setText("Setting up logging...");
 
-        String logloc = RFileOperations.getBaseDirectory("logs").toPath().resolve("bedrockR-log-"
-                + System.currentTimeMillis() + ".log").toString();
+            String logloc = RFileOperations.getBaseDirectory("logs").toPath().resolve("bedrockR-log-"
+                    + System.currentTimeMillis() + ".log").toString();
 
-        for (var h : LOG.getHandlers()) {
-            LOG.removeHandler(h);
-            h.close();
-        }
-        LOG.setUseParentHandlers(false);
-        LOG.setLevel(Level.FINE);
-        LOG.addHandler(new RLogHandler());
-        Logger.getLogger("javafx").addHandler(new RLogHandler());
-        System.setOut(new PrintStream(new LoggingOutputStream(LOG, Level.INFO)));
-        System.setErr(new PrintStream(new LoggingOutputStream(LOG, Level.SEVERE)));
-        // try to add file handler
-        try {
-            Handler fileHandler = new FileHandler(logloc, 20000000, 1, true);
-            fileHandler.setFormatter(new RLogFormatter());
-            fileHandler.setFilter(new RLogFilter());
-            LOG.addHandler(fileHandler);
-        } catch (SecurityException | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                for (var h : LOG.getHandlers()) {
-                    h.close();
-                }
+            for (var h : LOG.getHandlers()) {
+                LOG.removeHandler(h);
+                h.close();
             }
-        });
-        // log stuff
-        LOG.info("Logging to " + logloc);
-        LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
-        LOG.info("Launch Args: " + String.join(",", args));
-        LOG.info(MessageFormat.format("bedrockR version: {0} ({1}), Java version: {2}, JVM: {3}, OS: {4}",
-                RFileOperations.VERSION,
-                RFileOperations.SEM_VERSION,
-                Runtime.version(),
-                System.getProperty("java.vm.name"),
-                System.getProperty("os.name")));
+            LOG.setUseParentHandlers(false);
+            LOG.setLevel(Level.FINE);
+            LOG.addHandler(new RLogHandler());
+            Logger.getLogger("javafx").addHandler(new RLogHandler());
+            System.setOut(new PrintStream(new LoggingOutputStream(LOG, Level.INFO)));
+            System.setErr(new PrintStream(new LoggingOutputStream(LOG, Level.SEVERE)));
+            // try to add file handler
+            try {
+                Handler fileHandler = new FileHandler(logloc, 20000000, 1, true);
+                fileHandler.setFormatter(new RLogFormatter());
+                fileHandler.setFilter(new RLogFilter());
+                LOG.addHandler(fileHandler);
+            } catch (SecurityException | IOException e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
 
-        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-                LOG.log(Level.WARNING, "Uncaught Exception!", e));
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    for (var h : LOG.getHandlers()) {
+                        h.close();
+                    }
+                }
+            });
+            // log stuff
+            LOG.info("Logging to " + logloc);
+            LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
+            LOG.info("Launch Args: " + String.join(",", args));
+            LOG.info(MessageFormat.format("bedrockR version: {0} ({1}), Java version: {2}, JVM: {3}, OS: {4}",
+                    RFileOperations.VERSION,
+                    RFileOperations.SEM_VERSION,
+                    Runtime.version(),
+                    System.getProperty("java.vm.name"),
+                    System.getProperty("os.name")));
 
+            Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+                    LOG.log(Level.WARNING, "Uncaught Exception!", e));
+
+            setuplogging = true;
+        }
         // setup theme
         loading.ProgressText.setText("Setting up theme...");
         FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
