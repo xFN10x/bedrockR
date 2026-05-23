@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
+import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -98,14 +100,14 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @Order(6)
     public HashMap<String, Object> Components;
 
-    @HelpMessage("<html>The texture for the block.<br><br><b>As of a1.1, you can only make blocks with 1 texture.</b></html>")
+    @HelpMessage("<html>The textures for the block. </html>")
     @ResourcePackResourceType(ResourceFile.BLOCK_TEXTURE)
-    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Block Texture")
+    @FieldDetails(Optional = false, displayName = "Block Texture")
     @Order(7)
-    public UUID TextureUUID;
+    public BlockTexture TextureUUID;
 
     @HelpMessage("The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
-    @FieldDetails(Optional = true, displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
+    @FieldDetails(displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
     @StringDropdownField({ "amethyst_block", "amethyst_cluster", "ancient_debris", "anvil", "azalea", "azalea_leaves",
             "bamboo", "bamboo_sapling", "bamboo_wood", "bamboo_wood_hanging_sign", "basalt", "big_dripleaf",
@@ -153,11 +155,10 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         globalResVaribles.EnglishTexts.put("tile." + workspaceFile.Prefix + ":" + ID + ".name", Name);
-
         globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
                 new BlockJSONEntry(Sound,
-                        globalResVaribles.addBlockTexture(MapUtilities
-                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())),
+                        globalResVaribles.addBlockTexture(Objects.requireNonNull(MapUtilities
+                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString()))),
                         null, null));
 
         // make item
