@@ -147,7 +147,7 @@ public class RFileOperations {
                 return null;
             }
         } else {
-            Logger.getGlobal().warning("Element: " + fileExtension + " not supported in: " + RFileOperations.VERSION);
+            fn10.bedrockr.Launcher.LOG.warning("Element: " + fileExtension + " not supported in: " + RFileOperations.VERSION);
             return null;
         }
     }
@@ -646,7 +646,7 @@ public class RFileOperations {
                 .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
-        Logger.getGlobal().info("Found ElementFile on disk: " + proposed);
+        Launcher.LOG.info("Found ElementFile on disk: " + proposed);
         return proposed;
     }
 

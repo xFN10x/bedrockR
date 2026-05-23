@@ -82,7 +82,7 @@ public class RItemSelector extends RDialog {
                                         .toPath())))
                                 .getSerilized().Prefix;
                     } catch (IOException e1) {
-                        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown",
+                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                 e1);
                         building.Prefix = "error";
                     }
@@ -125,7 +125,7 @@ public class RItemSelector extends RDialog {
                     InnerPanel.add(ToAdd);
 
                 } catch (Exception e1) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
         }
         InnerPanel.revalidate();
@@ -220,7 +220,7 @@ public class RItemSelector extends RDialog {
         thiS.setVisible(true);
 
         if (thiS.choice == CANCEL_CHOICE) {
-            java.util.logging.Logger.getGlobal().info("canceled");
+            fn10.bedrockr.Launcher.LOG.info("canceled");
             return null;
         } else
             return thiS.getSelected();

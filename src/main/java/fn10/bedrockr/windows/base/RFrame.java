@@ -85,7 +85,7 @@ public class RFrame extends JFrame {
             try {
                 Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev"));
             } catch (IOException | URISyntaxException e1) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
 
         });
@@ -93,7 +93,7 @@ public class RFrame extends JFrame {
             try {
                 Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR"));
             } catch (IOException | URISyntaxException e1) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         });
         ftButton.addActionListener(e -> {
@@ -101,7 +101,7 @@ public class RFrame extends JFrame {
                 Desktop.getDesktop().browse(new URI("https://flavortown.hackclub.com/projects/3844"));
             } catch (IOException | URISyntaxException e1) {
 
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         });
 

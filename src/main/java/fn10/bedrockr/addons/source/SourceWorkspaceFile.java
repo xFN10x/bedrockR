@@ -34,7 +34,7 @@ public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
                     RFileOperations.readAllBytes(ElementSource.class.getResource("/addons"
                             + "/element" + "/Element.png").openStream()));
         } catch (IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

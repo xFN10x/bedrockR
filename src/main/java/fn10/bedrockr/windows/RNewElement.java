@@ -54,7 +54,7 @@ public class RNewElement extends RDialog implements ActionListener {
                     }
                 }));
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(getParent(), "error", e);
                 continue;
             }
@@ -86,7 +86,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
             for (Component component : MainPane.getComponents()) { // for loop to check what is selected, then breaking
                 if (((RElement) component).getSelected()) {
-                    java.util.logging.Logger.getGlobal().info("Making new " + ((RElement) component).getElement());
+                    fn10.bedrockr.Launcher.LOG.info("Making new " + ((RElement) component).getElement());
                     Creating = ((RElement) component).getElement();
                     break;
                 }
@@ -118,7 +118,7 @@ public class RNewElement extends RDialog implements ActionListener {
                 dispose();
 
             } catch (Exception ex) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 if (ex.getCause() != null) {
                     ErrorShower.showError(getParent(),
                             "Failed to create component. " + ex.getCause().getMessage() + "\n\n",

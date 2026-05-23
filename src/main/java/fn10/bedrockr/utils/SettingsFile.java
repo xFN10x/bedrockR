@@ -60,7 +60,7 @@ public class SettingsFile implements SourcelessElementFile {
             Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                     StandardOpenOption.WRITE);
         } catch (IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
     }
@@ -77,7 +77,7 @@ public class SettingsFile implements SourcelessElementFile {
             CACHE = sf;
             return sf;
         } catch (JsonSyntaxException | IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return new SettingsFile();
         }
     }

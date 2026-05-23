@@ -84,7 +84,7 @@ public class RElementFile extends RElement implements ActionListener {
             if (screen != null)
                 screen.setVisible(true);
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
         }
     }
@@ -126,7 +126,7 @@ public class RElementFile extends RElement implements ActionListener {
                 src.saveJSONFile(wksp.SWPF.getSerilized().WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
             }
         } else if (ac.equals("undraft")) {
@@ -136,7 +136,7 @@ public class RElementFile extends RElement implements ActionListener {
                 src.saveJSONFile(wksp.SWPF.getSerilized().WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
             }
         }

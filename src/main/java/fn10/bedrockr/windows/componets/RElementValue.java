@@ -94,7 +94,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         final String editedPrefix = "(*) ";
-        if (initValue == null) return;
+        if (initValue == null || Map.class.isAssignableFrom(InputType)) return;
         if (!Objects.equals(getValue(), initValue) && !Changed) {
             if (!Name.getText().startsWith(editedPrefix)) {
                 Name.setText(editedPrefix + Name.getText());
@@ -1010,10 +1010,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public void setValue(Object value) throws ClassNotFoundException {
         if (value == null) return;
         initValue = value;
-        if (!InputType.isAssignableFrom(value.getClass())) {
-            throw new ClassNotFoundException("This ElementValue isn't the class of the object. ("
-                    + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
-        } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
+        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
             casted.setSelectedItem(value.toString());
         } else if (Path.class.isAssignableFrom(InputType)) {
@@ -1173,18 +1170,14 @@ public class RElementValue extends JPanel implements ValidatableValue {
             // getting set to a " +
             // value.getClass().getSimpleName());
             ((JSpinner) Input).setValue(value);
-        } else {
-            try {
-                if (Input instanceof JComboBox<?> jcb) // if it's a dropdown
-                {
-                    jcb.setSelectedItem(value);
-                } else if (Input instanceof JTextField)
-                    ((JTextField) Input).setText(String.valueOf(value));
-            } catch (Exception ex) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", ex);
-                ErrorShower.showError(parentFrame, "There was a problem setting a field.", "Error", ex);
-            }
-
+        } else if (Input instanceof JTextField) {
+            ((JTextField) Input).setText(String.valueOf(value));
+        } else if (Input instanceof JComboBox<?> jcb) // if it's a dropdown
+        {
+            jcb.setSelectedItem(value);
+        } else if (!InputType.isAssignableFrom(value.getClass())) {
+            throw new ClassNotFoundException("This ElementValue isn't the class of the object. ("
+                    + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
         }
     }
 

@@ -722,7 +722,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             JPanel InnerPane = new JPanel();
             JScrollPane Pane = new JScrollPane(InnerPane);
             Pane.getVerticalScrollBar().setUnitIncrement(14);
-            InnerPane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
+            InnerPane.setLayout(new BorderLayout());
             tabs.addTab(tab, Pane);
             panes.put(tab, InnerPane);
         }
@@ -737,6 +737,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         JPanel pane = getScrollPane(tab);
         pane.add(Field);
         pane.add(Box.createRigidArea(new Dimension(0, 4)));
+        //greator than 2 cause it also adds a box when it adds one field
+        if (pane.getComponents().length > 2 ) {
+            pane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
+        }
         Fields.add(Field);
         if (Field.Required)
             RequiredFields.add(Field);
@@ -744,12 +748,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public List<ValidatableValue> checkForErrors(boolean strict) {
         List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
-        Logger.getGlobal().info("--------------------- CHECKING FOR ERRORS-----------------------");
+        fn10.bedrockr.Launcher.LOG.info("--------------------- CHECKING FOR ERRORS-----------------------");
         for (ValidatableValue validatable : Fields) {
             if (!validatable.valid(strict))
                 IncorrectFields.add(validatable);
         }
-        if (IncorrectFields.size() != 0) {
+        if (!IncorrectFields.isEmpty()) {
             this.IncorrectFields = IncorrectFields;
             return IncorrectFields;
         } else {
