@@ -544,114 +544,6 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return null;
             }
         }
-        else if (src.getClass().equals(SourceFoodElement.class)) {
-            FoodFile serilized = ((SourceFoodElement) src).getSerilized();
-            RElementEditingScreen frame = new RElementEditingScreen(Parent, "Food", src, src.getSerilizedClass(),
-                    parent2
-            );
-
-            for (Field field : src.getSerilizedClass().getFields()) { // try to get fields
-                if (field.getType().equals(CreationScreenSeperator.class)) {
-                    JSeparator sep = new JSeparator();
-                    sep.setPreferredSize(new Dimension(700, 10));
-                    frame.getDefaultPane().add(Box.createHorizontalStrut(1000));
-                    frame.getDefaultPane().add(sep);
-                    frame.getDefaultPane().add(Box.createHorizontalStrut(1000));
-                    continue;
-                }
-                try { // then add them
-                    RElementValue rev = null;
-                    var details = field.getAnnotation(RAnnotation.FieldDetails.class);
-                    if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
-                        rev = new RElementValue(frame, field.getType(),
-                                details.Filter() != null ? details.Filter().getConstructor().newInstance()
-                                        // if no filter, dont add one
-                                        : field.getType() == String.class ? new RegularStringFilter() : null,
-                                // if its a string however, add a basic filter
-                                field.getName(), // target
-                                details.displayName(), // display name
-                                details.Optional(),
-                                src.getSerilizedClass(),
-                                serilized,
-                                Workspace);
-                        frame.addField(rev);
-                    }
-
-                } catch (Exception e) {
-                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
-                    ErrorShower.showError(frame, "Failed to create a field for " + field.getName(), "Field Error", e);
-                }
-            }
-
-            RItemValue turnsInto = new RItemValue(Workspace, RItemValue.Type.Single, false);
-            if (serilized != null && serilized.EatingTurnsInto != null) {
-                try {
-                    turnsInto.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.EatingTurnsInto, Workspace));
-                } catch (NameNotFoundException | WrongItemValueTypeException | IncorrectWorkspaceException e) {
-                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
-                    ErrorShower.showError(frame, "Failed to set item value.", e);
-                }
-            }
-            frame.getDefaultPane().add(new JLabel("Eating Turns Into"));
-            frame.getDefaultPane().add(turnsInto);
-            JButton help = new JButton("?");
-            help.putClientProperty("JButton.buttonType", "help");
-            help.addActionListener(ac -> {
-                JOptionPane.showMessageDialog(frame,
-                        "Specifies what this item turns into after eating. For example, a soup turns into a bowl. Leave blank to turn into nothing");
-            });
-            frame.getDefaultPane().add(help);
-
-            frame.addVaildations(turnsInto);
-            frame.setCustomCreateFunction(new CustomCreateFunction() {
-
-                /**
-                 * i copied the default one, now ill add that one item value
-                 */
-                @Override
-                public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener, boolean isDraft) {
-
-                    try {
-                        FoodFile creating = (serilized == null ? new FoodFile() : serilized);
-
-                        for (ValidatableValue validatable : frame.Fields) { // add the fields
-                            if (validatable instanceof RElementValue elementValue) {
-                                if (!elementValue.getOptionallyEnabled()) { // if its not enabled, continue
-                                    continue;
-                                } else
-                                    try {
-                                        src.getSerilizedClass().getField(elementValue.getTarget()).set(creating,
-                                                elementValue.getValue());
-                                        // try to set field ^
-                                    } catch (Exception e) {
-                                        Launcher.LOG.log(Level.SEVERE,
-                                                "Exception thrown", e);
-                                        ErrorShower.showError(null, "Failed to change a field; continuing",
-                                                e.getMessage(),
-                                                e);
-                                        continue;
-                                    }
-                            }
-                        }
-                        if (!turnsInto.getItems().isEmpty())
-                            creating.EatingTurnsInto = turnsInto.getItems().getFirst().item;
-
-                        creating.setDraft(isDraft);
-
-                        Listener.onElementCreate(new SourceFoodElement(creating)); // create
-                        Sindow.dispose();
-                    } catch (Exception ex) {
-                        Launcher.LOG.log(Level.SEVERE, "Exception thrown",
-                                ex);
-                        ErrorShower.showError(Parent, "Failed to create ElementSource",
-                                "Source Creation Error", ex);
-                    }
-                }
-
-            });
-
-            return frame;
-        }
         else {
             // do the automatic creation
             var frame = new RElementEditingScreen(Parent,
@@ -668,13 +560,21 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return Integer.compare(o1, o2);
             });
             for (Field field : fields) { // try to get fields
+                RElementValue rev = null;
+                String tab = DEFAULT_PANE;
+                if (field.isAnnotationPresent(RAnnotation.CreationMenuTab.class)) {
+                    RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);
+                    tab = anno.value();
+                }
+                if (field.getType().equals(CreationScreenSeperator.class)) {
+                    JSeparator sep = new JSeparator();
+                    sep.setPreferredSize(new Dimension(700, 10));
+                    frame.getScrollPane(tab).add(Box.createHorizontalStrut(1000));
+                    frame.getScrollPane(tab).add(sep);
+                    frame.getScrollPane(tab).add(Box.createHorizontalStrut(1000));
+                    continue;
+                }
                 try { // then add them
-                    RElementValue rev = null;
-                    String tab = DEFAULT_PANE;
-                    if (field.isAnnotationPresent(RAnnotation.CreationMenuTab.class)) {
-                        RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);
-                        tab = anno.value();
-                    }
                     RAnnotation.FieldDetails details = field.getAnnotation(RAnnotation.FieldDetails.class);
                     if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                         if (src.getSerilized() != null) // create field with a file already there
@@ -701,15 +601,39 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     Workspace);
                         frame.addField(rev, tab);
                     }
-
                 } catch (Exception e) {
                     Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
+            frame.settleLayouts();
 
             return frame;
         }
+    }
+
+    /**
+     * Call this after adding all fields.
+     */
+    public void settleLayouts() {
+        panes.forEach((tabName, pane) -> {
+            if (pane.getComponents().length > 2 ) {
+                pane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
+            } else {
+                SpringLayout lay = new SpringLayout();
+                pane.setLayout(lay);
+                for (Component component : pane.getComponents()) {
+                    if (component instanceof Box) {
+                        pane.remove(component);
+                    } else {
+                        lay.putConstraint(SpringLayout.NORTH, component, 4, SpringLayout.NORTH, pane);
+                        lay.putConstraint(SpringLayout.EAST, component, 4, SpringLayout.EAST, pane);
+                        lay.putConstraint(SpringLayout.SOUTH, component, 4, SpringLayout.SOUTH, pane);
+                        lay.putConstraint(SpringLayout.WEST, component, 4, SpringLayout.WEST, pane);
+                    }
+                }
+            }
+        });
     }
 
     public void addField(RElementValue Field) {
@@ -722,7 +646,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             JPanel InnerPane = new JPanel();
             JScrollPane Pane = new JScrollPane(InnerPane);
             Pane.getVerticalScrollBar().setUnitIncrement(14);
-            InnerPane.setLayout(new BorderLayout());
+            //InnerPane.setLayout(new BorderLayout());
             tabs.addTab(tab, Pane);
             panes.put(tab, InnerPane);
         }
@@ -738,9 +662,6 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         pane.add(Field);
         pane.add(Box.createRigidArea(new Dimension(0, 4)));
         //greator than 2 cause it also adds a box when it adds one field
-        if (pane.getComponents().length > 2 ) {
-            pane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
-        }
         Fields.add(Field);
         if (Field.Required)
             RequiredFields.add(Field);
