@@ -199,7 +199,7 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
             return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(workspace, MapUtilities
                     .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.BLOCK_TEXTURE).toPath()));
         } catch (IllegalAccessError | IOException e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

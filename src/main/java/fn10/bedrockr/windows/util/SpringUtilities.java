@@ -48,9 +48,9 @@ public class SpringUtilities {
      * minimum, preferred, and maximum sizes.
      */
     public static void printSizes(Component c) {
-        java.util.logging.Logger.getGlobal().info("minimumSize = " + c.getMinimumSize());
-        java.util.logging.Logger.getGlobal().info("preferredSize = " + c.getPreferredSize());
-        java.util.logging.Logger.getGlobal().info("maximumSize = " + c.getMaximumSize());
+        fn10.bedrockr.Launcher.LOG.info("minimumSize = " + c.getMinimumSize());
+        fn10.bedrockr.Launcher.LOG.info("preferredSize = " + c.getPreferredSize());
+        fn10.bedrockr.Launcher.LOG.info("maximumSize = " + c.getMaximumSize());
     }
 
     /**

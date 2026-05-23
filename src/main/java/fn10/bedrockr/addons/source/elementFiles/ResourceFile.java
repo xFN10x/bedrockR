@@ -97,7 +97,7 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
             build(workspaceName, null, null, null);
             return true;
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return false;
         }
     }

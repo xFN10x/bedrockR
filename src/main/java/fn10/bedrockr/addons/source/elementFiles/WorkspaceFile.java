@@ -96,10 +96,10 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
         } else {
             for (Entry<UUID, String> set : Scripts.entrySet()) {
                 try {
-                    java.util.logging.Logger.getGlobal().info("Deleting script that already exists: " + set.getValue());
+                    fn10.bedrockr.Launcher.LOG.info("Deleting script that already exists: " + set.getValue());
                     Files.deleteIfExists(java.nio.file.Paths.get(rootPath, set.getValue()));
                 } catch (IOException e) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         }

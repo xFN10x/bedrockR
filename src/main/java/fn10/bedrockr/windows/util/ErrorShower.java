@@ -16,7 +16,7 @@ public class ErrorShower {
      * @param ex     - the exception
      */
     public static void exception(Component parent, Exception ex) {
-        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
         showError(parent, "", ex);
     }
 
@@ -29,7 +29,7 @@ public class ErrorShower {
      * @param ex     - the exception
      */
     public static void exception(Component parent, String message, Exception ex) {
-        java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, message, ex);
+        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, message, ex);
         showError(parent, message, ex);
     }
 

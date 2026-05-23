@@ -20,10 +20,11 @@ public class RLogFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        if (record.getThrown() != null) {
+        Throwable thrown = record.getThrown();
+        if (thrown instanceof Exception) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            record.getThrown().printStackTrace(pw);
+            thrown.printStackTrace(pw);
             if (record.getLevel() == Level.WARNING)
                 return ANSI_ORANGE + "("
                         + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)

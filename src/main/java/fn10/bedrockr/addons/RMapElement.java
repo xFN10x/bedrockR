@@ -43,7 +43,7 @@ public class RMapElement {
     }
 
     public boolean Valid(Object value) {
-        var log = java.util.logging.Logger.getGlobal();
+        var log = fn10.bedrockr.Launcher.LOG;
         log.info(">---------=--------< Checking RMapElement " + this.DisplayName + "... >---------=--------<");
         for (MapValueFilter filter : Filters) {
             switch (filter) {

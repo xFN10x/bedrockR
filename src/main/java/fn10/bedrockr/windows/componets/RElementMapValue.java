@@ -1,50 +1,17 @@
 package fn10.bedrockr.windows.componets;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Window;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.naming.NameNotFoundException;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
-import javax.swing.border.LineBorder;
-
 import com.google.gson.Gson;
 import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.internal.LinkedTreeMap;
-
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
-import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
+import fn10.bedrockr.addons.RStringDropdownMapElement;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.Climate;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.CreatureSpawnProbablity;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.Humidity;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes.Replacement;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.SurfaceBuilder;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.SurfaceBuilder.OverworldBuilder;
-import fn10.bedrockr.addons.source.supporting.BiomeComponents.Tags;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.*;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints.GrassTint;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes.Replacement;
+import fn10.bedrockr.addons.source.supporting.BiomeComponents.SurfaceBuilder.OverworldBuilder;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftBlockPlacer;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.source.supporting.ItemComponents.minecraftDestructibleByMining;
@@ -55,6 +22,15 @@ import fn10.bedrockr.windows.componets.RItemValue.Type;
 import fn10.bedrockr.windows.util.ErrorShower;
 import fn10.bedrockr.windows.util.RFonts;
 
+import javax.naming.NameNotFoundException;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+
 public class RElementMapValue extends JPanel {
 
     private final static Gson gson = SourcelessElementFile.gson;
@@ -62,9 +38,11 @@ public class RElementMapValue extends JPanel {
     private final Dimension Size = new Dimension(240, 80);
 
     protected final JButton HelpButton = new JButton();
+
     {
         HelpButton.putClientProperty("JButton.buttonType", "help");
     }
+
     protected final JLabel DisplayNameLabel = new JLabel();
     protected final JLabel IDNameLabel = new JLabel();
     protected Component InputField = null;
@@ -148,7 +126,7 @@ public class RElementMapValue extends JPanel {
         } else if (RME.Type == CreatureSpawnProbablity.class) {
             InputField = new JSpinner(new SpinnerNumberModel(0.1f, 0f, 0.75f, 0.01f));
         } else if (RME.Type == Humidity.class) {
-            String[] ars = { "true", "false" };
+            String[] ars = {"true", "false"};
             InputField = new JComboBox<String>(ars);
         } else if (RME.Type == MapTints.class) {
             Size.setSize(400, 150);
@@ -218,35 +196,35 @@ public class RElementMapValue extends JPanel {
 
             JPanel seaMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             RItemValue seaMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                    RItemValue.Type.SingleBlock);
+                    Type.SingleBlock);
             seaMaterialPanel.add(new JLabel("Sea Block"));
             seaMaterialPanel.add(seaMaterialVal);
             ((JPanel) InputField).add(seaMaterialPanel);
 
             JPanel seaFloorMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             RItemValue seaFloorMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                    RItemValue.Type.SingleBlock);
+                    Type.SingleBlock);
             seaFloorMaterialPanel.add(new JLabel("Sea Floor Block"));
             seaFloorMaterialPanel.add(seaFloorMaterialVal);
             ((JPanel) InputField).add(seaFloorMaterialPanel);
 
             JPanel foundationMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             RItemValue foundationMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                    RItemValue.Type.SingleBlock);
+                    Type.SingleBlock);
             foundationMaterialPanel.add(new JLabel("Underground Block"));
             foundationMaterialPanel.add(foundationMaterialVal);
             ((JPanel) InputField).add(foundationMaterialPanel);
 
             JPanel midMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             RItemValue midMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                    RItemValue.Type.SingleBlock);
+                    Type.SingleBlock);
             midMaterialPanel.add(new JLabel("Ground Block"));
             midMaterialPanel.add(midMaterialVal);
             ((JPanel) InputField).add(midMaterialPanel);
 
             JPanel surfaceMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             RItemValue surfaceMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                    RItemValue.Type.SingleBlock);
+                    Type.SingleBlock);
             surfaceMaterialPanel.add(new JLabel("Surface Block"));
             surfaceMaterialPanel.add(surfaceMaterialVal);
             MultipleInputs.put("midMaterialVal", midMaterialVal);
@@ -287,16 +265,11 @@ public class RElementMapValue extends JPanel {
         } else if (RME.Type.isArray()) { // array
             InputField = new JLabel("Array input not implemented.");
         } else if (RME.Type == Boolean.class || RME.Type == boolean.class) { // bool
-            String[] ars = { "true", "false" };
+            String[] ars = {"true", "false"};
             InputField = new JComboBox<String>(ars);
         } else { // else
-            if (RME.Type == null) {
-                InputField = new JLabel("Input type is null.");
-            } else {
-                InputField = new JLabel("Unknown input type: " + RME.Type.getName());
-                ((JLabel) InputField).setToolTipText("Unknown input type: " + RME.Type.getName());
-            }
-
+            InputField = new JLabel("Unknown input type: " + RME.Type.getName());
+            ((JLabel) InputField).setToolTipText("Unknown input type: " + RME.Type.getName());
         }
         if (!(InputField instanceof RItemValue)) {
             InputField.setMinimumSize(new Dimension(0, 70));
@@ -317,7 +290,7 @@ public class RElementMapValue extends JPanel {
         }
 
         HelpButton.addActionListener(
-                (e) -> JOptionPane.showMessageDialog(this, RME.HelpDescription, "Help for: " + RME.DisplayName,
+                _ -> JOptionPane.showMessageDialog(this, RME.HelpDescription, "Help for: " + RME.DisplayName,
                         JOptionPane.INFORMATION_MESSAGE));
 
         Lay.putConstraint(SpringLayout.NORTH, DisplayNameLabel, 5, SpringLayout.NORTH, this);
@@ -353,7 +326,7 @@ public class RElementMapValue extends JPanel {
             if (val instanceof LinkedTreeMap lrm) {
                 val = gson.fromJson(gson.toJsonTree(lrm), rMapElement.Type);
             }
-            java.util.logging.Logger.getGlobal().info("Setting Value to class: " + val.getClass().getName());
+            Launcher.LOG.info("Setting Value to class: " + val.getClass().getName());
             if (rMapElement.Type == Climate.class && val instanceof Climate climate) {
 
                 ((JSpinner) MultipleInputs.get("downfallVal")).setValue(climate.downfall);
@@ -445,137 +418,142 @@ public class RElementMapValue extends JPanel {
                                 + rMapElement.Type.getSimpleName());
             }
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(this, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public Map.Entry<String, Object> getKeyAndVal() {
+    public Entry<String, Object> getKeyAndVal() {
         Object val = null;
-        try {
-            java.util.logging.Logger.getGlobal().info(rMapElement.Type.getName());
-            if (rMapElement instanceof RStringDropdownMapElement) {
-                val = ((JComboBox<String>) InputField).getSelectedItem();
-            }
+        if (!(InputField instanceof JLabel))
+            try {
 
-            if (rMapElement.Type != null) {
-                if (rMapElement.Type == Climate.class) {
-                    val = new Climate();
+                Launcher.LOG.info(rMapElement.Type.getName());
+                if (rMapElement instanceof RStringDropdownMapElement) {
+                    val = ((JComboBox<String>) InputField).getSelectedItem();
+                }
 
-                    ((Climate) val).downfall = ((Number) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
-                            .floatValue();
-                    ((Climate) val).snow_accumulation = new float[] {
-                            (1f / 8f) * ((Number) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue())
-                                    .floatValue(),
-                            (1f / 8f) * ((Number) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue())
-                                    .floatValue() };
+                if (rMapElement.Type != null) {
+                    if (rMapElement.Type == Climate.class) {
+                        val = new Climate();
 
-                    ((Climate) val).temperature =
+                        ((Climate) val).downfall = ((Number) ((JSpinner) MultipleInputs.get("downfallVal")).getValue())
+                                .floatValue();
+                        ((Climate) val).snow_accumulation = new float[]{
+                                (1f / 8f) * ((Number) ((JSpinner) MultipleInputs.get("snowfallMin")).getValue())
+                                        .floatValue(),
+                                (1f / 8f) * ((Number) ((JSpinner) MultipleInputs.get("snowfallMax")).getValue())
+                                        .floatValue()};
 
-                            ((Number) ((JSpinner) MultipleInputs.get("tempVal")).getValue()).floatValue();
+                        ((Climate) val).temperature =
 
-                } else if (rMapElement.Type == CreatureSpawnProbablity.class) {
-                    val = new CreatureSpawnProbablity();
-                    ((CreatureSpawnProbablity) val).probability = ((Number) ((JSpinner) InputField).getValue())
-                            .floatValue();
+                                ((Number) ((JSpinner) MultipleInputs.get("tempVal")).getValue()).floatValue();
 
-                } else if (rMapElement.Type == Humidity.class) {
+                    } else if (rMapElement.Type == CreatureSpawnProbablity.class) {
+                        val = new CreatureSpawnProbablity();
+                        ((CreatureSpawnProbablity) val).probability = ((Number) ((JSpinner) InputField).getValue())
+                                .floatValue();
 
-                    val = new Humidity();
-                    ((Humidity) val).is_humid = ((JComboBox<String>) InputField).getSelectedIndex() == 0;
+                    } else if (rMapElement.Type == Humidity.class) {
 
-                } else if (rMapElement.Type == MapTints.class) {
-                    val = new MapTints();
-                    GrassTint grassTint = new GrassTint();
+                        val = new Humidity();
+                        ((Humidity) val).is_humid = ((JComboBox<String>) InputField).getSelectedIndex() == 0;
 
-                    Color foliageColor = MultipleInputs.get("foliageColour").getForeground();
-                    ((MapTints) val).foliage = String.format("#%02x%02x%02x", foliageColor.getRed(),
-                            foliageColor.getGreen(),
-                            foliageColor.getBlue());
+                    } else if (rMapElement.Type == MapTints.class) {
+                        val = new MapTints();
+                        GrassTint grassTint = new GrassTint();
 
-                    Color grassColor = MultipleInputs.get("grassColour").getForeground();
-                    grassTint.tint = String.format("#%02x%02x%02x", grassColor.getRed(),
-                            grassColor.getGreen(),
-                            grassColor.getBlue());
+                        Color foliageColor = MultipleInputs.get("foliageColour").getForeground();
+                        ((MapTints) val).foliage = String.format("#%02x%02x%02x", foliageColor.getRed(),
+                                foliageColor.getGreen(),
+                                foliageColor.getBlue());
 
-                    grassTint.type = "tint";
+                        Color grassColor = MultipleInputs.get("grassColour").getForeground();
+                        grassTint.tint = String.format("#%02x%02x%02x", grassColor.getRed(),
+                                grassColor.getGreen(),
+                                grassColor.getBlue());
 
-                    ((MapTints) val).grass = grassTint;
+                        grassTint.type = "tint";
 
-                } else if (rMapElement.Type == ReplaceBiomes.class) {
-                    val = new ReplaceBiomes();
-                    Replacement replacement = new Replacement();
+                        ((MapTints) val).grass = grassTint;
 
-                    replacement.amount = ((Number) ((JSpinner) MultipleInputs.get("replacementVal")).getValue())
-                            .floatValue();
-                    replacement.noise_frequency_scale = ((Number) ((JSpinner) MultipleInputs.get("noiseVal"))
-                            .getValue()).floatValue();
-                    replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
+                    } else if (rMapElement.Type == ReplaceBiomes.class) {
+                        val = new ReplaceBiomes();
+                        Replacement replacement = new Replacement();
 
-                    ((ReplaceBiomes) val).replacements = new Replacement[] { replacement };
-                } else if (rMapElement.Type == SurfaceBuilder.class) {
-                    val = new SurfaceBuilder();
-                    OverworldBuilder builder = new OverworldBuilder();
+                        replacement.amount = ((Number) ((JSpinner) MultipleInputs.get("replacementVal")).getValue())
+                                .floatValue();
+                        replacement.noise_frequency_scale = ((Number) ((JSpinner) MultipleInputs.get("noiseVal"))
+                                .getValue()).floatValue();
+                        replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
 
-                    builder.sea_floor_depth = ((Number) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue())
-                            .intValue();
-                    builder.mid_material = ((RItemValue) MultipleInputs.get("midMaterialVal")).getItems().get(0).item;
+                        ((ReplaceBiomes) val).replacements = new Replacement[]{replacement};
+                    } else if (rMapElement.Type == SurfaceBuilder.class) {
+                        val = new SurfaceBuilder();
+                        OverworldBuilder builder = new OverworldBuilder();
 
-                    builder.foundation_material = ((RItemValue) MultipleInputs.get("foundationMaterialVal"))
-                            .getItems().get(0).item;
+                        builder.sea_floor_depth = ((Number) ((JSpinner) MultipleInputs.get("seaDepthVal")).getValue())
+                                .intValue();
+                        builder.mid_material = ((RItemValue) MultipleInputs.get("midMaterialVal")).getItems().get(0).item;
 
-                    builder.sea_material = ((RItemValue) MultipleInputs.get("seaMaterialVal")).getItems().get(0).item;
+                        builder.foundation_material = ((RItemValue) MultipleInputs.get("foundationMaterialVal"))
+                                .getItems().get(0).item;
 
-                    builder.sea_floor_material = ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).getItems()
-                            .get(0).item;
+                        builder.sea_material = ((RItemValue) MultipleInputs.get("seaMaterialVal")).getItems().get(0).item;
 
-                    builder.top_material = ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).getItems()
-                            .get(0).item;
+                        builder.sea_floor_material = ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).getItems()
+                                .get(0).item;
 
-                    ((SurfaceBuilder) val).builder = builder;
+                        builder.top_material = ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).getItems()
+                                .get(0).item;
 
-                } else if (rMapElement.Type == Tags.class) {
+                        ((SurfaceBuilder) val).builder = builder;
 
-                    val = new Tags();
-                    ((Tags) val).tags = (List<String>) ((RElementValue) InputField).getValue();
+                    } else if (rMapElement.Type == Tags.class) {
 
-                } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
-                    val = new minecraftDamage();
-                    ((minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
-                } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
-                    val = new minecraftDestructibleByMining();
-                    ((minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
-                            .getValue()).floatValue();
-                } else if (rMapElement.Type == minecraftBlockPlacer.class) {
-                    val = new minecraftBlockPlacer();
-                    if (((RItemValue) InputField).getItems().isEmpty())
-                        ((minecraftBlockPlacer) val).block = "minecraft:air";
-                    else
-                        ((minecraftBlockPlacer) val).block = ((RItemValue) InputField).getItems().get(0).item;
-                } else if (rMapElement.Type == String.class) { // string
-                    val = ((JTextField) InputField).getText();
-                } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
-                        || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
-                    val = ((JSpinner) InputField).getValue();
-                } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
-                    val = ((JSpinner) InputField).getValue();
-                } else if (rMapElement.Type.isArray()) { // array
+                        val = new Tags();
+                        ((Tags) val).tags = (List<String>) ((RElementValue) InputField).getValue();
 
-                } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
-                    val = (((JComboBox<String>) InputField).getSelectedIndex() == 0);
-                } else { // else
-                    if (rMapElement.Type == null) {
-                        InputField = new JLabel("Input type is null.");
-                    } else {
-                        InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
+                    } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
+                        val = new minecraftDamage();
+                        ((minecraftDamage) val).damage = (int) ((JSpinner) InputField).getValue();
+                    } else if (rMapElement.Type == minecraftDestructibleByMining.class) { // minecraft:destructible_by_mining
+                        val = new minecraftDestructibleByMining();
+                        ((minecraftDestructibleByMining) val).seconds_to_destroy = ((Double) ((JSpinner) InputField)
+                                .getValue()).floatValue();
+                    } else if (rMapElement.Type == minecraftBlockPlacer.class) {
+                        val = new minecraftBlockPlacer();
+                        if (((RItemValue) InputField).getItems().isEmpty())
+                            ((minecraftBlockPlacer) val).block = "minecraft:air";
+                        else
+                            ((minecraftBlockPlacer) val).block = ((RItemValue) InputField).getItems().get(0).item;
+                    } else if (rMapElement.Type == String.class) { // string
+                        val = ((JTextField) InputField).getText();
+                    } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class
+                            || rMapElement.Type == double.class || rMapElement.Type == Double.class) { // int
+                        val = ((JSpinner) InputField).getValue();
+                    } else if (rMapElement.Type == Float.class || rMapElement.Type == float.class) { // float
+                        val = ((JSpinner) InputField).getValue();
+                    } else if (rMapElement.Type.isArray()) { // array
+
+                    } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
+                        val = (((JComboBox<String>) InputField).getSelectedIndex() == 0);
+                    } else { // else
+                        if (rMapElement.Type == null) {
+                            InputField = new JLabel("Input type is null.");
+                        } else {
+                            InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
+                        }
                     }
                 }
+            } catch (Exception e) {
+                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                ErrorShower.showError(this, "Failed to get value of Map Entry.", e.getMessage(), e);
+                return null;
             }
-        } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(this, "Failed to get value of Map Entry.", e.getMessage(), e);
-            return null;
+        else {
+            Launcher.LOG.warning("Map value input is a label: " + ((JLabel) InputField).getText());
         }
         return new AbstractMap.SimpleEntry<>(rMapElement.ID, val);
 

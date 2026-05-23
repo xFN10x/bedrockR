@@ -66,7 +66,7 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
                 prefixedVanillaBiomeNames = biomeNamesPrefix.toArray(vanillaBiomeNames);
                 return vanillaBiomeNames;
             } catch (Exception e) {
-                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
     }

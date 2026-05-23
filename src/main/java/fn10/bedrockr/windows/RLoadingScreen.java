@@ -28,7 +28,7 @@ public class RLoadingScreen extends RDialog {
                 MainText.setText(text);
             });
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().warning("Failed to change progress message.");
+            fn10.bedrockr.Launcher.LOG.warning("Failed to change progress message.");
         }
     }
 

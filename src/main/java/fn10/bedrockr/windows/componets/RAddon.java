@@ -73,7 +73,7 @@ public class RAddon extends JPanel implements MouseListener {
             resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
         } catch (Exception e) {
-            java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             if (step == 0) {
                 return;
             } else if (step == 1) {
@@ -98,7 +98,7 @@ public class RAddon extends JPanel implements MouseListener {
                     resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
 
                 } catch (Exception e2) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
                     BI = null;
                     resizedImage = null;
                     return;
@@ -183,13 +183,13 @@ public class RAddon extends JPanel implements MouseListener {
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
                     JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
-                    java.util.logging.Logger.getGlobal().info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
+                    fn10.bedrockr.Launcher.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
                     FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPFile.workspaceName()));
                     JOptionPane.showMessageDialog(parent,
                             "The Addon " + WPFile.workspaceName() + " has been deleted.");
                     parent.refresh();
                 } catch (Exception e) {
-                    java.util.logging.Logger.getGlobal().log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         });
