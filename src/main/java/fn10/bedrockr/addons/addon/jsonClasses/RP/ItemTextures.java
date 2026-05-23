@@ -3,7 +3,8 @@ package fn10.bedrockr.addons.addon.jsonClasses.RP;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockTexture {
+public class ItemTextures {
+
     public static class TextureData {
         public String textures;
 
@@ -14,7 +15,7 @@ public class BlockTexture {
          *                    {@code resource_pack/textures/item/(text)}
          */
         public TextureData(String TextureName) {
-            textures = "textures/blocks/" + TextureName.replace(".png", "");
+            textures = "textures/items/" + TextureName.replace(".png", "");
         }
     }
 
