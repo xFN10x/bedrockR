@@ -1,12 +1,9 @@
 package fn10.bedrockr.addons.source.interfaces;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.ToNumberPolicy;
+import com.google.gson.*;
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceResourceElement;
-import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.*;
 import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
@@ -45,17 +42,41 @@ public abstract class SourcelessElementFile {
             ScriptFile.class, 0
     ));
 
-    public static SourcelessElementFile convertElementToNewerVersion(SourceWorkspaceFile wpf, JsonObject fileJson, Class<? extends SourcelessElementFile> elementType, int oldVer, int newVer) {
+    public static SourcelessElementFile upToDate(String workspace, JsonObject fileJson, Class<? extends SourcelessElementFile> elementType) {
+        JsonElement elementVerJElement = fileJson.get("ElementVersion");
+        int oldver;
+        if (elementVerJElement == null) {
+            oldver = 0;
+        } else {
+            oldver = elementVerJElement.getAsInt();
+        }
+        return upToDate(workspace, fileJson, elementType, oldver, highestVersions.get(elementType));
+    }
+    public static SourcelessElementFile upToDate(String workspace, JsonObject fileJson, Class<? extends SourcelessElementFile> elementType, int oldVer, int newVer) {
+        boolean upgrading = false;
+        if (oldVer != newVer) {
+            upgrading = true;
+            Launcher.LOG.info("Upgrading: " + elementType.getSimpleName() + " from: " + oldVer + ", to: " + newVer);
+        }
         if (BlockFile.class == elementType) {
             if (oldVer == 0 && newVer == 1) {
                 //UUID TextureUUID > BlockTexture Textures
-                SourceResourceElement res = RFileOperations.getResources(wpf.workspaceName());
+                SourceResourceElement res = RFileOperations.getResources(workspace);
                 String textureUUID = fileJson.get("TextureUUID").getAsString();
                 fileJson.add("Textures", gson.toJsonTree(new BlockTexture(UUID.fromString(textureUUID))));
                 fileJson.remove("TextureUUID");
             }
         }
-        return gson.fromJson(fileJson, elementType);
+        SourcelessElementFile sef = gson.fromJson(fileJson, elementType);
+        if (upgrading && sef instanceof ElementFile<?> ef) {
+            try {
+                ElementSource<? extends ElementFile<?>> src = ef.getSourceClass().getConstructor(ef.getClass()).newInstance(ef);
+                src.saveJSONFile(workspace);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return sef;
     }
 
 

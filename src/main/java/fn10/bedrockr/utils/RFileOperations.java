@@ -1,43 +1,35 @@
 package fn10.bedrockr.utils;
 
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemInfo;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.*;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import jakarta.annotation.Nullable;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Logger;
-
-import com.formdev.flatlaf.util.SystemFileChooser;
-import com.formdev.flatlaf.util.SystemInfo;
-import fn10.bedrockr.Launcher;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
-
-import fn10.bedrockr.addons.source.SourceBiomeElement;
-import fn10.bedrockr.addons.source.SourceBlockElement;
-import fn10.bedrockr.addons.source.SourceFoodElement;
-import fn10.bedrockr.addons.source.SourceItemElement;
-import fn10.bedrockr.addons.source.SourceRecipeElement;
-import fn10.bedrockr.addons.source.SourceResourceElement;
-import fn10.bedrockr.addons.source.SourceScriptElement;
-import fn10.bedrockr.addons.source.SourceWorkspaceFile;
-import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
-import jakarta.annotation.Nullable;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 
 public class RFileOperations {
 
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,
-                                                                                 @Nullable String workspaceName) implements Comparable<ElementMade<T>> {
+                                                        @Nullable String workspaceName) implements Comparable<ElementMade<T>> {
 
         @Override
         public int compareTo(ElementMade o) {
@@ -61,8 +53,8 @@ public class RFileOperations {
     private static File BASE_DIRECTORY = new File(BASE_PATH);
     private static WorkspaceFile CURRENT_WORKSPACE = null;
     public static final Map<String, Path> MC_SYNC_OPTIONS = Map.of(
-            "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"),"Minecraft Bedrock","Users","Shared","games","com.mojang"),
-            "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local","share","mcpelauncher","games","com.mojang")
+            "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"), "Minecraft Bedrock", "Users", "Shared", "games", "com.mojang"),
+            "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local", "share", "mcpelauncher", "games", "com.mojang")
     );
     @SuppressWarnings("unused")
     private static Path COMMOJANG = null;
@@ -102,6 +94,7 @@ public class RFileOperations {
             4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     };
     public static final Map<String, Class<? extends ElementSource<?>>> ELEMENT_EXTENSION_CLASSES = new HashMap<>();
+
     static {
         ELEMENT_EXTENSION_CLASSES.put("itemref", SourceItemElement.class);
         ELEMENT_EXTENSION_CLASSES.put("blockref", SourceBlockElement.class);
@@ -133,7 +126,7 @@ public class RFileOperations {
     /**
      * Gets the class of the ElementSource linked with the ElementFile, based on the
      * extension
-     * 
+     *
      * @param fileExtension
      * @return
      */
@@ -155,7 +148,7 @@ public class RFileOperations {
     /**
      * Gets the class of the ElementSource linked with the ElementFile, based on the
      * extension
-     * 
+     *
      * @param fileExtension the extension of the file
      * @return the ElementSource accosseated with the extension.
      */
@@ -171,7 +164,7 @@ public class RFileOperations {
 
     /**
      * Reads the resource at the path specified
-     * 
+     *
      * @param resource - the path of the resource
      * @return the string of the file read
      */
@@ -188,7 +181,7 @@ public class RFileOperations {
     /**
      * (This function was made by ai.)
      * Reads all bytes from an InputStream using read() method.
-     * 
+     *
      * @param is the InputStream to read from
      * @return the byte array containing all bytes
      * @throws IOException if an I/O error occurs
@@ -205,7 +198,7 @@ public class RFileOperations {
 
     /**
      * Checks if a string can be used in a legal file name for windows, and linux.
-     * 
+     *
      * @param proposed - The string to check
      * @return a bool declaring if the string can be used
      */
@@ -230,7 +223,7 @@ public class RFileOperations {
 
     /**
      * Gets the workspaces that the user currently has.
-     * 
+     *
      * @return an array of strings, being the names of the workspaces
      */
     public static String[] getWorkspaces() {
@@ -262,7 +255,7 @@ public class RFileOperations {
 
     /**
      * Gets source resources that exist on disk from a workspace.
-     * 
+     *
      * @param workspaceName - the workspace to get the resources from
      * @return a {@code SourceResourceElement}, containing the resources
      */
@@ -291,7 +284,7 @@ public class RFileOperations {
 
     /**
      * Adds an object to a list if it isn't inside of it.
-     * 
+     *
      * @param <T>   The list type
      * @param list  The list the element is being added too
      * @param toAdd The object being added to the list
@@ -307,13 +300,13 @@ public class RFileOperations {
 
     /**
      * Sets the current workspace.
-     * 
+     *
      * <p>
      * Set the current workspace when opening it for editing. You should
      * only be able to edit one workspace at a time. When opening a workspace, make
      * sure to check the {@code WorkspaceFile.Format}, and
      * {@code WorkspaceFile.bedrockRVersion} to make sure its safe to load.
-     * 
+     *
      * @param WPF - the SourceWorkspaceFile of the workspace.
      */
     public static void setCurrentWorkspace(SourceWorkspaceFile WPF) {
@@ -336,7 +329,7 @@ public class RFileOperations {
 
     /**
      * Gets the last opened workspace
-     * 
+     *
      * @return the workspace file.
      */
     public static WorkspaceFile getCurrentWorkspace() {
@@ -345,7 +338,7 @@ public class RFileOperations {
 
     /**
      * Gets a directory from {@code .bedrockr}
-     * 
+     *
      * @param Folders - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
@@ -355,7 +348,7 @@ public class RFileOperations {
 
     /**
      * Gets a directory from {@code .bedrockr}
-     * 
+     *
      * @param strict  - if strict, it doesn't make the directory you specify
      * @param Folders - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
@@ -375,7 +368,7 @@ public class RFileOperations {
 
     /**
      * Gets the {@code .bedrockr} directory
-     * 
+     *
      * @return the file, being the directory that you specified,
      */
     public static File getBaseDirectory() {
@@ -393,7 +386,7 @@ public class RFileOperations {
 
     /**
      * Get a file from a workspace
-     * 
+     *
      * @param WorkspaceName - the name of the target workspace
      * @param ToCreate      - the file to get, creating it if it doesnt exist.
      *                      e.g. {@code icon.jpg}
@@ -419,7 +412,7 @@ public class RFileOperations {
 
     /**
      * Get a file from a workspace
-     * 
+     *
      * @param WorkspaceName - the name of the target workspace
      * @param ToCreate      - the file to get, creating it if it doesnt exist.
      *                      e.g. {@code icon.jpg}
@@ -427,7 +420,7 @@ public class RFileOperations {
      * @return the file
      */
     public static File getFileFromWorkspace(String WorkspaceName, String ToCreate,
-            Boolean strict) {
+                                            Boolean strict) {
         // fn10.bedrockr.Launcher.LOG.warning("This file should start with the
         // file seperator, or not
         // at all! not '/'!");
@@ -448,7 +441,7 @@ public class RFileOperations {
 
     /**
      * Get a workspace's folder
-     * 
+     *
      * @param WorkspaceName - the target workspace
      * @return a File, being the directory of the workspace
      */
@@ -458,7 +451,7 @@ public class RFileOperations {
 
     /**
      * Syncs all built RP and BP to com.mojang
-     * 
+     *
      */
     public static void mcSync() {
         SettingsFile settings = SettingsFile.load();
@@ -492,10 +485,10 @@ public class RFileOperations {
                     if (f.isDirectory()) {
                         if (!settings.currentBPSynced.contains(f.getName())
                                 && !settings.ignored.contains(f.getName())) { // if
-                                                                              // it
-                                                                              // doesnt
-                                                                              // recicnise
-                                                                              // it
+                            // it
+                            // doesnt
+                            // recicnise
+                            // it
                         }
                     }
                 }
@@ -509,10 +502,10 @@ public class RFileOperations {
                     if (f.isDirectory()) {
                         if (!settings.currentRPSynced.contains(f.getName())
                                 && !settings.ignored.contains(f.getName())) { // if
-                                                                              // it
-                                                                              // doesnt
-                                                                              // recicnise
-                                                                              // it
+                            // it
+                            // doesnt
+                            // recicnise
+                            // it
 
                         }
                     }
@@ -524,7 +517,7 @@ public class RFileOperations {
             settings.currentBPSynced.clear();
             for (File f : new File(bpPath).listFiles()) { //
                 if (f.isDirectory() && Arrays.asList(f.list()).contains("manifest.json")) { // if its a dir, and it has
-                                                                                            // manifest
+                    // manifest
                     File bpDestPath = new File(
                             settings.comMojangPath + File.separator + "development_behavior_packs" + File.separator
                                     + f.getName());
@@ -547,7 +540,7 @@ public class RFileOperations {
             settings.currentRPSynced.clear();
             for (File f : new File(rpPath).listFiles()) { //
                 if (f.isDirectory() && Arrays.asList(f.list()).contains("manifest.json")) { // if its a dir, and it has
-                                                                                            // manifest
+                    // manifest
                     File rpDestPath = new File(
                             settings.comMojangPath + File.separator + "development_resource_packs" + File.separator
                                     + f.getName());
@@ -572,7 +565,7 @@ public class RFileOperations {
 
     /**
      * Creates a workspace's folder to disk
-     * 
+     *
      * @param wpf       - the workspace file to use
      * @param addonIcon - the icon to be written to disk
      * @return the new {@code SourceWorkspaceFile}
@@ -580,7 +573,7 @@ public class RFileOperations {
      */
     public static SourceWorkspaceFile createWorkspace( // String workspaceName, String
                                                        // minimumVersion)
-            WorkspaceFile wpf, Byte[] addonIcon) throws IOException {
+                                                       WorkspaceFile wpf, Byte[] addonIcon) throws IOException {
 
         String[] wsFolders = {
                 File.separator + "elements" + File.separator,
@@ -634,16 +627,16 @@ public class RFileOperations {
 
     /**
      * Gets the ElementFile's equivalent file on disk.
-     * 
+     *
      * @param workspace   - the workspace the file is in
      * @param elementFile - the ElementFile to search for on disk
      * @return
      */
     public static Path getFileFromElementFile(String workspace, ElementFile<?> elementFile) {
         Path proposed = java.nio.file.Paths.get(RFileOperations
-                .getFileFromWorkspace(workspace,
-                        File.separator + "elements" + File.separator)
-                .getAbsolutePath(),
+                        .getFileFromWorkspace(workspace,
+                                File.separator + "elements" + File.separator)
+                        .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
         Launcher.LOG.info("Found ElementFile on disk: " + proposed);
@@ -652,21 +645,25 @@ public class RFileOperations {
 
     /**
      * Gets all the ElementFiles on disk
-     * 
+     *
      * @param workspace - the workspace to get the elements from
      * @return an array of ElementFiles, populated by all the ones found on disk
      */
     public static ElementFile<?>[] getElementsFromWorkspace(String workspace) {
         List<ElementFile<?>> building = new ArrayList<>();
-        for (File file : RFileOperations
+        for (File file : Objects.requireNonNull(RFileOperations
                 .getFileFromWorkspace(workspace,
                         File.separator + "elements" + File.separator)
-                .listFiles()) {
+                .listFiles())) {
             try {
                 ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
-
-                building.add(source.getFromJSON(new String(Files.readAllBytes(file.toPath()))));
+                String jsonString = new String(Files.readAllBytes(file.toPath()));
+                JsonObject element = JsonParser.parseString(jsonString).getAsJsonObject();
+                SourcelessElementFile sef = SourcelessElementFile.upToDate(workspace, element, source.getSerilizedClass());
+                if (sef instanceof ElementFile<?> ef) {
+                    building.add(ef);
+                }
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
