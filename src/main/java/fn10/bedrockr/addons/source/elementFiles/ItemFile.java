@@ -19,7 +19,7 @@ import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement {
+public class ItemFile extends ElementFile<SourceItemElement> implements ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
@@ -92,9 +92,6 @@ public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement
     @Order(7)
     public UUID TextureUUID;
 
-    @UneditableByCreation
-    public Boolean isDraft = Boolean.FALSE;
-
     @Override
     public Class<SourceItemElement> getSourceClass() {
         return SourceItemElement.class;
@@ -103,16 +100,6 @@ public class ItemFile implements ElementFile<SourceItemElement>, ItemLikeElement
     @Override
     public String getElementName() {
         return ElementName;
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-        this.isDraft = draft;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return isDraft == null ? Boolean.FALSE : isDraft;
     }
 
     @Override

@@ -11,17 +11,16 @@ import fn10.bedrockr.utils.RFileOperations;
  */
 public class PluginBus {
 
-    private static final Logger LOG = Logger.getGlobal();
+    private static final Logger LOG = Logger.getLogger("Plugins");
 
     /**
      * Register a sourced-element, that automaticly adds it to selectable elements.
      * 
-     * @param <T>        the ElementFile Class
      * @param source     the class of the ElementSource you wish to register
      * @param extenstion The extension of the ElementFile on disc.
      * @return This plugin bus.
      */
-    public <T> PluginBus registerElement(Class<? extends ElementSource<? extends T>> source,
+    public PluginBus registerElement(Class<? extends ElementSource<?>> source,
             String extenstion) {
                 LOG.info("Registering element: " +  source.getClass().getSimpleName() + " (" + extenstion + ")");
         RFileOperations.ELEMENT_EXTENSION_CLASSES.put(extenstion, source);

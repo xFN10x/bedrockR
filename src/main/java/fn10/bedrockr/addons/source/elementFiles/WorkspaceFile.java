@@ -29,7 +29,7 @@ import fn10.bedrockr.utils.RFileOperations;
 /* The WPFile, is an ElementFile that handles workspace variables, and building
  * manifests, and other base stuff for both packs.
  */
-public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
+public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
 
     public int Format;
     public String LatestBedrockRVersion;
@@ -75,15 +75,6 @@ public class WorkspaceFile implements ElementFile<SourceWorkspaceFile> {
     @Override
     public String getElementName() {
         return WorkspaceName;
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return false;
     }
 
     /**

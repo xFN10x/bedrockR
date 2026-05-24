@@ -6,9 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.UUID;
 
 import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
+import fn10.bedrockr.rendering.RenderHandler;
+import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.windows.util.ImageUtilites;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -29,18 +31,22 @@ import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.Order;
-import fn10.bedrockr.utils.RAnnotation.ResourcePackResourceType;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
-import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
-public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeElement {
+import javax.imageio.ImageIO;
+
+public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLikeElement {
+
+    {
+        ElementVersion = 1;
+    }
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
     @VeryImportant
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
-    @Order(0)
+    @Order()
     public String ElementName;
 
     @HelpMessage("The name of the block. e.g. \"Diamond\", \"Coal\"...")
@@ -97,14 +103,15 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @MapFieldSelectables(BlockComponents.class)
     @HelpMessage("Defining parts of a block. This is were you would specify ")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    @RAnnotation.CreationMenuTab("Components")
     @Order(6)
     public HashMap<String, Object> Components;
 
     @HelpMessage("<html>The textures for the block. </html>")
-    @ResourcePackResourceType(ResourceFile.BLOCK_TEXTURE)
     @FieldDetails(Optional = false, displayName = "Block Texture")
+    @RAnnotation.CreationMenuTab("Textures")
     @Order(7)
-    public BlockTexture TextureUUID;
+    public BlockTexture Textures;
 
     @HelpMessage("The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
     @FieldDetails(displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
@@ -128,9 +135,6 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @Order(8)
     public String Sound;
 
-    @UneditableByCreation
-    public Boolean isDraft = Boolean.FALSE;
-
     @Override
     public Class<SourceBlockElement> getSourceClass() {
         return SourceBlockElement.class;
@@ -142,23 +146,13 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     }
 
     @Override
-    public void setDraft(Boolean draft) {
-        this.isDraft = draft;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return isDraft == null ? Boolean.FALSE : isDraft;
-    }
-
-    @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         globalResVaribles.EnglishTexts.put("tile." + workspaceFile.Prefix + ":" + ID + ".name", Name);
         globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
                 new BlockJSONEntry(Sound,
                         globalResVaribles.addBlockTexture(Objects.requireNonNull(MapUtilities
-                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString()))),
+                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, Textures.toString()))),
                         null, null));
 
         // make item
@@ -196,9 +190,11 @@ public class BlockFile implements ElementFile<SourceBlockElement>, ItemLikeEleme
     @Override
     public Byte[] getTexture(String workspace) {
         try {
-            ResourceFile resFile = RFileOperations.getResources(workspace).Serilized;
-            return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(workspace, MapUtilities
-                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.BLOCK_TEXTURE).toPath()));
+            ResourceFile resources = RFileOperations.getResources(workspace).getSerilized();
+            String fileName = MapUtilities
+                    .getKeyFromValue(resources.ResourceIDs, Textures.upTexID.toString());
+            File imageFile = resources.getFileOfResource(workspace, fileName, ResourceFile.BLOCK_TEXTURE);
+            return ArrayUtils.toObject(ImageUtilites.ImageToBytes(RenderHandler.render6SideBlock(ID, ImageIO.read(imageFile))));
         } catch (IllegalAccessError | IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;

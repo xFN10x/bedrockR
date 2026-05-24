@@ -22,7 +22,7 @@ import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
-public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement {
+public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")
     @CantEditAfter
@@ -150,9 +150,6 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @Order(18)
     public int Nutrition = 3;
 
-    @UneditableByCreation
-    public Boolean isDraft = false;
-
     @Override
     public Class<SourceFoodElement> getSourceClass() {
         return SourceFoodElement.class;
@@ -161,16 +158,6 @@ public class FoodFile implements ElementFile<SourceFoodElement>, ItemLikeElement
     @Override
     public String getElementName() {
         return ElementName;
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-        this.isDraft = draft;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return isDraft == null ? Boolean.FALSE : isDraft;
     }
 
     @Override

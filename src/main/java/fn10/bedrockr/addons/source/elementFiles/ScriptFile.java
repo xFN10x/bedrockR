@@ -4,7 +4,7 @@ import java.io.IOException;
 import fn10.bedrockr.addons.source.SourceScriptElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 
-public class ScriptFile implements ElementFile<SourceScriptElement> {
+public class ScriptFile extends ElementFile<SourceScriptElement> {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
@@ -20,15 +20,6 @@ public class ScriptFile implements ElementFile<SourceScriptElement> {
     @Override
     public String getElementName() {
         return "Script";
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return true;
     }
 /* sadly, scripts will not be in the next updates until i rework them
     @UneditableByCreation

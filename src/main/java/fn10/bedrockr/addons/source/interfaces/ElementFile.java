@@ -1,10 +1,10 @@
 package fn10.bedrockr.addons.source.interfaces;
 
-public interface ElementFile<T extends ElementSource<? extends ElementFile<T>>> extends SourcelessElementFile { // mostly for making functions better to read
+public abstract class ElementFile<T extends ElementSource<? extends ElementFile<T>>> extends SourcelessElementFile { // mostly for making functions better to read
 
 
-    Class<T> getSourceClass();
+    public abstract Class<T> getSourceClass();
 
-    String getElementName();
+    public abstract String getElementName();
 
 }
