@@ -54,14 +54,16 @@ public class SettingsFile extends SourcelessElementFile {
 
     /**
      * Save this settings file to the bedrockR home.
-     * @deprecated Use .build()
      */
-    @Deprecated
     public void save() {
+        CACHE = null;
+        var json = gson.toJson(this);
+        var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
-            build(null,null,null,null);
+            Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 
@@ -84,14 +86,6 @@ public class SettingsFile extends SourcelessElementFile {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath, GlobalBuildingVariables globalResVaribles) throws IOException {
-        CACHE = null;
-        var json = gson.toJson(this);
-        var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
-        try {
-            Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE);
-        } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
+        save();
     }
 }
