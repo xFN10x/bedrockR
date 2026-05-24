@@ -22,7 +22,7 @@ import fn10.bedrockr.utils.RAnnotation.Order;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
-public class BiomeFile implements ElementFile<SourceBiomeElement> {
+public class BiomeFile extends ElementFile<SourceBiomeElement> {
 
     @CantEditAfter
     @Order(0)
@@ -30,8 +30,6 @@ public class BiomeFile implements ElementFile<SourceBiomeElement> {
     @HelpMessage("The name of the element in bedrockR")
     @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
     public String ElementName;
-
-    public boolean Draft = false;
 
     @HelpMessage("The ID of the biome. Used in /locate, and debugging.")
     @FieldDetails(Optional = false, displayName = "Biome ID", Filter = FieldFilters.IDStringFilter.class)
@@ -70,16 +68,6 @@ public class BiomeFile implements ElementFile<SourceBiomeElement> {
     @Override
     public String getElementName() {
         return ElementName;
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-        this.Draft = draft;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return Draft;
     }
 
 }

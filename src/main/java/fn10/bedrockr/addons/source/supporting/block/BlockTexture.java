@@ -9,10 +9,17 @@ public class BlockTexture {
         PERFACE
     }
 
+    private final BlockTextureMode mode;
+
     public UUID upTexID;
     public UUID downTexID;
     public UUID eastTexID;
     public UUID westTexID;
     public UUID northTexID;
     public UUID southTexID;
+
+    public BlockTexture(UUID allFace) {
+        mode = BlockTextureMode.ALL;
+        this.upTexID = allFace;
+    }
 }

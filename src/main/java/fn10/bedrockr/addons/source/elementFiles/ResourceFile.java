@@ -14,7 +14,7 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 
-public class ResourceFile implements ElementFile<SourceResourceElement> {
+public class ResourceFile extends ElementFile<SourceResourceElement> {
 
     /**
      * Key is the file name.
@@ -128,14 +128,4 @@ public class ResourceFile implements ElementFile<SourceResourceElement> {
     public String getElementName() {
         return "Resources";
     }
-
-    @Override
-    public void setDraft(Boolean draft) {
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return false;
-    }
-
 }

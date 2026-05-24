@@ -26,7 +26,7 @@ import fn10.bedrockr.utils.RFileOperations;
  * things like language texts, and textures. This should ALWAYS be built last.
  */
 
-public class GlobalBuildingVariables implements SourcelessElementFile {
+public class GlobalBuildingVariables extends SourcelessElementFile {
 
     public List<String> Langs = new ArrayList<>();
     public Map<String, String> EnglishTexts = new HashMap<>();
@@ -82,7 +82,6 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
         return plannedkey;
     }
 
-    @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         //#region Language support
@@ -167,15 +166,6 @@ public class GlobalBuildingVariables implements SourcelessElementFile {
 
         //#endregion
 
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return false;
     }
 
 }

@@ -28,7 +28,7 @@ import fn10.bedrockr.utils.RAnnotation.VeryImportant;
  * use as reference
  * https://wiki.bedrock.dev/loot/recipes
  */
-public class RecipeFile implements ElementFile<SourceRecipeElement> {
+public class RecipeFile extends ElementFile<SourceRecipeElement> {
     // dont add order anno cause this doesnt use auto
     @CantEditAfter
     @VeryImportant
@@ -57,8 +57,6 @@ public class RecipeFile implements ElementFile<SourceRecipeElement> {
     public String[] ShapedPattern;
     public Map<String, String> ShapedKey = new HashMap<String, String>();
 
-    private boolean Draft;
-
     @Override
     public Class<SourceRecipeElement> getSourceClass() {
         return SourceRecipeElement.class;
@@ -67,16 +65,6 @@ public class RecipeFile implements ElementFile<SourceRecipeElement> {
     @Override
     public String getElementName() {
         return ElementName;
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-        Draft = draft;
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return Draft;
     }
 
     @Override

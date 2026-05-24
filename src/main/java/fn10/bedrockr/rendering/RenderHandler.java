@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -41,11 +42,11 @@ public class RenderHandler {
                 makeSolidTest(Color.YELLOW)
         ), 300, 300), 0, 0, null);
     }
-    public static Image render6SideBlock(String name, BufferedImage t) throws IOException {
+    public static BufferedImage render6SideBlock(String name, BufferedImage t) throws IOException {
         return render6SideBlock(name,t,t,t,t,t,t);
     }
 
-    public static Image render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage side) throws IOException {
+    public static BufferedImage render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage side) throws IOException {
         return render6SideBlock(name,t,d,side,side,side,side);
     }
 
@@ -112,7 +113,7 @@ public class RenderHandler {
         return bufferedImage;
     }
 
-    public static Image render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage e, BufferedImage w, BufferedImage n, BufferedImage s) throws IOException {
+    public static BufferedImage render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage e, BufferedImage w, BufferedImage n, BufferedImage s) throws IOException {
         var top = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(t, missing()), 60, 60));
         var down = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
         var east = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
@@ -151,7 +152,8 @@ public class RenderHandler {
         maing.drawImage(side3, null, 0, 0);
 
 
-        ImageIO.write(main, "png", RFileOperations.getBaseDirectory("cache","renders", name+".png"));
+        File imageFile = RFileOperations.getBaseDirectory("cache", "renders", name + ".png");
+        ImageIO.write(main, "png", imageFile);
 
         return main;
     }

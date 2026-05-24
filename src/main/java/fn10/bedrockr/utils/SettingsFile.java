@@ -15,7 +15,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsFile implements SourcelessElementFile {
+public class SettingsFile extends SourcelessElementFile {
 
     //This is used in load() if its not saved yet.
     private static SettingsFile CACHE = null;
@@ -52,17 +52,17 @@ public class SettingsFile implements SourcelessElementFile {
     @RAnnotation.SettingsCategory(RAnnotation.SettingsCategory.SettingsCategorys.Network)
     public Boolean shareExtraData = null;
 
+    /**
+     * Save this settings file to the bedrockR home.
+     * @deprecated Use .build()
+     */
+    @Deprecated
     public void save() {
-        CACHE = null;
-        var json = gson.toJson(this);
-        var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
-            Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE);
+            build(null,null,null,null);
         } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            throw new RuntimeException(e);
         }
-
     }
 
     public static @Nonnull SettingsFile load() {
@@ -84,15 +84,14 @@ public class SettingsFile implements SourcelessElementFile {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath, GlobalBuildingVariables globalResVaribles) throws IOException {
-
-    }
-
-    @Override
-    public void setDraft(Boolean draft) {
-    }
-
-    @Override
-    public Boolean getDraft() {
-        return false;
+        CACHE = null;
+        var json = gson.toJson(this);
+        var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
+        try {
+            Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+        }
     }
 }
