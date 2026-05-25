@@ -245,7 +245,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 AddElement);
         // built & launch button
         Lay.putConstraint(SpringLayout.SOUTH, BuildLaunch, 0, SpringLayout.NORTH, Tabs);
-        Lay.putConstraint(SpringLayout.EAST, BuildLaunch, -10, SpringLayout.EAST, CP);
+        Lay.putConstraint(SpringLayout.EAST, BuildLaunch, -30, SpringLayout.EAST, CP);
         // launch button
         Lay.putConstraint(SpringLayout.SOUTH, LaunchMC, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, LaunchMC, -10, SpringLayout.WEST, BuildLaunch);

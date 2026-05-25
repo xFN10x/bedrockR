@@ -4,6 +4,7 @@ import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 
 import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BlockTexture {
@@ -67,12 +68,12 @@ public class BlockTexture {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BlockTexture bt)
-            return upTexID.equals(bt.upTexID) &&
-                    downTexID.equals(bt.downTexID) &&
-                    northTexID.equals(bt.northTexID) &&
-                    southTexID.equals(bt.southTexID) &&
-                    eastTexID.equals(bt.eastTexID) &&
-                    westTexID.equals(bt.westTexID);
+            return Objects.equals(upTexID, bt.upTexID) &&
+                    Objects.equals(downTexID, bt.downTexID) &&
+                    Objects.equals(northTexID, bt.northTexID) &&
+                    Objects.equals(southTexID, bt.southTexID) &&
+                    Objects.equals(eastTexID, bt.eastTexID) &&
+                    Objects.equals(westTexID, bt.westTexID);
         else
             return super.equals(obj);
     }

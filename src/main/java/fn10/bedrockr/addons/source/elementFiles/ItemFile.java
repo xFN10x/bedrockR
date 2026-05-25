@@ -109,7 +109,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
 
         // make item
         var item = new Item();
-        item.format_version = "1.21.60";
+        item.format_version = "1.21.120";
         // catagory
         var cata = new Item.InnerItem.Description.MenuCategory();
         cata.hidden = Hidden;
