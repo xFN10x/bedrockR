@@ -98,6 +98,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     private final JButton AddTextureResource = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/NewResource.png")));
     private final JButton LaunchMC = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/LaunchMC.png")));
+    private final JButton BuildLaunch = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build&Play.png")));
     private final JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
     private final JButton ReBuildElements = new JButton(
             new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
@@ -222,6 +223,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         LaunchMC.setActionCommand("launch");
         LaunchMC.addActionListener(this);
 
+        BuildLaunch.setActionCommand("launchbuild");
+        BuildLaunch.addActionListener(this);
+
         // constraints
         // tabbedpane
         Lay.putConstraint(SpringLayout.EAST, Tabs, -30, SpringLayout.EAST, CP);
@@ -239,9 +243,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         Lay.putConstraint(SpringLayout.NORTH, AddTextureResource, 10, SpringLayout.SOUTH, AddElement);
         Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddTextureResource, 0, SpringLayout.HORIZONTAL_CENTER,
                 AddElement);
+        // built & launch button
+        Lay.putConstraint(SpringLayout.SOUTH, BuildLaunch, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, BuildLaunch, -10, SpringLayout.EAST, CP);
         // launch button
         Lay.putConstraint(SpringLayout.SOUTH, LaunchMC, 0, SpringLayout.NORTH, Tabs);
-        Lay.putConstraint(SpringLayout.EAST, LaunchMC, -10, SpringLayout.EAST, CP);
+        Lay.putConstraint(SpringLayout.EAST, LaunchMC, -10, SpringLayout.WEST, BuildLaunch);
         // build button
         Lay.putConstraint(SpringLayout.SOUTH, BuildElements, 0, SpringLayout.NORTH, Tabs);
         Lay.putConstraint(SpringLayout.EAST, BuildElements, -10, SpringLayout.WEST, LaunchMC);
@@ -265,6 +272,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
         add(AddElement);
         add(AddTextureResource);
+        add(BuildLaunch);
         add(LaunchMC);
         add(BuildElements);
         add(ReBuildElements);
@@ -555,23 +563,29 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             }
             case "build" -> buildElements(false);
             case "rebuild" -> buildElements(true);
-            case "launch" -> {
-                if (SettingsFile.load().comMojangPath != null) {
-                    if (!SettingsFile.load().comMojangPath.toFile().exists()) {
-                        JOptionPane.showMessageDialog(this, "You... cant launch minecraft without it installed...",
-                                "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                }
-                try {
-                    Desktop.getDesktop().browse(new URI("minecraft:///"));
-                } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                    ErrorShower.showError(this, "Failed to open Minecraft", e.getMessage(), e);
-                }
+            case "launch" -> play();
+            case "launchbuild" -> {
+                buildElements(false);
+                play();
             }
         }
 
+    }
+
+    private void play() {
+        if (SettingsFile.load().comMojangPath != null) {
+            if (!SettingsFile.load().comMojangPath.toFile().exists()) {
+                JOptionPane.showMessageDialog(this, "You... can't launch minecraft without it installed...",
+                        "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        try {
+            Desktop.getDesktop().browse(new URI("minecraft:///"));
+        } catch (Exception e) {
+            Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+            ErrorShower.showError(this, "Failed to open Minecraft", e.getMessage(), e);
+        }
     }
 
     @Override
