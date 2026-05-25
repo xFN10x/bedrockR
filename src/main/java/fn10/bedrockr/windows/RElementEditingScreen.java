@@ -576,6 +576,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 }
                 try { // then add them
                     RAnnotation.FieldDetails details = field.getAnnotation(RAnnotation.FieldDetails.class);
+                    if (details == null) {
+                        //probably should have been marked to not serilize
+                        Launcher.LOG.warning("Field: " + field.getName() + " in " + src.getSerilizedClass().getName() + " does not have FieldDetails annotation, assuming this should be marked as UneditableByCreation.");
+                        continue;
+                    }
                     if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
                         if (src.getSerilized() != null) // create field with a file already there
                             rev = new RElementValue(Parent, field.getType(),
