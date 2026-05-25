@@ -632,8 +632,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         pane.remove(component);
                     } else {
                         lay.putConstraint(SpringLayout.NORTH, component, 4, SpringLayout.NORTH, pane);
-                        lay.putConstraint(SpringLayout.EAST, component, 4, SpringLayout.EAST, pane);
-                        lay.putConstraint(SpringLayout.SOUTH, component, 4, SpringLayout.SOUTH, pane);
+                        lay.putConstraint(SpringLayout.EAST, component, -4, SpringLayout.EAST, pane);
+                        lay.putConstraint(SpringLayout.SOUTH, component, -4, SpringLayout.SOUTH, pane);
                         lay.putConstraint(SpringLayout.WEST, component, 4, SpringLayout.WEST, pane);
                     }
                 }
