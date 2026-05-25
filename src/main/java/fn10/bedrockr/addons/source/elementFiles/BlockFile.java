@@ -1,40 +1,30 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.Objects;
-
-import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
-import fn10.bedrockr.rendering.RenderHandler;
-import fn10.bedrockr.utils.RAnnotation;
-import fn10.bedrockr.windows.util.ImageUtilites;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
-
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description;
 import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description.MenuCategory;
-import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
 import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.source.supporting.BlockComponents;
+import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
+import fn10.bedrockr.rendering.RenderHandler;
 import fn10.bedrockr.utils.MapUtilities;
+import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
-import fn10.bedrockr.utils.RAnnotation.FieldDetails;
-import fn10.bedrockr.utils.RAnnotation.HelpMessage;
-import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
-import fn10.bedrockr.utils.RAnnotation.Order;
-import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
-import fn10.bedrockr.utils.RAnnotation.VeryImportant;
+import fn10.bedrockr.windows.util.ImageUtilites;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 
 public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLikeElement {
 
@@ -66,7 +56,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
 
     @HelpMessage("The Creative Tab is this block on.")
     @FieldDetails(Optional = false, displayName = "Category", Filter = FieldFilters.CommonFilter1.class)
-    @StringDropdownField({ "construction", "equipment", "items", "nature" })
+    @StringDropdownField({"construction", "equipment", "items", "nature"})
     @Order(4)
     public String Category;
 
@@ -74,7 +64,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     @FieldDetails(Optional = true, displayName = "Creative Group", Filter = FieldFilters.CommonFilter1.class)
     @Order(5)
     // avalible groups 1.21.70
-    @StringDropdownField({ "itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
+    @StringDropdownField({"itemGroup.name.anvil", "itemGroup.name.arrow", "itemGroup.name.axe",
             "itemGroup.name.banner", "itemGroup.name.banner_pattern", "itemGroup.name.bed", "itemGroup.name.boat",
             "itemGroup.name.boots", "itemGroup.name.bundles", "itemGroup.name.buttons", "itemGroup.name.candles",
             "itemGroup.name.chalkboard", "itemGroup.name.chest", "itemGroup.name.chestboat",
@@ -97,7 +87,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
             "itemGroup.name.slab", "itemGroup.name.smithing_templates", "itemGroup.name.splashPotion",
             "itemGroup.name.stainedClay", "itemGroup.name.stairs", "itemGroup.name.stone", "itemGroup.name.stoneBrick",
             "itemGroup.name.sword", "itemGroup.name.trapdoor", "itemGroup.name.walls", "itemGroup.name.wood",
-            "itemGroup.name.wool", "itemGroup.name.woolCarpet" })
+            "itemGroup.name.wool", "itemGroup.name.woolCarpet"})
     public String Group;
 
     @MapFieldSelectables(BlockComponents.class)
@@ -116,7 +106,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     @HelpMessage("The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
     @FieldDetails(displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
     // avalible groups 1.21.70
-    @StringDropdownField({ "amethyst_block", "amethyst_cluster", "ancient_debris", "anvil", "azalea", "azalea_leaves",
+    @StringDropdownField({"amethyst_block", "amethyst_cluster", "ancient_debris", "anvil", "azalea", "azalea_leaves",
             "bamboo", "bamboo_sapling", "bamboo_wood", "bamboo_wood_hanging_sign", "basalt", "big_dripleaf",
             "bone_block", "calcite", "candle", "cave_vines", "chain", "cherry_leaves", "cherry_wood",
             "cherry_wood_hanging_sign", "chiseled_bookshelf", "cloth", "comparator", "copper", "copper_bulb",
@@ -131,7 +121,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
             "scaffolding", "sculk", "sculk_catalyst", "sculk_sensor", "sculk_shrieker", "sculk_vein", "shroomlight",
             "slime", "small_amethyst_bud", "snow", "soul_sand", "soul_soil", "sponge", "spore_blossom", "stem", "stone",
             "suspicious_gravel", "suspicious_sand", "sweet_berry_bush", "trial_spawner", "tuff", "tuff_bricks",
-            "turtle_egg", "vault", "vines", "web", "weeping_vines", "wet_sponge", "wood" })
+            "turtle_egg", "vault", "vines", "web", "weeping_vines", "wet_sponge", "wood"})
     @Order(8)
     public String Sound;
 
@@ -147,15 +137,16 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+                      GlobalBuildingVariables globalResVaribles) throws IOException {
         globalResVaribles.EnglishTexts.put("tile." + workspaceFile.Prefix + ":" + ID + ".name", Name);
-        globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
-                new BlockJSONEntry(Sound,
-                        globalResVaribles.addBlockTexture(Objects.requireNonNull(MapUtilities
-                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, Textures.toString()))),
-                        null, null));
+//        globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
+//                new BlockJSONEntry(Sound,
+//                        globalResVaribles.addBlockTexture(Objects.requireNonNull(MapUtilities
+//                                .getKeyFromValue(globalResVaribles.Resource.ResourceIDs, Textures.toString()))),
+//                        null, null));
+        globalResVaribles.addBlockResources(ID, Sound, Textures);
 
-        // make item
+        // make block
         Block item = new Block();
         item.format_version = "1.21.100";
         // catagory
@@ -190,6 +181,9 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     @Override
     public Byte[] getTexture(String workspace) {
         try {
+            if (Textures == null) {
+                return ArrayUtils.toObject(getClass().getResourceAsStream("/addons/element/Element.png").readAllBytes());
+            }
             ResourceFile resources = RFileOperations.getResources(workspace).getSerilized();
             String fileName = MapUtilities
                     .getKeyFromValue(resources.ResourceIDs, Textures.upTexID.toString());

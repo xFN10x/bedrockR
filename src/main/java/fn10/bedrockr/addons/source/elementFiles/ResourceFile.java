@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import fn10.bedrockr.utils.MapUtilities;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.source.SourceResourceElement;
@@ -20,23 +21,25 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
      * Key is the file name.
      * Value is the type
      */
-    public Map<String, Integer> ResourceTypes = new HashMap<String, Integer>();
+    public Map<String, Integer> ResourceTypes = new HashMap<>();
     /**
      * Key is the file name.
      * Value is the UUID.
      */
-    public Map<String, String> ResourceIDs = new HashMap<String, String>();
+    public Map<String, String> ResourceIDs = new HashMap<>();
 
     public static final int ITEM_TEXTURE = 0;
     public static final int BLOCK_TEXTURE = 1;
     public static final int STRUCTURE_FILE = 2;
 
+    public int getResourceTypeFromName(String name) {
+        return ResourceTypes.get(name);
+    }
+
     public File getFileOfResource(String workspaceName, String file, int resourceType)
             throws FileNotFoundException, IllegalAccessError {
-        File dest = new File(
-                RFileOperations.getBaseDirectory(File.separator + "workspace" + File.separator).getPath()
-                        + File.separator + workspaceName + File.separator + "resources" + File.separator
-                        + file);
+        File dest =
+                RFileOperations.getBaseDirectory("workspace", workspaceName, "resources", file);
         if (ResourceTypes.get(file) != null && dest.exists()) {
             if (ResourceTypes.get(file) != resourceType)
                 throw new IllegalAccessError(
@@ -44,6 +47,10 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
             return dest;
         } else
             throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
+    }
+
+    public String getNameOfResourceFromUUID(String id) {
+        return MapUtilities.getKeyFromValue(ResourceIDs, id);
     }
 
     /**

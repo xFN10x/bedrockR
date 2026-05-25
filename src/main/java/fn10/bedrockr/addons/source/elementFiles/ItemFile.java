@@ -131,7 +131,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
 
         inner.components = Components;
         inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
-                MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
+                globalResVaribles.Resource.getNameOfResourceFromUUID(TextureUUID.toString())));
 
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;

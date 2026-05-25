@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public abstract class SourcelessElementFile {
-    public static @UneditableByCreation
-    Gson gson = new GsonBuilder()
+    @UneditableByCreation
+    public static Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
             .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
@@ -33,6 +33,7 @@ public abstract class SourcelessElementFile {
     @UneditableByCreation
     public boolean Draft = false;
 
+    @UneditableByCreation
     public static final HashMap<Class<? extends SourcelessElementFile>, Integer> highestVersions = new HashMap<>(Map.of(
             BiomeFile.class, 0,
             BlockFile.class, 1,

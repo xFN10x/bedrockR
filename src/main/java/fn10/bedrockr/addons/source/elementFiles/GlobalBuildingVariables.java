@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
@@ -23,23 +24,22 @@ import fn10.bedrockr.utils.RFileOperations;
 
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds
- * things like language texts, and textures. This should ALWAYS be built last.
+ * things like language texts, and textures. This should ALWAYS be built last, and it should not persist through builds.
  */
 
 public class GlobalBuildingVariables extends SourcelessElementFile {
 
-    public List<String> Langs = new ArrayList<>();
-    public Map<String, String> EnglishTexts = new HashMap<>();
-    public Map<String, BlockJSONEntry> BlockRPEntrys = new HashMap<>();
+    public final Map<String, String> EnglishTexts = new HashMap<>();
+    private final Map<String, BlockJSONEntry> BlockRPEntrys = new HashMap<>();
 
-    public ItemTextures ItemTexturesFile = new ItemTextures();
-    public TerrianTextures TerrainJson = new TerrianTextures();
+    private final ItemTextures ItemTexturesFile = new ItemTextures();
+    private final TerrianTextures TerrainJson = new TerrianTextures();
 
-    public List<File> ItemTextures = new ArrayList<File>();
-    public List<File> BlockTextures = new ArrayList<File>();
+    private final List<File> ItemTextures = new ArrayList<>();
+    private final List<File> BlockTextures = new ArrayList<>();
 
-    public ResourceFile Resource;
-    public WorkspaceFile WPF;
+    public final ResourceFile Resource;
+    private final WorkspaceFile WPF;
 
     public GlobalBuildingVariables(WorkspaceFile WPF, ResourceFile Resources) {
         this.Resource = Resources;
@@ -52,9 +52,8 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
      * @param textureName the name of the texture, such as {@code bedrock_sword.png}
      * @return the string that can be passed to the {@code minecraft:icon}
      * @throws FileNotFoundException Resource not found
-     * @throws IllegalAccessError
      */
-    public String addItemTexture(String textureName) throws IllegalAccessError, FileNotFoundException {
+    public String addItemTexture(String textureName) throws FileNotFoundException {
         var plannedkey = WPF.Prefix + "_" + textureName.replace(".png", "");
 
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
@@ -63,17 +62,23 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
         return plannedkey;
     }
 
-    
+    public void addBlockResources(String id, String sounds, BlockTexture texture) {
+        try {
+            BlockJSONEntry entry = new BlockJSONEntry(sounds, texture.convertBlockJsonTextures(this), null, null);
+            BlockRPEntrys.put(WPF.Prefix + ":" + id, entry);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Adds/Gets the block texture from the resource pack
      * 
-     * @param textureName the name of the texture, such as {@code bedrock_sword.png}
-     * @return the string that can be passed to the {@code minecraft:icon}
+     * @param textureName the name of the texture, such as {@code bedrock_bricks.png}
+     * @return the resource pack texture name
      * @throws FileNotFoundException Resource not found
-     * @throws IllegalAccessError
      */
-    public String addBlockTexture(String textureName) throws IllegalAccessError, FileNotFoundException {
+    public String addBlockTexture(String textureName) throws FileNotFoundException {
         var plannedkey = WPF.Prefix + "_" + textureName.replace(".png", "");
 
         if (TerrainJson.texture_data.containsKey(plannedkey))
@@ -85,24 +90,26 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
             GlobalBuildingVariables globalResVaribles) throws IOException {
         //#region Language support
+        List<String> Langs = new ArrayList<>();
         Langs.add("en_US"); // currently, only english support
 
         // make lang file
-        var langsFile = new File(rootResPackPath + File.separator + "texts" + File.separator + "languages.json");
-        FileUtils.createParentDirectories(langsFile);
-        Files.write(langsFile.toPath(), gson.toJson(Langs).getBytes(), StandardOpenOption.CREATE,
+
+        Path langsFile = Path.of(rootResPackPath, "texts", "languages.json");
+        FileUtils.createParentDirectories(langsFile.toFile());
+        Files.write(langsFile, gson.toJson(Langs).getBytes(), StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);
 
-        var englishFile = new File(rootResPackPath + File.separator + "texts" + File.separator + "en_US.lang");
+        Path englishFile = Path.of(rootResPackPath, "texts", "en_US.lang");
 
-        var englishLangStringBuilder = new StringBuilder("## Generated with bedrockR " + RFileOperations.VERSION + "\n");
+        StringBuilder englishLangStringBuilder = new StringBuilder("## Generated with bedrockR " + RFileOperations.VERSION + "\n");
 
         for (Entry<String, String> ent : EnglishTexts.entrySet()) {
             englishLangStringBuilder.append(ent.getKey() + "=" + ent.getValue() + "\n");
         }
 
-        Files.write(englishFile.toPath(), englishLangStringBuilder.toString().getBytes(), StandardOpenOption.CREATE,
+        Files.write(englishFile, englishLangStringBuilder.toString().getBytes(), StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);
         //#endregion
@@ -150,18 +157,18 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
         }
 
         // microsoft decided to make this werid
-        Map<String, Object> BlocksJson = new HashMap<String, Object>();
+        Map<String, Object> BlocksJson = new HashMap<>();
         BlocksJson.put("format_version", "1.21.40");
         BlocksJson.putAll(BlockRPEntrys);
 
-        Path blocksJsonPath = java.nio.file.Paths.get(rootResPackPath, "blocks.json");
+        Path blocksJsonPath = Path.of(rootResPackPath, "blocks.json");
         Files.write(blocksJsonPath, gson.toJson(BlocksJson).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
         // do the terrian_texture.json
         TerrainJson.resource_pack_name = WPF.WorkspaceName;
         TerrainJson.texture_name = "atlas.terrain";
 
-        Path terrainTexturePath = java.nio.file.Paths.get(rootResPackPath, "textures", "terrain_texture.json");
+        Path terrainTexturePath = Path.of(rootResPackPath, "textures", "terrain_texture.json");
         Files.write(terrainTexturePath, gson.toJson(TerrainJson).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
         //#endregion

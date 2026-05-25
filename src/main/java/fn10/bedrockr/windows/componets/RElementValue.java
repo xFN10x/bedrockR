@@ -7,6 +7,7 @@ import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
+import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
@@ -24,7 +25,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -49,7 +49,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private final SpringLayout Lay = new SpringLayout();
     private final JLabel Name = new JLabel();
     public JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
-    public Component Input = null;
+    public JComponent Input = null;
     private final JCheckBox EnableDis = new JCheckBox();
 
     private String Target = "";
@@ -58,21 +58,29 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private final Class<?> SourceFileClass;
     private final String WorkspaceName;
 
-    // componets used for uuid of block texture
+    // componets used for uuid of block texture resource
     private JLabel NameBlock;
     private JLabel IDBlock;
     private JLabel TypeBlock;
     private JButton AddButtonBlock;
-    private JButton PreviewButtonBlock;
     private JButton SelectButtonBlock;
     private JLabel IconBlock;
-    // item texture
+    // item texture resource
     private JLabel NameItem;
     private JLabel IDItem;
     private JLabel TypeItem;
     private JButton AddButtonItem;
     private JButton SelectButtonItem;
     private JLabel IconItem;
+
+    //components for selecting block textures
+    private JComboBox<String> BlockTexturesModeDropdown;
+    private RElementValue BlockTexturesTop;
+    private RElementValue BlockTexturesBottom;
+    private RElementValue BlockTexturesNorth;
+    private RElementValue BlockTexturesSouth;
+    private RElementValue BlockTexturesEast;
+    private RElementValue BlockTexturesWest;
 
     private Object initValue;
 
@@ -95,14 +103,15 @@ public class RElementValue extends JPanel implements ValidatableValue {
         super.paintComponent(g);
         final String editedPrefix = "(*) ";
         if (initValue == null || Map.class.isAssignableFrom(InputType)) return;
-        if (!Objects.equals(getValue(), initValue) && !Changed) {
+        Object val = getValue(false);
+        if (!Objects.equals(val, initValue) && !Changed) {
             if (!Name.getText().startsWith(editedPrefix)) {
                 Name.setText(editedPrefix + Name.getText());
             }
             Name.setForeground(Color.red);
             Changed = true;
             changedListener.changed(true);
-        } else if (Changed && Objects.equals(getValue(), initValue)) {
+        } else if (Changed && Objects.equals(val, initValue)) {
             if (Name.getText().startsWith(editedPrefix)) {
                 Name.setText(Name.getText().replace(editedPrefix, ""));
             }
@@ -189,7 +198,96 @@ public class RElementValue extends JPanel implements ValidatableValue {
         if (Input == null)
             // do corrisponding actions depending on the type
             try {
-                if (Path.class.isAssignableFrom(InputType)) {
+                if (BlockTexture.class.isAssignableFrom(InputType)) {
+                    //the input will be a scroll pane with a panel that has a dropdown for what mode, and 6 other elementvalues.
+                    JPanel inner = new JPanel();
+                    BlockTexturesModeDropdown = new JComboBox<>(new String[]{
+                            "One Texture",
+                            "Log",
+                            "Per-face"
+                    });
+
+                    Dimension dropdownsize = new Dimension(500, 30);
+                    BlockTexturesModeDropdown.setPreferredSize(dropdownsize);
+                    BlockTexturesModeDropdown.setMaximumSize(dropdownsize);
+
+                    Input = new JScrollPane(inner);
+                    ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(12);
+
+                    inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
+                    Dimension sizes = new Dimension(500, 80);
+                    BlockTexturesTop = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "Top Texture/All Sides", false, null, WorkspaceName);
+                    BlockTexturesBottom = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "Bottom Texture", false, null, WorkspaceName);
+                    BlockTexturesNorth = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "North Texture/Side Texture", false, null, WorkspaceName);
+                    BlockTexturesSouth = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "South Texture", false, null, WorkspaceName);
+                    BlockTexturesEast = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "East Texture", false, null, WorkspaceName);
+                    BlockTexturesWest = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "West Texture", false, null, WorkspaceName);
+
+                    BlockTexturesModeDropdown.addActionListener(_ -> {
+                        int selected = BlockTexturesModeDropdown.getSelectedIndex();
+
+                        switch (selected) {
+                            // one tex
+                            case 0:
+                                BlockTexturesTop.Input.setEnabled(true);
+                                BlockTexturesBottom.Input.setEnabled(false);
+                                BlockTexturesNorth.Input.setEnabled(false);
+                                BlockTexturesSouth.Input.setEnabled(false);
+                                BlockTexturesEast.Input.setEnabled(false);
+                                BlockTexturesWest.Input.setEnabled(false);
+                                break;
+
+                            // log
+                            case 1:
+                                BlockTexturesTop.Input.setEnabled(true);
+                                BlockTexturesBottom.Input.setEnabled(true);
+                                BlockTexturesNorth.Input.setEnabled(true);
+                                BlockTexturesSouth.Input.setEnabled(false);
+                                BlockTexturesEast.Input.setEnabled(false);
+                                BlockTexturesWest.Input.setEnabled(false);
+                                break;
+
+                            // all
+                            default:
+                                BlockTexturesTop.Input.setEnabled(true);
+                                BlockTexturesBottom.Input.setEnabled(true);
+                                BlockTexturesNorth.Input.setEnabled(true);
+                                BlockTexturesSouth.Input.setEnabled(true);
+                                BlockTexturesEast.Input.setEnabled(true);
+                                BlockTexturesWest.Input.setEnabled(true);
+                                break;
+                        }
+                    });
+
+                    BlockTexturesTop.setPreferredSize(sizes);
+                    BlockTexturesTop.setMaximumSize(sizes);
+
+                    BlockTexturesBottom.setPreferredSize(sizes);
+                    BlockTexturesBottom.setMaximumSize(sizes);
+
+                    BlockTexturesNorth.setPreferredSize(sizes);
+                    BlockTexturesNorth.setMaximumSize(sizes);
+
+                    BlockTexturesSouth.setPreferredSize(sizes);
+                    BlockTexturesSouth.setMaximumSize(sizes);
+
+                    BlockTexturesEast.setPreferredSize(sizes);
+                    BlockTexturesEast.setMaximumSize(sizes);
+
+                    BlockTexturesWest.setPreferredSize(sizes);
+                    BlockTexturesWest.setMaximumSize(sizes);
+
+                    inner.add(BlockTexturesModeDropdown);
+                    inner.add(Box.createVerticalStrut(5));
+                    inner.add(BlockTexturesTop);
+                    inner.add(BlockTexturesBottom);
+                    inner.add(BlockTexturesNorth);
+                    inner.add(BlockTexturesSouth);
+                    inner.add(BlockTexturesEast);
+                    inner.add(BlockTexturesWest);
+
+                    BlockTexturesModeDropdown.setSelectedIndex(0);
+                } else if (Path.class.isAssignableFrom(InputType)) {
                     if (field == null) {
                         return;
                     }
@@ -375,7 +473,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                 DisplayName, e);
                     }
-                } else if (String.class.isAssignableFrom(InputType)) { // if string, do this
+                } else if (String.class.isAssignableFrom(InputType)) {
+                    // if string, do this
                     // if normal do this
 
                     final StringDropdownField anno;
@@ -528,11 +627,21 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     ((JSpinner) Input).setValue(field.get(TargetFile));
                 } else if (UUID.class.isAssignableFrom(InputType)) { // resource
                     final ResourcePackResourceType anno;
+                    final int type;
                     if (field != null) {
                         anno = field.getAnnotation(ResourcePackResourceType.class);
-                    } else
+                        type = anno.value();
+                    } else if (TargetField.equalsIgnoreCase("_blocktexture")) {
+                        type = ResourceFile.BLOCK_TEXTURE;
+                    } else if (TargetField.equalsIgnoreCase("_itemtexture")) {
+                        type = ResourceFile.ITEM_TEXTURE;
+                    } else {
                         return;
-                    switch (anno.value()) {
+                    }
+
+
+                    Dimension size = new Dimension(350, 120);
+                    switch (type) {
                         //#region item texture
                         case ResourceFile.ITEM_TEXTURE: // if its an item texture
                             SpringLayout layout = new SpringLayout();
@@ -645,8 +754,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             ((JPanel) Input).add(SelectButtonItem);
                             add(AddButtonItem);
 
-                            setMaximumSize(new Dimension(350, 80));
-                            setPreferredSize(new Dimension(350, 80));
+                            setMaximumSize(size);
+                            setPreferredSize(size);
 
                             if (!FromEmpty && field != null) {
                                 UUID Id;
@@ -699,9 +808,17 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             break;
                         //#endregion
 
-                        case ResourceFile.BLOCK_TEXTURE: // if its an item texture
+                        case ResourceFile.BLOCK_TEXTURE: // if it's a block texture
                             SpringLayout layoutBlock = new SpringLayout();
                             Input = new JPanel();
+                            Input.addPropertyChangeListener("enabled", p -> {
+                                Boolean newV = (Boolean) p.getNewValue();
+                                SelectButtonBlock.setEnabled(newV);
+                                NameBlock.setEnabled(newV);
+                                IDBlock.setEnabled(newV);
+                                TypeBlock.setEnabled(newV);
+                                IconBlock.setEnabled(newV);
+                            });
                             Input.setName("null");
                             ((JPanel) Input).setBorder(new LineBorder(ImageUtilites.brighter(getBackground(), 0.5f)));
                             ((JPanel) Input).setLayout(layoutBlock);
@@ -714,18 +831,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             TypeBlock.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
                             TypeBlock.setForeground(getForeground().darker().darker());
                             AddButtonBlock = new JButton("+");
-                            PreviewButtonBlock = new JButton("Preview");
                             SelectButtonBlock = new JButton("Select");
                             IconBlock = new JLabel(ImageUtilites.ResizeIcon(
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
-                            PreviewButtonBlock.addActionListener(ac -> {
-                                Image icon = ((ImageIcon) IconBlock.getIcon()).getImage();
-                                BufferedImage bi = new BufferedImage(icon.getWidth(parentFrame), icon.getHeight(null),
-                                        BufferedImage.TYPE_INT_RGB);
-                                bi.getGraphics().drawImage(icon, 0, 0, parentFrame);
-                                //RenderHandler.CurrentHandler.showPreviewWindow(parentFrame,
-                                //        RenderHandler.make6Sided(bi));
-                            });
                             AddButtonBlock.addActionListener(ac -> {
                                 SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
                                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
@@ -812,11 +920,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButtonBlock, 0,
                                     SpringLayout.HORIZONTAL_CENTER,
                                     this.Name);
-                            Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, PreviewButtonBlock, 0,
-                                    SpringLayout.HORIZONTAL_CENTER,
-                                    this.Name);
                             Lay.putConstraint(SpringLayout.SOUTH, AddButtonBlock, 0, SpringLayout.SOUTH, Input);
-                            Lay.putConstraint(SpringLayout.NORTH, PreviewButtonBlock, 0, SpringLayout.NORTH, Input);
 
                             ((JPanel) Input).add(IconBlock);
                             ((JPanel) Input).add(NameBlock);
@@ -824,10 +928,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             ((JPanel) Input).add(TypeBlock);
                             ((JPanel) Input).add(SelectButtonBlock);
                             add(AddButtonBlock);
-                            add(PreviewButtonBlock);
 
-                            setMaximumSize(new Dimension(350, 180));
-                            setPreferredSize(new Dimension(350, 180));
+                            setMaximumSize(size);
+                            setPreferredSize(size);
 
                             if (!FromEmpty) {
                                 UUID Id;
@@ -1010,12 +1113,35 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public void setValue(Object value) throws ClassNotFoundException {
         if (value == null) return;
         initValue = value;
-        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
+        if (value instanceof BlockTexture bt) {
+            int mode = bt.getMode();
+            BlockTexturesModeDropdown.setSelectedIndex(mode);
+            switch (mode) {
+                case BlockTexture.ALL_FACES_MODE:
+                    BlockTexturesTop.setValue(bt.upTexID);
+                    break;
+                case BlockTexture.PILLAR_MODE:
+                    BlockTexturesTop.setValue(bt.upTexID);
+                    BlockTexturesBottom.setValue(bt.downTexID);
+                    BlockTexturesNorth.setValue(bt.northTexID);
+                    break;
+                default:
+                    BlockTexturesTop.setValue(bt.upTexID);
+                    BlockTexturesBottom.setValue(bt.downTexID);
+                    BlockTexturesNorth.setValue(bt.northTexID);
+                    BlockTexturesSouth.setValue(bt.southTexID);
+                    BlockTexturesEast.setValue(bt.eastTexID);
+                    BlockTexturesWest.setValue(bt.westTexID);
+                    break;
+            }
+        }
+        else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
             casted.setSelectedItem(value.toString());
         } else if (Path.class.isAssignableFrom(InputType)) {
             ((JButton) Input).setText(((Path) value).toString());
-        } else if (List.class.isAssignableFrom(InputType)) {
+        }
+        else if (List.class.isAssignableFrom(InputType)) {
             try {
                 Field field;
                 try { // try to get field
@@ -1098,7 +1224,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
             } catch (Exception e) {
                 ErrorShower.exception(parentFrame, e);
             }
-        } else if (Map.class.isAssignableFrom(InputType)) {
+        }
+        else if (Map.class.isAssignableFrom(InputType)) {
             try {
                 for (Map.Entry<Object, Object> entry : ((HashMap<Object, Object>) value).entrySet()) {
                     RElementMapValue ToAdd = new RElementMapValue(parentFrame,
@@ -1112,7 +1239,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(parentFrame, e.getMessage(), e);
             }
-        } else if (InputType.equals(UUID.class)) {
+        }
+        else if (UUID.class.isAssignableFrom(InputType)) {
             UUID Id = null;
             try {
                 if (value instanceof String) {
@@ -1132,37 +1260,39 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
             String id = Id.toString();
 
-            var res = RFileOperations.getResources(
-                    WorkspaceName);
+            ResourceFile res = Objects.requireNonNull(RFileOperations.getResources(
+                    WorkspaceName)).Serilized;
 
-            var filename = MapUtilities.getKeyFromValue(
-                    res.Serilized.ResourceIDs,
-                    id);
+            String filename = res.getNameOfResourceFromUUID(id);
 
-            NameBlock.setText(
-                    filename);
-            IDBlock.setText(id);
-            try {
-                IconBlock.setIcon(ImageUtilites.ResizeIcon(
-                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(
-                                WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
-                        64, 64));
-            } catch (Exception e) {
-                ErrorShower.exception(parentFrame, e);
+            if (res.getResourceTypeFromName(filename) == ResourceFile.BLOCK_TEXTURE) {
+                NameBlock.setText(
+                        filename);
+                IDBlock.setText(id);
+                try {
+                    IconBlock.setIcon(ImageUtilites.ResizeIcon(
+                            new ImageIcon(Files.readAllBytes(res.getFileOfResource(
+                                    WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
+                            64, 64));
+                } catch (Exception e) {
+                    ErrorShower.exception(parentFrame, e);
+                }
+            } else if (res.getResourceTypeFromName(filename) == ResourceFile.ITEM_TEXTURE) {
+                NameItem.setText(
+                        filename);
+                IDItem.setText(id);
+                try {
+                    IconItem.setIcon(ImageUtilites.ResizeIcon(
+                            new ImageIcon(Files.readAllBytes(res.getFileOfResource(
+                                    WorkspaceName, NameItem.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
+                            64, 64));
+                } catch (Exception e) {
+                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                    ErrorShower.showError(parentFrame,
+                            "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
+                }
             }
-            NameItem.setText(
-                    filename);
-            IDItem.setText(id);
-            try {
-                IconItem.setIcon(ImageUtilites.ResizeIcon(
-                        new ImageIcon(Files.readAllBytes(res.Serilized.getFileOfResource(
-                                WorkspaceName, NameItem.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
-                        64, 64));
-            } catch (Exception e) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(parentFrame,
-                        "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
-            }
+
             Input.setName(id);
         } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
                 || InputType == Float.class) { // int, float
@@ -1183,10 +1313,31 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
     @SuppressWarnings("unchecked")
     public Object getValue() {
+        return getValue(true);
+    }
+
+    public Object getValue(boolean log) {
         // fn10.bedrockr.Launcher.LOG.info(InputType.getName());
-        if (valid(true)) {
+        if (valid(true, log)) {
             try {
-                if (Path.class.isAssignableFrom(InputType)) {
+                if (BlockTexture.class.isAssignableFrom(InputType)) {
+                    return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
+                        case BlockTexture.ALL_FACES_MODE -> new BlockTexture((UUID) BlockTexturesTop.getValue(log));
+                        case BlockTexture.PILLAR_MODE -> new BlockTexture(
+                                (UUID) BlockTexturesTop.getValue(log),
+                                (UUID) BlockTexturesBottom.getValue(log),
+                                (UUID) BlockTexturesNorth.getValue(log));
+                        //perface
+                        default -> new BlockTexture(
+                                (UUID) BlockTexturesTop.getValue(log),
+                                (UUID) BlockTexturesBottom.getValue(log),
+                                (UUID) BlockTexturesNorth.getValue(log),
+                                (UUID) BlockTexturesSouth.getValue(log),
+                                (UUID) BlockTexturesEast.getValue(log),
+                                (UUID) BlockTexturesWest.getValue(log));
+                    };
+                }
+                else if (Path.class.isAssignableFrom(InputType)) {
                     return Path.of(((JButton) Input).getText());
                 } else if (Boolean.class.isAssignableFrom(InputType) || InputType.equals(boolean.class)) {
                     return (((JComboBox<String>) Input).getSelectedIndex() == 0);
@@ -1266,95 +1417,163 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
     @SuppressWarnings("unchecked")
     public boolean valid(boolean strict) {
+        return valid(strict, true);
+    }
+
+    public boolean valid(boolean strict, boolean log0) {
         var log = Launcher.LOG;
-        log.info("================== Checking field " + this.Target + "... ==================");
+        if (log0)
+            log.info("================== Checking field " + this.Target + "... ==================");
 
         if (!strict) {
             Field field;
             try {
                 field = SourceFileClass.getField(Target);
             } catch (Exception e1) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e1);
-                log.info(Target + ": failed to get field; so it fails");
+                if (log0)
+                    log.log(Level.SEVERE, "Exception thrown", e1);
+                if (log0)
+                    log.info(Target + ": failed to get field; so it fails");
 
                 return false;
             }
             if (field.getAnnotation(VeryImportant.class) == null) {
-                log.info(Target + ": its not important, and drafting; so it passes");
+                if (log0)
+                    log.info(Target + ": its not important, and drafting; so it passes");
 
                 return true; // if its not strict (drafing) and not important (not like ElementName)
             }
         }
 
         if (!getOptionallyEnabled()) {
-            log.info(Target + ": Not Enabled, so it passes");
+            if (log0)
+                log.info(Target + ": Not Enabled, so it passes");
             return true;// if its disabled, true, because it wont get written anyways
         }
 
         try {
-            if (Path.class.isAssignableFrom(InputType)) {
+            if (BlockTexture.class.isAssignableFrom(InputType)) {
+                // 0 is one texture
+                // 1 is log
+                // 2 is perface
+                switch (BlockTexturesModeDropdown.getSelectedIndex()) {
+                    case 0:
+                        if (log0)
+                            log.info(Target + ": Block texture mode is single...");
+                        if (BlockTexturesTop.valid(strict)) {
+                            if (log0)
+                                log.info(Target + ": Texture is valid, so this passes");
+                            return true;
+                        } else {
+                            if (log0)
+                                log.info(Target + ": Texture isn't valid, so this fails");
+                            return false;
+                        }
+                    case 1:
+                        if (log0)
+                            log.info(Target + ": Block texture mode is pillar mode...");
+                        if (BlockTexturesTop.valid(strict) && BlockTexturesBottom.valid(strict) && BlockTexturesNorth.valid(strict)) {
+                            if (log0)
+                                log.info(Target + ": Textures are valid, so this passes");
+                            return true;
+                        } else {
+                            if (log0)
+                                log.info(Target + ": Textures aren't valid, so this fails");
+                            return false;
+                        }
+                    default:
+                        if (log0)
+                            log.info(Target + ": Block texture mode is pillar mode...");
+                        if (BlockTexturesTop.valid(strict)
+                                && BlockTexturesBottom.valid(strict)
+                                && BlockTexturesNorth.valid(strict)
+                                && BlockTexturesSouth.valid(strict)
+                                && BlockTexturesEast.valid(strict)
+                                && BlockTexturesWest.valid(strict)) {
+                            if (log0)
+                                log.info(Target + ": Textures are valid, so this passes");
+                            return true;
+                        } else {
+                            if (log0)
+                                log.info(Target + ": Textures aren't valid, so this fails");
+                            return false;
+                        }
+                }
+            } else if (Path.class.isAssignableFrom(InputType)) {
                 if (((JButton) Input).getText().equalsIgnoreCase(No_Path_Chosen_Text)) {
-                    log.info(Target + ": Path not chosen, so it doesn't pass");
+                    if (log0)
+                        log.info(Target + ": Path not chosen, so it doesn't pass");
                     return false;
                 } else {
-                    log.info(Target + ": Path chosen, so it passes");
+                    if (log0)
+                        log.info(Target + ": Path chosen, so it passes");
                     return true;
                 }
             } else if (List.class.isAssignableFrom(InputType)) {
-                log.info(Target + ": Arrays cannot be wrong, so it passes");
+                if (log0)
+                    log.info(Target + ": Arrays cannot be wrong, so it passes");
 
                 return true;
             } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
-                log.info(Target + ": Bool cannot be wrong, so it passes");
+                if (log0)
+                    log.info(Target + ": Bool cannot be wrong, so it passes");
 
                 return true;
             } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType.equals(Float.class)
                     || InputType.equals(float.class)) { // numbers
-                log.info(Target + ": All numbers cannot be wrong, so it passes");
+                if (log0)
+                    log.info(Target + ": All numbers cannot be wrong, so it passes");
 
                 return true;
             } else if (InputType.equals(UUID.class)) {
 
                 if (Input.getName().equals("null")) {
                     Problem = "No Texture Selected";
-                    log.info(Target + ": No UUID can be read, so it fails");
+                    if (log0)
+                        log.info(Target + ": No UUID can be read, so it fails");
 
                     return false;
                 } else {
-                    log.info(Target + ": Texture is selected, and cannot be wrong. it passes");
+                    if (log0)
+                        log.info(Target + ": Texture is selected, and cannot be wrong. it passes");
                     return true;
                 }
             } else if (File.class.isAssignableFrom(InputType)) {
-                log.info(Target + ": File cannot be wrong. it passes");
+                if (log0)
+                    log.info(Target + ": File cannot be wrong. it passes");
 
                 return true;
             } else if (Map.class.isAssignableFrom(InputType)) {
-                log.info(Target + ": Map cannot be wrong. it passes");
+                if (log0)
+                    log.info(Target + ": Map cannot be wrong. it passes");
 
                 return true;
             } else {
                 try {
-                    log.info(Target + ": Scary!");
+                    if (log0)
+                        log.info(Target + ": Scary!");
 
-                    if (Input instanceof JComboBox jcb) { // for a string drop down
+                    if (Input instanceof JComboBox<?> jcb) { // for a string drop down
                         Problem = "String is not valid.";
                         if (Filter != null)
                             if (!Filter.getValid(((String) jcb.getSelectedItem()))) {
                                 Problem = "String is not valid.";
-                                log.info(Target + ": Drop down didnt pass filter, " + Filter.getClass().getName()
-                                        + "it doesnt pass");
+                                if (log0)
+                                    log.info(Target + ": Dropdown didn't pass filter, " + Filter.getClass().getName()
+                                            + "it doesnt pass");
 
                                 return false;
                             }
-                        return !(((JComboBox<String>) Input).getSelectedItem() == "(Select a value)");
+                        return !(Objects.equals(jcb.getSelectedItem(), "(Select a value)"));
                     }
                     if (Input instanceof JTextField) {
                         String text = ((JTextField) Input).getText(); // get the text if its not specilized
                         if (InputType.equals(String.class)) { // string
 
                             Problem = "String is not valid.";
-                            log.info(Target + ": String is checking if vaild");
-                            // no filter, it doesnt matter
+                            if (log0)
+                                log.info(Target + ": String is checking if vaild");
+                            // no filter, it doesn't matter
                             // this might be unsafe however
                             if (Filter == null)
                                 return true;
