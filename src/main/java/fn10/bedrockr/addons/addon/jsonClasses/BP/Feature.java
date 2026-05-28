@@ -1,7 +1,9 @@
 package fn10.bedrockr.addons.addon.jsonClasses.BP;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
- * TODO: finish this in a2.1
+ * TODO: finish this in a2.2
  * 
  * taken from https://learn.microsoft.com/en-us/minecraft/creator/reference/content/featuresreference/examples/features/minecraftstructure_template_feature?view=minecraft-bedrock-stable
  */
@@ -31,4 +33,6 @@ public class Feature {
 
     
     public String format_version;
+    @SerializedName("minecraft:structure_template_feature")
+    public StructureTemplateFeature structure_template;
 }
