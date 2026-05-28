@@ -499,8 +499,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 addFrame.setVisible(true);
             });
             case "texture" -> {
-                String[] options = new String[]{"Cancel", "Item Texure", "Block Texture"};
-                var choice = JOptionPane.showOptionDialog(
+                String[] options = new String[]{"Cancel", "Item Texture", "Block Texture"};
+                int choice = JOptionPane.showOptionDialog(
                         this,
                         "What kind of texture would you like you add?",
                         "Add New Texture Resource",
@@ -532,15 +532,16 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
                             "Naming Error",
                             JOptionPane.ERROR_MESSAGE);
-                    actionPerformed(null);
                     return;
                 }
 
+                SourceResourceElement res = RFileOperations.getResources(SWPF.getSerilized().WorkspaceName);
+                if (res == null) return;
                 switch (choice) {
                     case 1:
 
                         try {
-                            RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
+                            res.Serilized
                                     .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
                                             SWPF.getSerilized().WorkspaceName);
                         } catch (WrongResourceTypeException e) {
@@ -550,7 +551,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     case 2:
 
                         try {
-                            RFileOperations.getResources(SWPF.getSerilized().WorkspaceName).Serilized
+                            res.Serilized
                                     .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
                                             SWPF.getSerilized().WorkspaceName);
                         } catch (WrongResourceTypeException e) {
