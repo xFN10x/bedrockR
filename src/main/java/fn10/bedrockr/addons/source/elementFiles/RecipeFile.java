@@ -24,6 +24,8 @@ import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 /**
  * use as reference
  * https://wiki.bedrock.dev/loot/recipes

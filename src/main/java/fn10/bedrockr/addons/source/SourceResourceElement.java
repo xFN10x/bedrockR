@@ -5,6 +5,8 @@ import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class SourceResourceElement extends ElementSource<ResourceFile> {
 
     public ResourceFile Serilized;

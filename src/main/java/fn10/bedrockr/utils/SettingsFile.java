@@ -15,6 +15,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class SettingsFile extends SourcelessElementFile {
 
     //This is used in load() if its not saved yet.

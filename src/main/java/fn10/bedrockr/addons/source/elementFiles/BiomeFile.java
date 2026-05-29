@@ -22,6 +22,8 @@ import fn10.bedrockr.utils.RAnnotation.Order;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class BiomeFile extends ElementFile<SourceBiomeElement> {
 
     @CantEditAfter
