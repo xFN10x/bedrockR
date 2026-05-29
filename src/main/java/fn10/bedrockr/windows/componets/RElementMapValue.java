@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-public class RElementMapValue extends JPanel {
+import static fn10.bedrockr.utils.RFileOperations.gson;
 
-    private final static Gson gson = SourcelessElementFile.gson;
+public class RElementMapValue extends JPanel {
 
     private final Dimension Size = new Dimension(240, 80);
 

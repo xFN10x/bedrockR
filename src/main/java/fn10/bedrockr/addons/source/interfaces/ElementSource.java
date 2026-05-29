@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 
 import jakarta.annotation.Nonnull;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 /**
  * the interface used for Source Classes of Elements. Element Sources are
  * responceable for most things that an element does. Like building to source,
@@ -21,8 +23,6 @@ import jakarta.annotation.Nonnull;
  * that is meant to be added as a workspace element.
  */
 public abstract class ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
-
-    public static final Gson gson = ElementFile.gson;
 
     public String getJSONString() {
         return gson.toJson(getSerilized());

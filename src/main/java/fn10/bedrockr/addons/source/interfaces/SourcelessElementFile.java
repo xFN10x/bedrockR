@@ -8,9 +8,11 @@ import fn10.bedrockr.addons.source.elementFiles.*;
 import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -18,16 +20,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public abstract class SourcelessElementFile {
-    @UneditableByCreation
-    public static Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
-            .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
-                    }.getClass(),
-                    new StrictMapSerilizer())
-            .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
-            .create();
-
     @UneditableByCreation
     public int ElementVersion = 0;
     @UneditableByCreation

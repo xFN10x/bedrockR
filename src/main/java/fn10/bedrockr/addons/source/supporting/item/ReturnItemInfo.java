@@ -23,9 +23,9 @@ import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 
-public class ReturnItemInfo {
-    private static final Gson gson = ElementSource.gson;
+import static fn10.bedrockr.utils.RFileOperations.gson;
 
+public class ReturnItemInfo {
     public String Id;
     public String Name;
     public Byte[] Texture;
