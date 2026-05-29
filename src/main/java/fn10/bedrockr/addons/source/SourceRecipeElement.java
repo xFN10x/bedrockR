@@ -7,6 +7,8 @@ import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class SourceRecipeElement extends ElementSource<RecipeFile> {
 
     public enum RecipeType {

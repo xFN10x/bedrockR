@@ -19,6 +19,8 @@ import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class ItemFile extends ElementFile<SourceItemElement> implements ItemLikeElement {
 
     @HelpMessage("The Name Of The Element")

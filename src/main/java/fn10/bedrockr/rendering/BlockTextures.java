@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import static fn10.bedrockr.addons.source.interfaces.SourcelessElementFile.gson;
+import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class BlockTextures {
     private static final HttpClient client = HttpClient.newBuilder().build();

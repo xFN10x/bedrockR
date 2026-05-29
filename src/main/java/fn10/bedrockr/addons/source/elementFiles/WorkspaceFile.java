@@ -26,6 +26,8 @@ import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 /* The WPFile, is an ElementFile that handles workspace variables, and building
  * manifests, and other base stuff for both packs.
  */

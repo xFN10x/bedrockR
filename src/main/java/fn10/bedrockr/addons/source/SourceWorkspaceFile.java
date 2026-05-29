@@ -8,6 +8,8 @@ import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
     private final WorkspaceFile serilized;

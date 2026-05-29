@@ -7,6 +7,8 @@ import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class SourceItemElement extends ElementSource<ItemFile> {
     private final String Location = File.separator + "elements" + File.separator;
     private final Class<ItemFile> serilizedClass = ItemFile.class;

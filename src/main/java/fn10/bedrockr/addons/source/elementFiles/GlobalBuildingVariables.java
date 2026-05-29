@@ -22,6 +22,8 @@ import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTextures.TextureData;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds
  * things like language texts, and textures. This should ALWAYS be built last, and it should not persist through builds.

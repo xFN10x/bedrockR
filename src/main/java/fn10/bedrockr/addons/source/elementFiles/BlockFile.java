@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLikeElement {
 
     {

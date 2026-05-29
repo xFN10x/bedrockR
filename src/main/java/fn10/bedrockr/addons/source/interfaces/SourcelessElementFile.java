@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public abstract class SourcelessElementFile {
     @UneditableByCreation
     public int ElementVersion = 0;
@@ -72,7 +74,6 @@ public abstract class SourcelessElementFile {
         return sef;
     }
 
-
     /**
      * Builds this ElementFile to the built BP/RP
      *
@@ -80,7 +81,7 @@ public abstract class SourcelessElementFile {
      * @param workspaceFile     - the workspace file for which this element is being built under
      * @param rootResPackPath   - the path to the RP
      * @param globalResVaribles - basicly the resource pack
-     * @throws IOException
+     * @throws IOException If the build fails.
      */
     public abstract void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
                GlobalBuildingVariables globalResVaribles)
