@@ -2,8 +2,8 @@ package fn10.bedrockr.utils;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 import com.formdev.flatlaf.util.SystemInfo;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.*;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
@@ -11,10 +11,14 @@ import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
+import fn10.bedrockr.utils.typeAdapters.PathSerializer;
+import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.swing.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +50,15 @@ public class RFileOperations {
         }
     }
 
+    public static Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
+            .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
+                    }.getClass(),
+                    new StrictMapSerilizer())
+            .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
+            .registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
+            .create();
     public static final String SEM_VERSION = "0.8";
     public static final String VERSION = "a2.1";
     private static final String USER_DIR = System.getProperty("user.home");

@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-public class BlockTextures {
-    private static final Gson gson = new GsonBuilder().create();
+import static fn10.bedrockr.addons.source.interfaces.SourcelessElementFile.gson;
 
+public class BlockTextures {
     private static final HttpClient client = HttpClient.newBuilder().build();
     private static final Map<String, ImageIcon> preloadedIcons = new HashMap<String, ImageIcon>();
     private static Map<String, Map<String, Object>> blocksJson = null;

@@ -44,6 +44,8 @@ import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.windows.RBlockSelector;
 import fn10.bedrockr.windows.RItemSelector;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class RItemValue extends JPanel implements ValidatableValue {
 
     public enum Type {
@@ -128,8 +130,6 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
     }
 
-    private static final Gson gson = new GsonBuilder().registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
-            .create();
     private static final Dimension SIZE = new Dimension(200, 200);
     private static final Dimension SIZE_SINGLE = new Dimension(69, 69);
     private static final ImageIcon bg = new ImageIcon(RItemValue.class.getResource("/ui/CraftingGrid.png"));

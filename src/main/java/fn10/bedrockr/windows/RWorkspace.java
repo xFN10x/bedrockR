@@ -77,6 +77,8 @@ import fn10.bedrockr.windows.util.ErrorShower;
 import fn10.bedrockr.windows.util.ImageUtilites;
 import fn10.bedrockr.windows.util.WrapLayout;
 
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
 public class RWorkspace extends RFrame implements ActionListener, ElementCreationListener {
 
     protected Container CP = getContentPane();
@@ -584,8 +586,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         try {
             Desktop.getDesktop().browse(new URI("minecraft:///"));
         } catch (Exception e) {
-            Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
-            ErrorShower.showError(this, "Failed to open Minecraft", e.getMessage(), e);
+            ErrorShower.exception(this, "Failed to open Minecraft", e);
         }
     }
 
@@ -594,7 +595,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         try {
             element.saveJSONFile((SWPF.getSerilized().WorkspaceName));
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorShower.exception(this, "Failed to save element.", e);
         }
         refreshAll();
     }
@@ -610,15 +611,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         try {
             element.saveJSONFile((SWPF.workspaceName()));
         } catch (IOException e) {
-            Launcher.LOG.log(java.util.logging.Level.SEVERE, "Failed to save element", e);
+            ErrorShower.exception(this, "Failed to save element.", e);
         }
         refreshAll();
 
         new Thread(() -> {
             if (!alreadyExists && settings.shareElementAndWorkspaceData) {
                 // this is the first time
-                Gson gson = new GsonBuilder().setPrettyPrinting()
-                        .registerTypeAdapter(Date.class, new XplateAPIDateSerializer()).create();
                 HttpClient client = HttpClient.newBuilder().build();
                 final T elementData = settings.shareExtraData ? element.getSerilized() : null;
                 final ElementMade<T> src = new ElementMade<>(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)),
