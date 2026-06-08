@@ -28,7 +28,7 @@ Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.
 
 ### Mobile
 
-bedrockR Mobile for Android is stopped development for the foreseeable future. If someone wants to create it instead, you can email me. _([mathdudex09@gmail.com](mailto:mathdudex09@gmail.com?subject=bedrockR%20Mobile))_
+bedrockR Mobile for Android is stopped development for the foreseeable future.
 
 ### Using the JAR (Other Platforms)
 
