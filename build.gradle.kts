@@ -4,7 +4,7 @@ plugins {
     `java-library`
     `maven-publish`
 
-    id("org.panteleyev.jpackageplugin") version "2.0.1"
+    id("org.panteleyev.jpackageplugin") version "2.1.0"
     id("com.gradleup.shadow") version "9.4.2"
     //id("org.openjfx.javafxplugin") version "0.1.0"
 }
