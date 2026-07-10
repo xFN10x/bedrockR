@@ -32,7 +32,7 @@ dependencies {
     //gson
     implementation("com.google.code.gson:gson:2.14.0")
     //flat laf
-    implementation("com.formdev:flatlaf:3.7.1")
+    implementation("com.formdev:flatlaf:3.7.2")
 
     implementation("commons-io:commons-io:2.22.0")
     implementation("org.apache.commons:commons-lang3:3.20.0")
