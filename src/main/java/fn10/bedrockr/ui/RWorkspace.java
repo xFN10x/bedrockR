@@ -1,0 +1,694 @@
+package fn10.bedrockr.ui;
+
+import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.SystemFileChooser;
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.element.SourceResourceElement;
+import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.elementFiles.GlobalBuildingVariables;
+import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.ElementCreationListener;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RFileOperations.ElementMade;
+import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.utils.exception.WrongResourceTypeException;
+import fn10.bedrockr.ui.base.RFrame;
+import fn10.bedrockr.ui.componets.RElement;
+import fn10.bedrockr.ui.componets.RElementFile;
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.ui.util.WrapLayout;
+import org.apache.commons.io.FileUtils;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dialog.ModalExclusionType;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import static fn10.bedrockr.utils.RFileOperations.gson;
+
+@SuppressWarnings("FieldCanBeLocal")
+public class RWorkspace extends RFrame implements ActionListener, ElementCreationListener {
+
+    protected Container CP = getContentPane();
+    public SourceWorkspaceFile SWPF;
+
+    // components
+    private final JSeparator VerticalSep = new JSeparator(JSeparator.VERTICAL);
+
+    private final JTabbedPane Tabs = new JTabbedPane();
+
+    private final JPanel ElementInnerPanelView = new JPanel();
+    private final JPanel ResourceInnerPanelView = new JPanel();
+    private final JScrollPane ElementView = new JScrollPane(ElementInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private final JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+    private final JButton AddElement = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/NewElement.png")));
+    private final JButton AddTextureResource = new JButton(
+            new ImageIcon(getClass().getResource("/addons/workspace/NewResource.png")));
+    private final JButton LaunchMC = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/LaunchMC.png")));
+    private final JButton BuildLaunch = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build&Play.png")));
+    private final JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
+    private final JButton ReBuildElements = new JButton(
+            new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
+    private final JButton HelpWikiButton = new JButton(
+            new ImageIcon(getClass().getResource("/addons/workspace/Help.png")));
+
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu fileMenu = new JMenu("File");
+    private final JMenu helpMenu = new JMenu("Help");
+
+    public RWorkspace(SourceWorkspaceFile WPF) {
+        super(
+                DO_NOTHING_ON_CLOSE,
+                WPF.getSerialized().WorkspaceName,
+                Toolkit.getDefaultToolkit().getScreenSize(),
+                true,
+                false);
+        setExtendedState(MAXIMIZED_BOTH);
+
+        this.SWPF = WPF;
+        WrapLayout InnerLayout1 = new WrapLayout(FlowLayout.CENTER);
+        BoxLayout InnerLayout2 = new BoxLayout(ResourceInnerPanelView, BoxLayout.Y_AXIS);
+
+        Tabs.addTab("Elements", ElementView);
+        Tabs.addTab("Resources", ResourceView);
+        // Tabs.addTab("Settings", null);
+        Tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        // #region menu bar
+        setJMenuBar(menuBar);
+        Desktop desk = Desktop.getDesktop();
+
+        fileMenu.add("Change/Add MC Sync").addActionListener(_ -> {
+            try {
+                showMCSyncPopup(this, WPF);
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        fileMenu.add("Open Workspace folder").addActionListener(_ -> {
+            try {
+                desk.open(RFileOperations.getWorkspace(WPF.workspaceName()));
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        fileMenu.add("Open built RP Folder").addActionListener(_ -> {
+            try {
+                desk.open(RFileOperations.getBaseDirectory("build", "RP", WPF.workspaceName()));
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        fileMenu.add("Open built BP Folder").addActionListener(_ -> {
+            try {
+                desk.open(RFileOperations.getBaseDirectory("build", "BP", WPF.workspaceName()));
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        helpMenu.add("bedrockR Wiki").addActionListener(_ -> {
+            try {
+                desk.browse(new URI("https://github.com/xFN10x/bedrockR/wiki"));
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        helpMenu.add("bedrockR Github").addActionListener(_ -> {
+            try {
+                desk.browse(new URI("https://github.com/xFN10x/bedrockR"));
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        helpMenu.add("bedrockR Website").addActionListener(_ -> {
+            try {
+                desk.browse(new URI("https://bedrockr.xplate.dev"));
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+        helpMenu.add("Open bedrockR Directory").addActionListener(_ -> {
+            try {
+                desk.open(RFileOperations.getBaseDirectory());
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+
+        menuBar.add(fileMenu);
+        menuBar.add(helpMenu);
+        // #endregion
+        FlatLineBorder viewsBorder = new FlatLineBorder(new Insets(2, 2, 2, 2), Color.white, 1, 8);
+
+        ElementView.setBorder(viewsBorder);
+        ElementView.setVisible(false);
+
+        ResourceView.setBorder(viewsBorder);
+        ResourceView.setVisible(false);
+
+        AddElement.setActionCommand("add");
+        AddElement.addActionListener(this);
+
+        AddTextureResource.setActionCommand("texture");
+        AddTextureResource.addActionListener(this);
+
+        BuildElements.setActionCommand("build");
+        BuildElements.addActionListener(this);
+
+        ReBuildElements.setActionCommand("rebuild");
+        ReBuildElements.addActionListener(this);
+
+        HelpWikiButton.addActionListener(_ -> {
+            try {
+                Desktop.getDesktop()
+                        .browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
+
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        });
+
+        LaunchMC.setActionCommand("launch");
+        LaunchMC.addActionListener(this);
+
+        BuildLaunch.setActionCommand("launchbuild");
+        BuildLaunch.addActionListener(this);
+
+        // constraints
+        // tabbedpane
+        Lay.putConstraint(SpringLayout.EAST, Tabs, -30, SpringLayout.EAST, CP);
+        Lay.putConstraint(SpringLayout.WEST, Tabs, 100, SpringLayout.WEST, CP);
+        Lay.putConstraint(SpringLayout.NORTH, Tabs, 70, SpringLayout.NORTH, CP);
+        Lay.putConstraint(SpringLayout.SOUTH, Tabs, -10, SpringLayout.SOUTH, CP);
+        // verticle seperator
+        Lay.putConstraint(SpringLayout.NORTH, VerticalSep, 70, SpringLayout.NORTH, CP);
+        Lay.putConstraint(SpringLayout.SOUTH, VerticalSep, -10, SpringLayout.SOUTH, CP);
+        Lay.putConstraint(SpringLayout.EAST, VerticalSep, -10, SpringLayout.WEST, Tabs);
+        // add button
+        Lay.putConstraint(SpringLayout.NORTH, AddElement, 70, SpringLayout.NORTH, CP);
+        Lay.putConstraint(SpringLayout.EAST, AddElement, -15, SpringLayout.WEST, VerticalSep);
+        // addtexture button
+        Lay.putConstraint(SpringLayout.NORTH, AddTextureResource, 10, SpringLayout.SOUTH, AddElement);
+        Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddTextureResource, 0, SpringLayout.HORIZONTAL_CENTER,
+                AddElement);
+        // built & launch button
+        Lay.putConstraint(SpringLayout.SOUTH, BuildLaunch, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, BuildLaunch, -30, SpringLayout.EAST, CP);
+        // launch button
+        Lay.putConstraint(SpringLayout.SOUTH, LaunchMC, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, LaunchMC, -10, SpringLayout.WEST, BuildLaunch);
+        // build button
+        Lay.putConstraint(SpringLayout.SOUTH, BuildElements, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, BuildElements, -10, SpringLayout.WEST, LaunchMC);
+        // rebuild button
+        Lay.putConstraint(SpringLayout.SOUTH, ReBuildElements, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, ReBuildElements, -10, SpringLayout.WEST, BuildElements);
+        // help button
+        Lay.putConstraint(SpringLayout.SOUTH, HelpWikiButton, 0, SpringLayout.NORTH, Tabs);
+        Lay.putConstraint(SpringLayout.EAST, HelpWikiButton, -10, SpringLayout.WEST, ReBuildElements);
+
+        ElementInnerPanelView.setLayout(InnerLayout1);
+        ElementInnerPanelView.setMaximumSize(new Dimension(400, 0));
+        ElementInnerPanelView.setPreferredSize(new Dimension(400, 0));
+        ResourceInnerPanelView.setLayout(InnerLayout2);
+
+        ResourceView.getVerticalScrollBar().setUnitIncrement(18);
+        ElementView.getVerticalScrollBar().setUnitIncrement(18);
+
+        add(Tabs);
+        add(VerticalSep);
+
+        add(AddElement);
+        add(AddTextureResource);
+        add(BuildLaunch);
+        add(LaunchMC);
+        add(BuildElements);
+        add(ReBuildElements);
+        add(HelpWikiButton);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                var lp = new RLaunchPage(Launcher.LAUNCH_WINDOW_SIZE);
+                lp.setVisible(true);
+                dispose();
+            }
+        });
+
+        pack();
+
+        setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
+        refreshAll();
+    }
+
+    public void buildElements(boolean rebuild) {
+        // make loading screen
+        RLoadingScreen progress = new RLoadingScreen(this);
+        String BPdir = java.nio.file.Paths.get(RFileOperations.getBaseDirectory().getPath(), "build", "BP",
+                SWPF.getSerialized().getElementName()).toString();
+        String RPdir = java.nio.file.Paths.get(RFileOperations.getBaseDirectory().getPath(), "build", "RP",
+                SWPF.getSerialized().getElementName()).toString();
+
+        SwingUtilities.invokeLater(() -> progress.setVisible(true));
+
+        // make a thread so the ui can update
+        new Thread(() -> {
+            try {
+                if (rebuild) {
+                    progress.changeText("Removing old files...");
+                    FileUtils.deleteDirectory(new File(BPdir));
+                    FileUtils.deleteDirectory(new File(RPdir));
+                }
+                refreshAll();
+                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables(SWPF.getSerialized(),
+                        RFileOperations.getResources(SWPF.workspaceName()).getSerialized());
+                List<ElementFile<?>> ToBuild = List
+                        .of(RFileOperations.getElementsFromWorkspace(SWPF.workspaceName()));
+
+                progress.Steps = ToBuild.size() + 1;
+
+                SWPF.getSerialized().reset(BPdir);
+
+                // build rest
+                for (ElementFile<?> elementFile : ToBuild) {
+                    if (elementFile.getDraft())
+                        continue;
+                    // build an element, then incrament the counter
+                    progress.changeText("Building " + elementFile.getElementName()); // change text
+                    elementFile.build(BPdir,
+                            SWPF.getSerialized(), RPdir, GlobalResVars); // build
+                    progress.increaseProgressBySteps("Done!"); // next
+                }
+                // build RP
+                // build global res vars
+                progress.changeText("Building resources... "); // change text
+                GlobalResVars.build(BPdir,
+                        SWPF.getSerialized(), RPdir, GlobalResVars);
+                // build workspace
+                progress.changeText("Building workspace..."); // change text
+                SWPF.getSerialized().build(BPdir,
+                        SWPF.getSerialized(), RPdir, GlobalResVars); // build
+
+                progress.increaseProgressBySteps("Done!"); // next
+                // do mc sync
+                if (SWPF.getSerialized().MinecraftSync) {
+                    progress.increaseProgressBySteps("Syncing..."); // next
+                    RFileOperations.mcSync();
+                }
+
+            } catch (Exception e) {
+                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                ErrorShower.showError(this, "Failed to build element.", "Building Error", e);
+            } finally {
+                SwingUtilities.invokeLater(progress::dispose);
+            }
+        }).start();
+    }
+
+    public void refreshAll() {
+        refreshResources();
+        refreshElements();
+    }
+
+    public void refreshResources() {
+        SwingUtilities.invokeLater(() -> {
+            SourceResourceElement resFile = RFileOperations.getResources(SWPF.workspaceName());
+            ResourceInnerPanelView.removeAll();
+            for (Map.Entry<String, String> entry : resFile.getSerialized().ResourceIDs.entrySet()) {
+                try {
+                    RElement ToAdd = new RElement(null, null);
+                    ToAdd.setMaximumSize(new Dimension(1400, 80));
+                    ToAdd.setPreferredSize(new Dimension(1400, 80));
+                    ToAdd.Name.setText(entry.getKey());
+                    ToAdd.Desc.setText(entry.getValue());
+                    ToAdd.CanBeSelected = false;
+
+                    File file = resFile.getSerialized().getFileOfResource(SWPF.workspaceName(), entry.getKey());
+                    ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
+
+                    JPopupMenu popup = new JPopupMenu();
+                    popup.add("Open with...").addActionListener(_ -> {
+                        try {
+                            Desktop.getDesktop().open(file);
+                        } catch (Exception e) {
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
+                        }
+                    });
+
+                    popup.add("Open Resource Directory").addActionListener(_ -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
+                        } catch (Exception e) {
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
+                        }
+                    });
+
+                    popup.add("Resize").addActionListener(_ -> {
+                        String choice = JOptionPane.showInputDialog(this,
+                                "What size do you want this image to be?",
+                                "Resize " + entry.getKey(), JOptionPane.QUESTION_MESSAGE,
+                                null, new String[]{
+                                        "8x8",
+                                        "16x16",
+                                        "18x18",
+                                        "32x32",
+                                        "64x64",
+                                        "96x96",
+                                        "128x128",
+                                        "256x256",
+                                        "512x512",
+                                },
+                                "16x16").toString();
+
+                        if (choice == null)
+                            return;
+
+                        try {
+                            Dimension di = new Dimension(Integer.parseInt(choice.split("x")[0]),
+                                    Integer.parseInt(choice.split("x")[1]));
+                            String old = icon.getImage().getWidth(null) + "x" + icon.getImage().getHeight(null);
+
+                            Image resized = ImageUtilities.ResizeImage(ImageIO.read(file), di,
+                                    Image.SCALE_AREA_AVERAGING);
+
+                            BufferedImage buff = new BufferedImage(di.width, di.height,
+                                    BufferedImage.TYPE_INT_ARGB);
+
+                            Graphics2D grah = buff.createGraphics();
+                            grah.drawImage(
+                                    resized, 0, 0,
+                                    null);
+                            file.delete();
+                            ImageIO.write(buff, "png", file);
+                            buff.getGraphics().dispose();
+
+                            JOptionPane.showMessageDialog(this, "Resized image from " + old + ", to " + choice);
+                            this.refreshResources();
+                        } catch (Exception e) {
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
+                            ErrorShower.showError(this, "Failed to resize image.", e);
+                        }
+                    });
+                    popup.add("Delete").addActionListener(_ -> {
+                        try {
+                            resFile.getSerialized().ResourceIDs.remove(entry.getKey());
+                            resFile.getSerialized().ResourceTypes.remove(entry.getKey());
+                            file.delete();
+                            this.refreshAll();
+                            ResourceInnerPanelView.repaint();
+                            ResourceView.repaint();
+                            resFile.getSerialized().build(SWPF.workspaceName(), null, null, null);
+                        } catch (Exception e) {
+                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                                    e);
+                        }
+                    });
+
+                    ToAdd.setComponentPopupMenu(popup);
+
+                    ToAdd.Icon.setIcon(
+                            ImageUtilities.ResizeIcon(icon, 70, 70));
+                    ResourceInnerPanelView.add(ToAdd);
+
+                    ResourceInnerPanelView.add(Box.createVerticalStrut(4));
+                } catch (Exception e) {
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                }
+            }
+        });
+    }
+
+    public void refreshElements() {
+        SwingUtilities.invokeLater(() -> {
+            ElementInnerPanelView.removeAll();
+            for (ElementFile<?> file : RFileOperations.getElementsFromWorkspace(SWPF.workspaceName())) {
+                try {
+                    ElementInnerPanelView
+                            .add(new RElementFile(this, file, RFileOperations
+                                    .getFileFromElementFile(SWPF.workspaceName(), file).toString()));
+
+                } catch (Exception e) {
+                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                }
+            }
+            ElementInnerPanelView.updateUI();
+        });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        var ac = arg0.getActionCommand();
+        switch (ac) {
+            case "add" -> SwingUtilities.invokeLater(() -> {
+                var addFrame = new RNewElement(this, SWPF.getSerialized().WorkspaceName);
+                addFrame.setVisible(true);
+            });
+            case "texture" -> {
+                String[] options = new String[]{"Cancel", "Item Texture", "Block Texture"};
+                int choice = JOptionPane.showOptionDialog(
+                        this,
+                        "What kind of texture would you like you add?",
+                        "Add New Texture Resource",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+
+                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
+                file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+
+                if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
+                    return;
+                Object input = JOptionPane.showInputDialog(this,
+                        "What do you want to name this texture? (" + file.getSelectedFile().getName()
+                                + ")",
+                        "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
+                        file.getSelectedFile().getName());
+
+                String finalName = (((String) input).contains(".png") ? input.toString()
+                        : input + ".png");
+                File dest = Path
+                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), SWPF.getSerialized().WorkspaceName,
+                                "resources", finalName)
+                        .toFile();
+                if (dest.exists()) {
+                    JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
+                            "Naming Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                SourceResourceElement res = RFileOperations.getResources(SWPF.getSerialized().WorkspaceName);
+                switch (choice) {
+                    case 1:
+
+                        try {
+                            res.getSerialized()
+                                    .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
+                                            SWPF.getSerialized().WorkspaceName);
+                        } catch (WrongResourceTypeException e) {
+                            ErrorShower.exception(this, "Failed to import texture", e);
+                        }
+                        break;
+                    case 2:
+
+                        try {
+                            res.getSerialized()
+                                    .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
+                                            SWPF.getSerialized().WorkspaceName);
+                        } catch (WrongResourceTypeException e) {
+                            ErrorShower.exception(this, "Failed to import texture", e);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            case "build" -> buildElements(false);
+            case "rebuild" -> buildElements(true);
+            case "launch" -> play();
+            case "launchbuild" -> {
+                buildElements(false);
+                play();
+            }
+        }
+
+    }
+
+    private void play() {
+        if (SettingsFile.load().comMojangPath != null) {
+            if (!SettingsFile.load().comMojangPath.toFile().exists()) {
+                JOptionPane.showMessageDialog(this, "You... can't launch minecraft without it installed...",
+                        "Minecraft not installed", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        try {
+            Desktop.getDesktop().browse(new URI("minecraft:///"));
+        } catch (Exception e) {
+            ErrorShower.exception(this, "Failed to open Minecraft", e);
+        }
+    }
+
+    @Override
+    public <T extends ElementFile<? extends ElementSource<T>>> void onElementDraft(ElementSource<T> element) {
+        try {
+            element.saveJSONFile((SWPF.getSerialized().WorkspaceName));
+        } catch (IOException e) {
+            ErrorShower.exception(this, "Failed to save element.", e);
+        }
+        refreshAll();
+    }
+
+    @Override
+    public <T extends ElementFile<? extends ElementSource<T>>> void onElementCreate(ElementSource<T> element) {
+        try {
+            SettingsFile settings = SettingsFile.load();
+            boolean alreadyExists = element.getLocation(SWPF.workspaceName()).exists();
+            element.saveJSONFile((SWPF.workspaceName()));
+
+            refreshAll();
+
+            new Thread(() -> {
+                if (!alreadyExists && settings.shareElementAndWorkspaceData) {
+                    // this is the first time
+                    HttpClient client = HttpClient.newBuilder().build();
+                    final T elementData = settings.shareExtraData ? element.getSerialized() : null;
+                    final ElementMade<T> src = new ElementMade<>(Date.from(Instant.now()),
+                            elementData,
+                            RFileOperations.NUM_VERSION, SWPF.workspaceName());
+                    final String body = gson.toJson(
+                            src);
+
+                    HttpRequest req = HttpRequest.newBuilder()
+                            .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
+                            .version(HttpClient.Version.HTTP_2)
+                            .POST(BodyPublishers.ofString(
+                                    body))
+                            .setHeader("Content-Type", "application/json")
+                            .build();
+                    Launcher.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
+                            body);
+                    try {
+                        final HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
+                        if (resp.statusCode() != 200) {
+                            Launcher.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        Launcher.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
+                    }
+                }
+            }).start();
+        } catch (IOException e) {
+            ErrorShower.exception(this, "Failed to save element.", e);
+        }
+    }
+
+    /**
+     * Shows a popup asking the user to enable Minecraft Sync, overriding it if they
+     * already have it.
+     *
+     * @param doingThis - the window to parent too
+     * @param WPF       - the workspace that is having mc sync enabled
+     */
+    public static void showMCSyncPopup(Component doingThis, SourceWorkspaceFile WPF) {
+        WPF.getSerialized().MinecraftSync = true; // enable
+        try {
+            WPF.saveJSONFile( // save the workspace file again
+                    WPF.workspaceName());
+        } catch (IOException e) {
+            Launcher.LOG.log(Level.SEVERE, "Failed to save workspace.", e);
+        }
+
+        String[] platforms = RFileOperations.MC_SYNC_OPTIONS.keySet().toArray(new String[0]);
+        int platformSelection = JOptionPane.showOptionDialog(
+                doingThis,
+                "To use MC Sync, bedrockR needs to be synced to Minecraft's files. Which platform are you on?",
+                "Platform Selection",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                platforms,
+                "Windows");
+
+        SettingsFile settings = SettingsFile.load();
+        String selected = platforms[platformSelection];
+        settings.comMojangPath = RFileOperations.MC_SYNC_OPTIONS.get(selected);
+    }
+
+    /**
+     * Opens a workspace, showing the window, and doing all other necessary steps
+     * to have a person be able to work on one
+     *
+     * @param doingThis - the window to parent to, and hide once the window appears
+     * @param WPF       - The workspace to open
+     */
+    public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
+        RFileOperations.setCurrentWorkspace(WPF);
+        new Thread(() -> {
+            RWorkspace workspaceView = new RWorkspace(WPF);
+
+            RLoadingScreen loading = new RLoadingScreen(doingThis);
+            loading.setAlwaysOnTop(true);
+            SwingUtilities.invokeLater(() -> loading.setVisible(true));
+
+            ReturnItemInfo.downloadVanillaItems();
+            ReturnItemInfo.downloadVanillaBlocks();
+
+            // get items ready for use
+            SwingUtilities.invokeLater(() -> {
+                loading.setVisible(false);
+                if (doingThis != null)
+                    doingThis.dispose();
+                workspaceView.setVisible(true);
+                if (!WPF.getSerialized().MinecraftSync) { // ask to enable mc sync if not enabled
+                    var ask = JOptionPane.showConfirmDialog(doingThis,
+                            "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
+                            "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (ask == JOptionPane.YES_OPTION) {
+                        showMCSyncPopup(doingThis, WPF);
+                    }
+                } else if (!SettingsFile.load().comMojangPath.toFile().exists()) {
+                    var ask = JOptionPane.showConfirmDialog(doingThis,
+                            "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
+                            "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (ask == JOptionPane.YES_OPTION) {
+                        showMCSyncPopup(doingThis, WPF);
+                    } else {
+                        WPF.getSerialized().MinecraftSync = false;
+                    }
+                }
+            });
+        }).start();
+    }
+}

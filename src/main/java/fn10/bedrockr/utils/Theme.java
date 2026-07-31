@@ -2,8 +2,8 @@ package fn10.bedrockr.utils;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import fn10.bedrockr.windows.laf.BedrockrDark;
-import fn10.bedrockr.windows.laf.BedrockrLight;
+import fn10.bedrockr.ui.laf.BedrockrDark;
+import fn10.bedrockr.ui.laf.BedrockrLight;
 
 import java.util.ArrayList;
 
