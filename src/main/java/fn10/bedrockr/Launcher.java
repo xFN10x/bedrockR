@@ -12,14 +12,14 @@ import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.utils.Theme;
-import fn10.bedrockr.utils.http.Format1Latest;
+import fn10.bedrockr.utils.web.Format1Latest;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
-import fn10.bedrockr.windows.RLaunchPage;
-import fn10.bedrockr.windows.RSplashScreen;
-import fn10.bedrockr.windows.RWorkspace;
-import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.ui.RLaunchPage;
+import fn10.bedrockr.ui.RSplashScreen;
+import fn10.bedrockr.ui.RWorkspace;
+import fn10.bedrockr.ui.util.ErrorShower;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -118,7 +118,7 @@ public class Launcher {
         }
         // setup theme
         loading.ProgressText.setText("Setting up theme...");
-        FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.windows.laf");
+        FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.ui.laf");
         if (SystemInfo.isLinux) {
             JFrame.setDefaultLookAndFeelDecorated(true);
             JDialog.setDefaultLookAndFeelDecorated(true);
