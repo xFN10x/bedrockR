@@ -33,25 +33,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class RFileOperations {
-
-    public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,
-                                                        @Nullable String workspaceName) implements Comparable<ElementMade<T>> {
-
-        @Override
-        public int compareTo(ElementMade o) {
-            return timeMade.compareTo(o.timeMade);
-        }
-    }
-
-    public record WorkspaceMade(Date timeMade, @Nullable WorkspaceFile workspaceData, int bedrockRVersion,
-                                @Nullable Object[] elementDatas) implements Comparable<WorkspaceMade> {
-
-        @Override
-        public int compareTo(WorkspaceMade o) {
-            return timeMade.compareTo(o.timeMade);
-        }
-    }
-
     public static Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
@@ -61,8 +42,9 @@ public class RFileOperations {
             .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
             .registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
             .create();
-    public static final String SEM_VERSION = "0.8";
-    public static final String VERSION = "a2.1";
+    public static final String SEM_VERSION = "0.9";
+    public static final int NUM_VERSION = 10;
+    public static final String VERSION = "a2.2";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
@@ -694,5 +676,23 @@ public class RFileOperations {
             if (obj == null) return true;
         }
         return false;
+    }
+
+    public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,
+                                                        @Nullable String workspaceName) implements Comparable<ElementMade<T>> {
+
+        @Override
+        public int compareTo(ElementMade o) {
+            return timeMade.compareTo(o.timeMade);
+        }
+    }
+
+    public record WorkspaceMade(Date timeMade, @Nullable WorkspaceFile workspaceData, int bedrockRVersion,
+                                @Nullable Object[] elementDatas) implements Comparable<WorkspaceMade> {
+
+        @Override
+        public int compareTo(WorkspaceMade o) {
+            return timeMade.compareTo(o.timeMade);
+        }
     }
 }

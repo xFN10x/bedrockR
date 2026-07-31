@@ -42,6 +42,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -585,9 +586,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     // this is the first time
                     HttpClient client = HttpClient.newBuilder().build();
                     final T elementData = settings.shareExtraData ? element.getSerialized() : null;
-                    final ElementMade<T> src = new ElementMade<>(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)),
+                    final ElementMade<T> src = new ElementMade<>(Date.from(Instant.now()),
                             elementData,
-                            Launcher.CHECKVERSION, SWPF.workspaceName());
+                            RFileOperations.NUM_VERSION, SWPF.workspaceName());
                     final String body = gson.toJson(
                             src);
 
