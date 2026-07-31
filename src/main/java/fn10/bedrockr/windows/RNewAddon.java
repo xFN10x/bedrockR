@@ -29,10 +29,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 
-import fn10.bedrockr.addons.source.SourceWorkspaceFile;
-import fn10.bedrockr.addons.source.FieldFilters.FileNameLikeStringFilter;
-import fn10.bedrockr.addons.source.FieldFilters.IDStringFilter;
-import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.FieldFilters.FileNameLikeStringFilter;
+import fn10.bedrockr.addons.element.FieldFilters.IDStringFilter;
+import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.util.ErrorShower;

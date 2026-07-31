@@ -11,8 +11,8 @@ import javax.swing.*;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
-import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.interfaces.ElementDetails;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.windows.util.ImageUtilities;
 import fn10.bedrockr.windows.util.RFonts;
 import jakarta.annotation.Nullable;

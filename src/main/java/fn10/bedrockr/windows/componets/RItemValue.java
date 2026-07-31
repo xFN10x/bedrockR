@@ -33,8 +33,8 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.addons.mcjson.behav.Recipe;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
-import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
+import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;

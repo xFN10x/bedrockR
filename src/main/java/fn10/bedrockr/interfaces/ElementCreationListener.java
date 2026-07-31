@@ -1,7 +1,7 @@
 package fn10.bedrockr.interfaces;
 
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 
 public interface ElementCreationListener {
 

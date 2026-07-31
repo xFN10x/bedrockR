@@ -1,9 +1,9 @@
 package fn10.bedrockr.windows;
 
-import fn10.bedrockr.addons.source.elementFiles.BlockFile;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry;
+import fn10.bedrockr.addons.element.elementFiles.BlockFile;
+import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo.BlockJsonEntry;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;

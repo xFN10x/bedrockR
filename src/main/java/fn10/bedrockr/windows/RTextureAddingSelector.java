@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 
