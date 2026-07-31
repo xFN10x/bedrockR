@@ -189,8 +189,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         // add image
         var img = Files.readAllBytes(
                 RFileOperations
-                        .getFileFromWorkspace(this.WorkspaceName, File.separator + "icon." + this.IconExtension,
-                                true)
+                        .getFileFromWorkspace(this.WorkspaceName, true, "icon." + this.IconExtension)
                         .toPath());
         var imgpath = new File(rootPath + File.separator + "pack_icon.png").toPath();
         Files.write(imgpath, img, StandardOpenOption.CREATE);
@@ -236,8 +235,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         // add image
         var img2 = Files.readAllBytes(
                 RFileOperations
-                        .getFileFromWorkspace(this.WorkspaceName, File.separator + "icon." + this.IconExtension,
-                                true)
+                        .getFileFromWorkspace(this.WorkspaceName, true, "icon." + this.IconExtension)
                         .toPath());
         var imgpath2 = new File(rootResPackPath + File.separator + "pack_icon.png").toPath();
         Files.write(imgpath2, img2, StandardOpenOption.CREATE);

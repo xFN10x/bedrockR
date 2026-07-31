@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -81,7 +82,7 @@ public class RNewElement extends RDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() == "create") {
+        if (Objects.equals(e.getActionCommand(), "create")) {
             Class<? extends ElementSource<?>> Creating = null;
 
             for (Component component : MainPane.getComponents()) { // for loop to check what is selected, then breaking

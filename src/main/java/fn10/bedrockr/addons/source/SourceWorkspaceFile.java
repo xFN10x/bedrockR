@@ -5,29 +5,22 @@ import java.io.IOException;
 
 import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
     private final String Location = File.separator + RFileOperations.WPFFILENAME;
-    private final WorkspaceFile serilized;
 
     public String workspaceName() {
-        return serilized.WorkspaceName;
+        return getSerialized().WorkspaceName;
     }
 
     public SourceWorkspaceFile(WorkspaceFile obj) {
-        this.serilized = obj;
-    }
-
-    public SourceWorkspaceFile() {
-        this.serilized = null;
-    }
-
-    public SourceWorkspaceFile(String jsonString) {
-        this.serilized = getFromJSON(jsonString);
+        super(obj);
     }
 
     public static ElementDetails getDetails() {
@@ -41,24 +34,18 @@ public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
         }
     }
 
+    @Override
+    public @NonNull File getLocation(String workspace) throws IOException {
+        return RFileOperations.getFileFromWorkspace(workspace, RFileOperations.WPFFILENAME);
+    }
+
+    @Override
+    public String getFileExtension() {
+        return "";
+    }
 
     @Override
     public Class<WorkspaceFile> getSerilizedClass() {
         return WorkspaceFile.class;
-    }
-
-    @Override
-    public WorkspaceFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, getSerilizedClass());
-    }
-
-    @Override
-    public WorkspaceFile getSerilized() {
-        return this.serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace, Location);
     }
 }

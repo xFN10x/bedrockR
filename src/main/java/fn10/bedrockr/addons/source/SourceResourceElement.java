@@ -1,47 +1,45 @@
 package fn10.bedrockr.addons.source;
 
 import java.io.File;
+import java.io.IOException;
+
 import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SourceResourceElement extends ElementSource<ResourceFile> {
 
-    public ResourceFile Serilized;
-
-    public SourceResourceElement(ResourceFile serilized) {
-        this.Serilized = serilized;
-    }
 
     public SourceResourceElement() {
-        this("{}");
+        this(new ResourceFile());
     }
 
-    public SourceResourceElement(String json) {
-        this.Serilized = gson.fromJson(json, ResourceFile.class);
-    }
-
-
-    @Override
-    public ResourceFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, ResourceFile.class);
+    public SourceResourceElement(@Nonnull ResourceFile resourceFile) {
+        super(resourceFile);
     }
     
+    public SourceResourceElement(String json) {
+        super(getFromJSON(json, ResourceFile.class));
+    }
+
     @Override
     public Class<ResourceFile> getSerilizedClass() {
         return ResourceFile.class;
     }
-
+    
     @Override
-    public ResourceFile getSerilized() {
-        return this.Serilized;
+    public @NonNull File getLocation(String workspace) throws IOException {
+        return RFileOperations.getFileFromWorkspace(workspace,
+                File.separator + "resources" + File.separator + RFileOperations.RESOURCE_FILE_NAME);
     }
 
     @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace,
-                File.separator + "resources" + File.separator + RFileOperations.RESOURCE_FILE_NAME);
+    public String getFileExtension() {
+        return "";
     }
 }

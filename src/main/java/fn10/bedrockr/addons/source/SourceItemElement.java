@@ -4,26 +4,25 @@ import java.io.File;
 import java.io.IOException;
 import fn10.bedrockr.addons.source.elementFiles.ItemFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SourceItemElement extends ElementSource<ItemFile> {
-    private final String Location = File.separator + "elements" + File.separator;
-    private final Class<ItemFile> serilizedClass = ItemFile.class;
-    private final ItemFile serilized;
-
     public SourceItemElement(ItemFile obj) {
-        this.serilized = obj;
+        super(obj);
+    }
+
+    @Override
+    public String getFileExtension() {
+        return ".itemref";
     }
 
     public SourceItemElement() {
-        this.serilized = null;
-    }
-
-    public SourceItemElement(String jsonString) {
-        this.serilized = getFromJSON(jsonString);
+        this(new ItemFile());
     }
 
     public static ElementDetails getDetails() throws IOException {
@@ -32,26 +31,8 @@ public class SourceItemElement extends ElementSource<ItemFile> {
                 RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Item.png").openStream()));
     }
 
-    
-
     @Override
     public Class<ItemFile> getSerilizedClass() {
         return ItemFile.class;
-    }
-
-    @Override
-    public ItemFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, serilizedClass);
-    }
-
-    @Override
-    public ItemFile getSerilized() {
-        return this.serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".itemref");
     }
 }

@@ -186,7 +186,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
             if (Textures == null) {
                 return ArrayUtils.toObject(getClass().getResourceAsStream("/addons/element/Element.png").readAllBytes());
             }
-            ResourceFile resources = RFileOperations.getResources(workspace).getSerilized();
+            ResourceFile resources = RFileOperations.getResources(workspace).getSerialized();
             String fileName = MapUtilities
                     .getKeyFromValue(resources.ResourceIDs, Textures.upTexID.toString());
             File imageFile = resources.getFileOfResource(workspace, fileName);

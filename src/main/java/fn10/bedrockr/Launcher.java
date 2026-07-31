@@ -5,6 +5,8 @@ import com.formdev.flatlaf.util.SystemInfo;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
+import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
@@ -238,8 +240,7 @@ public class Launcher {
             if ((file = Paths.get(args[0]).toFile()).exists()) {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
-                        RWorkspace.openWorkspace(loading,
-                                new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath()))));
+                        RWorkspace.openWorkspace(loading, ElementSource.getSourceFromJSON(Files.readString(file.toPath()), SourceWorkspaceFile.class, WorkspaceFile.class));
                         return;
                     } catch (IOException e) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);

@@ -288,7 +288,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     inner.add(BlockTexturesWest);
 
                     BlockTexturesModeDropdown.setSelectedIndex(0);
-                } else if (Path.class.isAssignableFrom(InputType)) {
+                } 
+                else if (Path.class.isAssignableFrom(InputType)) {
                     if (field == null) {
                         return;
                     }
@@ -307,7 +308,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         }
                     });
                     Input = button;
-                } else if (List.class.isAssignableFrom(InputType)) {
+                } 
+                else if (List.class.isAssignableFrom(InputType)) {
                     /*
                      * im just stealing most of the hash map stuff, since it is basicly already a
                      * list view.
@@ -445,7 +447,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                     Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-                } else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
+                } 
+                else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
                     // if
                     // bool,
                     // its
@@ -464,7 +467,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                 DisplayName, e);
                     }
-                } else if (String.class.isAssignableFrom(InputType)) {
+                } 
+                else if (String.class.isAssignableFrom(InputType)) {
                     // if string, do this
                     // if normal do this
 
@@ -475,7 +479,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         anno = null;
                     }
                     Input = new JTextField();
-                    if (anno == null && field != null) { // normal string
+                    if (anno == null && field != null && TargetFile != null) { // normal string
                         Input = new JTextField();
                         try {
                             ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string in
@@ -516,7 +520,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     DisplayName, e);
                         }
                     }
-                } else if (Map.class.isAssignableFrom(InputType)) {
+                } 
+                else if (Map.class.isAssignableFrom(InputType)) {
                     Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                     ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
@@ -593,7 +598,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
                     Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-                } else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
+                } 
+                else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
                     if (field != null) {
                         anno = field.getAnnotation(NumberRange.class);
@@ -605,7 +611,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     ((JSpinner) Input).setValue(field.get(TargetFile));
 
-                } else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
+                } 
+                else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
                     final NumberRange anno;
                     if (field != null) {
                         anno = field.getAnnotation(NumberRange.class);
@@ -616,7 +623,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                     ((JSpinner) Input).setValue(field.get(TargetFile));
-                } else if (UUID.class.isAssignableFrom(InputType)) { // resource
+                } 
+                else if (UUID.class.isAssignableFrom(InputType)) { // resource
                     final ResourcePackResourceType anno;
                     final int type;
                     if (field != null) {
@@ -681,7 +689,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     return;
                                 }
                                 try {
-                                    RFileOperations.getResources(WorkspaceName).Serilized
+                                    RFileOperations.getResources(WorkspaceName).getSerialized()
                                             .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
                                                     WorkspaceName);
                                 } catch (WrongResourceTypeException e) {
@@ -696,7 +704,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     if (Selected == null)
                                         return;
                                     var filename = MapUtilities.getKeyFromValue(
-                                            RFileOperations.getResources(WorkspaceName).Serilized.ResourceIDs,
+                                            RFileOperations.getResources(WorkspaceName).getSerialized().ResourceIDs,
                                             Selected.getKey());
                                     NameItem.setText(
                                             filename);
@@ -772,7 +780,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         WorkspaceName);
 
                                 var filename = MapUtilities.getKeyFromValue(
-                                        res.Serilized.ResourceIDs,
+                                        res.getSerialized().ResourceIDs,
                                         id);
 
                                 NameItem.setText(
@@ -780,7 +788,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 IDItem.setText(id);
                                 try {
                                     IconItem.setIcon(ImageUtilities.ResizeIcon(
-                                            new ImageIcon(Files.readAllBytes(res.Serilized
+                                            new ImageIcon(Files.readAllBytes(res.getSerialized()
                                                     .getFileOfResource(
                                                             WorkspaceName, NameItem.getText())
                                                     .toPath())),
@@ -852,7 +860,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     return;
                                 }
                                 try {
-                                    RFileOperations.getResources(WorkspaceName).Serilized
+                                    RFileOperations.getResources(WorkspaceName).getSerialized()
                                             .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
                                                     WorkspaceName);
                                 } catch (WrongResourceTypeException e) {
@@ -868,7 +876,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         return;
                                     var filename = MapUtilities.getKeyFromValue(
                                             RFileOperations.getResources(
-                                                    WorkspaceName).Serilized.ResourceIDs,
+                                                    WorkspaceName).getSerialized().ResourceIDs,
                                             Selected.getKey());
                                     NameBlock.setText(
                                             filename);
@@ -946,7 +954,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         WorkspaceName);
 
                                 var filename = MapUtilities.getKeyFromValue(
-                                        res.Serilized.ResourceIDs,
+                                        res.getSerialized().ResourceIDs,
                                         id);
 
                                 NameBlock.setText(
@@ -954,7 +962,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 IDBlock.setText(id);
                                 try {
                                     IconBlock.setIcon(ImageUtilities.ResizeIcon(
-                                            new ImageIcon(Files.readAllBytes(res.Serilized
+                                            new ImageIcon(Files.readAllBytes(res.getSerialized()
                                                     .getFileOfResource(
                                                             WorkspaceName, NameBlock.getText())
                                                     .toPath())),
@@ -974,7 +982,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         default:
                             break;
                     }
-                } else {
+                } 
+                else {
                     Input = new JLabel("Not supported.");
                 }
             } catch (Exception e) {
@@ -1243,7 +1252,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             String id = Id.toString();
 
             ResourceFile res = Objects.requireNonNull(RFileOperations.getResources(
-                    WorkspaceName)).Serilized;
+                    WorkspaceName)).getSerialized();
 
             String filename = res.getNameOfResourceFromUUID(id);
 

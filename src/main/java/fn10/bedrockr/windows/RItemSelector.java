@@ -78,11 +78,7 @@ public class RItemSelector extends RDialog {
                     building.Id = bf.getItemId();
                     building.Name = bf.getDisplayName();
                     try {
-                        building.Prefix = new SourceWorkspaceFile(
-                                new String(Files.readAllBytes(RFileOperations
-                                        .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
-                                        .toPath())))
-                                .getSerilized().Prefix;
+                        building.Prefix = RFileOperations.getWorkspaceFile(Workspace).Prefix;
                     } catch (IOException e1) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                 e1);

@@ -1,30 +1,25 @@
 package fn10.bedrockr.addons.source;
 
-import java.io.File;
 import java.io.IOException;
 import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
-import static fn10.bedrockr.utils.RFileOperations.gson;
-
 public class SourceFoodElement extends ElementSource<FoodFile> {
-    private final String Location = File.separator + "elements" + File.separator;
-    private final Class<FoodFile> serilizedClass = FoodFile.class;
-    private final FoodFile serilized;
-
     public SourceFoodElement(FoodFile obj) {
-        this.serilized = obj;
+        super(obj);
+    }
+
+    @Override
+    public String getFileExtension() {
+        return ".foodref";
     }
 
     public SourceFoodElement() {
-        this.serilized = null;
+        this(new FoodFile());
     }
 
-    public SourceFoodElement(String jsonString) {
-        this.serilized = getFromJSON(jsonString);
-    }
 
     public static ElementDetails getDetails() throws IOException {
         return new ElementDetails("Food",
@@ -36,21 +31,5 @@ public class SourceFoodElement extends ElementSource<FoodFile> {
     @Override
     public Class<FoodFile> getSerilizedClass() {
         return FoodFile.class;
-    }
-
-    @Override
-    public FoodFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, serilizedClass);
-    }
-
-    @Override
-    public FoodFile getSerilized() {
-        return this.serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".foodref");
     }
 }
