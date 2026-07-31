@@ -22,6 +22,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
     
     private final JPanel ProjectsPart = new JPanel();

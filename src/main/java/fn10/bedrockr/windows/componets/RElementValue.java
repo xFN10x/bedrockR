@@ -17,7 +17,7 @@ import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 import fn10.bedrockr.windows.RMapValueAddingSelector;
 import fn10.bedrockr.windows.RTextureAddingSelector;
 import fn10.bedrockr.windows.util.ErrorShower;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import fn10.bedrockr.windows.util.RFonts;
 
 import javax.swing.*;
@@ -40,6 +40,7 @@ import java.util.logging.Level;
  * This class includes lots of useful tools for making a field for a user to
  * edit, and to save certain {@code java.reflect.Field}s.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class RElementValue extends JPanel implements ValidatableValue {
     public interface ChangedStatusListener {
         void changed(boolean to);
@@ -322,7 +323,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     // do things to the panels
                     HashMapInnerPane.setLayout(new BoxLayout(HashMapInnerPane, BoxLayout.Y_AXIS));
-                    ((JScrollPane) Input).setBorder(new LineBorder(Color.DARK_GRAY));
+                    Input.setBorder(new LineBorder(Color.DARK_GRAY));
                     Input.setBackground(getBackground().brighter());
                     // get the RMapProvider
 
@@ -355,7 +356,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
                                     HashMapInnerPane.add(toAdd);
                                 }
-                            } else if (genericType != null) {
+                            } else {
                                 for (Object entry : (List<?>) field.get(TargetFile)) {
                                     RElementValue toAdd = new RElementValue(parentFrame, genericType, Filter,
                                             null, "",
@@ -385,7 +386,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter, null, "",
                                         false,
                                         null, WorkspaceName);
-                            } else if (genericType != null) {
+                            } else {
 
                                 // fn10.bedrockr.Launcher.LOG.info("make an list value element with
                                 // class: "
@@ -394,21 +395,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         "",
                                         false,
                                         null, WorkspaceName);
-                            } else {
-                                return;
                             }
 
                             if (anno != null) {
                                 toAdd.remove(toAdd.Input);
-                                JComboBox<String> newInput;
-                                if (anno.value()[0].equals("_VANILLABIOMES"))
-                                    newInput = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
-                                else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES"))
-                                    newInput = new JComboBox<>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
-                                else if (anno.value()[0].equals("_THEMENAMES"))
-                                    newInput = new JComboBox<>(Theme.getNames());
-                                else
-                                    newInput = new JComboBox<>(anno.value());
+                                JComboBox<String> newInput = new JComboBox<>(substituteArray(anno.value()));
 
                                 toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
                                 toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
@@ -500,7 +491,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     "Failed to get field (does the passed ElementFile match the ElementSource?)",
                                     DisplayName, e);
                         }
-                    } else if (anno != null && field != null) { // dropdown string
+                    } else if (anno != null) { // dropdown string
                         switch (anno.value()[0]) {
                             case "_VANILLABIOMES" -> Input = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
                             case "_PREFIXEDVANILLABIOMES" ->
@@ -536,7 +527,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     // do things to the panels
                     HashMapInnerPane.setLayout(new BoxLayout(HashMapInnerPane, BoxLayout.Y_AXIS));
-                    ((JScrollPane) Input).setBorder(new LineBorder(Color.DARK_GRAY));
+                    Input.setBorder(new LineBorder(Color.DARK_GRAY));
                     Input.setBackground(getBackground().brighter());
                     // get the RMapProvider
 
@@ -647,8 +638,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             SpringLayout layout = new SpringLayout();
                             Input = new JPanel();
                             Input.setName("null");
-                            ((JPanel) Input).setBorder(getBorder());
-                            ((JPanel) Input).setLayout(layout);
+                            Input.setBorder(getBorder());
+                            Input.setLayout(layout);
 
                             NameItem = new JLabel("(Select a texture.)");
                             NameItem.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
@@ -659,7 +650,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             TypeItem.setForeground(getForeground().darker().darker());
                             AddButtonItem = new JButton("+");
                             SelectButtonItem = new JButton("Select");
-                            IconItem = new JLabel(ImageUtilites.ResizeIcon(
+                            IconItem = new JLabel(ImageUtilities.ResizeIcon(
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
 
                             AddButtonItem.addActionListener(ac -> {
@@ -723,7 +714,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                             IconItem.setMaximumSize(new Dimension(64, 64));
                             IconItem.setPreferredSize(new Dimension(64, 64));
-                            IconItem.setBorder(((JPanel) Input).getBorder());
+                            IconItem.setBorder(Input.getBorder());
 
                             layout.putConstraint(SpringLayout.WEST, IconItem, 5, SpringLayout.WEST, Input);
                             layout.putConstraint(SpringLayout.VERTICAL_CENTER, IconItem, 0,
@@ -747,11 +738,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     this.Name);
                             Lay.putConstraint(SpringLayout.SOUTH, AddButtonItem, 0, SpringLayout.SOUTH, Input);
 
-                            ((JPanel) Input).add(IconItem);
-                            ((JPanel) Input).add(NameItem);
-                            ((JPanel) Input).add(IDItem);
-                            ((JPanel) Input).add(TypeItem);
-                            ((JPanel) Input).add(SelectButtonItem);
+                            Input.add(IconItem);
+                            Input.add(NameItem);
+                            Input.add(IDItem);
+                            Input.add(TypeItem);
+                            Input.add(SelectButtonItem);
                             add(AddButtonItem);
 
                             setMaximumSize(size);
@@ -788,11 +779,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         filename);
                                 IDItem.setText(id);
                                 try {
-                                    IconItem.setIcon(ImageUtilites.ResizeIcon(
+                                    IconItem.setIcon(ImageUtilities.ResizeIcon(
                                             new ImageIcon(Files.readAllBytes(res.Serilized
                                                     .getFileOfResource(
-                                                            WorkspaceName, NameItem.getText(),
-                                                            ResourceFile.ITEM_TEXTURE)
+                                                            WorkspaceName, NameItem.getText())
                                                     .toPath())),
                                             64, 64));
                                 } catch (Exception e) {
@@ -820,8 +810,8 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 IconBlock.setEnabled(newV);
                             });
                             Input.setName("null");
-                            ((JPanel) Input).setBorder(new LineBorder(ImageUtilites.brighter(getBackground(), 0.5f)));
-                            ((JPanel) Input).setLayout(layoutBlock);
+                            Input.setBorder(new LineBorder(ImageUtilities.brighter(getBackground(), 0.5f)));
+                            Input.setLayout(layoutBlock);
 
                             NameBlock = new JLabel("(Select a texture.)");
                             NameBlock.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
@@ -832,7 +822,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             TypeBlock.setForeground(getForeground().darker().darker());
                             AddButtonBlock = new JButton("+");
                             SelectButtonBlock = new JButton("Select");
-                            IconBlock = new JLabel(ImageUtilites.ResizeIcon(
+                            IconBlock = new JLabel(ImageUtilities.ResizeIcon(
                                     new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
                             AddButtonBlock.addActionListener(ac -> {
                                 SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
@@ -896,7 +886,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                             IconBlock.setMaximumSize(new Dimension(64, 64));
                             IconBlock.setPreferredSize(new Dimension(64, 64));
-                            IconBlock.setBorder(((JPanel) Input).getBorder());
+                            IconBlock.setBorder(Input.getBorder());
 
                             layoutBlock.putConstraint(SpringLayout.WEST, IconBlock, 5, SpringLayout.WEST, Input);
                             layoutBlock.putConstraint(SpringLayout.VERTICAL_CENTER, IconBlock, 0,
@@ -922,11 +912,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                     this.Name);
                             Lay.putConstraint(SpringLayout.SOUTH, AddButtonBlock, 0, SpringLayout.SOUTH, Input);
 
-                            ((JPanel) Input).add(IconBlock);
-                            ((JPanel) Input).add(NameBlock);
-                            ((JPanel) Input).add(IDBlock);
-                            ((JPanel) Input).add(TypeBlock);
-                            ((JPanel) Input).add(SelectButtonBlock);
+                            Input.add(IconBlock);
+                            Input.add(NameBlock);
+                            Input.add(IDBlock);
+                            Input.add(TypeBlock);
+                            Input.add(SelectButtonBlock);
                             add(AddButtonBlock);
 
                             setMaximumSize(size);
@@ -963,11 +953,10 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         filename);
                                 IDBlock.setText(id);
                                 try {
-                                    IconBlock.setIcon(ImageUtilites.ResizeIcon(
+                                    IconBlock.setIcon(ImageUtilities.ResizeIcon(
                                             new ImageIcon(Files.readAllBytes(res.Serilized
                                                     .getFileOfResource(
-                                                            WorkspaceName, NameBlock.getText(),
-                                                            ResourceFile.BLOCK_TEXTURE)
+                                                            WorkspaceName, NameBlock.getText())
                                                     .toPath())),
                                             64, 64));
                                 } catch (Exception e) {
@@ -1183,14 +1172,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     if (anno != null) {
                         toAdd.remove(toAdd.Input);
-                        JComboBox<String> newInput;
-                        if (anno.value()[0].equals("_VANILLABIOMES")) {
-                            newInput = new JComboBox<String>(SourceBiomeElement.getVanillaBiomeNames());
-                        } else if (anno.value()[0].equals("_PREFIXEDVANILLABIOMES")) {
-                            newInput = new JComboBox<String>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
-                        } else {
-                            newInput = new JComboBox<String>(anno.value());
-                        }
+                        JComboBox<String> newInput = new JComboBox<>(substituteArray(anno.value()));
 
                         toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
                         toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
@@ -1270,9 +1252,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         filename);
                 IDBlock.setText(id);
                 try {
-                    IconBlock.setIcon(ImageUtilites.ResizeIcon(
+                    IconBlock.setIcon(ImageUtilities.ResizeIcon(
                             new ImageIcon(Files.readAllBytes(res.getFileOfResource(
-                                    WorkspaceName, NameBlock.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
+                                    WorkspaceName, NameBlock.getText()).toPath())),
                             64, 64));
                 } catch (Exception e) {
                     ErrorShower.exception(parentFrame, e);
@@ -1282,9 +1264,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         filename);
                 IDItem.setText(id);
                 try {
-                    IconItem.setIcon(ImageUtilites.ResizeIcon(
+                    IconItem.setIcon(ImageUtilities.ResizeIcon(
                             new ImageIcon(Files.readAllBytes(res.getFileOfResource(
-                                    WorkspaceName, NameItem.getText(), ResourceFile.BLOCK_TEXTURE).toPath())),
+                                    WorkspaceName, NameItem.getText()).toPath())),
                             64, 64));
                 } catch (Exception e) {
                     Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
@@ -1311,7 +1293,6 @@ public class RElementValue extends JPanel implements ValidatableValue {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Object getValue() {
         return getValue(true);
     }
@@ -1415,7 +1396,6 @@ public class RElementValue extends JPanel implements ValidatableValue {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public boolean valid(boolean strict) {
         return valid(strict, true);
     }
@@ -1609,5 +1589,20 @@ public class RElementValue extends JPanel implements ValidatableValue {
     @Override
     public String getName() {
         return getTarget();
+    }
+
+    /**
+     * Passes a string through to substitute it if it can be.
+     * @param input
+     * @return
+     */
+    public String[] substituteArray(String[] input) {
+        return switch (input[0])
+        {
+            case "_VANILLABIOMES" -> SourceBiomeElement.getVanillaBiomeNames();
+            case "_PREFIXEDVANILLABIOMES" -> SourceBiomeElement.getPrefixedVanillaBiomeNames();
+            case "_THEMENAMES" -> Theme.getNames();
+            default -> input;
+        };
     }
 }

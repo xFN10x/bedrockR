@@ -1,9 +1,9 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Block;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Block.InnerItem.Description.MenuCategory;
+import fn10.bedrockr.addons.mcjson.behav.Block;
+import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem;
+import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem.Description;
+import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem.Description.MenuCategory;
 import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBlockElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -15,7 +15,7 @@ import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -189,8 +189,8 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
             ResourceFile resources = RFileOperations.getResources(workspace).getSerilized();
             String fileName = MapUtilities
                     .getKeyFromValue(resources.ResourceIDs, Textures.upTexID.toString());
-            File imageFile = resources.getFileOfResource(workspace, fileName, ResourceFile.BLOCK_TEXTURE);
-            return ArrayUtils.toObject(ImageUtilites.ImageToBytes(RenderHandler.render6SideBlock(ID, ImageIO.read(imageFile))));
+            File imageFile = resources.getFileOfResource(workspace, fileName);
+            return ArrayUtils.toObject(ImageUtilities.ImageToBytes(RenderHandler.render6SideBlock(ID, ImageIO.read(imageFile))));
         } catch (IllegalAccessError | IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;

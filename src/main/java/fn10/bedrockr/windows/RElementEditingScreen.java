@@ -1,11 +1,10 @@
 package fn10.bedrockr.windows;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
-import fn10.bedrockr.addons.source.elementFiles.FoodFile;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An RDialog that provides the basic parts to make a source element builder
@@ -289,7 +287,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              * frame.getDefaultPane().add(loading);
              *
              * frame.setSize(new Dimension(1500, 800));
-             * frame.setLocation(ImageUtilites.getScreenCenter(frame));
+             * frame.setLocation(ImageUtilities.getScreenCenter(frame));
              *
              * frame.addWindowListener(new WindowAdapter() {
              *
@@ -691,21 +689,19 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile<?>) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (ValidatableValue validatable : Fields) { // add the fields
-                if (validatable instanceof RElementValue) {
-                    if (!((RElementValue) validatable).getOptionallyEnabled()) // if its not enabled, continue
+                if (validatable instanceof RElementValue rev) {
+                    if (rev.getOptionallyEnabled()) // if its not enabled, continue
                     {
-                        continue;
-                    } else
                         try {
-                            SourceClass.getField(((RElementValue) validatable).getTarget()).set(workingClass,
-                                    ((RElementValue) validatable).getValue());
+                            SourceClass.getField(rev.getTarget()).set(workingClass,
+                                    rev.getValue());
                             // try to set field ^
                         } catch (Exception e) {
                             Launcher.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
-                            continue;
                         }
+                    }
                 }
 
             }

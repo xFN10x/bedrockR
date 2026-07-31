@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome.minecraftBiome;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Biome.minecraftBiome.description;
+import fn10.bedrockr.addons.mcjson.behav.Biome;
+import fn10.bedrockr.addons.mcjson.behav.Biome.minecraftBiome;
+import fn10.bedrockr.addons.mcjson.behav.Biome.minecraftBiome.description;
 import fn10.bedrockr.addons.source.FieldFilters;
 import fn10.bedrockr.addons.source.SourceBiomeElement;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -19,7 +19,6 @@ import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.Order;
-import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;

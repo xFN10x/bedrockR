@@ -2,7 +2,7 @@ package fn10.bedrockr.windows.base;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 
 import java.awt.*;
 import java.io.IOException;
@@ -26,11 +26,11 @@ public class RFrame extends JFrame {
 
     public final JButton websiteButton = new JButton(new ImageIcon(RFrame.class.getResource("/website.png")));
     public final JButton ghButton = new JButton(
-            ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/gh.png")), 32, 32));
+            ImageUtilities.ResizeIcon(new ImageIcon(RFrame.class.getResource("/gh.png")), 32, 32));
     public final JButton ftButton = new JButton(
-            ImageUtilites.ResizeIcon(new ImageIcon(RFrame.class.getResource("/ft.png")), 32, 32));
+            ImageUtilities.ResizeIcon(new ImageIcon(RFrame.class.getResource("/ft.png")), 32, 32));
 
-    public final JLabel titleImg = new JLabel(ImageUtilites
+    public final JLabel titleImg = new JLabel(ImageUtilities
             .ResizeImageByURL(RFrame.class.getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH,
                     Image.SCALE_AREA_AVERAGING));
 
@@ -126,6 +126,6 @@ public class RFrame extends JFrame {
         setDefaultCloseOperation(CloseOperation);
 
         pack();
-        setLocation(ImageUtilites.getScreenCenter(this));
+        setLocation(ImageUtilities.getScreenCenter(this));
     }
 }

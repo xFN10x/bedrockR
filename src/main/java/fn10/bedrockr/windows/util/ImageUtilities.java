@@ -5,13 +5,15 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import fn10.bedrockr.Launcher;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-public class ImageUtilites {
+public class ImageUtilities {
 
     public static byte[] ImageToBytes(Image img) {
         // convert image to bytes
@@ -26,7 +28,7 @@ public class ImageUtilites {
             ImageIO.write(bi, "png", baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            Launcher.LOG.log(Level.SEVERE, "Failed to write image.", e);
             return new byte[0];
         }
     }

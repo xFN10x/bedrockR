@@ -12,9 +12,10 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import fn10.bedrockr.windows.util.RFonts;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RSplashScreen extends JFrame {
 
     private final JLabel image = new JLabel();
@@ -54,7 +55,7 @@ public class RSplashScreen extends JFrame {
         setSize(new Dimension(800, 500));
         setIconImage(Launcher.ICON);
         setUndecorated(true);
-        setLocation(ImageUtilites.getScreenCenter(this));
+        setLocation(ImageUtilities.getScreenCenter(this));
 
         add(ProgressText);
         add(image);

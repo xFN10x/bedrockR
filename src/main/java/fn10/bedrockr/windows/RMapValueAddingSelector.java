@@ -13,6 +13,7 @@ import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.componets.RMapElementViewer;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RMapValueAddingSelector extends RDialog {
 
     protected final JPanel InnerPanel = new JPanel();

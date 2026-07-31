@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.addon.jsonClasses;
+package fn10.bedrockr.addons.mcjson;
 
 import java.util.Arrays;
 import java.util.Vector;
@@ -9,7 +9,7 @@ public class SharedJSONClasses {
 
         public static Vector<Integer> fromString(String fromThis) {
             if (fromThis == null)
-                return new Vector<Integer>();
+                return new Vector<>();
             java.util.List<String> array = Arrays.asList(fromThis.split("\\."));
 
             // make vector
@@ -23,7 +23,7 @@ public class SharedJSONClasses {
                 vec.setElementAt(Integer.valueOf(array.get(0)), 0); // 1
                 vec.setElementAt(Integer.valueOf(array.get(1)), 1); // 2
                 vec.setElementAt(Integer.valueOf(array.get(2)), 2); // 3
-            } catch (Exception e) {
+            } catch (Exception _) {
             }
             return vec;
         }

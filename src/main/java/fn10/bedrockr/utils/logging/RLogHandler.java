@@ -15,14 +15,4 @@ public class RLogHandler extends StreamHandler {
         super.publish(record);
         flush();
     }
-
-    @Override
-    public void flush() {
-        super.flush();
-    }
-
-    @Override
-    public void close() throws SecurityException {
-        super.close();
-    }
 }

@@ -1,12 +1,12 @@
 package fn10.bedrockr.windows;
 
-import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -22,6 +22,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
@@ -33,7 +36,6 @@ import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 import fn10.bedrockr.windows.util.ErrorShower;
-import fn10.bedrockr.windows.util.ImageUtilites;
 import fn10.bedrockr.windows.util.RFonts;
 
 public class RNewAddon extends RDialog implements ActionListener, DocumentListener {
@@ -66,14 +68,14 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             ChosenIcon = ArrayUtils
                     .toObject(RFileOperations.readAllBytes(getClass().getResource("/addons/DefaultIcon.png").openStream()));
         } catch (IOException e) {
-            e.printStackTrace();
+            Launcher.LOG.log(Level.SEVERE, "Failed to set icon.", e);
         }
 
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
         AddonIcon.setVerticalAlignment(SwingConstants.CENTER);
         AddonIcon.setBorder(BorderFactory.createLineBorder(getForeground(), 3));
-        AddonIcon.setIcon(ImageUtilites.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
+        AddonIcon.setIcon(ImageUtilities.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
 
         var NameInputText = new JLabel("Addon Name");
 
@@ -89,7 +91,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
         DescInput.setPreferredSize(new Dimension(150, 100));
         DescInput.setLineWrap(true);
-        DescInput.setFont(RFonts.RegMinecraftFont.deriveFont(1, 10));
+        DescInput.setFont(RFonts.RegMinecraftFont.deriveFont(Font.BOLD, 10));
         DescInput.setWrapStyleWord(true);
 
         var MinimumEngineVersionSelectionText = new JLabel("Minimum Engine Version");
@@ -172,7 +174,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                     File file = fileChooser.getSelectedFile();
                     ChosenIcon = ArrayUtils.toObject(Files.readAllBytes(file.toPath()));
                     AddonIcon.setIcon(
-                            ImageUtilites.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
+                            ImageUtilities.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -207,13 +209,9 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
                         ChosenIcon);
 
-                if (workspace != null) {
-                    RWorkspace.openWorkspace(Parent, workspace);
-                    loading.dispose();
-                    this.dispose();
-                } else {
-                    throw new Exception();
-                }
+                RWorkspace.openWorkspace(Parent, workspace);
+                loading.dispose();
+                this.dispose();
             } catch (Exception ex) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(getParent(), "Failed to make new addon.", "Grrrr", ex);

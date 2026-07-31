@@ -1,13 +1,11 @@
 package fn10.bedrockr.windows.componets;
 
-import com.google.gson.Gson;
 import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.RMapElement;
 import fn10.bedrockr.addons.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.RStringDropdownMapElement;
-import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.*;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.MapTints.GrassTint;
 import fn10.bedrockr.addons.source.supporting.BiomeComponents.ReplaceBiomes.Replacement;
@@ -33,6 +31,7 @@ import java.util.logging.Level;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RElementMapValue extends JPanel {
 
     private final Dimension Size = new Dimension(240, 80);
@@ -251,7 +250,7 @@ public class RElementMapValue extends JPanel {
                 || RME.Type == Double.class) { // int, DOUBLES WILL BE TREATED AS INTS
             InputField = new JSpinner();
 
-            if (RME.Filters.contains(MapValueFilter.NotNegitive))
+            if (RME.Filters.contains(MapValueFilter.NotNegative))
                 ((JSpinner) InputField).addChangeListener(c -> {
                     if (((Integer) ((JSpinner) InputField).getValue()) < 0) {
                         ((JSpinner) InputField).setValue(0);
@@ -540,11 +539,7 @@ public class RElementMapValue extends JPanel {
                     } else if (rMapElement.Type == Boolean.class || rMapElement.Type == boolean.class) { // bool
                         val = (((JComboBox<String>) InputField).getSelectedIndex() == 0);
                     } else { // else
-                        if (rMapElement.Type == null) {
-                            InputField = new JLabel("Input type is null.");
-                        } else {
-                            InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
-                        }
+                        InputField = new JLabel("Unknown input type:\n" + rMapElement.Type.getName());
                     }
                 }
             } catch (Exception e) {

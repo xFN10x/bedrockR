@@ -32,7 +32,6 @@
 package fn10.bedrockr.windows.util;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 
 import java.awt.*;
 

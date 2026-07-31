@@ -8,7 +8,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import fn10.bedrockr.windows.base.RDialog;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import fn10.bedrockr.windows.util.RFonts;
 import jakarta.annotation.Nullable;
 
@@ -71,9 +71,9 @@ public class RLoadingScreen extends RDialog {
         int titleImgW = 374;
         int titleImageH = 80;
 
-        var BG = new JLabel(ImageUtilites.ResizeImageByURL(getClass().getResource("/ui/BG.png"), 600, 600));
+        var BG = new JLabel(ImageUtilities.ResizeImageByURL(getClass().getResource("/ui/BG.png"), 600, 600));
 
-        var Branding = new JLabel(ImageUtilites
+        var Branding = new JLabel(ImageUtilities
                 .ResizeImageByURL(getClass().getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH));
         Branding.setPreferredSize(new Dimension(titleImgW, titleImageH));
 
@@ -88,7 +88,7 @@ public class RLoadingScreen extends RDialog {
         // MainBar.setStringPainted(true);
         // MainBar.setString("Loading...");
 
-        MainText.setFont(RFonts.RegMinecraftFont.deriveFont(2, 18));
+        MainText.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 18));
         MainText.setForeground(Color.WHITE);
 
         // bg

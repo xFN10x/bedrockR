@@ -14,6 +14,7 @@ import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.logging.Level;
 
 public class RFileOperations {
 
@@ -75,8 +77,8 @@ public class RFileOperations {
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
     // element 0 must be latest
     public final static String[] PICKABLE_VERSIONS = {
+            "1.26.30",
             "1.26.20",
-            "1.26.10",
     };
 
     public static void init() {
@@ -272,24 +274,24 @@ public class RFileOperations {
      * @param workspaceName - the workspace to get the resources from
      * @return a {@code SourceResourceElement}, containing the resources
      */
+    @Nonnull
     public static SourceResourceElement getResources(String workspaceName) {
 
         var file = getFileFromWorkspace(workspaceName,
                 File.separator + "resources" + File.separator + RESOURCE_FILE_NAME, true);
-        if (file.exists())
+        if (file != null && file.exists())
             try {
-                var source = new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
-                return source;
+                return new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
             } catch (IOException e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                return null;
+                return new SourceResourceElement();
             }
         else { // make a blank resource file
-            var source = new SourceResourceElement("{}");
+            var source = new SourceResourceElement();
             try {
                 source.saveJSONFile(workspaceName);
             } catch (IOException e) {
-                e.printStackTrace();
+                Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
             }
             return source;
         }
@@ -334,7 +336,7 @@ public class RFileOperations {
         try {
             new SourceWorkspaceFile(serilized).saveJSONFile(WPF.workspaceName());
         } catch (IOException e) {
-            e.printStackTrace();
+            Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
         }
 
         CURRENT_WORKSPACE = serilized;
@@ -654,6 +656,15 @@ public class RFileOperations {
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
         Launcher.LOG.info("Found ElementFile on disk: " + proposed);
         return proposed;
+    }
+    
+    public static String[] getElementNamesFromWorkspace(String workspace) {
+        ElementFile<?>[] elements = getElementsFromWorkspace(workspace);
+        ArrayList<String> names = new ArrayList<>();
+        for (ElementFile<?> element : elements) {
+            names.add(element.getElementName());
+        }
+        return names.toArray(new String[0]);
     }
 
     /**

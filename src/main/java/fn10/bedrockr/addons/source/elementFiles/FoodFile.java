@@ -13,7 +13,7 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Item;
+import fn10.bedrockr.addons.mcjson.behav.Item;
 import fn10.bedrockr.addons.source.*;
 import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
@@ -242,7 +242,7 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
         try {
             ResourceFile resFile = RFileOperations.getResources(workspace).Serilized;
             return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(workspace, MapUtilities
-                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString()), ResourceFile.ITEM_TEXTURE).toPath()));
+                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString())).toPath()));
         } catch (IllegalAccessError | IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;

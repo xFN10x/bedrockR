@@ -1,6 +1,5 @@
 package fn10.bedrockr.windows.laf;
 
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import java.awt.*;

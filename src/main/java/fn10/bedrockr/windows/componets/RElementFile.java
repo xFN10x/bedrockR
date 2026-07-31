@@ -11,7 +11,6 @@ import javax.swing.*;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
-import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;

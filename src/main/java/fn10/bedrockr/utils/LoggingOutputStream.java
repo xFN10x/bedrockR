@@ -33,7 +33,7 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
         super();
         this.logger = logger;
         this.level = level;
-        lineSeparator = System.getProperty("line.separator");
+        lineSeparator = System.lineSeparator();
     }
 
     /**
@@ -51,7 +51,7 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
             record = this.toString().trim();
             super.reset();
 
-            if (record.length() == 0 || record.equals(lineSeparator)) {
+            if (record.isEmpty() || record.equals(lineSeparator)) {
                 // avoid empty records
                 return;
             }

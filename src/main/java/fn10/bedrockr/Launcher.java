@@ -266,11 +266,7 @@ public class Launcher {
                     "Share Element & Workspace Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                     new String[]{"Yes", "No"}, "Yes");
 
-            if (input == 0) {
-                settings.shareElementAndWorkspaceData = true;
-            } else {
-                settings.shareElementAndWorkspaceData = true;
-            }
+            settings.shareElementAndWorkspaceData = input == 0;
         }
         if (settings.shareExtraData == null) {
             int input = JOptionPane.showOptionDialog(loading,
@@ -278,11 +274,7 @@ public class Launcher {
                     "Share Extra Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                     new String[]{"Yes", "No"}, "Yes");
 
-            if (input == 0) {
-                settings.shareExtraData = true;
-            } else {
-                settings.shareExtraData = true;
-            }
+            settings.shareExtraData = input == 0;
         }
         settings.save();
     }

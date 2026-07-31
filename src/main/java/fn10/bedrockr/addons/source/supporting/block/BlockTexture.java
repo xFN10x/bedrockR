@@ -1,6 +1,6 @@
 package fn10.bedrockr.addons.source.supporting.block;
 
-import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
+import fn10.bedrockr.addons.mcjson.resource.BlockJSONEntry;
 import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
 
 import java.io.FileNotFoundException;

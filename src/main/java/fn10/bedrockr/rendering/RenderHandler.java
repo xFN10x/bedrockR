@@ -1,7 +1,7 @@
 package fn10.bedrockr.rendering;
 
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,7 +32,7 @@ public class RenderHandler {
         frame.setBackground(Color.BLACK);
 
         final Graphics graphics = frame.getContentPane().getGraphics();
-        graphics.drawImage(ImageUtilites.ResizeImage(render6SideBlock(
+        graphics.drawImage(ImageUtilities.ResizeImage(render6SideBlock(
                 "test",
                 missing(),
                 makeSolidTest(Color.GRAY),
@@ -114,12 +114,12 @@ public class RenderHandler {
     }
 
     public static BufferedImage render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage e, BufferedImage w, BufferedImage n, BufferedImage s) throws IOException {
-        var top = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(t, missing()), 60, 60));
-        var down = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
-        var east = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
-        var west = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(w, missing()), 50, 50));
-        var north = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(n, missing()), 50, 50));
-        var south = imgToBuffered(ImageUtilites.ResizeImage(Objects.requireNonNullElse(s, missing()), 50, 50));
+        var top = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(t, missing()), 60, 60));
+        var down = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
+        var east = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
+        var west = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(w, missing()), 50, 50));
+        var north = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(n, missing()), 50, 50));
+        var south = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(s, missing()), 50, 50));
         final int width = 100;
         final int height = 100;
         final BufferedImage main = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

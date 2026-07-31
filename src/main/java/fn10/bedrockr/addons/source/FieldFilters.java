@@ -8,8 +8,8 @@ public class FieldFilters {
 
         Boolean getValid(String subject);
 
-        static boolean isEmptyString(String subject) {
-            return subject.isBlank();
+        static boolean notEmpty(String subject) {
+            return !subject.isBlank();
         }
 
         static boolean containsAnOccurance(String Target, String... chars) {
@@ -26,7 +26,7 @@ public class FieldFilters {
 
         @Override
         public Boolean getValid(String subject) {
-            return !FieldFilter.isEmptyString(subject);
+            return FieldFilter.notEmpty(subject);
         }
 
     }
@@ -39,7 +39,7 @@ public class FieldFilters {
             if (subject.chars().anyMatch(Character::isUpperCase))
                 return false;
             // check if the id is valid
-            else return RFileOperations.validFolderName(subject) && !FieldFilter.isEmptyString(subject);
+            else return RFileOperations.validFolderName(subject) && FieldFilter.notEmpty(subject);
         }
 
     }
@@ -49,7 +49,7 @@ public class FieldFilters {
         @Override
         public Boolean getValid(String subject) {
             // check if there are any spaces, or uppercases
-            return RFileOperations.validFolderName(subject) && !FieldFilter.isEmptyString(subject);
+            return RFileOperations.validFolderName(subject) && FieldFilter.notEmpty(subject);
         }
 
     }
@@ -65,7 +65,7 @@ public class FieldFilters {
             if (subject.equals("(none)")) // none is allowed
                 return true;
 
-            return RFileOperations.validFolderName(subject) && !FieldFilter.isEmptyString(subject);
+            return RFileOperations.validFolderName(subject) && FieldFilter.notEmpty(subject);
         }
     }
 

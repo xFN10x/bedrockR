@@ -2,6 +2,7 @@ package fn10.bedrockr.windows;
 
 import java.awt.*;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +16,7 @@ import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RTextureAddingSelector extends RDialog {
 
     protected final JPanel InnerPanel = new JPanel();
@@ -75,11 +77,11 @@ public class RTextureAddingSelector extends RDialog {
 
         for (Map.Entry<String, Integer> entry : resTypes.entrySet()) {
             try {
-                if (entry.getValue() == TextureType) {
+                if (Objects.equals(entry.getValue(), TextureType)) {
                     JButton ToAdd = new JButton();
                     Dimension size = new Dimension(48, 48);
                     ImageIcon normalIcon = new ImageIcon(res
-                            .getFileOfResource(Workspace, entry.getKey(), entry.getValue()).getPath());
+                            .getFileOfResource(Workspace, entry.getKey()).getPath());
                     ImageIcon resizedIcon = new ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
                             (int) size.getHeight(), Image.SCALE_AREA_AVERAGING));
                     ToAdd.setMinimumSize(size);

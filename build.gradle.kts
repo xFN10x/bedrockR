@@ -91,6 +91,7 @@ tasks.jpackage {
 
 
 tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
+    description = "Creates a release that is portable. For example, and EXE in a ZIP for windows."
     dependsOn("shadowJar")
     input.set(project.layout.buildDirectory.dir("builtJars"))
     destination.set(project.layout.buildDirectory.dir("builtDist"))
@@ -129,19 +130,19 @@ tasks.javadoc {
 tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
-
-val mavenJar by tasks.registering(Jar::class) {
-    destinationDirectory = layout.buildDirectory.dir("mavenLibs")
-
-    from(sourceSets.main.get().output)
-
-    exclude("fn10/bedrockr/Launcher.class")
-    exclude("fn10/bedrockr/Launcher${'$'}1.class")
-    exclude("fn10/bedrockr/Launcher${'$'}2.class")
-    exclude("fn10/bedrockr/Launcher${'$'}3.class")
-    exclude("fn10/bedrockr/windows/**")
-    exclude("fn10/bedrockr/rendering/**")
-}
+//
+//val mavenJar by tasks.registering(Jar::class) {
+//    destinationDirectory = layout.buildDirectory.dir("mavenLibs")
+//
+//    from(sourceSets.main.get().output)
+//
+//    exclude("fn10/bedrockr/Launcher.class")
+//    exclude("fn10/bedrockr/Launcher${'$'}1.class")
+//    exclude("fn10/bedrockr/Launcher${'$'}2.class")
+//    exclude("fn10/bedrockr/Launcher${'$'}3.class")
+//    exclude("fn10/bedrockr/windows/**")
+//    exclude("fn10/bedrockr/rendering/**")
+//}
 
 publishing {
     publications {
@@ -149,7 +150,7 @@ publishing {
             artifactId = "bedrockr"
             groupId = "dev.xplate"
             version = version
-            artifact(tasks.named<Jar>("mavenJar"))
+            artifact(tasks.named<Jar>("jar"))
             artifact(tasks.named<Jar>("sourcesJar"))
             artifact(tasks.named<Jar>("javadocJar"))
             versionMapping {
