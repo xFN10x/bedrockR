@@ -240,7 +240,7 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
     @Override
     public Byte[] getTexture(String workspace) {
         try {
-            ResourceFile resFile = RFileOperations.getResources(workspace).Serilized;
+            ResourceFile resFile = RFileOperations.getResources(workspace).getSerialized();
             return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(workspace, MapUtilities
                     .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString())).toPath()));
         } catch (IllegalAccessError | IOException e) {

@@ -1,25 +1,5 @@
 package fn10.bedrockr.windows;
 
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.io.IOException;
-import java.nio.file.Files;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
@@ -27,6 +7,13 @@ import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry
 import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
+import org.apache.commons.lang3.ArrayUtils;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.io.IOException;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RBlockSelector extends RDialog {
@@ -73,9 +60,7 @@ public class RBlockSelector extends RDialog {
                     building.Id = bf.getItemId();
                     building.Name = bf.getDisplayName();
                     try {
-                        building.Prefix = new SourceWorkspaceFile(new String(Files.readAllBytes(RFileOperations
-                                .getFileFromWorkspace(Workspace, "/" + RFileOperations.WPFFILENAME, true)
-                                .toPath()))).getSerilized().Prefix;
+                        building.Prefix = RFileOperations.getWorkspaceFile(Workspace).Prefix;
                     } catch (IOException e1) {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
@@ -188,9 +173,9 @@ public class RBlockSelector extends RDialog {
     }
 
     /**
-     * 
+     *
      * @return A map entry, in of which, the key is the UUID, and the value is the
-     *         image to be displayed.
+     * image to be displayed.
      */
     public ReturnItemInfo getSelected() {
         return selected;

@@ -123,7 +123,7 @@ public class ReturnItemInfo {
             if (element instanceof ItemLikeElement ile) {
                 String Id = ile.getItemId();
                 String Name = ile.getDisplayName();
-                String Prefix = RFileOperations.getWorkspaceFile(workspaceName).Prefix;
+                String Prefix = RFileOperations.getWorkspacePrefix(workspaceName);
                 Byte[] img = ile.getTexture(workspaceName);
 
                 if (fullID.equals(Prefix + ":" + Id)) {
@@ -268,7 +268,7 @@ public class ReturnItemInfo {
             if (element instanceof ItemLikeElement) {
                 String Id = ((ItemLikeElement) element).getItemId();
                 String Name = ((ItemLikeElement) element).getDisplayName();
-                String Prefix = RFileOperations.getWorkspaceFile(workspaceName).Prefix;
+                String Prefix = RFileOperations.getWorkspacePrefix(workspaceName);
                 Byte[] img = ((ItemLikeElement) element).getTexture(workspaceName);
 
                 if (fullID.equals(Prefix + ":" + Id)) {

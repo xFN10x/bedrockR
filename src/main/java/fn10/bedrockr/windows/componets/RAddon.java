@@ -63,14 +63,10 @@ public class RAddon extends JPanel implements MouseListener {
         Image resizedImage = null;
         int step = 0;
         try {
-            WPFile = new SourceWorkspaceFile(new String(Files.readAllBytes(RFileOperations
-                    .getFileFromWorkspace(WPName, File.separator + RFileOperations.WPFFILENAME,
-                            true)
-                    .toPath())));
-            WPF = WPFile.getSerilized();
+            WPFile = new SourceWorkspaceFile(RFileOperations.getWorkspaceFile(WPName));
+            WPF = WPFile.getSerialized();
             step = 1;
-            File iconFile = RFileOperations.getFileFromWorkspace(WPName, "icon." + WPF.IconExtension, true);
-            if (iconFile == null) throw new FileNotFoundException("Icon not found.");
+            File iconFile = RFileOperations.getFileFromWorkspace(WPName, true, "icon." + WPF.IconExtension);
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
             resizedImage = ImageUtilities.ResizeImage(BI, 88, 88); // resize
@@ -80,7 +76,7 @@ public class RAddon extends JPanel implements MouseListener {
             if (step == 0) {
                 return;
             } else {
-                WPF = WPFile.getSerilized();
+                WPF = WPFile.getSerialized();
                 try {
                     BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
                     var op = JOptionPane.showConfirmDialog(this, "Woah! The addon " + WPName

@@ -276,24 +276,25 @@ public class RFileOperations {
      */
     @Nonnull
     public static SourceResourceElement getResources(String workspaceName) {
+        try {
 
-        var file = getFileFromWorkspace(workspaceName,
-                File.separator + "resources" + File.separator + RESOURCE_FILE_NAME, true);
-        if (file != null && file.exists())
-            try {
-                return new SourceResourceElement(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                return new SourceResourceElement();
+            File file = getFileFromWorkspace(workspaceName, true,
+                    "resources", RESOURCE_FILE_NAME);
+            if (file.exists())
+                return new SourceResourceElement(Files.readString(file.toPath()));
+
+            else { // make a blank resource file
+                var source = new SourceResourceElement();
+                try {
+                    source.saveJSONFile(workspaceName);
+                } catch (IOException e) {
+                    Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
+                }
+                return source;
             }
-        else { // make a blank resource file
-            var source = new SourceResourceElement();
-            try {
-                source.saveJSONFile(workspaceName);
-            } catch (IOException e) {
-                Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
-            }
-            return source;
+        } catch (IOException e) {
+            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            return new SourceResourceElement();
         }
     }
 
@@ -326,7 +327,7 @@ public class RFileOperations {
      */
     public static void setCurrentWorkspace(SourceWorkspaceFile WPF) {
         // update version things
-        WorkspaceFile serilized = WPF.getSerilized();
+        WorkspaceFile serilized = WPF.getSerialized();
         serilized.LatestBedrockRVersion = SEM_VERSION;
         if (serilized.ModifiedWithBedrockRVersions == null) {
             serilized.ModifiedWithBedrockRVersions = new ArrayList<String>();
@@ -407,18 +408,21 @@ public class RFileOperations {
      *                      e.g. {@code icon.jpg}
      * @return the file
      */
-    public static File getFileFromWorkspace(String WorkspaceName, String ToCreate) {
-        return getFileFromWorkspace(WorkspaceName, ToCreate, true);
+    public static File getFileFromWorkspace(String WorkspaceName, String... ToCreate) throws IOException {
+        return getFileFromWorkspace(WorkspaceName, true, ToCreate);
     }
 
-    public static WorkspaceFile getWorkspaceFile(String WorkspaceName) {
-        File file = getFileFromWorkspace(WorkspaceName, WPFFILENAME, true);
+    public static String getWorkspacePrefix(String wpName) {
         try {
-            return new SourceWorkspaceFile(new String(Files.readAllBytes(file.toPath())))
-                    .getSerilized();
+            return getWorkspaceFile(wpName).Prefix;
         } catch (IOException e) {
-            return null;
+            return "error";
         }
+    }
+    
+    public static WorkspaceFile getWorkspaceFile(String WorkspaceName) throws IOException {
+        File file = getFileFromWorkspace(WorkspaceName,true, WPFFILENAME);
+        return ElementSource.getFromJSON(new String(Files.readAllBytes(file.toPath())), WorkspaceFile.class);
     }
 
     public static String getFileChooserDefaultPath() {
@@ -434,24 +438,15 @@ public class RFileOperations {
      * @param strict        - if true, it doesnt create the file, and returns null
      * @return the file
      */
-    public static File getFileFromWorkspace(String WorkspaceName, String ToCreate,
-                                            Boolean strict) {
+    public static File getFileFromWorkspace(String WorkspaceName, Boolean strict, String... ToCreate) throws IOException {
         // fn10.bedrockr.Launcher.LOG.warning("This file should start with the
         // file seperator, or not
         // at all! not '/'!");
-        try {
-            String proposed = BASE_DIRECTORY + File.separator + "workspace" + File.separator + WorkspaceName
-                    + (ToCreate.startsWith(File.separator) ? "" : File.separator) + ToCreate;
-            File proposedFile = new File(proposed);
-            if (proposedFile.exists() || strict) {
-                return proposedFile;
-            } else
-                return Files.createFile(proposedFile.toPath()).toFile();
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
-
+        File proposedFile = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName,ToCreate).toFile();
+        if (proposedFile.exists() || strict) {
+            return proposedFile;
+        } else
+            return Files.createFile(proposedFile.toPath()).toFile();
     }
 
     /**
@@ -460,8 +455,8 @@ public class RFileOperations {
      * @param WorkspaceName - the target workspace
      * @return a File, being the directory of the workspace
      */
-    public static File getWorkspace(String WorkspaceName) {
-        return getFileFromWorkspace(WorkspaceName, File.separator, true);
+    public static File getWorkspace(String WorkspaceName) throws IOException {
+        return getFileFromWorkspace(WorkspaceName, true);
     }
 
     /**
@@ -645,9 +640,9 @@ public class RFileOperations {
      *
      * @param workspace   - the workspace the file is in
      * @param elementFile - the ElementFile to search for on disk
-     * @return
+     * @return The path of this element file on disk.
      */
-    public static Path getFileFromElementFile(String workspace, ElementFile<?> elementFile) {
+    public static Path getFileFromElementFile(String workspace, ElementFile<?> elementFile) throws IOException {
         Path proposed = java.nio.file.Paths.get(RFileOperations
                         .getFileFromWorkspace(workspace,
                                 File.separator + "elements" + File.separator)
@@ -657,7 +652,7 @@ public class RFileOperations {
         Launcher.LOG.info("Found ElementFile on disk: " + proposed);
         return proposed;
     }
-    
+
     public static String[] getElementNamesFromWorkspace(String workspace) {
         ElementFile<?>[] elements = getElementsFromWorkspace(workspace);
         ArrayList<String> names = new ArrayList<>();
@@ -675,11 +670,10 @@ public class RFileOperations {
      */
     public static ElementFile<?>[] getElementsFromWorkspace(String workspace) {
         List<ElementFile<?>> building = new ArrayList<>();
-        for (File file : Objects.requireNonNull(RFileOperations
-                .getFileFromWorkspace(workspace,
-                        File.separator + "elements" + File.separator)
-                .listFiles())) {
-            try {
+        try {
+            for (File file : Objects.requireNonNull(RFileOperations
+                    .getFileFromWorkspace(workspace, "elements")
+                    .listFiles())) {
                 ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
                 String jsonString = new String(Files.readAllBytes(file.toPath()));
@@ -688,9 +682,9 @@ public class RFileOperations {
                 if (sef instanceof ElementFile<?> ef) {
                     building.add(ef);
                 }
-            } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return building.toArray(new ElementFile[0]);
     }

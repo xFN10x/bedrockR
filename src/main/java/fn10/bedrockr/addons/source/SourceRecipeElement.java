@@ -1,64 +1,41 @@
 package fn10.bedrockr.addons.source;
 
-import java.io.File;
 import java.io.IOException;
 import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
-
-import static fn10.bedrockr.utils.RFileOperations.gson;
+import org.jspecify.annotations.NonNull;
 
 public class SourceRecipeElement extends ElementSource<RecipeFile> {
+
+    public SourceRecipeElement(@NonNull RecipeFile serialized) {
+        super(serialized);
+    }
+
+    public SourceRecipeElement() {
+        super(new RecipeFile());
+    }
 
     public enum RecipeType {
         Shaped,
         Shapeless,
     }
 
-    private final String Location = File.separator + "elements" + File.separator;
-    private final RecipeFile serilized;
-
-    public SourceRecipeElement(RecipeFile obj) {
-        this.serilized = obj;
-    }
-
-    public SourceRecipeElement() {
-        this.serilized = null;
-    }
-
-    public SourceRecipeElement(String jsonString) {
-        this.serilized = getFromJSON(jsonString);
-    }
-
-    
-
-    @Override
-    public RecipeFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, RecipeFile.class);
-    }
-
     public static ElementDetails getDetails() throws IOException {
         return new ElementDetails("Recipe",
-
                 // ------------------------------------------------| new line there
                 "<html>A Crafting table recipe that you <br>edit with a visual guide.</html>",
                 RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Recipe.png").openStream()));
     }
 
     @Override
+    public String getFileExtension() {
+        return ".reciperef";
+    }
+
+    @Override
     public Class<RecipeFile> getSerilizedClass() {
         return RecipeFile.class;
-    }
-
-    @Override
-    public RecipeFile getSerilized() {
-        return serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".reciperef");
     }
 }

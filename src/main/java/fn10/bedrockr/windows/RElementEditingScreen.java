@@ -148,11 +148,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
             RElementValue elementnameVal = new RElementValue(screen, String.class,
                     new FieldFilters.FileNameLikeStringFilter(),
-                    "ElementName", "Element Name", false, src.getSerilizedClass(), src.getSerilized(), Workspace);
+                    "ElementName", "Element Name", false, src.getSerilizedClass(), src.getSerialized(), Workspace);
             RElementValue idVal = new RElementValue(screen, String.class, new FieldFilters.IDStringFilter(),
-                    "BiomeID", "Biome ID", false, src.getSerilizedClass(), src.getSerilized(), Workspace);
+                    "BiomeID", "Biome ID", false, src.getSerilizedClass(), src.getSerialized(), Workspace);
             RElementValue compsVal = new RElementValue(screen, HashMap.class, new FieldFilters.IDStringFilter(),
-                    "Comps", "Biome Components", false, src.getSerilizedClass(), src.getSerilized(), Workspace);
+                    "Comps", "Biome Components", false, src.getSerilizedClass(), src.getSerialized(), Workspace);
 
             screen.addField(elementnameVal);
             screen.addField(idVal);
@@ -302,7 +302,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         }
         else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
-                RecipeFile serilized = ((SourceRecipeElement) src).getSerilized();
+                RecipeFile serilized = ((SourceRecipeElement) src).getSerialized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
                         parent2);
 
@@ -410,50 +410,44 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         arrow);
                 Layout.putConstraint(SpringLayout.WEST, outputSlot, 50, SpringLayout.EAST, arrow);
 
-                frame.setCustomCreateFunction(new CustomCreateFunction() {
+                frame.setCustomCreateFunction((Sindow, Listener, isDraft) -> {
+                    try {
+                        ShapedOutput shaped = grid.getShapedRecipe();
+                        RecipeFile building = new RecipeFile();
 
-                    @Override
-                    public void onCreate(RElementEditingScreen Sindow, ElementCreationListener Listener,
-                                         boolean isDraft) {
-                        try {
-                            ShapedOutput shaped = grid.getShapedRecipe();
-                            RecipeFile building = new RecipeFile();
+                        building.ElementName = ElementName.getValue().toString();
+                        building.RecipeID = RecipeID.getValue().toString();
+                        building.recipeType = (RecipeType) TypeDropdown.getSelectedItem();
+                        switch (TypeDropdown.getSelectedItem()) {
 
-                            building.ElementName = ElementName.getValue().toString();
-                            building.RecipeID = RecipeID.getValue().toString();
-                            building.recipeType = (RecipeType) TypeDropdown.getSelectedItem();
-                            switch (TypeDropdown.getSelectedItem()) {
+                            case RecipeType.Shaped:
+                                building.ShapedPattern = shaped.pattern;
+                                building.ShapedKey = shaped.key;
+                                if (!extraResults.getItems().isEmpty())
+                                    building.ExtraResults = extraResults.getItems();
+                                break;
 
-                                case RecipeType.Shaped:
-                                    building.ShapedPattern = shaped.pattern;
-                                    building.ShapedKey = shaped.key;
-                                    if (!extraResults.getItems().isEmpty())
-                                        building.ExtraResults = extraResults.getItems();
-                                    break;
-
-                                case RecipeType.Shapeless:
-                                    building.ShapelessIngredients = grid.getItems();
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            building.UnlockConditions = UnlockCondition.fromRecipeItem(unlockItems.getItems());
-                            building.Result = outputSlot.getItems().get(0);
-
-                            if (isDraft) {
-                                Sindow.setVisible(false);
-                                Listener.onElementDraft(new SourceRecipeElement(building));
-                            } else {
-                                Sindow.setVisible(false);
-                                Listener.onElementCreate(new SourceRecipeElement(building));
-                            }
-                        } catch (Exception e) {
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
-                                    e);
+                            case RecipeType.Shapeless:
+                                building.ShapelessIngredients = grid.getItems();
+                                break;
+                            default:
+                                break;
                         }
-                    }
 
+                        building.UnlockConditions = UnlockCondition.fromRecipeItem(unlockItems.getItems());
+                        building.Result = outputSlot.getItems().get(0);
+
+                        if (isDraft) {
+                            Sindow.setVisible(false);
+                            Listener.onElementDraft(new SourceRecipeElement(building));
+                        } else {
+                            Sindow.setVisible(false);
+                            Listener.onElementCreate(new SourceRecipeElement(building));
+                        }
+                    } catch (Exception e) {
+                        Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                                e);
+                    }
                 }).addVaildations(ElementName, RecipeID, grid, outputSlot, unlockItems, extraResults);
 
                 frame.getDefaultPane().add(grid);
@@ -469,7 +463,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                     @Override
                     public void itemStateChanged(ItemEvent e) {
-                        RecipeFile Serilized = ((SourceRecipeElement) src).getSerilized();
+                        RecipeFile Serilized = ((SourceRecipeElement) src).getSerialized();
 
                         try {
                             ShapedOutput shaped = grid.getShapedRecipe();
@@ -527,6 +521,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 }
                                 break;
 
+                            case null:
                             default:
                                 arrow.setIcon(new ImageIcon(getClass().getResource("/ui/ArrowShapless.png")));
                                 extraResults.setVisible(false);
@@ -580,7 +575,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         continue;
                     }
                     if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
-                        if (src.getSerilized() != null) // create field with a file already there
+                        if (src.getSerialized() != null) // create field with a file already there
                             rev = new RElementValue(Parent, field.getType(),
                                     details.Filter() != null ? details.Filter().getConstructor().newInstance()
                                             // if no filter, dont add one
@@ -590,7 +585,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     details.displayName(), // display name
                                     details.Optional(),
                                     src.getSerilizedClass(),
-                                    src.getSerilized(),
+                                    src.getSerialized(),
                                     Workspace);
                         else // create file without anything there
                             // ---------------------------------------------------------------------
@@ -672,7 +667,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public List<ValidatableValue> checkForErrors(boolean strict) {
         List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
-        fn10.bedrockr.Launcher.LOG.info("--------------------- CHECKING FOR ERRORS-----------------------");
+        Launcher.LOG.info("--------------------- CHECKING FOR ERRORS-----------------------");
         for (ValidatableValue validatable : Fields) {
             if (!validatable.valid(strict))
                 IncorrectFields.add(validatable);

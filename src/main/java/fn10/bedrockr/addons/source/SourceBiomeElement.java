@@ -15,8 +15,10 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import fn10.bedrockr.addons.source.elementFiles.BiomeFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -73,20 +75,19 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
             }
     }
 
-    private BiomeFile serilized = new BiomeFile();
 
     public SourceBiomeElement(BiomeFile obj) {
-        this();
-        this.serilized = obj;
-    }
-
-    public SourceBiomeElement() {
+        super(obj);
         getVanillaBiomeNames();
     }
 
-    public SourceBiomeElement(String jsonString) {
-        this();
-        this.serilized = getFromJSON(jsonString);
+    @Override
+    public String getFileExtension() {
+        return ".biomeref";
+    }
+
+    public SourceBiomeElement() {
+        this(new BiomeFile());
     }
 
     public static ElementDetails getDetails() throws IOException {
@@ -95,26 +96,8 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
                 RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Biome.png").openStream()));
     }
 
-    
-
-    @Override
-    public BiomeFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, getSerilizedClass());
-    }
-
     @Override
     public Class<BiomeFile> getSerilizedClass() {
         return BiomeFile.class;
-    }
-
-    @Override
-    public BiomeFile getSerilized() {
-        return serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace,
-                    "elements" + File.separator + serilized.getElementName() + ".biomeref");
     }
 }

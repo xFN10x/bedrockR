@@ -79,7 +79,7 @@ public class RElementFile extends RElement implements ActionListener {
             ElementSource<?> newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource
                                                                                                // with file
             RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(newsrc, wksp, wksp,
-                    wksp.SWPF.getSerilized().WorkspaceName);
+                    wksp.SWPF.getSerialized().WorkspaceName);
             if (screen != null)
                 screen.setVisible(true);
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(true);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.saveJSONFile(wksp.SWPF.getSerilized().WorkspaceName);
+                src.saveJSONFile(wksp.SWPF.getSerialized().WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -132,7 +132,7 @@ public class RElementFile extends RElement implements ActionListener {
             try {
                 file.setDraft(false);
                 ElementSource<?> src = file.getSourceClass().getConstructor(file.getClass()).newInstance(file);
-                src.saveJSONFile(wksp.SWPF.getSerilized().WorkspaceName);
+                src.saveJSONFile(wksp.SWPF.getSerialized().WorkspaceName);
                 wksp.refreshElements();
             } catch (Exception e1) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);

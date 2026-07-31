@@ -4,33 +4,28 @@ import java.io.File;
 import java.io.IOException;
 import fn10.bedrockr.addons.source.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SourceScriptElement extends ElementSource<ScriptFile> {
 
-    // private final String Location = File.separator + "elements" + File.separator;
-    private final ScriptFile serilized;
-
     public SourceScriptElement(ScriptFile obj) {
-        this.serilized = obj;
-    }
-
-    public SourceScriptElement() {
-        this.serilized = null;
-    }
-
-    public SourceScriptElement(String jsonString) {
-        this.serilized = getFromJSON(jsonString);
+        super(obj);
     }
 
     @Override
-    public ScriptFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, ScriptFile.class);
+    public String getFileExtension() {
+        return ".scriptref";
     }
 
+    public SourceScriptElement() {
+        this(new ScriptFile());
+    }
+    
     public static ElementDetails getDetails() {
         try {
             return new ElementDetails("Script",
@@ -64,15 +59,5 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
     @Override
     public Class<ScriptFile> getSerilizedClass() {
         return ScriptFile.class;
-    }
-
-    @Override
-    public ScriptFile getSerilized() {
-        return serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return null;
     }
 }

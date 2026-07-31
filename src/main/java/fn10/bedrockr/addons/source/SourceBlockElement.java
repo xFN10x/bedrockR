@@ -5,26 +5,20 @@ import java.io.IOException;
 
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SourceBlockElement extends ElementSource<BlockFile> {
-    private final String Location = File.separator + "elements" + File.separator;
-    private final Class<BlockFile> serilizedClass = BlockFile.class;
-    private final BlockFile serilized;
-
-    public SourceBlockElement(BlockFile obj) {
-        this.serilized = obj;
+    public SourceBlockElement(@NonNull BlockFile serialized) {
+        super(serialized);
     }
 
     public SourceBlockElement() {
-        this.serilized = null;
-    }
-
-    public SourceBlockElement(String jsonString) {
-        this.serilized = getFromJSON(jsonString);
+        this(new BlockFile());
     }
 
     public static ElementDetails getDetails() throws IOException {
@@ -33,26 +27,13 @@ public class SourceBlockElement extends ElementSource<BlockFile> {
                 RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Element.png").openStream()));
     }
 
-    
+    @Override
+    public String getFileExtension() {
+        return ".blockref";
+    }
 
     @Override
     public Class<BlockFile> getSerilizedClass() {
-        return this.serilizedClass;
-    }
-
-    @Override
-    public BlockFile getFromJSON(String jsonString) {
-        return gson.fromJson(jsonString, serilizedClass);
-    }
-
-    @Override
-    public BlockFile getSerilized() {
-        return this.serilized;
-    }
-
-    @Override
-    public File getLocation(String workspace) {
-        return RFileOperations.getFileFromWorkspace(workspace,
-                Location + serilized.ElementName + ".blockref");
+        return  BlockFile.class;
     }
 }

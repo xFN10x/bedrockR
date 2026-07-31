@@ -1,17 +1,32 @@
 package fn10.bedrockr.windows;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.Window;
+import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.SystemFileChooser;
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.source.SourceResourceElement;
+import fn10.bedrockr.addons.source.SourceWorkspaceFile;
+import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
+import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.interfaces.ElementCreationListener;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RFileOperations.ElementMade;
+import fn10.bedrockr.utils.SettingsFile;
+import fn10.bedrockr.utils.exception.WrongResourceTypeException;
+import fn10.bedrockr.windows.base.RFrame;
+import fn10.bedrockr.windows.componets.RElement;
+import fn10.bedrockr.windows.componets.RElementFile;
+import fn10.bedrockr.windows.util.ErrorShower;
+import fn10.bedrockr.windows.util.ImageUtilities;
+import fn10.bedrockr.windows.util.WrapLayout;
+import org.apache.commons.io.FileUtils;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
-import java.awt.FlowLayout;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -33,46 +48,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
-import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.io.FileUtils;
-import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.formdev.flatlaf.util.SystemFileChooser;
-
-import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.source.SourceResourceElement;
-import fn10.bedrockr.addons.source.SourceWorkspaceFile;
-import fn10.bedrockr.addons.source.elementFiles.GlobalBuildingVariables;
-import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.interfaces.ElementCreationListener;
-import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.utils.exception.WrongResourceTypeException;
-import fn10.bedrockr.utils.RFileOperations.ElementMade;
-import fn10.bedrockr.windows.base.RFrame;
-import fn10.bedrockr.windows.componets.RElement;
-import fn10.bedrockr.windows.componets.RElementFile;
-import fn10.bedrockr.windows.util.ErrorShower;
-import fn10.bedrockr.windows.util.ImageUtilities;
-import fn10.bedrockr.windows.util.WrapLayout;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -112,7 +87,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public RWorkspace(SourceWorkspaceFile WPF) {
         super(
                 DO_NOTHING_ON_CLOSE,
-                WPF.getSerilized().WorkspaceName,
+                WPF.getSerialized().WorkspaceName,
                 Toolkit.getDefaultToolkit().getScreenSize(),
                 true,
                 false);
@@ -296,9 +271,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         // make loading screen
         RLoadingScreen progress = new RLoadingScreen(this);
         String BPdir = java.nio.file.Paths.get(RFileOperations.getBaseDirectory().getPath(), "build", "BP",
-                SWPF.getSerilized().getElementName()).toString();
+                SWPF.getSerialized().getElementName()).toString();
         String RPdir = java.nio.file.Paths.get(RFileOperations.getBaseDirectory().getPath(), "build", "RP",
-                SWPF.getSerilized().getElementName()).toString();
+                SWPF.getSerialized().getElementName()).toString();
 
         SwingUtilities.invokeLater(() -> progress.setVisible(true));
 
@@ -311,14 +286,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(RPdir));
                 }
                 refreshAll();
-                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables(SWPF.getSerilized(),
-                        RFileOperations.getResources(SWPF.workspaceName()).Serilized);
+                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables(SWPF.getSerialized(),
+                        RFileOperations.getResources(SWPF.workspaceName()).getSerialized());
                 List<ElementFile<?>> ToBuild = List
                         .of(RFileOperations.getElementsFromWorkspace(SWPF.workspaceName()));
 
                 progress.Steps = ToBuild.size() + 1;
 
-                SWPF.getSerilized().reset(BPdir);
+                SWPF.getSerialized().reset(BPdir);
 
                 // build rest
                 for (ElementFile<?> elementFile : ToBuild) {
@@ -327,22 +302,22 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     // build an element, then incrament the counter
                     progress.changeText("Building " + elementFile.getElementName()); // change text
                     elementFile.build(BPdir,
-                            SWPF.getSerilized(), RPdir, GlobalResVars); // build
+                            SWPF.getSerialized(), RPdir, GlobalResVars); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }
                 // build RP
                 // build global res vars
                 progress.changeText("Building resources... "); // change text
                 GlobalResVars.build(BPdir,
-                        SWPF.getSerilized(), RPdir, GlobalResVars);
+                        SWPF.getSerialized(), RPdir, GlobalResVars);
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
-                SWPF.getSerilized().build(BPdir,
-                        SWPF.getSerilized(), RPdir, GlobalResVars); // build
+                SWPF.getSerialized().build(BPdir,
+                        SWPF.getSerialized(), RPdir, GlobalResVars); // build
 
                 progress.increaseProgressBySteps("Done!"); // next
                 // do mc sync
-                if (SWPF.getSerilized().MinecraftSync) {
+                if (SWPF.getSerialized().MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
                     RFileOperations.mcSync();
                 }
@@ -365,7 +340,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         SwingUtilities.invokeLater(() -> {
             SourceResourceElement resFile = RFileOperations.getResources(SWPF.workspaceName());
             ResourceInnerPanelView.removeAll();
-            for (Map.Entry<String, String> entry : resFile.Serilized.ResourceIDs.entrySet()) {
+            for (Map.Entry<String, String> entry : resFile.getSerialized().ResourceIDs.entrySet()) {
                 try {
                     RElement ToAdd = new RElement(null, null);
                     ToAdd.setMaximumSize(new Dimension(1400, 80));
@@ -374,7 +349,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     ToAdd.Desc.setText(entry.getValue());
                     ToAdd.CanBeSelected = false;
 
-                    File file = resFile.Serilized.getFileOfResource(SWPF.workspaceName(), entry.getKey());
+                    File file = resFile.getSerialized().getFileOfResource(SWPF.workspaceName(), entry.getKey());
                     ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
 
                     JPopupMenu popup = new JPopupMenu();
@@ -400,7 +375,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         String choice = JOptionPane.showInputDialog(this,
                                 "What size do you want this image to be?",
                                 "Resize " + entry.getKey(), JOptionPane.QUESTION_MESSAGE,
-                                null, new String[] {
+                                null, new String[]{
                                         "8x8",
                                         "16x16",
                                         "18x18",
@@ -445,13 +420,13 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     });
                     popup.add("Delete").addActionListener(_ -> {
                         try {
-                            resFile.Serilized.ResourceIDs.remove(entry.getKey());
-                            resFile.Serilized.ResourceTypes.remove(entry.getKey());
+                            resFile.getSerialized().ResourceIDs.remove(entry.getKey());
+                            resFile.getSerialized().ResourceTypes.remove(entry.getKey());
                             file.delete();
                             this.refreshAll();
                             ResourceInnerPanelView.repaint();
                             ResourceView.repaint();
-                            resFile.Serilized.build(SWPF.workspaceName(), null, null, null);
+                            resFile.getSerialized().build(SWPF.workspaceName(), null, null, null);
                         } catch (Exception e) {
                             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                     e);
@@ -494,7 +469,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         var ac = arg0.getActionCommand();
         switch (ac) {
             case "add" -> SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewElement(this, SWPF.getSerilized().WorkspaceName);
+                var addFrame = new RNewElement(this, SWPF.getSerialized().WorkspaceName);
                 addFrame.setVisible(true);
             });
             case "texture" -> {
@@ -524,7 +499,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 String finalName = (((String) input).contains(".png") ? input.toString()
                         : input + ".png");
                 File dest = Path
-                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), SWPF.getSerilized().WorkspaceName,
+                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), SWPF.getSerialized().WorkspaceName,
                                 "resources", finalName)
                         .toFile();
                 if (dest.exists()) {
@@ -534,14 +509,14 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     return;
                 }
 
-                SourceResourceElement res = RFileOperations.getResources(SWPF.getSerilized().WorkspaceName);
+                SourceResourceElement res = RFileOperations.getResources(SWPF.getSerialized().WorkspaceName);
                 switch (choice) {
                     case 1:
 
                         try {
-                            res.Serilized
+                            res.getSerialized()
                                     .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
-                                            SWPF.getSerilized().WorkspaceName);
+                                            SWPF.getSerialized().WorkspaceName);
                         } catch (WrongResourceTypeException e) {
                             ErrorShower.exception(this, "Failed to import texture", e);
                         }
@@ -549,9 +524,9 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     case 2:
 
                         try {
-                            res.Serilized
+                            res.getSerialized()
                                     .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
-                                            SWPF.getSerilized().WorkspaceName);
+                                            SWPF.getSerialized().WorkspaceName);
                         } catch (WrongResourceTypeException e) {
                             ErrorShower.exception(this, "Failed to import texture", e);
                         }
@@ -589,7 +564,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     @Override
     public <T extends ElementFile<? extends ElementSource<T>>> void onElementDraft(ElementSource<T> element) {
         try {
-            element.saveJSONFile((SWPF.getSerilized().WorkspaceName));
+            element.saveJSONFile((SWPF.getSerialized().WorkspaceName));
         } catch (IOException e) {
             ErrorShower.exception(this, "Failed to save element.", e);
         }
@@ -598,56 +573,57 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public <T extends ElementFile<? extends ElementSource<T>>> void onElementCreate(ElementSource<T> element) {
-        SettingsFile settings = SettingsFile.load();
-        boolean alreadyExists = element.getLocation(SWPF.workspaceName()).exists();
         try {
+            SettingsFile settings = SettingsFile.load();
+            boolean alreadyExists = element.getLocation(SWPF.workspaceName()).exists();
             element.saveJSONFile((SWPF.workspaceName()));
+
+            refreshAll();
+
+            new Thread(() -> {
+                if (!alreadyExists && settings.shareElementAndWorkspaceData) {
+                    // this is the first time
+                    HttpClient client = HttpClient.newBuilder().build();
+                    final T elementData = settings.shareExtraData ? element.getSerialized() : null;
+                    final ElementMade<T> src = new ElementMade<>(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)),
+                            elementData,
+                            Launcher.CHECKVERSION, SWPF.workspaceName());
+                    final String body = gson.toJson(
+                            src);
+
+                    HttpRequest req = HttpRequest.newBuilder()
+                            .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
+                            .version(HttpClient.Version.HTTP_2)
+                            .POST(BodyPublishers.ofString(
+                                    body))
+                            .setHeader("Content-Type", "application/json")
+                            .build();
+                    Launcher.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
+                            body);
+                    try {
+                        final HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
+                        if (resp.statusCode() != 200) {
+                            Launcher.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        Launcher.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
+                    }
+                }
+            }).start();
         } catch (IOException e) {
             ErrorShower.exception(this, "Failed to save element.", e);
         }
-        refreshAll();
-
-        new Thread(() -> {
-            if (!alreadyExists && settings.shareElementAndWorkspaceData) {
-                // this is the first time
-                HttpClient client = HttpClient.newBuilder().build();
-                final T elementData = settings.shareExtraData ? element.getSerilized() : null;
-                final ElementMade<T> src = new ElementMade<>(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)),
-                        elementData,
-                        Launcher.CHECKVERSION, SWPF.workspaceName());
-                final String body = gson.toJson(
-                        src);
-                
-                HttpRequest req = HttpRequest.newBuilder()
-                        .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
-                        .version(HttpClient.Version.HTTP_2)
-                        .POST(BodyPublishers.ofString(
-                                body))
-                        .setHeader("Content-Type", "application/json")
-                        .build();
-                Launcher.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
-                        body);
-                try {
-                    final HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
-                    if (resp.statusCode() != 200) {
-                        Launcher.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
-                    }
-                } catch (IOException | InterruptedException e) {
-                    Launcher.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
-                }
-            }
-        }).start();
     }
 
     /**
      * Shows a popup asking the user to enable Minecraft Sync, overriding it if they
      * already have it.
-     * 
+     *
      * @param doingThis - the window to parent too
      * @param WPF       - the workspace that is having mc sync enabled
      */
     public static void showMCSyncPopup(Component doingThis, SourceWorkspaceFile WPF) {
-        WPF.getSerilized().MinecraftSync = true; // enable
+        WPF.getSerialized().MinecraftSync = true; // enable
         try {
             WPF.saveJSONFile( // save the workspace file again
                     WPF.workspaceName());
@@ -674,7 +650,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     /**
      * Opens a workspace, showing the window, and doing all other necessary steps
      * to have a person be able to work on one
-     * 
+     *
      * @param doingThis - the window to parent to, and hide once the window appears
      * @param WPF       - The workspace to open
      */
@@ -696,7 +672,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 if (doingThis != null)
                     doingThis.dispose();
                 workspaceView.setVisible(true);
-                if (!WPF.getSerilized().MinecraftSync) { // ask to enable mc sync if not enabled
+                if (!WPF.getSerialized().MinecraftSync) { // ask to enable mc sync if not enabled
                     var ask = JOptionPane.showConfirmDialog(doingThis,
                             "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
                             "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -710,7 +686,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     if (ask == JOptionPane.YES_OPTION) {
                         showMCSyncPopup(doingThis, WPF);
                     } else {
-                        WPF.getSerilized().MinecraftSync = false;
+                        WPF.getSerialized().MinecraftSync = false;
                     }
                 }
             });

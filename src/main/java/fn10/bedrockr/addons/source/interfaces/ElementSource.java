@@ -2,11 +2,14 @@ package fn10.bedrockr.addons.source.interfaces;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import com.google.gson.reflect.TypeToken;
+import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -21,18 +24,36 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
  * that is meant to be added as a workspace element.
  */
 public abstract class ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
+    @Nonnull
+    private final T serialized;
+
+    public ElementSource(@Nonnull T serialized) {
+        this.serialized = serialized;
+    }
 
     public String getJSONString() {
-        return gson.toJson(getSerilized());
+        return gson.toJson(getSerialized());
     }
 
     /**
-     * THIS SHOULD NOT SET SERILIZED
-     * 
-     * @param jsonString the string, which is a json, that is serilized
+     * @param jsonString the string, which is a json, that is serialized
      * @return the ElementFile.
      */
-    public abstract T getFromJSON(String jsonString);
+    public static <E extends ElementFile<? extends ElementSource<E>>> E getFromJSON(String jsonString, Class<E> clazz) {
+        return gson.fromJson(jsonString, clazz);
+    }
+
+    /**
+     * @param jsonString the string, which is a json, that is serialized
+     * @return the ElementFile.
+     */
+    public static <E extends ElementFile<? extends S>, S extends ElementSource<E>> S getSourceFromJSON(String jsonString, Class<S> clazz, Class<E> elementClass) {
+        try {
+            return clazz.getConstructor(elementClass).newInstance(getFromJSON(jsonString, elementClass));
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Gets the location of where the ElementFile linked to this will save. This
@@ -42,12 +63,20 @@ public abstract class ElementSource<T extends ElementFile<? extends ElementSourc
      * @return the File, which may or may not exist, being that of where the
      *         ElementFile will save.
      */
-    public abstract @Nonnull File getLocation(String workspace);
+    public @Nonnull File getLocation(String workspace) throws IOException {
+        return RFileOperations.getFileFromWorkspace(workspace,
+                "elements", getSerialized().getElementName() + getFileExtension());
+    }
+
+    /**
+     * Get the file extension of the serialized on disk.
+     * @return The extension in full. e.g. ".biomeref"
+     */
+    public abstract String getFileExtension();
 
     public File saveJSONFile(String workspace) throws IOException {
         File saveLoc = getLocation(workspace);
-        byte[] bytes = getJSONString().getBytes(StandardCharsets.UTF_8);
-        return Files.write(saveLoc.toPath(), bytes,
+        return Files.writeString(saveLoc.toPath(), getJSONString(),
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE).toFile();
     }
 
@@ -58,7 +87,9 @@ public abstract class ElementSource<T extends ElementFile<? extends ElementSourc
      * 
      * @return the ElementFile
      */
-    public abstract T getSerilized();
+    public @NonNull T getSerialized() {
+        return serialized;
+    }
 
     public String toString() {
         try {
