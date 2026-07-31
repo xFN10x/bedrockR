@@ -1,7 +1,7 @@
 package fn10.bedrockr.rendering;
 
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.windows.util.ImageUtilities;
+import fn10.bedrockr.ui.util.ImageUtilities;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

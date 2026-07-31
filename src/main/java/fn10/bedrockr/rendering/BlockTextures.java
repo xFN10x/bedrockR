@@ -5,7 +5,7 @@ import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo.BlockJsonEntry;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.windows.RLoadingScreen;
+import fn10.bedrockr.ui.RLoadingScreen;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
