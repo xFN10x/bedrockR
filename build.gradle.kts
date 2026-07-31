@@ -168,7 +168,7 @@ publishing {
                 licenses {
                     license {
                         name = "GNU GENERAL PUBLIC LICENSE v3"
-                        url = "https://github.com/xFN10x/bedrockR/tree/a2.0?tab=License-1-ov-file#"
+                        url = "https://github.com/xFN10x/bedrockR/tree/master?tab=GPL-3.0-1-ov-file"
                     }
                 }
                 developers {
