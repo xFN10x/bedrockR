@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 public class Launcher {
 
-    public static int CHECKVERSION = 9;
     public static Image ICON;
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
@@ -143,7 +142,7 @@ public class Launcher {
 
             Format1Latest serilized = new Gson().fromJson(response.body(), Format1Latest.class);
 
-            if (serilized.LatestVersion > CHECKVERSION && serilized.ShouldUse) {
+            if (serilized.LatestVersion > RFileOperations.NUM_VERSION && serilized.ShouldUse) {
                 int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
                         "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION
                                 + ")",
