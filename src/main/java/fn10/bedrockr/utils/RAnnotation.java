@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
-import fn10.bedrockr.addons.source.FieldFilters.FieldFilter;
-import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.source.elementFiles.ResourceFile;
-import fn10.bedrockr.addons.source.interfaces.RMapElementProvider;
+import fn10.bedrockr.addons.element.FieldFilters.FieldFilter;
+import fn10.bedrockr.addons.element.FieldFilters.RegularStringFilter;
+import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
 import jakarta.annotation.Nullable;
 
 public class RAnnotation {

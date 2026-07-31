@@ -2,7 +2,7 @@ package fn10.bedrockr.plugins;
 
 import java.util.logging.Logger;
 
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
 /**

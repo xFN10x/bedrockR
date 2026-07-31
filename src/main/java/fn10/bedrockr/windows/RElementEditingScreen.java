@@ -2,15 +2,15 @@ package fn10.bedrockr.windows;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
-import fn10.bedrockr.addons.source.*;
-import fn10.bedrockr.addons.source.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
-import fn10.bedrockr.addons.source.elementFiles.RecipeFile;
-import fn10.bedrockr.addons.source.interfaces.CreationScreenSeperator;
-import fn10.bedrockr.addons.source.interfaces.ElementDetails;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.*;
+import fn10.bedrockr.addons.element.FieldFilters.RegularStringFilter;
+import fn10.bedrockr.addons.element.SourceRecipeElement.RecipeType;
+import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
+import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
+import fn10.bedrockr.addons.element.interfaces.ElementDetails;
+import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.interfaces.ElementCreationListener;
 import fn10.bedrockr.interfaces.ValidatableValue;
 import fn10.bedrockr.utils.RAnnotation;
@@ -303,7 +303,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
                 RecipeFile serilized = ((SourceRecipeElement) src).getSerialized();
-                RElementEditingScreen frame = new RElementEditingScreen(Parent, "Item", src, src.getSerilizedClass(),
+                RElementEditingScreen frame = new RElementEditingScreen(Parent, "Recipe", src, src.getSerilizedClass(),
                         parent2);
 
                 SpringLayout Layout = new SpringLayout();
@@ -341,18 +341,18 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 }
 
                 RItemValue outputSlot = new RItemValue(Workspace, RItemValue.Type.Single, true);
-                if (serilized != null) {
+                if (serilized.Result != null) {
                     outputSlot.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.Result.item, Workspace));
                 }
 
                 RItemValue unlockItems = new RItemValue(Workspace, RItemValue.Type.ListOfItems, true);
-                if (serilized != null) {
+                if (serilized.UnlockConditions != null) {
                     unlockItems.addListElements(Workspace, ReturnItemInfo
                             .fromUnlockCondition(serilized.UnlockConditions, Workspace).toArray(new ReturnItemInfo[0]));
                 }
 
                 RItemValue extraResults = new RItemValue(Workspace, RItemValue.Type.ListOfItems, false);
-                if (serilized != null) {
+                if (serilized.ExtraResults != null) {
                     extraResults.addListElements(Workspace,
                             ReturnItemInfo.fromRecipeItem(serilized.ExtraResults, Workspace)
                                     .toArray(new ReturnItemInfo[0]));
@@ -360,7 +360,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 JLabel TypeDropdownText = new JLabel("Recipe Type");
                 JComboBox<RecipeType> TypeDropdown = new JComboBox<RecipeType>(RecipeType.values());
-                if (serilized != null) {
+                if (serilized.recipeType != null) {
                     TypeDropdown.setSelectedItem(serilized.recipeType);
                 }
 
@@ -559,7 +559,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);
                     tab = anno.value();
                 }
-                if (field.getType().equals(CreationScreenSeperator.class)) {
+                if (field.getType().equals(CreationScreenSeparator.class)) {
                     JSeparator sep = new JSeparator();
                     sep.setPreferredSize(new Dimension(700, 10));
                     frame.getScrollPane(tab).add(Box.createHorizontalStrut(1000));

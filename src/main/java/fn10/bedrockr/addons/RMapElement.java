@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import fn10.bedrockr.addons.source.supporting.BiomeComponents;
-import fn10.bedrockr.addons.source.supporting.BlockComponents;
-import fn10.bedrockr.addons.source.supporting.ItemComponents;
+import fn10.bedrockr.addons.element.supporting.BiomeComponents;
+import fn10.bedrockr.addons.element.supporting.BlockComponents;
+import fn10.bedrockr.addons.element.supporting.ItemComponents;
 import jakarta.annotation.Nullable;
 
 public class RMapElement {
