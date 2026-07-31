@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.addon.jsonClasses.BP;
+package fn10.bedrockr.addons.mcjson.behav;
 
 import java.util.Map;
 

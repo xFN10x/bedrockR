@@ -12,6 +12,6 @@ public interface ElementCreationListener {
 
     <T extends ElementFile<? extends ElementSource<T>>> void onElementDraft(ElementSource<T> element);
 
-    void onElementCancel();
+    default void onElementCancel() {}
 
 }

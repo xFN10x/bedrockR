@@ -15,10 +15,10 @@ import java.util.Map.Entry;
 import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.addons.addon.jsonClasses.RP.BlockJSONEntry;
-import fn10.bedrockr.addons.addon.jsonClasses.RP.TerrianTextures;
-import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTextures;
-import fn10.bedrockr.addons.addon.jsonClasses.RP.ItemTextures.TextureData;
+import fn10.bedrockr.addons.mcjson.resource.BlockJSONEntry;
+import fn10.bedrockr.addons.mcjson.resource.TerrianTextures;
+import fn10.bedrockr.addons.mcjson.resource.ItemTextures;
+import fn10.bedrockr.addons.mcjson.resource.ItemTextures.TextureData;
 import fn10.bedrockr.addons.source.interfaces.SourcelessElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -60,7 +60,7 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
 
         if (ItemTexturesFile.texture_data.containsKey(plannedkey))
             ItemTexturesFile.texture_data.put(plannedkey, new TextureData(textureName));
-        ItemTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName, ResourceFile.ITEM_TEXTURE));
+        ItemTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName));
         return plannedkey;
     }
 
@@ -85,7 +85,7 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
 
         if (TerrainJson.texture_data.containsKey(plannedkey))
             TerrainJson.texture_data.put(plannedkey, new TerrianTextures.TextureData(textureName));
-        BlockTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName, ResourceFile.BLOCK_TEXTURE));
+        BlockTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName));
         return plannedkey;
     }
 

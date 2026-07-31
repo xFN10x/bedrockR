@@ -13,12 +13,9 @@ import java.util.Map;
 
 import javax.naming.NameNotFoundException;
 
-import com.google.gson.Gson;
-
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.addons.source.interfaces.ElementSource;
 import fn10.bedrockr.addons.source.interfaces.ItemLikeElement;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
@@ -295,7 +292,7 @@ public class ReturnItemInfo {
         for (ItemJsonEntry vanillaItem : vanillaItems) {
             fn10.bedrockr.Launcher.LOG.info(vanillaItem.name);
         }
-        fn10.bedrockr.Launcher.LOG.info("Non-Vanilla items: " + RFileOperations.getElementsFromWorkspace(workspaceName));
+        fn10.bedrockr.Launcher.LOG.info("Non-Vanilla items: " + String.join(", ",RFileOperations.getElementNamesFromWorkspace(workspaceName)));
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
             if (element instanceof ItemLikeElement ile) {
                 fn10.bedrockr.Launcher.LOG.info(ile.getItemId());

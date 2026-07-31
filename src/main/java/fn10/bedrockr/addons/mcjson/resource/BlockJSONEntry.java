@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.addon.jsonClasses.RP;
+package fn10.bedrockr.addons.mcjson.resource;
 
 import jakarta.annotation.Nonnull;
 

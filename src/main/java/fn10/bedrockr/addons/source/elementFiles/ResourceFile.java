@@ -1,19 +1,18 @@
 package fn10.bedrockr.addons.source.elementFiles;
 
+import fn10.bedrockr.addons.source.SourceResourceElement;
+import fn10.bedrockr.addons.source.interfaces.ElementFile;
+import fn10.bedrockr.utils.MapUtilities;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.WrongResourceTypeException;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import fn10.bedrockr.utils.MapUtilities;
-import org.apache.commons.io.FileUtils;
-
-import fn10.bedrockr.addons.source.SourceResourceElement;
-import fn10.bedrockr.addons.source.interfaces.ElementFile;
-import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 
 public class ResourceFile extends ElementFile<SourceResourceElement> {
 
@@ -36,14 +35,12 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
         return ResourceTypes.get(name);
     }
 
-    public File getFileOfResource(String workspaceName, String file, int resourceType)
+    public File getFileOfResource(String workspaceName, String file)
             throws FileNotFoundException, IllegalAccessError {
         File dest =
                 RFileOperations.getBaseDirectory("workspace", workspaceName, "resources", file);
-        if (ResourceTypes.get(file) != null && dest.exists()) {
-            if (ResourceTypes.get(file) != resourceType)
-                throw new IllegalAccessError(
-                        "The resource, '" + file + "' is not the resource type '" + resourceType + "'");
+        Integer expectedType = ResourceTypes.get(file);
+        if (expectedType != null && dest.exists()) {
             return dest;
         } else
             throw new FileNotFoundException("The resource, '" + file + "' does not exist.");
@@ -55,15 +52,15 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
 
     /**
      * Get a resource
-     * 
+     *
      * @param workspaceName
      * @param file
      * @param resourceType
      * @return A string, which is the (UU)ID of the resource.
-     * @throws FileNotFoundException If the resource isnt found.
-     * @throws IllegalAccessError    If the requested doesnt match the resource
-     *                               type.
-     * @throws WrongResourceTypeException 
+     * @throws FileNotFoundException      If the resource isnt found.
+     * @throws IllegalAccessError         If the requested doesnt match the resource
+     *                                    type.
+     * @throws WrongResourceTypeException
      */
     public String getResource(String workspaceName, String file, int resourceType)
             throws FileNotFoundException, WrongResourceTypeException {
@@ -116,7 +113,7 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
      * THIS IS ALSO NOT MEANT FOR BUILDING TO PACKS
      */
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+                      GlobalBuildingVariables globalResVaribles) throws IOException {
         /*
          * if (ActiveWorkspace != null)
          * ActiveWorkspace.refreshResources();

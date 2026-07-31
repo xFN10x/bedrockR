@@ -18,7 +18,7 @@ public class RMapElement {
     public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
 
     public enum MapValueFilter {
-        NotNegitive, Between0And1
+        NotNegative, Between0And1
     }
 
     public static Map<String, RMapElement> LookupMap = new HashMap<String, RMapElement>();
@@ -40,31 +40,6 @@ public class RMapElement {
 
     public boolean equals(RMapElement compare) {
         return this.ID.equals(compare.ID);
-    }
-
-    public boolean Valid(Object value) {
-        var log = fn10.bedrockr.Launcher.LOG;
-        log.info(">---------=--------< Checking RMapElement " + this.DisplayName + "... >---------=--------<");
-        for (MapValueFilter filter : Filters) {
-            switch (filter) {
-                case NotNegitive:
-                    log.info(DisplayName + " : Checking if negitive");
-
-                    if ((Double) value < 0) { // if its negitive
-                        log.info(DisplayName + " : This is negitive, fail");
-
-                        return false;
-                    } else {
-                        log.info(DisplayName + " : This is positive, succeed");
-
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        return true;
     }
 
     public RMapElement(String ID, Class<?> Type) {
@@ -98,10 +73,11 @@ public class RMapElement {
 
         this.DisplayName = Name;
         if (!Help.startsWith("<html>")) {
-            Help = Help.replaceAll("\n", "<br/>");
+            Help = Help.replace("\n", "<br/>");
             Help = "<html>" + Help + "</html>";
         }
         this.HelpDescription = Help;
-        this.Filters = List.of(filters);
+        if (filters != null)
+            this.Filters = List.of(filters);
     }
 }

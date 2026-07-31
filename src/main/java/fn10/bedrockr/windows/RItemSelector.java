@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,11 +22,11 @@ import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import fn10.bedrockr.Launcher;
 import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.elementFiles.BlockFile;
-import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.addons.source.supporting.item.ItemJsonEntry;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
@@ -33,6 +34,7 @@ import fn10.bedrockr.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.base.RDialog;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RItemSelector extends RDialog {
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -95,7 +97,7 @@ public class RItemSelector extends RDialog {
                     try {
                         ImageIO.write(bi, "png", baos);
                     } catch (IOException e1) {
-                        e1.printStackTrace();
+                        Launcher.LOG.log(Level.SEVERE, "Failed to save image", e);
                     }
                     building.Texture = org.apache.commons.lang3.ArrayUtils.toObject(baos.toByteArray());
                     selected = building;

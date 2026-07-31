@@ -2,7 +2,7 @@ package fn10.bedrockr.utils.logging;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -20,42 +20,76 @@ public class RLogFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
+        StringBuilder builder = new StringBuilder();
+        int level = record.getLevel().intValue();
+        if (level > Level.WARNING.intValue()) {
+            builder.append(ANSI_RED);
+        } else if (level > Level.INFO.intValue()) {
+            builder.append(ANSI_ORANGE);
+        } else {
+            builder.append(ANSI_GREEN);
+        }
+        
+        builder.append("(");
+        String sourceClassName = record.getSourceClassName();
+        if (sourceClassName != null) {
+            builder.append(sourceClassName.replace("fn10.bedrockr.", ""));
+            builder.append(" @ ");
+        }
+        DateFormat format = DateFormat.getTimeInstance();
+        
+        builder.append(format.format(cal.getTime()));
+        builder.append(") : ");
+        builder.append(record.getMessage());
+
         Throwable thrown = record.getThrown();
-        if (thrown instanceof Exception) {
+        if (thrown != null) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             thrown.printStackTrace(pw);
-            if (record.getLevel() == Level.WARNING)
-                return ANSI_ORANGE + "("
-                        + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
-                        + " @ "
-                        + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                        + record.getMessage() + "\n" + sw + ANSI_RESET;
-            else {
-                return ANSI_RED + "("
-                        + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
-                        + " @ "
-                        + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                        + sw + ANSI_RESET;
-            }
-        } else if (record.getLevel() == Level.WARNING) {
-            return ANSI_ORANGE + "("
-                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
-                    + " @ "
-                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                    + record.getMessage() + "\n" + ANSI_RESET;
-        } else if (record.getLevel() == Level.SEVERE) {
-            return ANSI_RED + "("
-                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
-                    + " @ "
-                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
-                    + record.getMessage() + "\n" + ANSI_RESET;
-        } else {
-            return ANSI_GREEN + "("
-                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
-                    + " @ "
-                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : " + ANSI_RESET
-                    + record.getMessage() + "\n" + ANSI_RESET;
+
+            builder.append("\n");
+            builder.append(sw);
         }
+        builder.append(ANSI_RESET);
+        builder.append("\n");
+        return builder.toString();
+//        Throwable thrown = record.getThrown();
+//        if (thrown instanceof Exception) {
+//            StringWriter sw = new StringWriter();
+//            PrintWriter pw = new PrintWriter(sw);
+//            thrown.printStackTrace(pw);
+//            if (record.getLevel() == Level.WARNING)
+//                return ANSI_ORANGE + "("
+//                        + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+//                        + " @ "
+//                        + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+//                        + record.getMessage() + "\n" + sw + ANSI_RESET;
+//            else {
+//                return ANSI_RED + "("
+//                        + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+//                        + " @ "
+//                        + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+//                        + sw + ANSI_RESET;
+//            }
+//        } else if (record.getLevel() == Level.WARNING) {
+//            return ANSI_ORANGE + "("
+//                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+//                    + " @ "
+//                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+//                    + record.getMessage() + "\n" + ANSI_RESET;
+//        } else if (record.getLevel() == Level.SEVERE) {
+//            return ANSI_RED + "("
+//                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+//                    + " @ "
+//                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : "
+//                    + record.getMessage() + "\n" + ANSI_RESET;
+//        } else {
+//            return ANSI_GREEN + "("
+//                    + record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf(".") + 1)
+//                    + " @ "
+//                    + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS").format(cal.getTime())) + ") : " + ANSI_RESET
+//                    + record.getMessage() + "\n" + ANSI_RESET;
+//        }
     }
 }

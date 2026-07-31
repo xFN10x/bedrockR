@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.addon.jsonClasses.BP;
+package fn10.bedrockr.addons.mcjson.behav;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,8 +8,8 @@ import com.google.gson.annotations.SerializedName;
  * taken from https://learn.microsoft.com/en-us/minecraft/creator/reference/content/featuresreference/examples/features/minecraftstructure_template_feature?view=minecraft-bedrock-stable
  */
 public class Feature {
-    public class StructureTemplateFeature {
-        public class Description {
+    public static class StructureTemplateFeature {
+        public static class Description {
             /**
              * The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.
              */

@@ -1,7 +1,5 @@
 package fn10.bedrockr.rendering;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.source.supporting.item.ReturnItemInfo.BlockJsonEntry;
@@ -122,7 +120,7 @@ public class BlockTextures {
                 } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Double) gson
+                settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Number) gson
                         .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
 
                 settings.save();

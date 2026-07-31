@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.source.interfaces;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceResourceElement;
@@ -8,13 +7,8 @@ import fn10.bedrockr.addons.source.elementFiles.*;
 import fn10.bedrockr.addons.source.supporting.block.BlockTexture;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
-import fn10.bedrockr.utils.typeAdapters.PathSerializer;
-import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

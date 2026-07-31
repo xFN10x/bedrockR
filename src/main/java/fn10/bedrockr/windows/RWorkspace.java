@@ -50,12 +50,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 
-import fn10.bedrockr.utils.typeAdapters.XplateAPIDateSerializer;
 import org.apache.commons.io.FileUtils;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.SystemFileChooser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.source.SourceResourceElement;
@@ -74,11 +71,12 @@ import fn10.bedrockr.windows.base.RFrame;
 import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.componets.RElementFile;
 import fn10.bedrockr.windows.util.ErrorShower;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import fn10.bedrockr.windows.util.WrapLayout;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RWorkspace extends RFrame implements ActionListener, ElementCreationListener {
 
     protected Container CP = getContentPane();
@@ -376,8 +374,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     ToAdd.Desc.setText(entry.getValue());
                     ToAdd.CanBeSelected = false;
 
-                    File file = resFile.Serilized.getFileOfResource(SWPF.workspaceName(), entry.getKey(),
-                            resFile.Serilized.ResourceTypes.get(entry.getKey()));
+                    File file = resFile.Serilized.getFileOfResource(SWPF.workspaceName(), entry.getKey());
                     ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
 
                     JPopupMenu popup = new JPopupMenu();
@@ -424,7 +421,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                     Integer.parseInt(choice.split("x")[1]));
                             String old = icon.getImage().getWidth(null) + "x" + icon.getImage().getHeight(null);
 
-                            Image resized = ImageUtilites.ResizeImage(ImageIO.read(file), di,
+                            Image resized = ImageUtilities.ResizeImage(ImageIO.read(file), di,
                                     Image.SCALE_AREA_AVERAGING);
 
                             BufferedImage buff = new BufferedImage(di.width, di.height,
@@ -464,7 +461,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     ToAdd.setComponentPopupMenu(popup);
 
                     ToAdd.Icon.setIcon(
-                            ImageUtilites.ResizeIcon(icon, 70, 70));
+                            ImageUtilities.ResizeIcon(icon, 70, 70));
                     ResourceInnerPanelView.add(ToAdd);
 
                     ResourceInnerPanelView.add(Box.createVerticalStrut(4));
@@ -538,7 +535,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 }
 
                 SourceResourceElement res = RFileOperations.getResources(SWPF.getSerilized().WorkspaceName);
-                if (res == null) return;
                 switch (choice) {
                     case 1:
 
@@ -601,10 +597,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     @Override
-    public void onElementCancel() {
-    }
-
-    @Override
     public <T extends ElementFile<? extends ElementSource<T>>> void onElementCreate(ElementSource<T> element) {
         SettingsFile settings = SettingsFile.load();
         boolean alreadyExists = element.getLocation(SWPF.workspaceName()).exists();
@@ -641,7 +633,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         Launcher.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
                     }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    Launcher.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
                 }
             }
         }).start();
@@ -660,7 +652,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             WPF.saveJSONFile( // save the workspace file again
                     WPF.workspaceName());
         } catch (IOException e) {
-            e.printStackTrace();
+            Launcher.LOG.log(Level.SEVERE, "Failed to save workspace.", e);
         }
 
         String[] platforms = RFileOperations.MC_SYNC_OPTIONS.keySet().toArray(new String[0]);

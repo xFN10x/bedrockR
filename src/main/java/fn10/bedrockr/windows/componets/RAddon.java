@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,8 @@ import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+
+import fn10.bedrockr.windows.util.ImageUtilities;
 import org.apache.commons.io.FileUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
@@ -37,8 +40,8 @@ import fn10.bedrockr.addons.source.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.windows.RLaunchPage;
 import fn10.bedrockr.windows.RWorkspace;
-import fn10.bedrockr.windows.util.ImageUtilites;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RAddon extends JPanel implements MouseListener {
 
     private final static Color BGC = ColorFunctions.darken(new Color(30, 30, 30), 0.01f);
@@ -66,17 +69,17 @@ public class RAddon extends JPanel implements MouseListener {
                     .toPath())));
             WPF = WPFile.getSerilized();
             step = 1;
-            File iconFile = RFileOperations.getFileFromWorkspace(WPName,
-                    File.separator + "icon." + WPF.IconExtension, true);
+            File iconFile = RFileOperations.getFileFromWorkspace(WPName, "icon." + WPF.IconExtension, true);
+            if (iconFile == null) throw new FileNotFoundException("Icon not found.");
             iconFile.setReadable(true);
             BI = ImageIO.read(iconFile);
-            resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
+            resizedImage = ImageUtilities.ResizeImage(BI, 88, 88); // resize
 
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             if (step == 0) {
                 return;
-            } else if (step == 1) {
+            } else {
                 WPF = WPFile.getSerilized();
                 try {
                     BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
@@ -95,7 +98,7 @@ public class RAddon extends JPanel implements MouseListener {
                         }
 
                     }
-                    resizedImage = ImageUtilites.ResizeImage(BI, 88, 88); // resize
+                    resizedImage = ImageUtilities.ResizeImage(BI, 88, 88); // resize
 
                 } catch (Exception e2) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
@@ -103,10 +106,6 @@ public class RAddon extends JPanel implements MouseListener {
                     resizedImage = null;
                     return;
                 }
-            } else {
-                BI = null;
-                resizedImage = null;
-                return;
             }
         }
 
@@ -115,7 +114,7 @@ public class RAddon extends JPanel implements MouseListener {
         setBackground(BGC);
         setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.WHITE, 1, 16));
 
-        Icon.setIcon(new ImageIcon(ImageUtilites.makeRoundedCorner(resizedImage, 16)));
+        Icon.setIcon(new ImageIcon(ImageUtilities.makeRoundedCorner(resizedImage, 16)));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         Icon.setPreferredSize(new Dimension(88, 88));
@@ -181,7 +180,7 @@ public class RAddon extends JPanel implements MouseListener {
         Popup.add("Delete Addon").addActionListener(ac -> {
             if (JOptionPane.showConfirmDialog(parent,
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
-                    JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
                     fn10.bedrockr.Launcher.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
                     FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPFile.workspaceName()));

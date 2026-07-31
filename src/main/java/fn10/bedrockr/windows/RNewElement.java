@@ -23,6 +23,7 @@ import fn10.bedrockr.windows.componets.RElement;
 import fn10.bedrockr.windows.util.ErrorShower;
 import fn10.bedrockr.windows.util.SpringUtilities;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RNewElement extends RDialog implements ActionListener {
 
     private final JPanel MainPane = new JPanel();
@@ -56,7 +57,6 @@ public class RNewElement extends RDialog implements ActionListener {
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(getParent(), "error", e);
-                continue;
             }
         }
 

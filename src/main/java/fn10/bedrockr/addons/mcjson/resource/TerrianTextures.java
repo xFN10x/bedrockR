@@ -1,10 +1,9 @@
-package fn10.bedrockr.addons.addon.jsonClasses.RP;
+package fn10.bedrockr.addons.mcjson.resource;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemTextures {
-
+public class TerrianTextures {
     public static class TextureData {
         public String textures;
 
@@ -15,7 +14,7 @@ public class ItemTextures {
          *                    {@code resource_pack/textures/item/(text)}
          */
         public TextureData(String TextureName) {
-            textures = "textures/items/" + TextureName.replace(".png", "");
+            textures = "textures/blocks/" + TextureName.replace(".png", "");
         }
     }
 

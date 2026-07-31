@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.logging.Level;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -12,6 +14,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import fn10.bedrockr.Launcher;
 
 public class XplateAPIDateSerializer implements JsonSerializer<Date>, JsonDeserializer<Date> {
 
@@ -27,7 +30,7 @@ public class XplateAPIDateSerializer implements JsonSerializer<Date>, JsonDeseri
         try {
             return format.parse(json.getAsString());
         } catch (ParseException e) {
-            e.printStackTrace();
+            Launcher.LOG.log(Level.SEVERE, "Failed to format.", e);
             return Date.from(Instant.EPOCH);
         }
     }

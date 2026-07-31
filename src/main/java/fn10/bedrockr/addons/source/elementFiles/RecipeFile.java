@@ -11,12 +11,12 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.InnerDiscription;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.Item;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShaped;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.RecipeShapeless;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Recipe.UnlockCondition;
+import fn10.bedrockr.addons.mcjson.behav.Recipe;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.InnerDiscription;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.RecipeShaped;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.RecipeShapeless;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.source.SourceRecipeElement;
 import fn10.bedrockr.addons.source.SourceRecipeElement.RecipeType;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;

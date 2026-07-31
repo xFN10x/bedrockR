@@ -16,7 +16,7 @@ public class SourceResourceElement extends ElementSource<ResourceFile> {
     }
 
     public SourceResourceElement() {
-        this.Serilized = null;
+        this("{}");
     }
 
     public SourceResourceElement(String json) {

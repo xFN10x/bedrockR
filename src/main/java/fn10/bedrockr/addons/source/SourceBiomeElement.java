@@ -69,7 +69,7 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
                 return vanillaBiomeNames;
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                return null;
+                return new String[0];
             }
     }
 

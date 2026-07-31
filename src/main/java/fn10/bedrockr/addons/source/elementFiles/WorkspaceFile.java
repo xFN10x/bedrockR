@@ -15,13 +15,13 @@ import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
 
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Dependence;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Header;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Metadata;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Module;
-import fn10.bedrockr.addons.addon.jsonClasses.BP.Manifest.Metadata.GeneratedWithBedrockR;
-import fn10.bedrockr.addons.addon.jsonClasses.SharedJSONClasses.VersionVector;
+import fn10.bedrockr.addons.mcjson.behav.Manifest;
+import fn10.bedrockr.addons.mcjson.behav.Manifest.Dependence;
+import fn10.bedrockr.addons.mcjson.behav.Manifest.Header;
+import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata;
+import fn10.bedrockr.addons.mcjson.behav.Manifest.Module;
+import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata.GeneratedWithBedrockR;
+import fn10.bedrockr.addons.mcjson.SharedJSONClasses.VersionVector;
 import fn10.bedrockr.addons.source.SourceWorkspaceFile;
 import fn10.bedrockr.addons.source.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
@@ -35,7 +35,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
 
     public int Format;
     public String LatestBedrockRVersion;
-    public ArrayList<String> ModifiedWithBedrockRVersions = new ArrayList<String>();
+    public ArrayList<String> ModifiedWithBedrockRVersions = new ArrayList<>();
     public String WorkspaceName;
     public String MinimumEngineVersion;
     public String BPVersion = "1.0.0";

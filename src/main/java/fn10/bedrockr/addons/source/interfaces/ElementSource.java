@@ -6,8 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
-import com.google.gson.Gson;
-
 import jakarta.annotation.Nonnull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;

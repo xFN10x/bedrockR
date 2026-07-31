@@ -13,7 +13,7 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 
 import fn10.bedrockr.addons.source.interfaces.ElementDetails;
 import fn10.bedrockr.addons.source.interfaces.ElementSource;
-import fn10.bedrockr.windows.util.ImageUtilites;
+import fn10.bedrockr.windows.util.ImageUtilities;
 import fn10.bedrockr.windows.util.RFonts;
 import jakarta.annotation.Nullable;
 
@@ -93,12 +93,12 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setPreferredSize(new Dimension(70, 70));
         Icon.setSize(new Dimension(70, 70));
         if (clazz != null)
-            Icon.setIcon(ImageUtilites.ResizeIcon(iicon, 64, 64));
+            Icon.setIcon(ImageUtilities.ResizeIcon(iicon, 64, 64));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         if (clazz != null)
             Name.setText(details.Name);
-        Name.setFont(RFonts.RegMinecraftFont.deriveFont(20));
+        Name.setFont(RFonts.RegMinecraftFont.deriveFont(20f));
         if (clazz != null)
             Desc.setText(details.Description);
 
@@ -113,8 +113,6 @@ public class RElement extends JPanel implements MouseListener {
             Lay.putConstraint(SpringLayout.WEST, Desc, 5, SpringLayout.EAST, Icon);
 
             add(Icon);
-            add(Name);
-            add(Desc);
 
         } else {
 
@@ -124,16 +122,15 @@ public class RElement extends JPanel implements MouseListener {
             Lay.putConstraint(SpringLayout.NORTH, Desc, 5, SpringLayout.SOUTH, Name);
             Lay.putConstraint(SpringLayout.WEST, Desc, 5, SpringLayout.WEST, this);
 
-            add(Name);
-            add(Desc);
-
         }
+        add(Name);
+        add(Desc);
 
         addMouseListener(this);
     }
 
     public void setIcon(ImageIcon ico) {
-        Icon.setIcon(ImageUtilites.ResizeIcon(ico, 64, 64));
+        Icon.setIcon(ImageUtilities.ResizeIcon(ico, 64, 64));
     }
 
     public boolean getSelected() {
