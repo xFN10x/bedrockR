@@ -3,7 +3,7 @@ package fn10.bedrockr.addons.mcjson.resource;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TerrianTextures {
+public class TerrainTextures {
     public static class TextureData {
         public String textures;
 

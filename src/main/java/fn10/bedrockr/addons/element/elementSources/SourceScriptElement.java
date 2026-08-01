@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.element;
+package fn10.bedrockr.addons.element.elementSources;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,11 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 
 public class SourceScriptElement extends ElementSource<ScriptFile> {
+
+    @Override
+    public ElementDetails getDetails() {
+        return new ElementDetails("Script", "A Javascript script you can edit with block coding.");
+    }
 
     public SourceScriptElement(ScriptFile obj) {
         super(obj);
@@ -22,17 +27,6 @@ public class SourceScriptElement extends ElementSource<ScriptFile> {
         this(new ScriptFile());
     }
     
-    public static ElementDetails getDetails() {
-        try {
-            return new ElementDetails("Script",
-                    "<html>A JavaScript Script, you can edit<br>with block coding.</html>",
-                    RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Script.png").openStream()));
-        } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
-    }
-
     @Override
     public File saveJSONFile(String workspace) {
         /*

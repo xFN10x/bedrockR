@@ -1,7 +1,8 @@
 package fn10.bedrockr.addons.element.elementFiles;
 
-import fn10.bedrockr.addons.element.SourceResourceElement;
+import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.WrongResourceTypeException;
@@ -16,7 +17,7 @@ import java.util.UUID;
 /**
  * @deprecated Use the new {@link fn10.bedrockr.addons.resource} package.
  */
-@Deprecated(since = "a2.2", forRemoval = true)
+@Deprecated(since = "a3.0", forRemoval = true)
 public class ResourceFile extends ElementFile<SourceResourceElement> {
 
     /**
@@ -129,6 +130,11 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
     @Override
     public Class<SourceResourceElement> getSourceClass() {
         return SourceResourceElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceResourceElement>> getNewSource() {
+        return new SourceResourceElement(this);
     }
 
     @Override

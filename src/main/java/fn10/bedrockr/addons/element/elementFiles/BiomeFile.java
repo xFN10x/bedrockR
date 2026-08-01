@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Biome;
 import fn10.bedrockr.addons.mcjson.behav.Biome.minecraftBiome;
 import fn10.bedrockr.addons.mcjson.behav.Biome.minecraftBiome.description;
 import fn10.bedrockr.addons.element.FieldFilters;
-import fn10.bedrockr.addons.element.SourceBiomeElement;
+import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.supporting.BiomeComponents;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
@@ -64,6 +65,11 @@ public class BiomeFile extends ElementFile<SourceBiomeElement> {
     @Override
     public Class<SourceBiomeElement> getSourceClass() {
         return SourceBiomeElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceBiomeElement>> getNewSource() {
+        return new SourceBiomeElement(this);
     }
 
     @Override

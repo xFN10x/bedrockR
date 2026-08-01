@@ -7,6 +7,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.UUID;
 
+import fn10.bedrockr.addons.element.elementSources.SourceItemElement;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -97,6 +99,11 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
     @Override
     public Class<SourceItemElement> getSourceClass() {
         return SourceItemElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceItemElement>> getNewSource() {
+        return new SourceItemElement(this);
     }
 
     @Override

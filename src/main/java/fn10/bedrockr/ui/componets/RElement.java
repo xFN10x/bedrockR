@@ -15,6 +15,7 @@ import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
+import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nullable;
 
 public class RElement extends JPanel implements MouseListener {
@@ -26,38 +27,32 @@ public class RElement extends JPanel implements MouseListener {
 
     private final Runnable func;
     protected boolean selected;
-    protected Color outlineColour = Color.green;
-    private Class<? extends ElementSource<?>> clasz;
+    protected Color outlineColour;
+    private ElementSource<?> elementSource;
     private ElementDetails details;
     public boolean CanBeSelected = true;
 
-    public RElement(Class<? extends ElementSource<?>> clazz, Runnable selectedFunction)
-            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public RElement(ElementSource<?> source, Runnable selectedFunction)
+             {
 
-        this(clazz, selectedFunction, Color.green);
+        this(source, selectedFunction, Color.green);
     }
 
-    public RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour)
-            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        this(clazz, selectedFunction, borderColour, true);
+    public RElement(@Nullable ElementSource<?> source, Runnable selectedFunction, Color borderColour)
+            {
+        this(source, selectedFunction, borderColour, true);
     }
 
-    protected RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour,
-                       boolean icon) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        ElementDetails tempDetails = null;
-        if (clazz != null) {
-            this.clasz = clazz;
-
-            tempDetails = (ElementDetails) clazz.getMethod("getDetails").invoke(null);
-        }
-        this(clazz, selectedFunction, borderColour, icon, tempDetails != null ? new ImageIcon(tempDetails.Icon) : null);
+    protected RElement(@Nullable ElementSource<?> source, Runnable selectedFunction, Color borderColour,
+                       boolean icon) {
+        this(source, selectedFunction, borderColour, icon, source != null ? new ImageIcon(RFileOperations.readAllOfResource("/addons/element/" + source.getDetails().Icon + ".png")) : null);
     }
 
     /**
      * A ui-component with an icon, name and description. Can be easily changed to
      * make it custom.
      * 
-     * @param clazz
+     * @param source
      *                         Used for unmodified versions of this, this can be
      *                         {@code null} if you want to customize it.
      * @param selectedFunction
@@ -67,21 +62,17 @@ public class RElement extends JPanel implements MouseListener {
      *                         Default is {@code Color.green}
      * @param icon
      *                         Declares if this has an icon.
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
      */
-    protected RElement(@Nullable Class<? extends ElementSource<?>> clazz, Runnable selectedFunction, Color borderColour,
-            boolean icon, ImageIcon iicon)
-            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    protected RElement(@Nullable ElementSource<?> source, Runnable selectedFunction, Color borderColour,
+            boolean icon, ImageIcon iicon) {
         super();
 
         this.outlineColour = borderColour;
         this.func = selectedFunction;
-        if (clazz != null) {
-            this.clasz = clazz;
+        if (source != null) {
+            this.elementSource = source;
 
-            details = (ElementDetails) clazz.getMethod("getDetails").invoke(null);
+            details = source.getDetails();
         }
         setLayout(Lay);
 
@@ -92,14 +83,14 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.gray, 1, 16));
         Icon.setPreferredSize(new Dimension(70, 70));
         Icon.setSize(new Dimension(70, 70));
-        if (clazz != null)
+        if (details != null)
             Icon.setIcon(ImageUtilities.ResizeIcon(iicon, 64, 64));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
-        if (clazz != null)
+        if (details != null)
             Name.setText(details.Name);
         Name.setFont(RFonts.RegMinecraftFont.deriveFont(20f));
-        if (clazz != null)
+        if (details != null)
             Desc.setText(details.Description);
 
         if (icon) {
@@ -142,8 +133,8 @@ public class RElement extends JPanel implements MouseListener {
         this.selected = false;
     }
 
-    public Class<? extends ElementSource<?>> getElement() {
-        return clasz;
+    public ElementSource<?> getElement() {
+        return elementSource;
     }
 
     @Override

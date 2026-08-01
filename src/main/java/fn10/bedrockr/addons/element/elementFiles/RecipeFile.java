@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Recipe;
@@ -17,8 +18,8 @@ import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.RecipeShaped;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.RecipeShapeless;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
-import fn10.bedrockr.addons.element.SourceRecipeElement;
-import fn10.bedrockr.addons.element.SourceRecipeElement.RecipeType;
+import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement;
+import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement.RecipeType;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -62,6 +63,11 @@ public class RecipeFile extends ElementFile<SourceRecipeElement> {
     @Override
     public Class<SourceRecipeElement> getSourceClass() {
         return SourceRecipeElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceRecipeElement>> getNewSource() {
+        return new SourceRecipeElement(this);
     }
 
     @Override

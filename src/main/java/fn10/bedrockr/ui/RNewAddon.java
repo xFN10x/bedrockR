@@ -29,7 +29,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 
-import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.FieldFilters.FileNameLikeStringFilter;
 import fn10.bedrockr.addons.element.FieldFilters.IDStringFilter;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
@@ -64,12 +64,8 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 new Dimension(459, 380));
         this.Parent = Parent;
 
-        try {
-            ChosenIcon = ArrayUtils
-                    .toObject(RFileOperations.readAllBytes(getClass().getResource("/addons/DefaultIcon.png").openStream()));
-        } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to set icon.", e);
-        }
+        ChosenIcon = ArrayUtils
+                .toObject(RFileOperations.readAllOfResource("/addons/DefaultIcon.png"));
 
         AddonIcon.setSize(new Dimension(300, 300));
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);

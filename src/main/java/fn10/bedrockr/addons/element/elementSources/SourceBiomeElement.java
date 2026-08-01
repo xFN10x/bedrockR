@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons.element;
+package fn10.bedrockr.addons.element.elementSources;
 
 import java.io.IOException;
 import java.net.URI;
@@ -73,6 +73,11 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
     }
 
 
+    @Override
+    public ElementDetails getDetails() {
+        return new ElementDetails("Biome", "A simple biome. Configured through components.");
+    }
+
     public SourceBiomeElement(BiomeFile obj) {
         super(obj);
         getVanillaBiomeNames();
@@ -86,12 +91,7 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
     public SourceBiomeElement() {
         this(new BiomeFile());
     }
-
-    public static ElementDetails getDetails() throws IOException {
-        return new ElementDetails("Biome",
-                "<html>A biome that replaced a vanilla one<br />partially, or completly.</html>",
-                RFileOperations.readAllBytes(ElementSource.class.getResource("/addons/element/Biome.png").openStream()));
-    }
+    
 
     @Override
     public Class<BiomeFile> getSerilizedClass() {

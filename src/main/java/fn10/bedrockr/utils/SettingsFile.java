@@ -62,8 +62,7 @@ public class SettingsFile extends SourcelessElementFile {
         var json = gson.toJson(this);
         var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
-            Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE);
+            RFileOperations.write(path, json.getBytes());
         } catch (IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }

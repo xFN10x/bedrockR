@@ -25,6 +25,8 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 public abstract class ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
     @Nonnull
     private final T serialized;
+    
+    public abstract ElementDetails getDetails();
 
     public ElementSource(@Nonnull T serialized) {
         this.serialized = serialized;

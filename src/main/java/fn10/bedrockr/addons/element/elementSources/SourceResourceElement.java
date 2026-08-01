@@ -1,9 +1,10 @@
-package fn10.bedrockr.addons.element;
+package fn10.bedrockr.addons.element.elementSources;
 
 import java.io.File;
 import java.io.IOException;
 
 import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nonnull;
@@ -14,10 +15,14 @@ import org.jspecify.annotations.NonNull;
  */
 @Deprecated(since = "a2.2", forRemoval = true)
 public class SourceResourceElement extends ElementSource<ResourceFile> {
-
-
+    
     public SourceResourceElement() {
         this(new ResourceFile());
+    }
+
+    @Override
+    public ElementDetails getDetails() {
+        return null;
     }
 
     public SourceResourceElement(@Nonnull ResourceFile resourceFile) {

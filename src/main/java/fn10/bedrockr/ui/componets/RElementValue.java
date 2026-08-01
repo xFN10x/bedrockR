@@ -2,13 +2,13 @@ package fn10.bedrockr.ui.componets;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.FieldFilters.FieldFilter;
-import fn10.bedrockr.addons.element.SourceBiomeElement;
+import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
-import fn10.bedrockr.addons.ValidatableValue;
+import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;

@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons;
+package fn10.bedrockr.addons.element;
 
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;

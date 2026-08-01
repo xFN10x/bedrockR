@@ -2,7 +2,7 @@ package fn10.bedrockr.addons.element.supporting;
 
 import java.util.List;
 
-import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 

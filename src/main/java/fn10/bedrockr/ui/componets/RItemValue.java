@@ -35,7 +35,7 @@ import fn10.bedrockr.addons.mcjson.behav.Recipe;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
 import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.ValidatableValue;
+import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
 import fn10.bedrockr.ui.RBlockSelector;

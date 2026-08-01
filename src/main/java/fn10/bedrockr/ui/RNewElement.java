@@ -13,11 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.element.SourceScriptElement;
+import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.element.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.addons.ElementCreationListener;
+import fn10.bedrockr.addons.element.ElementCreationListener;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.componets.RElement;
@@ -25,13 +25,12 @@ import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.SpringUtilities;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class RNewElement extends RDialog implements ActionListener {
+public class RNewElement extends RDialog {
 
     private final JPanel MainPane = new JPanel();
     private final JScrollPane MainScrollPane = new JScrollPane(MainPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private final JButton CreateAsNormalButton = new JButton("Create!");
     private final Frame Parent;
     private final String workspaceName;
 
@@ -50,19 +49,14 @@ public class RNewElement extends RDialog implements ActionListener {
 
         for (Class<? extends ElementSource<?>> class1 : RFileOperations.ELEMENTS) {
             try {
-                MainPane.add(new RElement(class1, () -> {
-                    for (Component c : MainPane.getComponents()) {
-                        ((RElement) c).unselect();
-                    }
-                }));
+                ElementSource<?> obj = class1.getConstructor().newInstance();
+                RElement relement = new RElement(obj, () -> createNewElement(obj));
+                MainPane.add(relement);
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(getParent(), "error", e);
             }
         }
-
-        CreateAsNormalButton.setActionCommand("create");
-        CreateAsNormalButton.addActionListener(this);
 
         SpringUtilities.makeCompactGrid(MainPane, RFileOperations.ELEMENTS.size(), 1, 5, 5, 5, 5);
 
@@ -71,31 +65,13 @@ public class RNewElement extends RDialog implements ActionListener {
         Lay.putConstraint(SpringLayout.NORTH, MainScrollPane, 10, SpringLayout.NORTH, getContentPane());
         Lay.putConstraint(SpringLayout.SOUTH, MainScrollPane, -60, SpringLayout.SOUTH, getContentPane());
 
-        Lay.putConstraint(SpringLayout.SOUTH, CreateAsNormalButton, -10, SpringLayout.SOUTH, getContentPane());
-        Lay.putConstraint(SpringLayout.EAST, CreateAsNormalButton, -10, SpringLayout.EAST, getContentPane());
-
         add(MainScrollPane);
-        add(CreateAsNormalButton);
 
         setModal(true);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (Objects.equals(e.getActionCommand(), "create")) {
-            Class<? extends ElementSource<?>> Creating = null;
-
-            for (Component component : MainPane.getComponents()) { // for loop to check what is selected, then breaking
-                if (((RElement) component).getSelected()) {
-                    fn10.bedrockr.Launcher.LOG.info("Making new " + ((RElement) component).getElement());
-                    Creating = ((RElement) component).getElement();
-                    break;
-                }
-            }
-            if (Creating == null)
-                return;
-
-            if (Creating == SourceScriptElement.class) {
+    public void createNewElement(ElementSource<?> e) {
+            if (e.getClass() == SourceScriptElement.class) {
                 for (ElementFile<?> elementsFromWorkspace : RFileOperations.getElementsFromWorkspace(
                         workspaceName)) {
                     if (elementsFromWorkspace.getClass() == ScriptFile.class) {
@@ -107,9 +83,7 @@ public class RNewElement extends RDialog implements ActionListener {
             }
 
             try {
-                ElementSource<?> instance = Creating.getDeclaredConstructor().newInstance();
-
-                RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(instance, this.Parent,
+                RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(e, this.Parent,
                         ((ElementCreationListener) this.Parent), workspaceName);
                 if (screen == null) {
                     dispose();
@@ -129,6 +103,5 @@ public class RNewElement extends RDialog implements ActionListener {
                             "Erorrrrrrrrrr", ex);
                 }
             }
-        }
     }
 }
