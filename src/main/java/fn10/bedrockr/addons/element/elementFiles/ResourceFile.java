@@ -3,6 +3,7 @@ package fn10.bedrockr.addons.element.elementFiles;
 import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.WrongResourceTypeException;
@@ -17,6 +18,7 @@ import java.util.UUID;
 /**
  * @deprecated Use the new {@link fn10.bedrockr.addons.resource} package.
  */
+@SuppressWarnings("removal")
 @Deprecated(since = "a3.0", forRemoval = true)
 public class ResourceFile extends ElementFile<SourceResourceElement> {
 
@@ -102,7 +104,6 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
             FileUtils.copyFile(filePNG, dest);
             this.ResourceTypes.put(finalName, type);
             this.ResourceIDs.put(finalName, UUID.randomUUID().toString());
-            build(workspaceName, null, null, null);
             return true;
         } catch (Exception e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -111,20 +112,20 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
     }
 
     @Override
-    /**
+    /*
      * NOTE!!!!!!!!!
      * rootPath is the workspace name!
      * THIS IS ALSO NOT MEANT FOR BUILDING TO PACKS
      */
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-                      GlobalBuildingVariables globalResVaribles) throws IOException {
+                      ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         /*
          * if (ActiveWorkspace != null)
          * ActiveWorkspace.refreshResources();
          */
 
-        SourceResourceElement source = new SourceResourceElement(this);
-        source.saveJSONFile(rootPath);
+        //SourceResourceElement source = new SourceResourceElement(this);
+        //source.saveJSONFile(rootPath);
     }
 
     @Override

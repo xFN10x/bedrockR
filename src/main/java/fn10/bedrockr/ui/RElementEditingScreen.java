@@ -543,7 +543,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         else {
             // do the automatic creation
             var frame = new RElementEditingScreen(Parent,
-                    ((ElementDetails) src.getClass().getMethod("getDetails").invoke(null)).Name, src,
+                   src.getDetails().Name, src,
                     src.getSerilizedClass(), parent2);
             List<Field> fields = new ArrayList<Field>(List.of(src.getSerilizedClass().getFields()));
             fields.sort((f1, f2) -> {

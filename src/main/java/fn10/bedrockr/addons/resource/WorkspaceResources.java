@@ -1,9 +1,7 @@
 package fn10.bedrockr.addons.resource;
 
-import com.google.gson.Gson;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
 import fn10.bedrockr.utils.RFileOperations;
@@ -14,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -34,7 +33,26 @@ public class WorkspaceResources {
         resources.add(res);
     }
     
-    private  <T extends Resource> T loadResource(String path, Class<T> resClass) throws IOException {
+    public <T extends Resource> List<T> getResourcesOfType(Class<T> type) {
+        ArrayList<T> list = new ArrayList<>();
+        for (Resource res : resources) {
+            if (type.isInstance(res)) {
+                list.add(type.cast(res));
+            }
+        }
+        return list;
+    }
+    
+    public <T extends Resource> T getResourceFromID(String id, Class<T> type) {
+        for (Resource res : resources) {
+            if (res.ID.equals(id) && type.isInstance(res)) {
+                return type.cast(res);
+            }
+        }
+        return null;
+    } 
+    
+    private <T extends Resource> T loadResource(String path, Class<T> resClass) throws IOException {
         Path resFolder = getResourcesPath(wpf.WorkspaceName).resolve(path);
         Path jsonPath = resFolder.resolve("resource.json");
         T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
@@ -72,7 +90,7 @@ public class WorkspaceResources {
             }
             Launcher.LOG.info("Saved resources.");
         } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to save resources.");
+            Launcher.LOG.log(Level.SEVERE, "Failed to save resources.", e);
         }
     }
 

@@ -11,16 +11,13 @@ import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.BlockComponents;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
-import fn10.bedrockr.rendering.RenderHandler;
-import fn10.bedrockr.utils.MapUtilities;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -98,7 +95,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     @RAnnotation.CreationMenuTab("Components")
     @Order(6)
-    public HashMap<String, Object> Components;
+    public HashMap<String, Object> Components = new HashMap<>();
 
     @HelpMessage("<html>The textures for the block. </html>")
     @FieldDetails(Optional = false, displayName = "Block Texture")
@@ -145,7 +142,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-                      GlobalBuildingVariables globalResVaribles) throws IOException {
+                      ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         globalResVaribles.EnglishTexts.put("tile." + workspaceFile.Prefix + ":" + ID + ".name", Name);
 //        globalResVaribles.BlockRPEntrys.put(workspaceFile.Prefix + ":" + ID,
 //                new BlockJSONEntry(Sound,
@@ -188,19 +185,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
 
     @Override
     public Byte[] getTexture(String workspace) {
-        try {
-            if (Textures == null) {
-                return ArrayUtils.toObject(getClass().getResourceAsStream("/addons/element/Element.png").readAllBytes());
-            }
-            ResourceFile resources = RFileOperations.getResources(workspace).getSerialized();
-            String fileName = MapUtilities
-                    .getKeyFromValue(resources.ResourceIDs, Textures.upTexID.toString());
-            File imageFile = resources.getFileOfResource(workspace, fileName);
-            return ArrayUtils.toObject(ImageUtilities.ImageToBytes(RenderHandler.render6SideBlock(ID, ImageIO.read(imageFile))));
-        } catch (IllegalAccessError | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
+        return ArrayUtils.toObject(RFileOperations.readAllOfResource("/addons/element/Element.png"));
     }
 
     @Override

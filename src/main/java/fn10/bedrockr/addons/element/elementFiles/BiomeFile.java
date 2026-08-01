@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Biome;
@@ -44,7 +45,7 @@ public class BiomeFile extends ElementFile<SourceBiomeElement> {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+                      ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         Biome biome = new Biome();
 
         biome.format_version = "1.21.120";

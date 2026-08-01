@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.logging.Level;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
+import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Manifest;
@@ -21,7 +25,7 @@ import fn10.bedrockr.addons.mcjson.behav.Manifest.Dependence;
 import fn10.bedrockr.addons.mcjson.behav.Manifest.Header;
 import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata;
 import fn10.bedrockr.addons.mcjson.behav.Manifest.Module;
-import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata.GeneratedWithBedrockR;
+import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata.GeneratedWith;
 import fn10.bedrockr.addons.mcjson.SharedJSONClasses.VersionVector;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
@@ -54,6 +58,16 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
     public String BPSuffix = "";
 
     public Map<UUID, String> Scripts = new HashMap<>();
+    
+    @Nullable
+    public WorkspaceResources getRes() {
+        try {
+            return WorkspaceResources.load(WorkspaceName);
+        } catch (Exception e) {
+            Launcher.LOG.log(Level.SEVERE, "Failed to get resources from workspace: " + WorkspaceName, e);
+            return null;
+        }
+    }
 
     public WorkspaceFile(String WPName, String MEV, String DES, String IE, String PREFIX) {
         this.Format = 2;
@@ -129,10 +143,12 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
-
-        // #region build BP manifest
-        // --------------------------------------------------------------------
+            ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
+        Metadata metadata = new Metadata();
+        GeneratedWith generatedWithBedrockR = new GeneratedWith();
+        generatedWithBedrockR.bedrockR = ModifiedWithBedrockRVersions;
+        metadata.generated_with = generatedWithBedrockR;
+        //region build BP manifest
         Manifest manifest = new Manifest();
         manifest.formatVersion = 2;
         // header
@@ -143,10 +159,6 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         header.min_engine_version = VersionVector.fromString(MinimumEngineVersion);
         header.version = VersionVector.fromString(BPVersion);
         // metadata
-        Metadata metadata = new Metadata();
-        GeneratedWithBedrockR generatedWithBedrockR = new GeneratedWithBedrockR();
-        generatedWithBedrockR.bedrockR = ModifiedWithBedrockRVersions.toArray(new String[0]);
-        metadata.generated_with = generatedWithBedrockR;
         // modules
         List<Module> mods = new ArrayList<>();
         Module dataModule = new Manifest.Module();
@@ -199,8 +211,8 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
                         .toPath());
         var imgpath = new File(rootPath + File.separator + "pack_icon.png").toPath();
         Files.write(imgpath, img, StandardOpenOption.CREATE);
-        // #endregion
-        // #region build RP manifest
+        //endregion
+        //region build RP manifest
         var RPmanifest = new Manifest();
         RPmanifest.formatVersion = 2;
         // header
@@ -211,12 +223,8 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         RPheader.min_engine_version = VersionVector.fromString(MinimumEngineVersion);
         RPheader.version = VersionVector.fromString(RPVersion);
         // metadata
-        Metadata metadata2 = new Metadata();
-        GeneratedWithBedrockR generatedWithBedrockR2 = new GeneratedWithBedrockR();
-        generatedWithBedrockR2.bedrockR = ModifiedWithBedrockRVersions.toArray(new String[0]);
-        metadata2.generated_with = generatedWithBedrockR;
         // i guess we are adding immediately with rp
-        RPmanifest.metadata = metadata2;
+        RPmanifest.metadata = metadata;
         // add header
         RPmanifest.header = RPheader;
         // modules
@@ -245,6 +253,6 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
                         .toPath());
         var imgpath2 = new File(rootResPackPath + File.separator + "pack_icon.png").toPath();
         Files.write(imgpath2, img2, StandardOpenOption.CREATE);
-        // #endregion
+        //endregion
     }
 }

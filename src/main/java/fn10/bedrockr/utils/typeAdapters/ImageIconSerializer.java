@@ -16,7 +16,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class ImageIconSerilizer implements JsonSerializer<ImageIcon>, JsonDeserializer<ImageIcon> {
+public class ImageIconSerializer implements JsonSerializer<ImageIcon>, JsonDeserializer<ImageIcon> {
 
     @Override
     public ImageIcon deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

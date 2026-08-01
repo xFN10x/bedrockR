@@ -4,12 +4,13 @@ import java.io.IOException;
 import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 
 public class ScriptFile extends ElementFile<SourceScriptElement> {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+            ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         throw new UnsupportedOperationException("Unimplemented method 'build'");
     }
 

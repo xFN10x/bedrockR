@@ -12,10 +12,9 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
-import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
+import fn10.bedrockr.utils.typeAdapters.ImageIconSerializer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
-import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
-import jakarta.annotation.Nonnull;
+import fn10.bedrockr.utils.typeAdapters.StrictMapSerializer;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,7 +26,6 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.zip.Adler32;
 
 public class RFileOperations {
     public static Gson gson = new GsonBuilder()
@@ -35,9 +33,9 @@ public class RFileOperations {
             .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
             .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
                     }.getClass(),
-                    new StrictMapSerilizer())
+                    new StrictMapSerializer())
             .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
-            .registerTypeAdapter(ImageIcon.class, new ImageIconSerilizer())
+            .registerTypeAdapter(ImageIcon.class, new ImageIconSerializer())
             .create();
     public static final String SEM_VERSION = "0.9";
     public static final int NUM_VERSION = 10;
@@ -223,37 +221,7 @@ public class RFileOperations {
         }
     }
 
-    /**
-     * Gets source resources that exist on disk from a workspace.
-     *
-     * @param workspaceName - the workspace to get the resources from
-     * @return a {@code SourceResourceElement}, containing the resources
-     */
-    @Nonnull
-    @Deprecated(forRemoval = true, since = "a3.0")
-    public static SourceResourceElement getResources(String workspaceName) {
-        try {
-
-            File file = getFileFromWorkspace(workspaceName, true,
-                    "resources", RESOURCE_FILE_NAME);
-            if (file.exists())
-                return new SourceResourceElement(Files.readString(file.toPath()));
-
-            else { // make a blank resource file
-                var source = new SourceResourceElement();
-                try {
-                    source.saveJSONFile(workspaceName);
-                } catch (IOException e) {
-                    Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
-                }
-                return source;
-            }
-        } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return new SourceResourceElement();
-        }
-    }
-
+    
     /**
      * Adds an object to a list if it isn't inside of it.
      *
@@ -679,7 +647,7 @@ public class RFileOperations {
      * @param data The data to write.
      */
     public static void write(Path to, String data) throws IOException {
-        Files.writeString(to, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        write(to, data.getBytes());
     }
 
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,

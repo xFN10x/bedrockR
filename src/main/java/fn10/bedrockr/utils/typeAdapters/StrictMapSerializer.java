@@ -8,7 +8,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 
-public class StrictMapSerilizer implements JsonSerializer<Map<String, Object>> {
+public class StrictMapSerializer implements JsonSerializer<Map<String, Object>> {
 
     @Override
     public JsonElement serialize(Map<String, Object> src, Type typeOfSrc, JsonSerializationContext context) {

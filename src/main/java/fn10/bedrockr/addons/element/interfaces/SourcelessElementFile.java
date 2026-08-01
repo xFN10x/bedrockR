@@ -2,16 +2,11 @@ package fn10.bedrockr.addons.element.interfaces;
 
 import com.google.gson.*;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
 import fn10.bedrockr.addons.element.elementFiles.*;
-import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
-import fn10.bedrockr.utils.RFileOperations;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -48,12 +43,8 @@ public abstract class SourcelessElementFile {
             Launcher.LOG.info("Upgrading: " + elementType.getSimpleName() + " from: " + oldVer + ", to: " + newVer);
         }
         if (BlockFile.class == elementType) {
-            if (oldVer == 0 && newVer == 1) {
-                //UUID TextureUUID > BlockTexture Textures
-                SourceResourceElement res = RFileOperations.getResources(workspace);
-                String textureUUID = fileJson.get("TextureUUID").getAsString();
-                fileJson.add("Textures", gson.toJsonTree(new BlockTexture(UUID.fromString(textureUUID))));
-                fileJson.remove("TextureUUID");
+            if (oldVer == 0 && newVer == 2) {
+                //TODO: upgrading all the things for new resources
             }
         }
         SourcelessElementFile sef = gson.fromJson(fileJson, elementType);
@@ -67,19 +58,6 @@ public abstract class SourcelessElementFile {
         }
         return sef;
     }
-
-    /**
-     * Builds this ElementFile to the built BP/RP
-     *
-     * @param rootPath          - the path to the BP, e.g. {@code rootPath + "/items/"} would be where items go
-     * @param workspaceFile     - the workspace file for which this element is being built under
-     * @param rootResPackPath   - the path to the RP
-     * @param globalResVaribles - basicly the resource pack
-     * @throws IOException If the build fails.
-     */
-    public abstract void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-               GlobalBuildingVariables globalResVaribles)
-            throws IOException;
 
     public final void setDraft(Boolean draft) {
         this.Draft = draft;
