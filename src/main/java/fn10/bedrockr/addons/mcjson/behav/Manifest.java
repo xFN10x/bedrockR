@@ -1,5 +1,6 @@
 package fn10.bedrockr.addons.mcjson.behav;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.google.gson.annotations.SerializedName;
@@ -78,14 +79,14 @@ public class Manifest {
     }
     public static class Metadata {
         //even INNER class
-        public static class GeneratedWithBedrockR {
-            public String[] bedrockR;
+        public static class GeneratedWith {
+            public List<String> bedrockR;
         }
 
         public String[] authors;
         public String license;
         public String url;
-        public GeneratedWithBedrockR generated_with;
+        public GeneratedWith generated_with;
     }
 
 

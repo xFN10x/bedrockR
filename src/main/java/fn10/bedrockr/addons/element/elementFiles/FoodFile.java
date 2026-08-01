@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import fn10.bedrockr.addons.element.elementSources.SourceFoodElement;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.ItemTextureResource;
+import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -20,7 +22,6 @@ import fn10.bedrockr.addons.element.*;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
-import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -87,10 +88,9 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
     public String Group;
 
     @HelpMessage("The texture for the item.")
-    @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
     @FieldDetails(Optional = false, displayName = "Item Texture")
     @Order(7)
-    public UUID TextureUUID;
+    public ResourcePointer<ItemTextureResource> Texture;
 
     @Order(8)
     public transient CreationScreenSeparator sep;
@@ -171,7 +171,7 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+                      ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID, Name);
 
         // make item
@@ -196,9 +196,8 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
         var inner = new Item.InnerItem();
         inner.description = desc;
 
-        inner.components = new HashMap<String, Object>();
-        inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
-                MapUtilities.getKeyFromValue(globalResVaribles.Resource.ResourceIDs, TextureUUID.toString())));
+        inner.components = new HashMap<>();
+        inner.components.put("minecraft:icon", Texture.get(res));
         inner.components.put("minecraft:use_animation", EatAnimation);
 
         Map<String, String[]> TagsComp = new HashMap<String, String[]>();
@@ -246,19 +245,7 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
 
     @Override
     public Byte[] getTexture(String workspace) {
-        try {
-            if (TextureUUID != null) {
-                ResourceFile resFile = RFileOperations.getResources(workspace).getSerialized();
-                return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(workspace, MapUtilities
-                        .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString())).toPath()));
-            } else {
-                return ArrayUtils.toObject(getClass().getResourceAsStream("/addons/element/Food.png").readAllBytes());
-            }
-            
-        } catch (IllegalAccessError | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
+        return ArrayUtils.toObject(RFileOperations.readAllOfResource("/addons/element/Element.png"));
     }
 
     @Override

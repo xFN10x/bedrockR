@@ -13,7 +13,8 @@ import org.jspecify.annotations.NonNull;
 /**
  * @deprecated Use the new {@link fn10.bedrockr.addons.resource} package.
  */
-@Deprecated(since = "a2.2", forRemoval = true)
+@SuppressWarnings("removal")
+@Deprecated(since = "a3.0", forRemoval = true)
 public class SourceResourceElement extends ElementSource<ResourceFile> {
     
     public SourceResourceElement() {

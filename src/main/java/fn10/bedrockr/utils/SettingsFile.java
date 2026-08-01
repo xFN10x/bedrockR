@@ -2,16 +2,16 @@ package fn10.bedrockr.utils;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 import com.google.gson.JsonSyntaxException;
-import fn10.bedrockr.addons.element.elementFiles.GlobalBuildingVariables;
+import fn10.bedrockr.addons.element.elementFiles.ResourcePackBuilder;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import jakarta.annotation.Nonnull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,10 +83,5 @@ public class SettingsFile extends SourcelessElementFile {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return new SettingsFile();
         }
-    }
-
-    @Override
-    public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath, GlobalBuildingVariables globalResVaribles) throws IOException {
-        save();
     }
 }

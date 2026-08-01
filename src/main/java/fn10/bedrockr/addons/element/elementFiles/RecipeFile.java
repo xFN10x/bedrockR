@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Recipe;
@@ -77,7 +78,7 @@ public class RecipeFile extends ElementFile<SourceRecipeElement> {
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+            ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         Recipe recipe = new Recipe();
         recipe.formatVersion = "1.21.50";
         switch (recipeType) {

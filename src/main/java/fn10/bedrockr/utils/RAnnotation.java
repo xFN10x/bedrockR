@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.addons.element.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.element.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
 import jakarta.annotation.Nullable;
 
@@ -62,12 +61,6 @@ public class RAnnotation {
      */
     public @interface Order {
         int value() default 0;
-    }
-
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface ResourcePackResourceType {
-        int value() default ResourceFile.ITEM_TEXTURE;
     }
 
     @Target({ ElementType.FIELD })

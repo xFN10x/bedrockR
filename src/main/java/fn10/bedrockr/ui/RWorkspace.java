@@ -3,28 +3,23 @@ package fn10.bedrockr.ui;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
+import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
-import fn10.bedrockr.addons.element.elementFiles.GlobalBuildingVariables;
-import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
+import fn10.bedrockr.addons.element.elementFiles.ResourcePackBuilder;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.element.ElementCreationListener;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.ui.componets.RElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 import fn10.bedrockr.ui.base.RFrame;
-import fn10.bedrockr.ui.componets.RElement;
-import fn10.bedrockr.ui.componets.RElementFile;
 import fn10.bedrockr.ui.util.ErrorShower;
-import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.WrapLayout;
 import org.apache.commons.io.FileUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
@@ -32,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -41,12 +35,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
@@ -270,10 +262,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     public void buildElements(boolean rebuild) {
         // make loading screen
         RLoadingScreen progress = new RLoadingScreen(this);
+        WorkspaceFile WPF = SWPF.getSerialized();
         String BPdir = java.nio.file.Paths.get(RFileOperations.getBaseDirectory().getPath(), "build", "BP",
-                SWPF.getSerialized().getElementName()).toString();
+                WPF.getElementName()).toString();
         String RPdir = java.nio.file.Paths.get(RFileOperations.getBaseDirectory().getPath(), "build", "RP",
-                SWPF.getSerialized().getElementName()).toString();
+                WPF.getElementName()).toString();
 
         SwingUtilities.invokeLater(() -> progress.setVisible(true));
 
@@ -286,38 +279,38 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     FileUtils.deleteDirectory(new File(RPdir));
                 }
                 refreshAll();
-                GlobalBuildingVariables GlobalResVars = new GlobalBuildingVariables(SWPF.getSerialized(),
-                        RFileOperations.getResources(SWPF.workspaceName()).getSerialized());
+                ResourcePackBuilder GlobalResVars = new ResourcePackBuilder(WPF);
                 List<ElementFile<?>> ToBuild = List
                         .of(RFileOperations.getElementsFromWorkspace(SWPF.workspaceName()));
 
                 progress.Steps = ToBuild.size() + 1;
 
-                SWPF.getSerialized().reset(BPdir);
+                WPF.reset(BPdir);
 
                 // build rest
+                WorkspaceResources res = WPF.getRes();
                 for (ElementFile<?> elementFile : ToBuild) {
                     if (elementFile.getDraft())
                         continue;
                     // build an element, then incrament the counter
                     progress.changeText("Building " + elementFile.getElementName()); // change text
                     elementFile.build(BPdir,
-                            SWPF.getSerialized(), RPdir, GlobalResVars); // build
+                            WPF, RPdir, GlobalResVars, res); // build
                     progress.increaseProgressBySteps("Done!"); // next
                 }
                 // build RP
                 // build global res vars
                 progress.changeText("Building resources... "); // change text
                 GlobalResVars.build(BPdir,
-                        SWPF.getSerialized(), RPdir, GlobalResVars);
+                        WPF, RPdir, GlobalResVars, res);
                 // build workspace
                 progress.changeText("Building workspace..."); // change text
-                SWPF.getSerialized().build(BPdir,
-                        SWPF.getSerialized(), RPdir, GlobalResVars); // build
+                WPF.build(BPdir,
+                        WPF, RPdir, GlobalResVars, res); // build
 
                 progress.increaseProgressBySteps("Done!"); // next
                 // do mc sync
-                if (SWPF.getSerialized().MinecraftSync) {
+                if (WPF.MinecraftSync) {
                     progress.increaseProgressBySteps("Syncing..."); // next
                     RFileOperations.mcSync();
                 }
@@ -337,114 +330,114 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     public void refreshResources() {
-        SwingUtilities.invokeLater(() -> {
-            SourceResourceElement resFile = RFileOperations.getResources(SWPF.workspaceName());
-            ResourceInnerPanelView.removeAll();
-            for (Map.Entry<String, String> entry : resFile.getSerialized().ResourceIDs.entrySet()) {
-                try {
-                    RElement ToAdd = new RElement(null, null);
-                    ToAdd.setMaximumSize(new Dimension(1400, 80));
-                    ToAdd.setPreferredSize(new Dimension(1400, 80));
-                    ToAdd.Name.setText(entry.getKey());
-                    ToAdd.Desc.setText(entry.getValue());
-                    ToAdd.CanBeSelected = false;
-
-                    File file = resFile.getSerialized().getFileOfResource(SWPF.workspaceName(), entry.getKey());
-                    ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
-
-                    JPopupMenu popup = new JPopupMenu();
-                    popup.add("Open with...").addActionListener(_ -> {
-                        try {
-                            Desktop.getDesktop().open(file);
-                        } catch (Exception e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
-                                    e);
-                        }
-                    });
-
-                    popup.add("Open Resource Directory").addActionListener(_ -> {
-                        try {
-                            Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
-                        } catch (Exception e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
-                                    e);
-                        }
-                    });
-
-                    popup.add("Resize").addActionListener(_ -> {
-                        String choice = JOptionPane.showInputDialog(this,
-                                "What size do you want this image to be?",
-                                "Resize " + entry.getKey(), JOptionPane.QUESTION_MESSAGE,
-                                null, new String[]{
-                                        "8x8",
-                                        "16x16",
-                                        "18x18",
-                                        "32x32",
-                                        "64x64",
-                                        "96x96",
-                                        "128x128",
-                                        "256x256",
-                                        "512x512",
-                                },
-                                "16x16").toString();
-
-                        if (choice == null)
-                            return;
-
-                        try {
-                            Dimension di = new Dimension(Integer.parseInt(choice.split("x")[0]),
-                                    Integer.parseInt(choice.split("x")[1]));
-                            String old = icon.getImage().getWidth(null) + "x" + icon.getImage().getHeight(null);
-
-                            Image resized = ImageUtilities.ResizeImage(ImageIO.read(file), di,
-                                    Image.SCALE_AREA_AVERAGING);
-
-                            BufferedImage buff = new BufferedImage(di.width, di.height,
-                                    BufferedImage.TYPE_INT_ARGB);
-
-                            Graphics2D grah = buff.createGraphics();
-                            grah.drawImage(
-                                    resized, 0, 0,
-                                    null);
-                            file.delete();
-                            ImageIO.write(buff, "png", file);
-                            buff.getGraphics().dispose();
-
-                            JOptionPane.showMessageDialog(this, "Resized image from " + old + ", to " + choice);
-                            this.refreshResources();
-                        } catch (Exception e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
-                                    e);
-                            ErrorShower.showError(this, "Failed to resize image.", e);
-                        }
-                    });
-                    popup.add("Delete").addActionListener(_ -> {
-                        try {
-                            resFile.getSerialized().ResourceIDs.remove(entry.getKey());
-                            resFile.getSerialized().ResourceTypes.remove(entry.getKey());
-                            file.delete();
-                            this.refreshAll();
-                            ResourceInnerPanelView.repaint();
-                            ResourceView.repaint();
-                            resFile.getSerialized().build(SWPF.workspaceName(), null, null, null);
-                        } catch (Exception e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
-                                    e);
-                        }
-                    });
-
-                    ToAdd.setComponentPopupMenu(popup);
-
-                    ToAdd.Icon.setIcon(
-                            ImageUtilities.ResizeIcon(icon, 70, 70));
-                    ResourceInnerPanelView.add(ToAdd);
-
-                    ResourceInnerPanelView.add(Box.createVerticalStrut(4));
-                } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                }
-            }
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            SourceResourceElement resFile = RFileOperations.getResources(SWPF.workspaceName());
+//            ResourceInnerPanelView.removeAll();
+//            for (Map.Entry<String, String> entry : resFile.getSerialized().ResourceIDs.entrySet()) {
+//                try {
+//                    RElement ToAdd = new RElement(null, null);
+//                    ToAdd.setMaximumSize(new Dimension(1400, 80));
+//                    ToAdd.setPreferredSize(new Dimension(1400, 80));
+//                    ToAdd.Name.setText(entry.getKey());
+//                    ToAdd.Desc.setText(entry.getValue());
+//                    ToAdd.CanBeSelected = false;
+//
+//                    File file = resFile.getSerialized().getFileOfResource(SWPF.workspaceName(), entry.getKey());
+//                    ImageIcon icon = new ImageIcon(Files.readAllBytes(file.toPath()));
+//
+//                    JPopupMenu popup = new JPopupMenu();
+//                    popup.add("Open with...").addActionListener(_ -> {
+//                        try {
+//                            Desktop.getDesktop().open(file);
+//                        } catch (Exception e) {
+//                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+//                                    e);
+//                        }
+//                    });
+//
+//                    popup.add("Open Resource Directory").addActionListener(_ -> {
+//                        try {
+//                            Desktop.getDesktop().browse(new URI(file.toURI().toString().replace(file.getName(), "")));
+//                        } catch (Exception e) {
+//                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+//                                    e);
+//                        }
+//                    });
+//
+//                    popup.add("Resize").addActionListener(_ -> {
+//                        String choice = JOptionPane.showInputDialog(this,
+//                                "What size do you want this image to be?",
+//                                "Resize " + entry.getKey(), JOptionPane.QUESTION_MESSAGE,
+//                                null, new String[]{
+//                                        "8x8",
+//                                        "16x16",
+//                                        "18x18",
+//                                        "32x32",
+//                                        "64x64",
+//                                        "96x96",
+//                                        "128x128",
+//                                        "256x256",
+//                                        "512x512",
+//                                },
+//                                "16x16").toString();
+//
+//                        if (choice == null)
+//                            return;
+//
+//                        try {
+//                            Dimension di = new Dimension(Integer.parseInt(choice.split("x")[0]),
+//                                    Integer.parseInt(choice.split("x")[1]));
+//                            String old = icon.getImage().getWidth(null) + "x" + icon.getImage().getHeight(null);
+//
+//                            Image resized = ImageUtilities.ResizeImage(ImageIO.read(file), di,
+//                                    Image.SCALE_AREA_AVERAGING);
+//
+//                            BufferedImage buff = new BufferedImage(di.width, di.height,
+//                                    BufferedImage.TYPE_INT_ARGB);
+//
+//                            Graphics2D grah = buff.createGraphics();
+//                            grah.drawImage(
+//                                    resized, 0, 0,
+//                                    null);
+//                            file.delete();
+//                            ImageIO.write(buff, "png", file);
+//                            buff.getGraphics().dispose();
+//
+//                            JOptionPane.showMessageDialog(this, "Resized image from " + old + ", to " + choice);
+//                            this.refreshResources();
+//                        } catch (Exception e) {
+//                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+//                                    e);
+//                            ErrorShower.showError(this, "Failed to resize image.", e);
+//                        }
+//                    });
+//                    popup.add("Delete").addActionListener(_ -> {
+//                        try {
+//                            resFile.getSerialized().ResourceIDs.remove(entry.getKey());
+//                            resFile.getSerialized().ResourceTypes.remove(entry.getKey());
+//                            file.delete();
+//                            this.refreshAll();
+//                            ResourceInnerPanelView.repaint();
+//                            ResourceView.repaint();
+//                            resFile.getSerialized().build(SWPF.workspaceName(), null, null, null);
+//                        } catch (Exception e) {
+//                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+//                                    e);
+//                        }
+//                    });
+//
+//                    ToAdd.setComponentPopupMenu(popup);
+//
+//                    ToAdd.Icon.setIcon(
+//                            ImageUtilities.ResizeIcon(icon, 70, 70));
+//                    ResourceInnerPanelView.add(ToAdd);
+//
+//                    ResourceInnerPanelView.add(Box.createVerticalStrut(4));
+//                } catch (Exception e) {
+//                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+//                }
+//            }
+//        });
     }
 
     public void refreshElements() {
@@ -509,31 +502,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     return;
                 }
 
-                SourceResourceElement res = RFileOperations.getResources(SWPF.getSerialized().WorkspaceName);
-                switch (choice) {
-                    case 1:
-
-                        try {
-                            res.getSerialized()
-                                    .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
-                                            SWPF.getSerialized().WorkspaceName);
-                        } catch (WrongResourceTypeException e) {
-                            ErrorShower.exception(this, "Failed to import texture", e);
-                        }
-                        break;
-                    case 2:
-
-                        try {
-                            res.getSerialized()
-                                    .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
-                                            SWPF.getSerialized().WorkspaceName);
-                        } catch (WrongResourceTypeException e) {
-                            ErrorShower.exception(this, "Failed to import texture", e);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                
             }
             case "build" -> buildElements(false);
             case "rebuild" -> buildElements(true);

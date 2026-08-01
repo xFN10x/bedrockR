@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
-import java.util.UUID;
 
 import fn10.bedrockr.addons.element.elementSources.SourceItemElement;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.ItemTextureResource;
+import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -17,7 +19,6 @@ import fn10.bedrockr.addons.element.*;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.ItemComponents;
-import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -88,13 +89,12 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
     @HelpMessage("Main parts of an item. Components are basicly the options for an item. Like duribility, if its a weapon, etc.")
     @FieldDetails(Optional = false, displayName = "Components", Filter = FieldFilters.FileNameLikeStringFilter.class)
     @Order(6)
-    public HashMap<String, Object> Components;
+    public HashMap<String, Object> Components = new HashMap<>();
 
     @HelpMessage("The texture for the item.")
-    @ResourcePackResourceType(ResourceFile.ITEM_TEXTURE)
-    @FieldDetails(Filter = FieldFilters.RegularStringFilter.class, Optional = false, displayName = "Item Texture")
+    @FieldDetails(Optional = false, displayName = "Item Texture")
     @Order(7)
-    public UUID TextureUUID;
+    public ResourcePointer<ItemTextureResource> Texture;
 
     @Override
     public Class<SourceItemElement> getSourceClass() {
@@ -113,7 +113,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
-            GlobalBuildingVariables globalResVaribles) throws IOException {
+                      ResourcePackBuilder globalResVaribles, WorkspaceResources res) throws IOException {
         globalResVaribles.EnglishTexts.put("item." + workspaceFile.Prefix + ":" + ID, Name);
 
         // make item
@@ -139,8 +139,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
         inner.description = desc;
 
         inner.components = Components;
-        inner.components.put("minecraft:icon", globalResVaribles.addItemTexture(
-                globalResVaribles.Resource.getNameOfResourceFromUUID(TextureUUID.toString())));
+        inner.components.put("minecraft:icon", Texture.get(workspaceFile.getRes()).Name);
 
         // inner.components.put(ItemComponents.Components., workspaceFile)
         item.body = inner;
@@ -154,14 +153,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
 
     @Override
     public Byte[] getTexture(String workspace) {
-        try {
-            ResourceFile resFile = RFileOperations.getResources(workspace).getSerialized();
-            return ArrayUtils.toObject(Files.readAllBytes(resFile.getFileOfResource(workspace, MapUtilities
-                    .getKeyFromValue(resFile.ResourceIDs, TextureUUID.toString())).toPath()));
-        } catch (IllegalAccessError | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return null;
-        }
+        return ArrayUtils.toObject(RFileOperations.readAllOfResource("/addons/element/Element.png"));
     }
 
     @Override

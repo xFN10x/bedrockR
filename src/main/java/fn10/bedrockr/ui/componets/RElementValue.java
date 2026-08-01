@@ -5,20 +5,14 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
-import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.element.ValidatableValue;
-import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.Theme;
-import fn10.bedrockr.utils.exception.WrongResourceTypeException;
 import fn10.bedrockr.ui.RMapValueAddingSelector;
-import fn10.bedrockr.ui.RTextureAddingSelector;
 import fn10.bedrockr.ui.util.ErrorShower;
-import fn10.bedrockr.ui.util.ImageUtilities;
-import fn10.bedrockr.ui.util.RFonts;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -29,7 +23,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
@@ -623,366 +616,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                     ((JSpinner) Input).setValue(field.get(TargetFile));
-                } 
-                else if (UUID.class.isAssignableFrom(InputType)) { // resource
-                    final ResourcePackResourceType anno;
-                    final int type;
-                    if (field != null) {
-                        anno = field.getAnnotation(ResourcePackResourceType.class);
-                        type = anno.value();
-                    } else if (TargetField.equalsIgnoreCase("_blocktexture")) {
-                        type = ResourceFile.BLOCK_TEXTURE;
-                    } else if (TargetField.equalsIgnoreCase("_itemtexture")) {
-                        type = ResourceFile.ITEM_TEXTURE;
-                    } else {
-                        return;
-                    }
-
-
-                    Dimension size = new Dimension(350, 120);
-                    switch (type) {
-                        //#region item texture
-                        case ResourceFile.ITEM_TEXTURE: // if its an item texture
-                            SpringLayout layout = new SpringLayout();
-                            Input = new JPanel();
-                            Input.setName("null");
-                            Input.setBorder(getBorder());
-                            Input.setLayout(layout);
-
-                            NameItem = new JLabel("(Select a texture.)");
-                            NameItem.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
-                            IDItem = new JLabel();
-                            IDItem.setFont(RFonts.RegMinecraftFont.deriveFont(6f));
-                            TypeItem = new JLabel("Item Texture");
-                            TypeItem.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
-                            TypeItem.setForeground(getForeground().darker().darker());
-                            AddButtonItem = new JButton("+");
-                            SelectButtonItem = new JButton("Select");
-                            IconItem = new JLabel(ImageUtilities.ResizeIcon(
-                                    new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
-
-                            AddButtonItem.addActionListener(ac -> {
-                                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
-                                file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
-                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter(
-                                        "PNG Image Files (*.png)", "png"));
-
-                                if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
-                                    return;
-                                Object input = JOptionPane.showInputDialog(this,
-                                        "What do you want to name this texture? (" + file.getSelectedFile().getName()
-                                                + ")",
-                                        "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
-                                        file.getSelectedFile().getName());
-
-                                String finalName = (((String) input).contains(".png") ? input.toString()
-                                        : input + ".png");
-                                File dest = Path
-                                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), WorkspaceName,
-                                                "resources", finalName)
-                                        .toFile();
-                                if (dest.exists()) {
-                                    JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
-                                            "Naming Error",
-                                            JOptionPane.ERROR_MESSAGE);
-                                    AddButtonItem.doClick();
-                                    return;
-                                }
-                                try {
-                                    RFileOperations.getResources(WorkspaceName).getSerialized()
-                                            .importTexture(file.getSelectedFile(), ResourceFile.ITEM_TEXTURE,
-                                                    WorkspaceName);
-                                } catch (WrongResourceTypeException e) {
-                                    ErrorShower.exception(this, "Failed to import texture", e);
-                                }
-                            });
-                            SelectButtonItem.addActionListener(ac -> {
-                                try {
-                                    var Selected = RTextureAddingSelector.openSelector(parentFrame,
-                                            ResourceFile.ITEM_TEXTURE,
-                                            WorkspaceName);
-                                    if (Selected == null)
-                                        return;
-                                    var filename = MapUtilities.getKeyFromValue(
-                                            RFileOperations.getResources(WorkspaceName).getSerialized().ResourceIDs,
-                                            Selected.getKey());
-                                    NameItem.setText(
-                                            filename);
-                                    // fn10.bedrockr.Launcher.LOG.info(Selected.getKey());
-                                    IDItem.setText(Selected.getKey());
-                                    IconItem.setIcon(Selected.getValue());
-                                    Input.setName(Selected.getKey());
-
-                                } catch (InterruptedException e1) {
-                                    Launcher.LOG.log(Level.SEVERE,
-                                            "Exception thrown",
-                                            e1);
-                                }
-                            });
-
-                            IconItem.setMaximumSize(new Dimension(64, 64));
-                            IconItem.setPreferredSize(new Dimension(64, 64));
-                            IconItem.setBorder(Input.getBorder());
-
-                            layout.putConstraint(SpringLayout.WEST, IconItem, 5, SpringLayout.WEST, Input);
-                            layout.putConstraint(SpringLayout.VERTICAL_CENTER, IconItem, 0,
-                                    SpringLayout.VERTICAL_CENTER,
-                                    Input);
-
-                            layout.putConstraint(SpringLayout.WEST, NameItem, 5, SpringLayout.EAST, IconItem);
-                            layout.putConstraint(SpringLayout.NORTH, NameItem, 0, SpringLayout.NORTH, IconItem);
-
-                            layout.putConstraint(SpringLayout.WEST, IDItem, 5, SpringLayout.EAST, IconItem);
-                            layout.putConstraint(SpringLayout.NORTH, IDItem, 0, SpringLayout.SOUTH, NameItem);
-
-                            layout.putConstraint(SpringLayout.WEST, TypeItem, 5, SpringLayout.EAST, IconItem);
-                            layout.putConstraint(SpringLayout.SOUTH, TypeItem, 0, SpringLayout.SOUTH, IconItem);
-
-                            layout.putConstraint(SpringLayout.SOUTH, SelectButtonItem, -5, SpringLayout.SOUTH, Input);
-                            layout.putConstraint(SpringLayout.EAST, SelectButtonItem, -5, SpringLayout.EAST, Input);
-
-                            Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButtonItem, 0,
-                                    SpringLayout.HORIZONTAL_CENTER,
-                                    this.Name);
-                            Lay.putConstraint(SpringLayout.SOUTH, AddButtonItem, 0, SpringLayout.SOUTH, Input);
-
-                            Input.add(IconItem);
-                            Input.add(NameItem);
-                            Input.add(IDItem);
-                            Input.add(TypeItem);
-                            Input.add(SelectButtonItem);
-                            add(AddButtonItem);
-
-                            setMaximumSize(size);
-                            setPreferredSize(size);
-
-                            if (!FromEmpty && field != null) {
-                                UUID Id;
-                                try {
-                                    Id = (UUID) field.get(TargetFile);
-                                } catch (IllegalArgumentException | IllegalAccessException e) {
-                                    if (TargetFile.getDraft())
-                                        return;
-                                    Launcher.LOG.log(Level.SEVERE,
-                                            "Exception thrown",
-                                            e);
-                                    ErrorShower.showError(parentFrame,
-                                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                                            DisplayName, e);
-                                    return;
-                                }
-                                if (Id == null)
-                                    break;
-
-                                String id = Id.toString();
-
-                                var res = RFileOperations.getResources(
-                                        WorkspaceName);
-
-                                var filename = MapUtilities.getKeyFromValue(
-                                        res.getSerialized().ResourceIDs,
-                                        id);
-
-                                NameItem.setText(
-                                        filename);
-                                IDItem.setText(id);
-                                try {
-                                    IconItem.setIcon(ImageUtilities.ResizeIcon(
-                                            new ImageIcon(Files.readAllBytes(res.getSerialized()
-                                                    .getFileOfResource(
-                                                            WorkspaceName, NameItem.getText())
-                                                    .toPath())),
-                                            64, 64));
-                                } catch (Exception e) {
-                                    Launcher.LOG.log(Level.SEVERE,
-                                            "Exception thrown",
-                                            e);
-                                    ErrorShower.showError(parentFrame,
-                                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                                            DisplayName, e);
-                                }
-                                Input.setName(id);
-                            }
-                            break;
-                        //#endregion
-
-                        case ResourceFile.BLOCK_TEXTURE: // if it's a block texture
-                            SpringLayout layoutBlock = new SpringLayout();
-                            Input = new JPanel();
-                            Input.addPropertyChangeListener("enabled", p -> {
-                                Boolean newV = (Boolean) p.getNewValue();
-                                SelectButtonBlock.setEnabled(newV);
-                                NameBlock.setEnabled(newV);
-                                IDBlock.setEnabled(newV);
-                                TypeBlock.setEnabled(newV);
-                                IconBlock.setEnabled(newV);
-                            });
-                            Input.setName("null");
-                            Input.setBorder(new LineBorder(ImageUtilities.brighter(getBackground(), 0.5f)));
-                            Input.setLayout(layoutBlock);
-
-                            NameBlock = new JLabel("(Select a texture.)");
-                            NameBlock.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
-                            IDBlock = new JLabel();
-                            IDBlock.setFont(RFonts.RegMinecraftFont.deriveFont(6f));
-                            TypeBlock = new JLabel("Block Texture");
-                            TypeBlock.setFont(RFonts.RegMinecraftFont.deriveFont(8f));
-                            TypeBlock.setForeground(getForeground().darker().darker());
-                            AddButtonBlock = new JButton("+");
-                            SelectButtonBlock = new JButton("Select");
-                            IconBlock = new JLabel(ImageUtilities.ResizeIcon(
-                                    new ImageIcon(getClass().getResource("/addons/DefaultItemTexture.png")), 64, 64));
-                            AddButtonBlock.addActionListener(ac -> {
-                                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
-                                file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
-                                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter(
-                                        "PNG Image Files (*.png)", "png"));
-
-                                if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
-                                    return;
-                                Object input = JOptionPane.showInputDialog(this,
-                                        "What do you want to name this texture? (" + file.getSelectedFile().getName()
-                                                + ")",
-                                        "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
-                                        file.getSelectedFile().getName());
-
-                                String finalName = (((String) input).contains(".png") ? input.toString()
-                                        : input + ".png");
-                                File dest = Path
-                                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), WorkspaceName,
-                                                "resources", finalName)
-                                        .toFile();
-                                if (dest.exists()) {
-                                    JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
-                                            "Naming Error",
-                                            JOptionPane.ERROR_MESSAGE);
-                                    AddButtonItem.doClick();
-                                    return;
-                                }
-                                try {
-                                    RFileOperations.getResources(WorkspaceName).getSerialized()
-                                            .importTexture(file.getSelectedFile(), ResourceFile.BLOCK_TEXTURE,
-                                                    WorkspaceName);
-                                } catch (WrongResourceTypeException e) {
-                                    ErrorShower.exception(this, "Failed to import texture", e);
-                                }
-                            });
-                            SelectButtonBlock.addActionListener(ac -> {
-                                try {
-                                    var Selected = RTextureAddingSelector.openSelector(parentFrame,
-                                            ResourceFile.BLOCK_TEXTURE,
-                                            WorkspaceName);
-                                    if (Selected == null)
-                                        return;
-                                    var filename = MapUtilities.getKeyFromValue(
-                                            RFileOperations.getResources(
-                                                    WorkspaceName).getSerialized().ResourceIDs,
-                                            Selected.getKey());
-                                    NameBlock.setText(
-                                            filename);
-                                    // fn10.bedrockr.Launcher.LOG.info(Selected.getKey());
-                                    IDBlock.setText(Selected.getKey());
-                                    IconBlock.setIcon(Selected.getValue());
-                                    Input.setName(Selected.getKey());
-
-                                } catch (InterruptedException e1) {
-                                    Launcher.LOG.log(Level.SEVERE,
-                                            "Exception thrown",
-                                            e1);
-                                }
-                            });
-
-                            IconBlock.setMaximumSize(new Dimension(64, 64));
-                            IconBlock.setPreferredSize(new Dimension(64, 64));
-                            IconBlock.setBorder(Input.getBorder());
-
-                            layoutBlock.putConstraint(SpringLayout.WEST, IconBlock, 5, SpringLayout.WEST, Input);
-                            layoutBlock.putConstraint(SpringLayout.VERTICAL_CENTER, IconBlock, 0,
-                                    SpringLayout.VERTICAL_CENTER,
-                                    Input);
-
-                            layoutBlock.putConstraint(SpringLayout.WEST, NameBlock, 5, SpringLayout.EAST, IconBlock);
-                            layoutBlock.putConstraint(SpringLayout.NORTH, NameBlock, 0, SpringLayout.NORTH, IconBlock);
-
-                            layoutBlock.putConstraint(SpringLayout.WEST, IDBlock, 5, SpringLayout.EAST, IconBlock);
-                            layoutBlock.putConstraint(SpringLayout.NORTH, IDBlock, 0, SpringLayout.SOUTH, NameBlock);
-
-                            layoutBlock.putConstraint(SpringLayout.WEST, TypeBlock, 5, SpringLayout.EAST, IconBlock);
-                            layoutBlock.putConstraint(SpringLayout.SOUTH, TypeBlock, 0, SpringLayout.SOUTH, IconBlock);
-
-                            layoutBlock.putConstraint(SpringLayout.SOUTH, SelectButtonBlock, -5, SpringLayout.SOUTH,
-                                    Input);
-                            layoutBlock.putConstraint(SpringLayout.EAST, SelectButtonBlock, -5, SpringLayout.EAST,
-                                    Input);
-
-                            Lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, AddButtonBlock, 0,
-                                    SpringLayout.HORIZONTAL_CENTER,
-                                    this.Name);
-                            Lay.putConstraint(SpringLayout.SOUTH, AddButtonBlock, 0, SpringLayout.SOUTH, Input);
-
-                            Input.add(IconBlock);
-                            Input.add(NameBlock);
-                            Input.add(IDBlock);
-                            Input.add(TypeBlock);
-                            Input.add(SelectButtonBlock);
-                            add(AddButtonBlock);
-
-                            setMaximumSize(size);
-                            setPreferredSize(size);
-
-                            if (!FromEmpty) {
-                                UUID Id;
-                                try {
-                                    Id = (UUID) field.get(TargetFile);
-                                } catch (IllegalArgumentException | IllegalAccessException e) {
-                                    if (TargetFile.getDraft())
-                                        return;
-                                    Launcher.LOG.log(Level.SEVERE,
-                                            "Exception thrown",
-                                            e);
-                                    ErrorShower.showError(parentFrame,
-                                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                                            DisplayName, e);
-                                    return;
-                                }
-                                if (Id == null)
-                                    break;
-
-                                String id = Id.toString();
-
-                                var res = RFileOperations.getResources(
-                                        WorkspaceName);
-
-                                var filename = MapUtilities.getKeyFromValue(
-                                        res.getSerialized().ResourceIDs,
-                                        id);
-
-                                NameBlock.setText(
-                                        filename);
-                                IDBlock.setText(id);
-                                try {
-                                    IconBlock.setIcon(ImageUtilities.ResizeIcon(
-                                            new ImageIcon(Files.readAllBytes(res.getSerialized()
-                                                    .getFileOfResource(
-                                                            WorkspaceName, NameBlock.getText())
-                                                    .toPath())),
-                                            64, 64));
-                                } catch (Exception e) {
-                                    Launcher.LOG.log(Level.SEVERE,
-                                            "Exception thrown",
-                                            e);
-                                    ErrorShower.showError(parentFrame,
-                                            "Failed to get field (does the passed ElementFile match the ElementSource?)",
-                                            DisplayName, e);
-                                }
-                                Input.setName(id);
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                } 
+                }
                 else {
                     Input = new JLabel("Not supported.");
                 }
@@ -1111,29 +745,29 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public void setValue(Object value) throws ClassNotFoundException {
         if (value == null) return;
         initValue = value;
-        if (value instanceof BlockTexture bt) {
-            int mode = bt.getMode();
-            BlockTexturesModeDropdown.setSelectedIndex(mode);
-            switch (mode) {
-                case BlockTexture.ALL_FACES_MODE:
-                    BlockTexturesTop.setValue(bt.upTexID);
-                    break;
-                case BlockTexture.PILLAR_MODE:
-                    BlockTexturesTop.setValue(bt.upTexID);
-                    BlockTexturesBottom.setValue(bt.downTexID);
-                    BlockTexturesNorth.setValue(bt.northTexID);
-                    break;
-                default:
-                    BlockTexturesTop.setValue(bt.upTexID);
-                    BlockTexturesBottom.setValue(bt.downTexID);
-                    BlockTexturesNorth.setValue(bt.northTexID);
-                    BlockTexturesSouth.setValue(bt.southTexID);
-                    BlockTexturesEast.setValue(bt.eastTexID);
-                    BlockTexturesWest.setValue(bt.westTexID);
-                    break;
-            }
-        }
-        else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
+//        if (value instanceof BlockTexture bt) {
+//            int mode = bt.getMode();
+//            BlockTexturesModeDropdown.setSelectedIndex(mode);
+//            switch (mode) {
+//                case BlockTexture.ALL_FACES_MODE:
+//                    BlockTexturesTop.setValue(bt.upTexID);
+//                    break;
+//                case BlockTexture.PILLAR_MODE:
+//                    BlockTexturesTop.setValue(bt.upTexID);
+//                    BlockTexturesBottom.setValue(bt.downTexID);
+//                    BlockTexturesNorth.setValue(bt.northTexID);
+//                    break;
+//                default:
+//                    BlockTexturesTop.setValue(bt.upTexID);
+//                    BlockTexturesBottom.setValue(bt.downTexID);
+//                    BlockTexturesNorth.setValue(bt.northTexID);
+//                    BlockTexturesSouth.setValue(bt.southTexID);
+//                    BlockTexturesEast.setValue(bt.eastTexID);
+//                    BlockTexturesWest.setValue(bt.westTexID);
+//                    break;
+//            }
+//        } else
+        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
             var casted = ((JComboBox<String>) Input);
             casted.setSelectedItem(value.toString());
         } else if (Path.class.isAssignableFrom(InputType)) {
@@ -1231,61 +865,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 ErrorShower.showError(parentFrame, e.getMessage(), e);
             }
         }
-        else if (UUID.class.isAssignableFrom(InputType)) {
-            UUID Id = null;
-            try {
-                if (value instanceof String) {
-                    Id = UUID.fromString(((String) value));
-                } else if (value instanceof UUID) {
-                    Id = ((UUID) value);
-                }
-            } catch (IllegalArgumentException e) {
-
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(parentFrame,
-                        "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
-                return;
-            }
-            if (Id == null)
-                return;
-
-            String id = Id.toString();
-
-            ResourceFile res = Objects.requireNonNull(RFileOperations.getResources(
-                    WorkspaceName)).getSerialized();
-
-            String filename = res.getNameOfResourceFromUUID(id);
-
-            if (res.getResourceTypeFromName(filename) == ResourceFile.BLOCK_TEXTURE) {
-                NameBlock.setText(
-                        filename);
-                IDBlock.setText(id);
-                try {
-                    IconBlock.setIcon(ImageUtilities.ResizeIcon(
-                            new ImageIcon(Files.readAllBytes(res.getFileOfResource(
-                                    WorkspaceName, NameBlock.getText()).toPath())),
-                            64, 64));
-                } catch (Exception e) {
-                    ErrorShower.exception(parentFrame, e);
-                }
-            } else if (res.getResourceTypeFromName(filename) == ResourceFile.ITEM_TEXTURE) {
-                NameItem.setText(
-                        filename);
-                IDItem.setText(id);
-                try {
-                    IconItem.setIcon(ImageUtilities.ResizeIcon(
-                            new ImageIcon(Files.readAllBytes(res.getFileOfResource(
-                                    WorkspaceName, NameItem.getText()).toPath())),
-                            64, 64));
-                } catch (Exception e) {
-                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
-                    ErrorShower.showError(parentFrame,
-                            "Failed to get field (does the passed ElementFile match the ElementSource?)", e);
-                }
-            }
-
-            Input.setName(id);
-        } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
+       else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
                 || InputType == Float.class) { // int, float
             // fn10.bedrockr.Launcher.LOG.info("this is an int, or float, and its
             // getting set to a " +
@@ -1310,24 +890,24 @@ public class RElementValue extends JPanel implements ValidatableValue {
         // fn10.bedrockr.Launcher.LOG.info(InputType.getName());
         if (valid(true, log)) {
             try {
-                if (BlockTexture.class.isAssignableFrom(InputType)) {
-                    return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
-                        case BlockTexture.ALL_FACES_MODE -> new BlockTexture((UUID) BlockTexturesTop.getValue(log));
-                        case BlockTexture.PILLAR_MODE -> new BlockTexture(
-                                (UUID) BlockTexturesTop.getValue(log),
-                                (UUID) BlockTexturesBottom.getValue(log),
-                                (UUID) BlockTexturesNorth.getValue(log));
-                        //perface
-                        default -> new BlockTexture(
-                                (UUID) BlockTexturesTop.getValue(log),
-                                (UUID) BlockTexturesBottom.getValue(log),
-                                (UUID) BlockTexturesNorth.getValue(log),
-                                (UUID) BlockTexturesSouth.getValue(log),
-                                (UUID) BlockTexturesEast.getValue(log),
-                                (UUID) BlockTexturesWest.getValue(log));
-                    };
-                }
-                else if (Path.class.isAssignableFrom(InputType)) {
+                //if (BlockTexture.class.isAssignableFrom(InputType)) {
+//                    return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
+//                        case BlockTexture.ALL_FACES_MODE -> new BlockTexture((UUID) BlockTexturesTop.getValue(log));
+//                        case BlockTexture.PILLAR_MODE -> new BlockTexture(
+//                                (UUID) BlockTexturesTop.getValue(log),
+//                                (UUID) BlockTexturesBottom.getValue(log),
+//                                (UUID) BlockTexturesNorth.getValue(log));
+//                        //perface
+//                        default -> new BlockTexture(
+//                                (UUID) BlockTexturesTop.getValue(log),
+//                                (UUID) BlockTexturesBottom.getValue(log),
+//                                (UUID) BlockTexturesNorth.getValue(log),
+//                                (UUID) BlockTexturesSouth.getValue(log),
+//                                (UUID) BlockTexturesEast.getValue(log),
+//                                (UUID) BlockTexturesWest.getValue(log));
+//                    };
+                //} else
+                if (Path.class.isAssignableFrom(InputType)) {
                     return Path.of(((JButton) Input).getText());
                 } else if (Boolean.class.isAssignableFrom(InputType) || InputType.equals(boolean.class)) {
                     return (((JComboBox<String>) Input).getSelectedIndex() == 0);

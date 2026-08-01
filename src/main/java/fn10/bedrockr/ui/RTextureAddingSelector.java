@@ -2,7 +2,6 @@ package fn10.bedrockr.ui;
 
 import java.awt.*;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
-import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.base.RDialog;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -69,36 +66,8 @@ public class RTextureAddingSelector extends RDialog {
 
         InnerPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
         selector.getVerticalScrollBar().setUnitIncrement(18);
-
-        ResourceFile res = RFileOperations.getResources(
-                Workspace).getSerialized();
-        Map<String, Integer> resTypes = res.ResourceTypes;
-        Map<String, String> resIDs = res.ResourceIDs;
-
-        for (Map.Entry<String, Integer> entry : resTypes.entrySet()) {
-            try {
-                if (Objects.equals(entry.getValue(), TextureType)) {
-                    JButton ToAdd = new JButton();
-                    Dimension size = new Dimension(48, 48);
-                    ImageIcon normalIcon = new ImageIcon(res
-                            .getFileOfResource(Workspace, entry.getKey()).getPath());
-                    ImageIcon resizedIcon = new ImageIcon(normalIcon.getImage().getScaledInstance((int) size.getWidth(),
-                            (int) size.getHeight(), Image.SCALE_AREA_AVERAGING));
-                    ToAdd.setMinimumSize(size);
-                    ToAdd.setPreferredSize(size);
-                    ToAdd.setIcon(resizedIcon);
-                    ToAdd.setName(resIDs.get(entry.getKey()));
-                    ToAdd.setToolTipText(entry.getKey() + " (" + resIDs.get(entry.getKey()) + ")");
-                    ToAdd.addActionListener(e -> {
-                        selected = ((JButton) e.getSource());
-                    });
-                    InnerPanel.add(ToAdd);
-                }
-            } catch (Exception e1) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            }
-        }
-
+        
+        
         setLayout(Lay);
 
         // selector.add(InnerPanel);
