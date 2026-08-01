@@ -37,9 +37,9 @@ public class RFileOperations {
             .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
             .registerTypeAdapter(ImageIcon.class, new ImageIconSerializer())
             .create();
-    public static final String SEM_VERSION = "0.9";
+    public static final String SEM_VERSION = "0.9.0";
     public static final int NUM_VERSION = 10;
-    public static final String VERSION = "a2.2";
+    public static final String VERSION = "a3.0";
     private static final String USER_DIR = System.getProperty("user.home");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);

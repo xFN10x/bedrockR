@@ -24,7 +24,7 @@ sourceSets["main"].resources {
     modules("javafx.controls", "javafx.swing", "javafx.web")
 }*/
 
-val version = "a2.2.0"
+val version = "a3.0"
 val winver = "0.9.0"
 
 dependencies {
