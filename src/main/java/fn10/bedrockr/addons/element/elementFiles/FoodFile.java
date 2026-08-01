@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import fn10.bedrockr.addons.element.elementSources.SourceFoodElement;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -155,6 +157,11 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
     @Override
     public Class<SourceFoodElement> getSourceClass() {
         return SourceFoodElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceFoodElement>> getNewSource() {
+        return new SourceFoodElement(this);
     }
 
     @Override

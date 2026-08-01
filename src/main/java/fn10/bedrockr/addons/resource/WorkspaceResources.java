@@ -1,0 +1,102 @@
+package fn10.bedrockr.addons.resource;
+
+import com.google.gson.Gson;
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
+import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
+import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
+public class WorkspaceResources {
+    public final WorkspaceFile wpf;
+    public final HashMap<String, Class<? extends Resource>> resourcePaths = new HashMap<>();
+    public final ArrayList<Resource> resources = new ArrayList<>();
+    public final HashMap<Class<? extends Resource>, ResourceBuilder<? extends Resource>> builders = new HashMap<>(Map.of(
+        ItemTextureResource.class, new ItemTextureBuilder()
+    ));
+
+    private WorkspaceResources(WorkspaceFile wpf) {
+        this.wpf = wpf;
+    }
+    
+    public void addNewResource(Resource res) {
+        resourcePaths.put(res.getFolderPath(), res.getClass());
+        resources.add(res);
+    }
+    
+    private  <T extends Resource> T loadResource(String path, Class<T> resClass) throws IOException {
+        Path resFolder = getResourcesPath(wpf.WorkspaceName).resolve(path);
+        Path jsonPath = resFolder.resolve("resource.json");
+        T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
+        Path dataFile = resFolder.resolve("data." + resource.resourceDataExtension());
+        resource.data = Files.readAllBytes(dataFile);
+        addNewResource(resource);
+        Launcher.LOG.info("Loaded resource: " + path);
+        return resource;
+    }
+    
+    public static WorkspaceResources load(String wpname) throws WorkspaceUnsupportedException, IOException {
+        WorkspaceFile wpf = RFileOperations.getWorkspaceFile(wpname);
+        int format = wpf.Format;
+        if (format < 2) {
+            throw new WorkspaceUnsupportedException(2, format);
+        }
+
+        WorkspaceResources res = new WorkspaceResources(wpf);
+
+        HashMap<String, Class<? extends Resource>> resources = getResourcesJson(wpname);
+        for (Map.Entry<String, Class<? extends Resource>> entry : resources.entrySet()) {
+            res.loadResource(entry.getKey(), entry.getValue());
+        }
+        res.save();
+        return res;
+    }
+    
+    public void save() {
+        try {
+            String json = RFileOperations.gson.toJson(resourcePaths);
+            RFileOperations.write(getResourcesJsonPath(wpf.WorkspaceName), json);
+
+            for (Resource resource : resources) {
+                resource.save(this);
+            }
+            Launcher.LOG.info("Saved resources.");
+        } catch (IOException e) {
+            Launcher.LOG.log(Level.SEVERE, "Failed to save resources.");
+        }
+    }
+
+    private static @NonNull HashMap<String, Class<? extends Resource>> getResourcesJson(String workspace) throws IOException {
+        Path prop = getResourcesJsonPath(workspace);
+        if (!Files.exists(prop)) return new HashMap<>();
+        return RFileOperations.gson.fromJson(Files.readString(prop), HashMap.class);
+    }
+
+    private static @NonNull Path getResourcesJsonPath(String wpName) throws IOException {
+        return getResourcesPath(wpName).resolve("resources.json");
+    }
+
+    public static Path getResourcesPath(String wpName) throws IOException {
+        return RFileOperations.getFileFromWorkspace(wpName, "resources").toPath();
+    }
+    
+    public void build(String resourceRootPath) {
+        
+    }
+    
+    public static class WorkspaceUnsupportedException extends Exception {
+        public WorkspaceUnsupportedException(int expectedFormat, int gotFormat) {
+            super("Expected workspace format: " + expectedFormat + ", got format: " + gotFormat);
+        }
+    }
+}

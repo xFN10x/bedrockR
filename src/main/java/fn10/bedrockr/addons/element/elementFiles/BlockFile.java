@@ -1,11 +1,12 @@
 package fn10.bedrockr.addons.element.elementFiles;
 
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.mcjson.behav.Block;
 import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem;
 import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem.Description;
 import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem.Description.MenuCategory;
 import fn10.bedrockr.addons.element.FieldFilters;
-import fn10.bedrockr.addons.element.SourceBlockElement;
+import fn10.bedrockr.addons.element.elementSources.SourceBlockElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.BlockComponents;
@@ -130,6 +131,11 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     @Override
     public Class<SourceBlockElement> getSourceClass() {
         return SourceBlockElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceBlockElement>> getNewSource() {
+        return new SourceBlockElement(this);
     }
 
     @Override

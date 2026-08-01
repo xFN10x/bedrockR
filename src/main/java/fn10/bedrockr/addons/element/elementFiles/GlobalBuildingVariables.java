@@ -16,7 +16,7 @@ import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.resource.BlockJSONEntry;
-import fn10.bedrockr.addons.mcjson.resource.TerrianTextures;
+import fn10.bedrockr.addons.mcjson.resource.TerrainTextures;
 import fn10.bedrockr.addons.mcjson.resource.ItemTextures;
 import fn10.bedrockr.addons.mcjson.resource.ItemTextures.TextureData;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
@@ -35,7 +35,7 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
     private final Map<String, BlockJSONEntry> BlockRPEntrys = new HashMap<>();
 
     private final ItemTextures ItemTexturesFile = new ItemTextures();
-    private final TerrianTextures TerrainJson = new TerrianTextures();
+    private final TerrainTextures TerrainJson = new TerrainTextures();
 
     private final List<File> ItemTextures = new ArrayList<>();
     private final List<File> BlockTextures = new ArrayList<>();
@@ -84,7 +84,7 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
         var plannedkey = WPF.Prefix + "_" + textureName.replace(".png", "");
 
         if (TerrainJson.texture_data.containsKey(plannedkey))
-            TerrainJson.texture_data.put(plannedkey, new TerrianTextures.TextureData(textureName));
+            TerrainJson.texture_data.put(plannedkey, new TerrainTextures.TextureData(textureName));
         BlockTextures.add(Resource.getFileOfResource(WPF.WorkspaceName, textureName));
         return plannedkey;
     }
@@ -155,7 +155,7 @@ public class GlobalBuildingVariables extends SourcelessElementFile {
             }
             testImage.getGraphics().dispose();*/
             TerrainJson.texture_data.put(WPF.Prefix + "_" + file.getName().replace(".png", ""),
-                    new TerrianTextures.TextureData(file.getName()));
+                    new TerrainTextures.TextureData(file.getName()));
         }
 
         // microsoft decided to make this werid

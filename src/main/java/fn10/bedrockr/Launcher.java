@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.rendering.BlockTextures;

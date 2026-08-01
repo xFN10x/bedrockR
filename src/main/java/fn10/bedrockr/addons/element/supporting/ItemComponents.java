@@ -2,9 +2,9 @@ package fn10.bedrockr.addons.element.supporting;
 
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.addons.RMapElement;
-import fn10.bedrockr.addons.RMapElement.MapValueFilter;
-import fn10.bedrockr.addons.RStringDropdownMapElement;
+import fn10.bedrockr.addons.element.RMapElement;
+import fn10.bedrockr.addons.element.RMapElement.MapValueFilter;
+import fn10.bedrockr.addons.element.RStringDropdownMapElement;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
 
 /**

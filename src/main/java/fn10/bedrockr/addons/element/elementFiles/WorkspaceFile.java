@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.Vector;
 
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Manifest;
@@ -22,7 +23,7 @@ import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata;
 import fn10.bedrockr.addons.mcjson.behav.Manifest.Module;
 import fn10.bedrockr.addons.mcjson.behav.Manifest.Metadata.GeneratedWithBedrockR;
 import fn10.bedrockr.addons.mcjson.SharedJSONClasses.VersionVector;
-import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -72,6 +73,11 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
     @Override
     public Class<SourceWorkspaceFile> getSourceClass() {
         return SourceWorkspaceFile.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceWorkspaceFile>> getNewSource() {
+        return new SourceWorkspaceFile(this);
     }
 
     @Override

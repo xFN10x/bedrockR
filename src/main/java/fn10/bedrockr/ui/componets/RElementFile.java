@@ -28,7 +28,7 @@ public class RElementFile extends RElement implements ActionListener {
     public RElementFile(RWorkspace Workspace, ElementFile<?> File, String FilePath)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        super(File.getSourceClass(), null, (File.getDraft() ? Color.gray : Color.green));
+        super(File.getNewSource(), null, (File.getDraft() ? Color.gray : Color.green));
         this.file = File;
         this.filePath = FilePath;
         this.wksp = Workspace;
@@ -75,8 +75,7 @@ public class RElementFile extends RElement implements ActionListener {
 
     protected void openWindow() {
         try {
-            Class<? extends ElementSource<?>> srczz = file.getSourceClass();
-            ElementSource<?> newsrc = srczz.getConstructor(file.getClass()).newInstance(file); // make new elementsource
+            ElementSource<?> newsrc = file.getNewSource(); // make new elementsource
                                                                                                // with file
             RElementEditingScreen screen = RElementEditingScreen.getElementsCreationScreen(newsrc, wksp, wksp,
                     wksp.SWPF.getSerialized().WorkspaceName);

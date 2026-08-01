@@ -1,8 +1,9 @@
 package fn10.bedrockr.addons.element.elementFiles;
 
 import java.io.IOException;
-import fn10.bedrockr.addons.element.SourceScriptElement;
+import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
 
 public class ScriptFile extends ElementFile<SourceScriptElement> {
 
@@ -15,6 +16,11 @@ public class ScriptFile extends ElementFile<SourceScriptElement> {
     @Override
     public Class<SourceScriptElement> getSourceClass() {
         return SourceScriptElement.class;
+    }
+
+    @Override
+    public ElementSource<? extends ElementFile<SourceScriptElement>> getNewSource() {
+        return new SourceScriptElement(this);
     }
 
     @Override

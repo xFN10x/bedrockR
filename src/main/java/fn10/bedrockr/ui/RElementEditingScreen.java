@@ -1,18 +1,21 @@
 package fn10.bedrockr.ui;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
+import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement;
+import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.element.*;
 import fn10.bedrockr.addons.element.FieldFilters.RegularStringFilter;
-import fn10.bedrockr.addons.element.SourceRecipeElement.RecipeType;
+import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement.RecipeType;
 import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
 import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.ElementCreationListener;
-import fn10.bedrockr.addons.ValidatableValue;
+import fn10.bedrockr.addons.element.ElementCreationListener;
+import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
@@ -140,7 +143,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                                                   ElementCreationListener parent2, String Workspace)
             throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (src.getClass().equals(SourceBiomeElement.class)) {
-            RElementEditingScreen screen = new RElementEditingScreen(Parent, SourceBiomeElement.getDetails().Name, src,
+            RElementEditingScreen screen = new RElementEditingScreen(Parent, "Biome", src,
                     src.getSerilizedClass(),
                     parent2);
             SpringLayout lay = new SpringLayout();

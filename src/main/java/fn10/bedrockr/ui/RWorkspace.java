@@ -3,14 +3,15 @@ package fn10.bedrockr.ui;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.element.SourceResourceElement;
-import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
+import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.GlobalBuildingVariables;
 import fn10.bedrockr.addons.element.elementFiles.ResourceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.ElementCreationListener;
+import fn10.bedrockr.addons.element.ElementCreationListener;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.SettingsFile;
@@ -654,41 +655,51 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
      * @param WPF       - The workspace to open
      */
     public static void openWorkspace(Window doingThis, SourceWorkspaceFile WPF) {
-        RFileOperations.setCurrentWorkspace(WPF);
-        new Thread(() -> {
-            RWorkspace workspaceView = new RWorkspace(WPF);
-
-            RLoadingScreen loading = new RLoadingScreen(doingThis);
-            loading.setAlwaysOnTop(true);
-            SwingUtilities.invokeLater(() -> loading.setVisible(true));
-
-            ReturnItemInfo.downloadVanillaItems();
-            ReturnItemInfo.downloadVanillaBlocks();
-
-            // get items ready for use
-            SwingUtilities.invokeLater(() -> {
-                loading.setVisible(false);
-                if (doingThis != null)
-                    doingThis.dispose();
-                workspaceView.setVisible(true);
-                if (!WPF.getSerialized().MinecraftSync) { // ask to enable mc sync if not enabled
-                    var ask = JOptionPane.showConfirmDialog(doingThis,
-                            "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
-                            "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    if (ask == JOptionPane.YES_OPTION) {
-                        showMCSyncPopup(doingThis, WPF);
-                    }
-                } else if (!SettingsFile.load().comMojangPath.toFile().exists()) {
-                    var ask = JOptionPane.showConfirmDialog(doingThis,
-                            "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
-                            "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    if (ask == JOptionPane.YES_OPTION) {
-                        showMCSyncPopup(doingThis, WPF);
-                    } else {
-                        WPF.getSerialized().MinecraftSync = false;
-                    }
-                }
-            });
-        }).start();
+        try {
+            if (WPF.getSerialized().Format < 2) {
+                JOptionPane.showConfirmDialog(doingThis, "This workspace is using the old resource system, and it needs to be upgraded. Upgrade?", "Format Outdated", JOptionPane.YES_NO_OPTION);
+            } else 
+            if (RFileOperations.loadWorkspace(WPF)) {
+                new Thread(() -> {
+                    RWorkspace workspaceView = new RWorkspace(WPF);
+    
+                    RLoadingScreen loading = new RLoadingScreen(doingThis);
+                    loading.setAlwaysOnTop(true);
+                    SwingUtilities.invokeLater(() -> loading.setVisible(true));
+    
+                    ReturnItemInfo.downloadVanillaItems();
+                    ReturnItemInfo.downloadVanillaBlocks();
+    
+                    // get items ready for use
+                    SwingUtilities.invokeLater(() -> {
+                        loading.setVisible(false);
+                        if (doingThis != null)
+                            doingThis.dispose();
+                        workspaceView.setVisible(true);
+                        if (!WPF.getSerialized().MinecraftSync) { // ask to enable mc sync if not enabled
+                            var ask = JOptionPane.showConfirmDialog(doingThis,
+                                    "This project does not currently have Minecraft Sync enabled. Minecraft Sync automaticly copies your built project files into com.mojang, so you can build, and playtest without needing to restart the game. Enable MC Sync?",
+                                    "Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                            if (ask == JOptionPane.YES_OPTION) {
+                                showMCSyncPopup(doingThis, WPF);
+                            }
+                        } else if (!SettingsFile.load().comMojangPath.toFile().exists()) {
+                            var ask = JOptionPane.showConfirmDialog(doingThis,
+                                    "com.mojang is gone now. Either you uninstalled minecraft, or this is a compatibility issue. Please report this on github.\n\n Do you want to re-enabled MC Sync?",
+                                    "Re-Enable MC Sync", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                            if (ask == JOptionPane.YES_OPTION) {
+                                showMCSyncPopup(doingThis, WPF);
+                            } else {
+                                WPF.getSerialized().MinecraftSync = false;
+                            }
+                        }
+                    });
+                }).start();
+            } else {
+                
+            }
+        } catch (WorkspaceResources.WorkspaceUnsupportedException e) {
+            ErrorShower.exception(doingThis, "This workspace format is not supported on this version of bedrockR.", e);
+        }
     }
 }

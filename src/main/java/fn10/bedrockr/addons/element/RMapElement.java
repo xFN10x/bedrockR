@@ -1,4 +1,4 @@
-package fn10.bedrockr.addons;
+package fn10.bedrockr.addons.element;
 
 import java.util.List;
 import java.util.ArrayList;

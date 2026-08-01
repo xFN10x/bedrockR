@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.componets.RMapElementViewer;
 

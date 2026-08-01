@@ -2,7 +2,7 @@ package fn10.bedrockr.addons.element.interfaces;
 
 import com.google.gson.*;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.element.SourceResourceElement;
+import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
 import fn10.bedrockr.addons.element.elementFiles.*;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;

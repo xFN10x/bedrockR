@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SpringLayout;
 
-import fn10.bedrockr.addons.RMapElement;
+import fn10.bedrockr.addons.element.RMapElement;
 
 public class RMapElementViewer extends RElement {
 

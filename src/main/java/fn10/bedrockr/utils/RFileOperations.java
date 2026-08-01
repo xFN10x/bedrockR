@@ -5,12 +5,13 @@ import com.formdev.flatlaf.util.SystemInfo;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.addons.element.*;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.*;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerilizer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerilizer;
@@ -20,17 +21,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.zip.Adler32;
 
 public class RFileOperations {
     public static Gson gson = new GsonBuilder()
@@ -158,39 +155,15 @@ public class RFileOperations {
             return null;
         }
     }
-
-    /**
-     * Reads the resource at the path specified
-     *
-     * @param resource - the path of the resource
-     * @return the string of the file read
-     */
-    public static String readResourceAsString(String resource) {
-        try {
-            return new String(readAllBytes(RFileOperations.class.getResourceAsStream(resource)),
-                    StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            return "";
+    
+    public static byte[] readAllOfResource(String path) {
+        try (InputStream stream = RFileOperations.class.getResourceAsStream(path)) {
+            if (stream == null)
+                return new byte[0];
+            return stream.readAllBytes();
+        } catch (IOException e ) {
+            return new byte[0];
         }
-    }
-
-    /**
-     * (This function was made by ai.)
-     * Reads all bytes from an InputStream using read() method.
-     *
-     * @param is the InputStream to read from
-     * @return the byte array containing all bytes
-     * @throws IOException if an I/O error occurs
-     */
-    public static byte[] readAllBytes(InputStream is) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8192];
-        int len;
-        while ((len = is.read(buffer)) != -1) {
-            baos.write(buffer, 0, len);
-        }
-        return baos.toByteArray();
     }
 
     /**
@@ -257,6 +230,7 @@ public class RFileOperations {
      * @return a {@code SourceResourceElement}, containing the resources
      */
     @Nonnull
+    @Deprecated(forRemoval = true, since = "a3.0")
     public static SourceResourceElement getResources(String workspaceName) {
         try {
 
@@ -307,12 +281,20 @@ public class RFileOperations {
      *
      * @param WPF - the SourceWorkspaceFile of the workspace.
      */
-    public static void setCurrentWorkspace(SourceWorkspaceFile WPF) {
-        // update version things
+    public static boolean loadWorkspace(SourceWorkspaceFile WPF) throws WorkspaceResources.WorkspaceUnsupportedException {
         WorkspaceFile serilized = WPF.getSerialized();
+        if (serilized.Format > 2) {
+            throw new WorkspaceResources.WorkspaceUnsupportedException(2, serilized.Format);
+        }
+
+        if (serilized.Format < 2) {
+            Launcher.LOG.info("Can't open workspace, format is older.");
+            return false;
+        }
+        // update version things
         serilized.LatestBedrockRVersion = SEM_VERSION;
         if (serilized.ModifiedWithBedrockRVersions == null) {
-            serilized.ModifiedWithBedrockRVersions = new ArrayList<String>();
+            serilized.ModifiedWithBedrockRVersions = new ArrayList<>();
         }
         addIfAbsent(serilized.ModifiedWithBedrockRVersions, VERSION);
 
@@ -322,7 +304,15 @@ public class RFileOperations {
             Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
         }
 
+        try {
+            WorkspaceResources.load(WPF.workspaceName());
+        } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
+            Launcher.LOG.log(Level.SEVERE, "Can't open workspace, resources failed to load.", e);
+            return false;
+        }
+
         CURRENT_WORKSPACE = serilized;
+        return true;
     }
 
     /**
@@ -671,11 +661,25 @@ public class RFileOperations {
         return building.toArray(new ElementFile[0]);
     }
 
-    public static boolean anyNull(Object... objs) {
-        for (Object obj : objs) {
-            if (obj == null) return true;
-        }
-        return false;
+    /**
+     * Wrapper around {@link Files#write(Path, byte[], OpenOption...)}
+     * <p>
+     *     This automatically overrides a file if it already exists there, it also makes all the dirs
+     * @param to The path to write to.
+     * @param data The data to write.
+     */
+    public static void write(Path to, byte[] data) throws IOException {
+        FileUtils.createParentDirectories(to.toFile());
+        Files.write(to, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+    }
+
+    /**
+     * Wrapper around {@link Files#write(Path, byte[], OpenOption...)}
+     * @param to The path to write to.
+     * @param data The data to write.
+     */
+    public static void write(Path to, String data) throws IOException {
+        Files.writeString(to, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     }
 
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,

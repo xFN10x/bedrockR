@@ -1,7 +1,7 @@
 package fn10.bedrockr.addons.element.supporting;
 
-import fn10.bedrockr.addons.RMapElement;
-import fn10.bedrockr.addons.RMapElement.MapValueFilter;
+import fn10.bedrockr.addons.element.RMapElement;
+import fn10.bedrockr.addons.element.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
 import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDestructibleByMining;
 

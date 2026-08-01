@@ -33,7 +33,7 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.SystemFileChooser;
 
-import fn10.bedrockr.addons.element.SourceWorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.RLaunchPage;

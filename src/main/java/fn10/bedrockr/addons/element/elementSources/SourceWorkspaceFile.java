@@ -1,9 +1,10 @@
-package fn10.bedrockr.addons.element;
+package fn10.bedrockr.addons.element.elementSources;
 
 import java.io.File;
 import java.io.IOException;
 
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +13,11 @@ public class SourceWorkspaceFile extends ElementSource<WorkspaceFile> {
 
     public String workspaceName() {
         return getSerialized().WorkspaceName;
+    }
+
+    @Override
+    public ElementDetails getDetails() {
+        return null;
     }
 
     public SourceWorkspaceFile(WorkspaceFile obj) {
