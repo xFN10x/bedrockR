@@ -54,8 +54,9 @@ public abstract class Resource {
         return resourceTypeName() + "/" + ID;
     }
 
+    /// Do not start this with a / or it tries to save absolutely.
     public String getDataName() {
-        return "/data." + resourceDataExtension();
+        return "data." + resourceDataExtension();
     }
 
     public abstract String resourceDataExtension();

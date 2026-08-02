@@ -12,6 +12,7 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.typeAdapters.ClassSerializer;
 import fn10.bedrockr.utils.typeAdapters.ImageIconSerializer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerializer;
@@ -36,6 +37,7 @@ public class RFileOperations {
                     new StrictMapSerializer())
             .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
             .registerTypeAdapter(ImageIcon.class, new ImageIconSerializer())
+            .registerTypeAdapter(Class.class, new ClassSerializer())
             .create();
     public static final String SEM_VERSION = "0.9.0";
     public static final int NUM_VERSION = 10;
@@ -153,13 +155,13 @@ public class RFileOperations {
             return null;
         }
     }
-    
+
     public static byte[] readAllOfResource(String path) {
         try (InputStream stream = RFileOperations.class.getResourceAsStream(path)) {
             if (stream == null)
                 return new byte[0];
             return stream.readAllBytes();
-        } catch (IOException e ) {
+        } catch (IOException e) {
             return new byte[0];
         }
     }
@@ -171,22 +173,24 @@ public class RFileOperations {
      * @return a bool declaring if the string can be used
      */
     public static boolean validFolderName(String proposed) {
+        return proposed.equals(getFileSafeName(proposed));
+    }
 
-        if (proposed.length() >= 150)
-            return false;
-
-        for (int cha : proposed.chars().toArray()) {
-            for (char c : ILLEGAL_CHARACTERS) {
-                if (c == cha) {
-                    fn10.bedrockr.Launcher.LOG
-                            .info("String: " + proposed + " had illegal folder char: " + cha);
-                    return false;
+    public static String getFileSafeName(String input) {
+        //found some random regex from regex101
+        String s = input.trim().substring(0, Math.min(100, input.length())).replaceAll("[^a-zA-Z0-9+(\\-){1,}]+", "-");
+        ArrayList<Character> chars = new ArrayList<>();
+        for (char c : s.toCharArray()) {
+            char adding = c;
+            for (char illegalCharacter : ILLEGAL_CHARACTERS) {
+                if (c == illegalCharacter) {
+                    adding = '_';
+                    break;
                 }
             }
+            chars.add(adding);
         }
-        fn10.bedrockr.Launcher.LOG.info("String: " + proposed + " is a legal filename.");
-
-        return true;
+        return new String(ArrayUtils.toPrimitive(chars.toArray(new Character[0])));
     }
 
     /**
@@ -221,7 +225,7 @@ public class RFileOperations {
         }
     }
 
-    
+
     /**
      * Adds an object to a list if it isn't inside of it.
      *
@@ -359,9 +363,9 @@ public class RFileOperations {
             return "error";
         }
     }
-    
+
     public static WorkspaceFile getWorkspaceFile(String WorkspaceName) throws IOException {
-        File file = getFileFromWorkspace(WorkspaceName,true, WPFFILENAME);
+        File file = getFileFromWorkspace(WorkspaceName, true, WPFFILENAME);
         return ElementSource.getFromJSON(new String(Files.readAllBytes(file.toPath())), WorkspaceFile.class);
     }
 
@@ -382,7 +386,7 @@ public class RFileOperations {
         // fn10.bedrockr.Launcher.LOG.warning("This file should start with the
         // file seperator, or not
         // at all! not '/'!");
-        File proposedFile = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName,ToCreate).toFile();
+        File proposedFile = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName, ToCreate).toFile();
         if (proposedFile.exists() || strict) {
             return proposedFile;
         } else
@@ -632,8 +636,9 @@ public class RFileOperations {
     /**
      * Wrapper around {@link Files#write(Path, byte[], OpenOption...)}
      * <p>
-     *     This automatically overrides a file if it already exists there, it also makes all the dirs
-     * @param to The path to write to.
+     * This automatically overrides a file if it already exists there, it also makes all the dirs
+     *
+     * @param to   The path to write to.
      * @param data The data to write.
      */
     public static void write(Path to, byte[] data) throws IOException {
@@ -643,7 +648,8 @@ public class RFileOperations {
 
     /**
      * Wrapper around {@link Files#write(Path, byte[], OpenOption...)}
-     * @param to The path to write to.
+     *
+     * @param to   The path to write to.
      * @param data The data to write.
      */
     public static void write(Path to, String data) throws IOException {
