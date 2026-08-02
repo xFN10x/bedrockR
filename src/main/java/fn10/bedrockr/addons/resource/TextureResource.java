@@ -1,17 +1,14 @@
 package fn10.bedrockr.addons.resource;
 
 import fn10.bedrockr.ui.util.ImageUtilities;
-import org.apache.commons.io.monitor.FileEntry;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public abstract class TextureResource extends Resource {
     
@@ -47,7 +44,7 @@ public abstract class TextureResource extends Resource {
     }
 
     public enum TextureType {
-        ITEM,
-        BLOCK
+        Item,
+        Block
     }
 }

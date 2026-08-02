@@ -3,21 +3,22 @@ package fn10.bedrockr.ui;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.element.ElementCreationListener;
+import fn10.bedrockr.addons.element.FieldFilters;
+import fn10.bedrockr.addons.element.elementFiles.ResourcePackBuilder;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
-import fn10.bedrockr.addons.element.elementFiles.ResourcePackBuilder;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.element.ElementCreationListener;
-import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.addons.resource.*;
+import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.componets.RElementFile;
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.ui.base.RFrame;
-import fn10.bedrockr.ui.util.ErrorShower;
-import fn10.bedrockr.ui.util.WrapLayout;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -35,7 +36,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -477,32 +477,34 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         options,
                         options[0]);
 
+                if (choice == 0) return;
+
                 SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
                 file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
                 file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
 
                 if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
                     return;
-                Object input = JOptionPane.showInputDialog(this,
-                        "What do you want to name this texture? (" + file.getSelectedFile().getName()
+                String input = JOptionPane.showInputDialog(this,
+                        "What do you want to name this texture? (" + file.getSelectedFile().getName().replace(".png", "")
                                 + ")",
                         "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
-                        file.getSelectedFile().getName());
-
-                String finalName = (((String) input).contains(".png") ? input.toString()
-                        : input + ".png");
-                File dest = Path
-                        .of(RFileOperations.getBaseDirectory("workspace").getPath(), SWPF.getSerialized().WorkspaceName,
-                                "resources", finalName)
-                        .toFile();
-                if (dest.exists()) {
-                    JOptionPane.showMessageDialog(this, "Resource already exist. Please rename it.",
-                            "Naming Error",
-                            JOptionPane.ERROR_MESSAGE);
+                        file.getSelectedFile().getName()).toString();
+                if (!new FieldFilters.FileNameLikeStringFilter().getValid(input)) {
+                    JOptionPane.showMessageDialog(this, "Invaild name.");
                     return;
                 }
+                Resource adding = null;
+                if (choice == 1) {
+                    //Item
+                    adding = new ItemTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                } else if (choice == 2) {
+                    //Item
+                    adding = new BlockTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                }
+                WorkspaceResources res = SWPF.getSerialized().getRes();
+                if (adding != null && res != null) res.addNewResource(adding);
 
-                
             }
             case "build" -> buildElements(false);
             case "rebuild" -> buildElements(true);
@@ -627,18 +629,17 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         try {
             if (WPF.getSerialized().Format < 2) {
                 JOptionPane.showConfirmDialog(doingThis, "This workspace is using the old resource system, and it needs to be upgraded. Upgrade?", "Format Outdated", JOptionPane.YES_NO_OPTION);
-            } else 
-            if (RFileOperations.loadWorkspace(WPF)) {
+            } else if (RFileOperations.loadWorkspace(WPF)) {
                 new Thread(() -> {
                     RWorkspace workspaceView = new RWorkspace(WPF);
-    
+
                     RLoadingScreen loading = new RLoadingScreen(doingThis);
                     loading.setAlwaysOnTop(true);
                     SwingUtilities.invokeLater(() -> loading.setVisible(true));
-    
+
                     ReturnItemInfo.downloadVanillaItems();
                     ReturnItemInfo.downloadVanillaBlocks();
-    
+
                     // get items ready for use
                     SwingUtilities.invokeLater(() -> {
                         loading.setVisible(false);
@@ -665,7 +666,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     });
                 }).start();
             } else {
-                
+
             }
         } catch (WorkspaceResources.WorkspaceUnsupportedException e) {
             ErrorShower.exception(doingThis, "This workspace format is not supported on this version of bedrockR.", e);
