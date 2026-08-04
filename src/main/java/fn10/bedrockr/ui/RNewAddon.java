@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -23,7 +21,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -173,11 +170,11 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                             ImageUtilities.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
 
             } catch (Exception ex) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
             }
         } else if (e.getActionCommand() == "create") {
 
@@ -188,7 +185,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
             }
 
             String name = NameInput.getText();
-            fn10.bedrockr.Launcher.LOG.info("Making new addon: " + name);
+            RFileOperations.LOG.info("Making new addon: " + name);
 
             // try {
             RLoadingScreen loading = new RLoadingScreen((JFrame) getParent());
@@ -209,12 +206,12 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                 loading.dispose();
                 this.dispose();
             } catch (Exception ex) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 ErrorShower.showError(getParent(), "Failed to make new addon.", "Grrrr", ex);
             }
 
         } else {
-            fn10.bedrockr.Launcher.LOG.warning("No action event! " + getClass().getName());
+            RFileOperations.LOG.warning("No action event! " + getClass().getName());
             throw new UnsupportedOperationException("Action event not handled.");
         }
     }

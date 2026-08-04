@@ -1,9 +1,9 @@
 package fn10.bedrockr.addons.element.interfaces;
 
 import com.google.gson.*;
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.elementFiles.*;
 import fn10.bedrockr.utils.RAnnotation.UneditableByCreation;
+import fn10.bedrockr.utils.RFileOperations;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ public abstract class SourcelessElementFile {
         boolean upgrading = false;
         if (oldVer != newVer) {
             upgrading = true;
-            Launcher.LOG.info("Upgrading: " + elementType.getSimpleName() + " from: " + oldVer + ", to: " + newVer);
+            RFileOperations.LOG.info("Upgrading: " + elementType.getSimpleName() + " from: " + oldVer + ", to: " + newVer);
         }
         if (BlockFile.class == elementType) {
             if (oldVer == 0 && newVer == 2) {

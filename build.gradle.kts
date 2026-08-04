@@ -6,33 +6,19 @@ plugins {
     
     id("com.gradleup.shadow") version "9.6.1"
     id("org.panteleyev.jpackageplugin") version "2.1.0"
-    
-    //id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 repositories {
     mavenCentral()
 }
 
-//https://stackoverflow.com/questions/46419817/how-to-add-new-sourceset-with-gradle-kotlin-dsl
-sourceSets["main"].resources {
-    srcDir("src/main/java")
-}
-
-/*javafx {
-    version = "25"
-    modules("javafx.controls", "javafx.swing", "javafx.web")
-}*/
-
-val version = "a3.0"
+val strVersion = "a3.0"
 val winver = "0.9.0"
 
 dependencies {
     implementation("com.google.guava:guava:33.6.0-jre")
 
-    //gson
-    implementation("com.google.code.gson:gson:2.14.0")
-    //flat laf
+    api("com.google.code.gson:gson:2.14.0")
     implementation("com.formdev:flatlaf:3.7.2")
 
     implementation("commons-io:commons-io:2.22.0")
@@ -54,10 +40,6 @@ application {
     mainClass = "fn10.bedrockr.Launcher"
 }
 
-tasks.test {
-    failOnNoDiscoveredTests = false
-}
-
 tasks.jpackage {
     dependsOn("shadowJar")
     input.set(project.layout.buildDirectory.dir("builtJars"))
@@ -66,7 +48,7 @@ tasks.jpackage {
 
     appName.set("bedrockR")
     vendor.set("_FN10_")
-    mainJar.set("bedrockR-$version.jar")
+    mainJar.set("bedrockR-$strVersion.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
     fileAssociations = project.files("fileAsso.properties")
@@ -99,7 +81,7 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
 
     appName.set("bedrockR")
     vendor.set("_FN10_")
-    mainJar.set("bedrockR-$version.jar")
+    mainJar.set("bedrockR-$strVersion.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
     windows {
@@ -116,7 +98,7 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
 
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
   archiveBaseName = "bedrockR"
-  archiveVersion = version
+  archiveVersion = strVersion
   destinationDirectory = layout.buildDirectory.dir("builtJars")
   archiveClassifier = ""
 }
@@ -129,28 +111,27 @@ tasks.javadoc {
 
 tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude("pdn/**")
 }
-//
-//val mavenJar by tasks.registering(Jar::class) {
-//    destinationDirectory = layout.buildDirectory.dir("mavenLibs")
-//
-//    from(sourceSets.main.get().output)
-//
-//    exclude("fn10/bedrockr/Launcher.class")
-//    exclude("fn10/bedrockr/Launcher${'$'}1.class")
-//    exclude("fn10/bedrockr/Launcher${'$'}2.class")
-//    exclude("fn10/bedrockr/Launcher${'$'}3.class")
-//    exclude("fn10/bedrockr/windows/**")
-//    exclude("fn10/bedrockr/rendering/**")
-//}
+
+val mavenJar = tasks.register<Jar>("mavenJar") {
+    description = "Create a jar with only cross-platform code."
+    destinationDirectory = layout.buildDirectory.dir("mavenLibs")
+
+    from(sourceSets.main.get().output)
+
+    exclude("fn10/bedrockr/Launcher**")
+    exclude("fn10/bedrockr/ui/**")
+}
+
 
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             artifactId = "bedrockr"
             groupId = "dev.xplate"
-            version = version
-            artifact(tasks.named<Jar>("jar"))
+            version = strVersion
+            artifact(tasks.named<Jar>("mavenJar"))
             artifact(tasks.named<Jar>("sourcesJar"))
             artifact(tasks.named<Jar>("javadocJar"))
             versionMapping {

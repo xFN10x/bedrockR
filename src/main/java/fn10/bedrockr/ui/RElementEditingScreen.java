@@ -1,6 +1,5 @@
 package fn10.bedrockr.ui;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement;
 import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
@@ -335,7 +334,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                             ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
                                 } catch (WrongItemValueTypeException | NameNotFoundException |
                                          IncorrectWorkspaceException | IOException e1) {
-                                    Launcher.LOG.log(Level.SEVERE,
+                                    RFileOperations.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                             });
@@ -449,7 +448,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             Listener.onElementCreate(new SourceRecipeElement(building));
                         }
                     } catch (Exception e) {
-                        Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                 e);
                     }
                 }).addVaildations(ElementName, RecipeID, grid, outputSlot, unlockItems, extraResults);
@@ -478,7 +477,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                             Serilized.ShapelessIngredients = grid.getItems();
                         } catch (WrongItemValueTypeException e1) {
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e1);
                         }
 
@@ -489,14 +488,14 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 try {
                                     grid.empty();
                                 } catch (WrongItemValueTypeException e1) {
-                                    Launcher.LOG.log(Level.SEVERE,
+                                    RFileOperations.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                                 if (Serilized != null) {
                                     try {
                                         grid.setShapedRecipe(Parent, new ShapedOutput(Serilized), Workspace);
                                     } catch (WrongItemValueTypeException e1) {
-                                        Launcher.LOG.log(Level.SEVERE,
+                                        RFileOperations.LOG.log(Level.SEVERE,
                                                 "Exception thrown", e1);
                                     }
                                 }
@@ -508,7 +507,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                 try {
                                     grid.empty();
                                 } catch (WrongItemValueTypeException e1) {
-                                    Launcher.LOG.log(Level.SEVERE,
+                                    RFileOperations.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
                                 if (Serilized != null) {
@@ -518,7 +517,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                                     ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
                                         } catch (WrongItemValueTypeException | NameNotFoundException |
                                                  IncorrectWorkspaceException | IOException e1) {
-                                            Launcher.LOG.log(Level.SEVERE,
+                                            RFileOperations.LOG.log(Level.SEVERE,
                                                     "Exception thrown", e1);
                                         }
                                     });
@@ -537,7 +536,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 return frame;
             } catch (Exception e) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         }
@@ -575,7 +574,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     RAnnotation.FieldDetails details = field.getAnnotation(RAnnotation.FieldDetails.class);
                     if (details == null) {
                         //probably should have been marked to not serilize
-                        Launcher.LOG.warning("Field: " + field.getName() + " in " + src.getSerilizedClass().getName() + " does not have FieldDetails annotation, assuming this should be marked as UneditableByCreation.");
+                        RFileOperations.LOG.warning("Field: " + field.getName() + " in " + src.getSerilizedClass().getName() + " does not have FieldDetails annotation, assuming this should be marked as UneditableByCreation.");
                         continue;
                     }
                     if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
@@ -604,7 +603,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         frame.addField(rev, tab);
                     }
                 } catch (Exception e) {
-                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
                     ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
@@ -671,7 +670,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public List<ValidatableValue> checkForErrors(boolean strict) {
         List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
-        Launcher.LOG.info("--------------------- CHECKING FOR ERRORS-----------------------");
+        RFileOperations.LOG.info("--------------------- CHECKING FOR ERRORS-----------------------");
         for (ValidatableValue validatable : Fields) {
             if (!validatable.valid(strict))
                 IncorrectFields.add(validatable);
@@ -696,7 +695,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     rev.getValue());
                             // try to set field ^
                         } catch (Exception e) {
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
                         }
@@ -710,7 +709,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass)); // create
             this.dispose();
         } catch (Exception ex) {
-            Launcher.LOG.log(Level.SEVERE, "Exception thrown", ex);
+            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", ex);
             ErrorShower.showError(getParent(), "Failed to create ElementSource",
                     "Source Creation Error", ex);
         }

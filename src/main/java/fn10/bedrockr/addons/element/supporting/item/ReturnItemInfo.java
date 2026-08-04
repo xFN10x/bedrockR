@@ -67,7 +67,7 @@ public class ReturnItemInfo {
             vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
             Arrays.sort(vanillaItems);
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 
@@ -180,7 +180,7 @@ public class ReturnItemInfo {
             vanillaBlocks = parsedEntrys.toArray(new BlockJsonEntry[0]);
             Arrays.sort(vanillaBlocks);
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 
@@ -212,7 +212,7 @@ public class ReturnItemInfo {
         try {
             return ReturnItemInfo.getItemById(con.item, workspace, handler);
         } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -234,7 +234,7 @@ public class ReturnItemInfo {
         try {
             return ReturnItemInfo.getItemById(con.item, workspace, handler);
         } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -246,7 +246,7 @@ public class ReturnItemInfo {
             try {
                 building.add(ReturnItemInfo.getItemById(item.item, workspace, handler));
             } catch (NameNotFoundException | IncorrectWorkspaceException | IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         return building;
@@ -289,14 +289,14 @@ public class ReturnItemInfo {
             throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
                     + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
         }
-        fn10.bedrockr.Launcher.LOG.info("Vanilla items: ");
+        RFileOperations.LOG.info("Vanilla items: ");
         for (ItemJsonEntry vanillaItem : vanillaItems) {
-            fn10.bedrockr.Launcher.LOG.info(vanillaItem.name);
+            RFileOperations.LOG.info(vanillaItem.name);
         }
-        fn10.bedrockr.Launcher.LOG.info("Non-Vanilla items: " + String.join(", ",RFileOperations.getElementNamesFromWorkspace(workspaceName)));
+        RFileOperations.LOG.info("Non-Vanilla items: " + String.join(", ",RFileOperations.getElementNamesFromWorkspace(workspaceName)));
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
             if (element instanceof ItemLikeElement ile) {
-                fn10.bedrockr.Launcher.LOG.info(ile.getItemId());
+                RFileOperations.LOG.info(ile.getItemId());
             }
         }
         throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist. Printed all items to log.");

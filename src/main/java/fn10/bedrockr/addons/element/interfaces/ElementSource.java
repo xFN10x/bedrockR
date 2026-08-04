@@ -7,12 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.logging.Level;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nonnull;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
@@ -38,7 +36,7 @@ public abstract class ElementSource<T extends ElementFile<? extends ElementSourc
                 if (tex != null)
                     return tex;
             } catch (Exception e) {
-                Launcher.LOG.log(Level.WARNING, "Failed to get item texture.", e);
+                RFileOperations.LOG.log(Level.WARNING, "Failed to get item texture.", e);
             }
         }
         return RFileOperations.getElementIconData(this);

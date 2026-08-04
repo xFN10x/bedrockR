@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import fn10.bedrockr.utils.RFileOperations;
 
 public class ImageIconSerializer implements JsonSerializer<ImageIcon>, JsonDeserializer<ImageIcon> {
 
@@ -24,7 +25,7 @@ public class ImageIconSerializer implements JsonSerializer<ImageIcon>, JsonDeser
         try {
             return new ImageIcon(ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(json.getAsString()))));
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -38,7 +39,7 @@ public class ImageIconSerializer implements JsonSerializer<ImageIcon>, JsonDeser
             ImageIO.write(bi, "png", output);
             return context.serialize(Base64.getEncoder().encodeToString(output.toByteArray()));
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }

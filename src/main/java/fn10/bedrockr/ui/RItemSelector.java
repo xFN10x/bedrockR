@@ -1,15 +1,10 @@
 package fn10.bedrockr.ui;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.image.BufferedImage;
 import java.awt.Frame;
 import java.awt.GridLayout;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,7 +16,6 @@ import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
@@ -90,7 +84,7 @@ public class RItemSelector extends RDialog {
                     try {
                         building.Prefix = RFileOperations.getWorkspaceFile(Workspace).Prefix;
                     } catch (IOException e1) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
+                        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
                                 e1);
                         building.Prefix = "error";
                     }
@@ -122,7 +116,7 @@ public class RItemSelector extends RDialog {
                     InnerPanel.add(ToAdd);
 
                 } catch (Exception e1) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
         }
         InnerPanel.revalidate();
@@ -217,7 +211,7 @@ public class RItemSelector extends RDialog {
         thiS.setVisible(true);
 
         if (thiS.choice == CANCEL_CHOICE) {
-            fn10.bedrockr.Launcher.LOG.info("canceled");
+            RFileOperations.LOG.info("canceled");
             return null;
         } else
             return thiS.getSelected();

@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.element.elementSources;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -67,7 +66,7 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
                 prefixedVanillaBiomeNames = biomeNamesPrefix.toArray(vanillaBiomeNames);
                 return vanillaBiomeNames;
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return new String[0];
             }
     }

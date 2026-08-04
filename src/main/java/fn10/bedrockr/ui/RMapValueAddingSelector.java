@@ -12,6 +12,7 @@ import javax.swing.SpringLayout;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.components.RMapElementViewer;
+import fn10.bedrockr.utils.RFileOperations;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RMapValueAddingSelector extends RDialog {
@@ -79,7 +80,7 @@ public class RMapValueAddingSelector extends RDialog {
                 InnerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
             } catch (Exception e1) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
             }
         }
 

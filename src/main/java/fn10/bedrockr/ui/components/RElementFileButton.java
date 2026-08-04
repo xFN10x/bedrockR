@@ -5,14 +5,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import javax.swing.*;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.ui.RElementEditingScreen;
@@ -51,7 +49,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                             .getIcon(Workspace.SWPF.getSerialized().getRes(), ImageUtilities.ImgHandler))
             );
         } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to get Element icon.", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Failed to get Element icon.", e);
         }
 
         JPopupMenu popup = new JPopupMenu(File.getElementName());
@@ -89,7 +87,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
             if (screen != null)
                 screen.setVisible(true);
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(wksp, "Failed to open up window.", "Error", e);
         }
     }
@@ -127,7 +125,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                         wksp.refreshElements();
                         wksp.buildElements(true);
                     } else {
-                        Launcher.LOG.warning("Couldn't delete element.");
+                        RFileOperations.LOG.warning("Couldn't delete element.");
                     }
                 } catch (Exception ex) {
                     ErrorShower.exception(this, "Failed to remove element." ,ex);
@@ -141,7 +139,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                     src.saveJSONFile(wksp.SWPF.getSerialized().WorkspaceName);
                     wksp.refreshElements();
                 } catch (Exception e1) {
-                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e1);
+                    RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e1);
                     ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
                 }
                 break;

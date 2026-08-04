@@ -31,6 +31,8 @@
 
 package fn10.bedrockr.ui.util;
 
+import fn10.bedrockr.utils.RFileOperations;
+
 import javax.swing.*;
 
 import java.awt.*;
@@ -47,9 +49,9 @@ public class SpringUtilities {
      * minimum, preferred, and maximum sizes.
      */
     public static void printSizes(Component c) {
-        fn10.bedrockr.Launcher.LOG.info("minimumSize = " + c.getMinimumSize());
-        fn10.bedrockr.Launcher.LOG.info("preferredSize = " + c.getPreferredSize());
-        fn10.bedrockr.Launcher.LOG.info("maximumSize = " + c.getMaximumSize());
+        RFileOperations.LOG.info("minimumSize = " + c.getMinimumSize());
+        RFileOperations.LOG.info("preferredSize = " + c.getPreferredSize());
+        RFileOperations.LOG.info("maximumSize = " + c.getMaximumSize());
     }
 
     /**

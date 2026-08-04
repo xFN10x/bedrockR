@@ -10,6 +10,7 @@ import javax.swing.border.LineBorder;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
+import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nullable;
 
 import java.awt.*;
@@ -28,7 +29,7 @@ public class RLoadingScreen extends RDialog {
                 MainText.setText(text);
             });
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.warning("Failed to change progress message.");
+            RFileOperations.LOG.warning("Failed to change progress message.");
         }
     }
 

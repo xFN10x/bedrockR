@@ -1,5 +1,6 @@
 package fn10.bedrockr.ui.util;
 
+import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nonnull;
 
 import java.awt.*;
@@ -16,7 +17,7 @@ public class RFonts {
         try {
             font_file = RFonts.class.getResourceAsStream(Path);
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(null, "Failed to open font file", "Font Error", e);
             return new Font(Font.SANS_SERIF, Font.PLAIN,Size);
         }
@@ -26,7 +27,7 @@ public class RFonts {
             font = Font.createFont(Font.TRUETYPE_FONT, font_file).deriveFont(Font.PLAIN, Size);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font); // reg font if not null
         } catch (IOException | FontFormatException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(null, "Failed to load font.", "Font Error", e);
             return new Font(Font.SANS_SERIF, Font.PLAIN,Size);
         }

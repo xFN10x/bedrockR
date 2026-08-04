@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.resource;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
@@ -73,7 +72,7 @@ public class WorkspaceResources {
         Path dataFile = resFolder.resolve("data." + resource.resourceDataExtension());
         resource.data = Files.readAllBytes(dataFile);
         addNewResource(resource, false);
-        Launcher.LOG.info("Loaded resource: " + path);
+        RFileOperations.LOG.info("Loaded resource: " + path);
         save();
         return resource;
     }
@@ -103,9 +102,9 @@ public class WorkspaceResources {
             for (Resource resource : resources) {
                 resource.save(this);
             }
-            Launcher.LOG.info("Saved resources.");
+            RFileOperations.LOG.info("Saved resources.");
         } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to save resources.", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Failed to save resources.", e);
         }
     }
 

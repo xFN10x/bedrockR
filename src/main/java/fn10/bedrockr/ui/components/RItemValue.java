@@ -30,6 +30,7 @@ import javax.swing.event.PopupMenuListener;
 
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.utils.RFileOperations;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
@@ -94,7 +95,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             try {
                 ItemVal.setButtonToItem(0, info);
             } catch (WrongItemValueTypeException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
             return this;
         }
@@ -103,7 +104,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             try {
                 return ItemVal.getItems();
             } catch (WrongItemValueTypeException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         }
@@ -214,14 +215,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
             try {
                 setButtonToItem(0, Recipe.NULL_RETURN_ITEM);
             } catch (WrongItemValueTypeException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         } else if (currentType == Type.CraftingTable) {
             for (int i = 0; i < 9; i++) {
                 try {
                     setButtonToItem(i, Recipe.NULL_RETURN_ITEM);
                 } catch (WrongItemValueTypeException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         }
@@ -231,7 +232,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             try {
                 setButtonToItem(0, info);
             } catch (WrongItemValueTypeException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
 
@@ -478,7 +479,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                             try {
                                 setButtonToItem(building, copied);
                             } catch (WrongItemValueTypeException e1) {
-                                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                             }
                         }
                     });
@@ -510,7 +511,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                                 setButtonToItem(building, itemInfo);
                             }
                         } catch (InterruptedException | WrongItemValueTypeException e) {
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         }
                     });
                     ButtonGrid.add(building);
@@ -545,7 +546,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                         if (getListElements().isEmpty())
                             return false;
                     } catch (WrongItemValueTypeException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
                 try {
@@ -554,7 +555,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                             return false;
                     }
                 } catch (WrongItemValueTypeException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
                 break;
             case Type.Single:
@@ -567,7 +568,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                             return !getItems().isEmpty();
                         } catch (WrongItemValueTypeException e) {
 
-                            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         }
                     } else {
                         return true;

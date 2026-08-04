@@ -70,7 +70,7 @@ public class RAddon extends JPanel implements MouseListener {
             resizedImage = ImageUtilities.ResizeImage(BI, 88, 88); // resize
 
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             if (step == 0) {
                 return;
             } else {
@@ -95,7 +95,7 @@ public class RAddon extends JPanel implements MouseListener {
                     resizedImage = ImageUtilities.ResizeImage(BI, 88, 88); // resize
 
                 } catch (Exception e2) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e2);
                     BI = null;
                     resizedImage = null;
                     return;
@@ -176,13 +176,13 @@ public class RAddon extends JPanel implements MouseListener {
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
-                    fn10.bedrockr.Launcher.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
+                    RFileOperations.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
                     FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPFile.workspaceName()));
                     JOptionPane.showMessageDialog(parent,
                             "The Addon " + WPFile.workspaceName() + " has been deleted.");
                     parent.refresh();
                 } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         });
