@@ -101,56 +101,56 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             try {
                 showMCSyncPopup(this, WPF);
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open Workspace folder").addActionListener(_ -> {
             try {
                 desk.open(RFileOperations.getWorkspace(WPF.workspaceName()));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open built RP Folder").addActionListener(_ -> {
             try {
                 desk.open(RFileOperations.getBaseDirectory("build", "RP", WPF.workspaceName()));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         fileMenu.add("Open built BP Folder").addActionListener(_ -> {
             try {
                 desk.open(RFileOperations.getBaseDirectory("build", "BP", WPF.workspaceName()));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR Wiki").addActionListener(_ -> {
             try {
                 desk.browse(new URI("https://github.com/xFN10x/bedrockR/wiki"));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR Github").addActionListener(_ -> {
             try {
                 desk.browse(new URI("https://github.com/xFN10x/bedrockR"));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("bedrockR Website").addActionListener(_ -> {
             try {
                 desk.browse(new URI("https://bedrockr.xplate.dev"));
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
         helpMenu.add("Open bedrockR Directory").addActionListener(_ -> {
             try {
                 desk.open(RFileOperations.getBaseDirectory());
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 
@@ -183,7 +183,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         .browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
 
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
 
@@ -316,7 +316,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 }
 
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(this, "Failed to build element.", "Building Error", e);
             } finally {
                 SwingUtilities.invokeLater(progress::dispose);
@@ -449,7 +449,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             .add(new RElementFileButton(this, file));
 
                 } catch (Exception e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
             ElementInnerPanelView.updateUI();
@@ -568,15 +568,15 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                     body))
                             .setHeader("Content-Type", "application/json")
                             .build();
-                    Launcher.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
+                    RFileOperations.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
                             body);
                     try {
                         final HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
                         if (resp.statusCode() != 200) {
-                            Launcher.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
+                            RFileOperations.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
                         }
                     } catch (IOException | InterruptedException e) {
-                        Launcher.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
+                        RFileOperations.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
                     }
                 }
             }).start();
@@ -598,7 +598,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             WPF.saveJSONFile( // save the workspace file again
                     WPF.workspaceName());
         } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to save workspace.", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Failed to save workspace.", e);
         }
 
         String[] platforms = RFileOperations.MC_SYNC_OPTIONS.keySet().toArray(new String[0]);

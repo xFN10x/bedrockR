@@ -4,7 +4,6 @@ import com.formdev.flatlaf.util.SystemFileChooser;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.elementSources.*;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
@@ -28,6 +27,7 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RFileOperations {
     public static Gson gson = new GsonBuilder()
@@ -44,6 +44,7 @@ public class RFileOperations {
     public static final int NUM_VERSION = 10;
     public static final String VERSION = "a3.0";
     private static final String USER_DIR = System.getProperty("user.home");
+    public static Logger LOG = Logger.getLogger("bedrockR");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
     private static WorkspaceFile CURRENT_WORKSPACE = null;
@@ -131,11 +132,11 @@ public class RFileOperations {
             try {
                 return ELEMENT_EXTENSION_CLASSES.get(fileExtension);
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         } else {
-            fn10.bedrockr.Launcher.LOG.warning("Element: " + fileExtension + " not supported in: " + RFileOperations.VERSION);
+            LOG.warning("Element: " + fileExtension + " not supported in: " + RFileOperations.VERSION);
             return null;
         }
     }
@@ -152,7 +153,7 @@ public class RFileOperations {
         try {
             return getElementSourceClassFromFileExtension(fileExtension).getConstructor().newInstance();
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
@@ -206,7 +207,7 @@ public class RFileOperations {
             try {
                 Files.createDirectories(folder);
             } catch (IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
@@ -261,7 +262,7 @@ public class RFileOperations {
         }
 
         if (serilized.Format < 2) {
-            Launcher.LOG.info("Can't open workspace, format is older.");
+            LOG.info("Can't open workspace, format is older.");
             return false;
         }
         // update version things
@@ -274,13 +275,13 @@ public class RFileOperations {
         try {
             new SourceWorkspaceFile(serilized).saveJSONFile(WPF.workspaceName());
         } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to save resources", e);
+            LOG.log(Level.SEVERE, "Failed to save resources", e);
         }
 
         try {
             WorkspaceResources.load(WPF.workspaceName());
         } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Can't open workspace, resources failed to load.", e);
+            LOG.log(Level.SEVERE, "Can't open workspace, resources failed to load.", e);
             return false;
         }
 
@@ -322,7 +323,7 @@ public class RFileOperations {
             } else
                 return file;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -340,7 +341,7 @@ public class RFileOperations {
             } else
                 return BASE_DIRECTORY;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         return BASE_DIRECTORY;
     }
@@ -421,11 +422,11 @@ public class RFileOperations {
             File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
             File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
             if (!comBpPath.exists()) {
-                fn10.bedrockr.Launcher.LOG.info("Making dev BP folder...");
+                LOG.info("Making dev BP folder...");
                 Files.createDirectories(comBpPath.toPath());
             }
             if (!comRpPath.exists()) {
-                fn10.bedrockr.Launcher.LOG.info("Making dev RP folder...");
+                LOG.info("Making dev RP folder...");
                 Files.createDirectories(comRpPath.toPath());
             }
             File[] comBpFiles = comBpPath.listFiles();
@@ -484,7 +485,7 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, bpDestPath);
                     } catch (IOException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
             }
@@ -507,12 +508,12 @@ public class RFileOperations {
                     try {
                         FileUtils.copyDirectory(f, rpDestPath);
                     } catch (IOException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                     }
                 }
             }
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         } finally {
             settings.save(); // finally
         }
@@ -573,7 +574,7 @@ public class RFileOperations {
                 return srcWPF;
 
             } catch (Exception e) { // handle exception
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 throw e;
             }
         }
@@ -594,7 +595,7 @@ public class RFileOperations {
                         .getAbsolutePath(),
                 elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
-        Launcher.LOG.info("Found ElementFile on disk: " + proposed);
+        LOG.info("Found ElementFile on disk: " + proposed);
         return proposed;
     }
 

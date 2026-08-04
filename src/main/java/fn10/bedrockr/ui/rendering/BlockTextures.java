@@ -130,7 +130,7 @@ public class BlockTextures {
             });
             downloadThread.setName("Downloading-Thread");
             downloadThread.setUncaughtExceptionHandler((t, e) -> {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 for (int i = 0; i < latch.getCount(); i++) {
                     latch.countDown();
                 }
@@ -182,7 +182,7 @@ public class BlockTextures {
                 getBlocksJson();
                 getTerrianTextureJson();
             } catch (IOException | InterruptedException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
 
@@ -276,7 +276,7 @@ public class BlockTextures {
                 }
             }
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 }

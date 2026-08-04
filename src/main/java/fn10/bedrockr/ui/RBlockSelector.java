@@ -71,7 +71,7 @@ public class RBlockSelector extends RDialog {
                     try {
                         building.Prefix = RFileOperations.getWorkspaceFile(Workspace).Prefix;
                     } catch (IOException e1) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
                     building.Texture = ArrayUtils.toObject(ref.image);
@@ -102,7 +102,7 @@ public class RBlockSelector extends RDialog {
                     InnerPanel.add(ToAdd);
 
                 } catch (Exception e1) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
         }
         InnerPanel.revalidate();

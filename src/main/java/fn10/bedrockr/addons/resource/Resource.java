@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.resource;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RFileOperations;
 
 import java.io.File;
@@ -33,7 +32,7 @@ public abstract class Resource {
         try {
             bytes = Files.readAllBytes(data.toPath());
         } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to read resource data.", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Failed to read resource data.", e);
             bytes = new byte[0];
         }
         this(name, id, bytes);
@@ -47,7 +46,7 @@ public abstract class Resource {
 
         Files.writeString(serializedPath, json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         Files.write(dataPath, data);
-        Launcher.LOG.info("Saved resource: " + Name);
+        RFileOperations.LOG.info("Saved resource: " + Name);
     }
 
     public String getFolderPath() {

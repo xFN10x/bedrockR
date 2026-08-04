@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.ui.base.RDialog;
+import fn10.bedrockr.utils.RFileOperations;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RTextureAddingSelector extends RDialog {
@@ -114,7 +115,7 @@ public class RTextureAddingSelector extends RDialog {
         thiS.setVisible(true);
 
         if (thiS.choice == CANCEL_CHOICE) {
-            fn10.bedrockr.Launcher.LOG.info("canceled");
+            RFileOperations.LOG.info("canceled");
             return null;
         } else
             return thiS.getSelected();

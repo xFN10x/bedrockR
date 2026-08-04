@@ -1,5 +1,7 @@
 package fn10.bedrockr.ui.util;
 
+import fn10.bedrockr.utils.RFileOperations;
+
 import java.awt.Component;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -16,7 +18,7 @@ public class ErrorShower {
      * @param ex     - the exception
      */
     public static void exception(Component parent, Exception ex) {
-        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
         showError(parent, "", ex);
     }
 
@@ -29,7 +31,7 @@ public class ErrorShower {
      * @param ex     - the exception
      */
     public static void exception(Component parent, String message, Exception ex) {
-        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, message, ex);
+        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, message, ex);
         showError(parent, message, ex);
     }
 

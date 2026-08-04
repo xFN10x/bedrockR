@@ -14,7 +14,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import fn10.bedrockr.Launcher;
+import fn10.bedrockr.utils.RFileOperations;
 
 public class XplateAPIDateSerializer implements JsonSerializer<Date>, JsonDeserializer<Date> {
 
@@ -30,7 +30,7 @@ public class XplateAPIDateSerializer implements JsonSerializer<Date>, JsonDeseri
         try {
             return format.parse(json.getAsString());
         } catch (ParseException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to format.", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Failed to format.", e);
             return Date.from(Instant.EPOCH);
         }
     }

@@ -14,7 +14,6 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import jakarta.annotation.Nullable;
@@ -64,7 +63,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         try {
             return WorkspaceResources.load(WorkspaceName);
         } catch (Exception e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to get resources from workspace: " + WorkspaceName, e);
+            RFileOperations.LOG.log(Level.SEVERE, "Failed to get resources from workspace: " + WorkspaceName, e);
             return null;
         }
     }
@@ -109,10 +108,10 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         } else {
             for (Entry<UUID, String> set : Scripts.entrySet()) {
                 try {
-                    fn10.bedrockr.Launcher.LOG.info("Deleting script that already exists: " + set.getValue());
+                    RFileOperations.LOG.info("Deleting script that already exists: " + set.getValue());
                     Files.deleteIfExists(java.nio.file.Paths.get(rootPath, set.getValue()));
                 } catch (IOException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         }

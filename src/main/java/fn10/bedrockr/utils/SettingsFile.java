@@ -2,10 +2,7 @@ package fn10.bedrockr.utils;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 import com.google.gson.JsonSyntaxException;
-import fn10.bedrockr.addons.element.elementFiles.ResourcePackBuilder;
-import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.addons.resource.WorkspaceResources;
 import jakarta.annotation.Nonnull;
 
 import java.io.File;
@@ -64,7 +61,7 @@ public class SettingsFile extends SourcelessElementFile {
         try {
             RFileOperations.write(path, json.getBytes());
         } catch (IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 
@@ -80,7 +77,7 @@ public class SettingsFile extends SourcelessElementFile {
             CACHE = sf;
             return sf;
         } catch (JsonSyntaxException | IOException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return new SettingsFile();
         }
     }

@@ -48,7 +48,7 @@ public class RNewElement extends RDialog {
                 RNewElementButton relement = new RNewElementButton(obj, () -> createNewElement(obj));
                 MainPane.add(relement);
             } catch (Exception e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(getParent(), "error", e);
             }
         }
@@ -88,7 +88,7 @@ public class RNewElement extends RDialog {
                 dispose();
 
             } catch (Exception ex) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", ex);
                 if (ex.getCause() != null) {
                     ErrorShower.showError(getParent(),
                             "Failed to create component. " + ex.getCause().getMessage() + "\n\n",

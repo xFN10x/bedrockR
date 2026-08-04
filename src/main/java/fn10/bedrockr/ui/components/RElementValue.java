@@ -1,7 +1,6 @@
 package fn10.bedrockr.ui.components;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.FieldFilters.FieldFilter;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
@@ -181,7 +180,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 if (TargetFile.getDraft())
                     return;
 
-            Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(parentFrame,
                     "Failed to get field (does the passed ElementFile match the ElementSource?)",
                     DisplayName, e);
@@ -363,7 +362,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 }
                             }
                         } catch (Exception e) {
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
                         }
@@ -431,7 +430,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             HashMapInnerPane.repaint();
 
                         } catch (Exception e1) {
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e1);
                             ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                         }
@@ -452,7 +451,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         ((JComboBox<String>) Input).setSelectedItem("false");
                     } catch (Exception e) {
 
-                        Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
                         if (!FromEmpty)
                             if (TargetFile.getDraft())
                                 return;
@@ -482,7 +481,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                             if (!FromEmpty)
                                 if (TargetFile.getDraft())
                                     return;
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(parentFrame,
                                     "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -503,7 +502,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                         } catch (Exception e) {
 
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             if (!FromEmpty)
                                 if (TargetFile.getDraft())
@@ -551,7 +550,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 HashMapInnerPane.add(ToAdd);
                             }
                         } catch (Exception e) {
-                            Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                     e);
                             ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
                         }
@@ -582,7 +581,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                 HashMapInnerPane.repaint();
 
                             } catch (Exception e1) {
-                                Launcher.LOG.log(Level.SEVERE,
+                                RFileOperations.LOG.log(Level.SEVERE,
                                         "Exception thrown", e1);
                                 ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
                             }
@@ -621,7 +620,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JLabel("Not supported.");
                 }
             } catch (Exception e) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
             }
 
         if (Optional) // stop the enable check affecting non-optional things
@@ -659,7 +658,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             }
         } catch (Exception e) {
-            Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
         }
 
         // put in center is not hashmap
@@ -702,7 +701,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             }
         } catch (Exception e1) {
-            Launcher.LOG.log(Level.SEVERE, "Exception thrown", e1);
+            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e1);
         }
 
         add(Name);
@@ -723,7 +722,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
             try {
                 setValue(field.get(TargetFile));
             } catch (Exception e) {
-                Launcher.LOG.log(Level.SEVERE, "Exception", e);
+                RFileOperations.LOG.log(Level.SEVERE, "Exception", e);
             }
     }
 
@@ -861,7 +860,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     HashMapInnerPane.add(ToAdd);
                 }
             } catch (Exception e) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
                 ErrorShower.showError(parentFrame, e.getMessage(), e);
             }
         }
@@ -968,7 +967,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         }
 
                     } catch (Exception ex) {
-                        Launcher.LOG.log(Level.SEVERE, "Exception thrown",
+                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
                                 ex);
                         ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
                         return null;
@@ -976,11 +975,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                 }
             } catch (IllegalArgumentException
                      | SecurityException e) {
-                Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
                 return null;
             }
         } else {
-            Launcher.LOG.info("Not valid, not getting");
+            RFileOperations.LOG.info("Not valid, not getting");
             return null;
         }
     }
@@ -990,7 +989,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
     }
 
     public boolean valid(boolean strict, boolean log0) {
-        var log = Launcher.LOG;
+        var log = RFileOperations.LOG;
         if (log0)
             log.info("================== Checking field " + this.Target + "... ==================");
 
@@ -1152,7 +1151,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         return true;
                     }
                 } catch (Exception e) {
-                    Launcher.LOG.log(Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
                 }
             }
         } catch (Exception e) {

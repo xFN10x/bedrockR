@@ -106,7 +106,7 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
             this.ResourceIDs.put(finalName, UUID.randomUUID().toString());
             return true;
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return false;
         }
     }

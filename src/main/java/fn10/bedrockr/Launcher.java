@@ -48,7 +48,6 @@ public class Launcher {
     public static Image ICON;
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
-    public static Logger LOG = Logger.getLogger("bedrockR");
     private static boolean setuplogging = false;
     public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
@@ -58,7 +57,7 @@ public class Launcher {
             if (stream != null)
                 ICON = ImageIO.read(stream);
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         RSplashScreen loading = new RSplashScreen();
         loading.ProgressText.setText("Loading settings...");
@@ -73,38 +72,38 @@ public class Launcher {
             String logloc = RFileOperations.getBaseDirectory("logs").toPath().resolve("bedrockR-log-"
                     + System.currentTimeMillis() + ".log").toString();
 
-            for (var h : LOG.getHandlers()) {
-                LOG.removeHandler(h);
+            for (var h : RFileOperations.LOG.getHandlers()) {
+                RFileOperations.LOG.removeHandler(h);
                 h.close();
             }
-            LOG.setUseParentHandlers(false);
-            LOG.setLevel(Level.FINE);
-            LOG.addHandler(new RLogHandler());
+            RFileOperations.LOG.setUseParentHandlers(false);
+            RFileOperations.LOG.setLevel(Level.FINE);
+            RFileOperations.LOG.addHandler(new RLogHandler());
             Logger.getLogger("javafx").addHandler(new RLogHandler());
-            System.setOut(new PrintStream(new LoggingOutputStream(LOG, Level.INFO)));
-            System.setErr(new PrintStream(new LoggingOutputStream(LOG, Level.SEVERE)));
+            System.setOut(new PrintStream(new LoggingOutputStream(RFileOperations.LOG, Level.INFO)));
+            System.setErr(new PrintStream(new LoggingOutputStream(RFileOperations.LOG, Level.SEVERE)));
             // try to add file handler
             try {
                 Handler fileHandler = new FileHandler(logloc, 20000000, 1, true);
                 fileHandler.setFormatter(new RLogFormatter());
                 fileHandler.setFilter(new RLogFilter());
-                LOG.addHandler(fileHandler);
+                RFileOperations.LOG.addHandler(fileHandler);
             } catch (SecurityException | IOException e) {
-                fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
-                    for (var h : LOG.getHandlers()) {
+                    for (var h : RFileOperations.LOG.getHandlers()) {
                         h.close();
                     }
                 }
             });
             // log stuff
-            LOG.info("Logging to " + logloc);
-            LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
-            LOG.info("Launch Args: " + String.join(",", args));
-            LOG.info(MessageFormat.format("bedrockR version: {0} ({1}), Java version: {2}, JVM: {3}, OS: {4}",
+            RFileOperations.LOG.info("Logging to " + logloc);
+            RFileOperations.LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
+            RFileOperations.LOG.info("Launch Args: " + String.join(",", args));
+            RFileOperations.LOG.info(MessageFormat.format("bedrockR version: {0} ({1}), Java version: {2}, JVM: {3}, OS: {4}",
                     RFileOperations.VERSION,
                     RFileOperations.SEM_VERSION,
                     Runtime.version(),
@@ -112,13 +111,13 @@ public class Launcher {
                     System.getProperty("os.name")));
 
             Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-                    LOG.log(Level.WARNING, "Uncaught Exception!", e));
+                    RFileOperations.LOG.log(Level.WARNING, "Uncaught Exception!", e));
 
             setuplogging = true;
         }
         // setup theme
         loading.ProgressText.setText("Setting up theme...");
-        FlatLaf.registerCustomDefaultsSource("fn10.bedrockr.ui.laf");
+        FlatLaf.registerCustomDefaultsSource("laf");
         if (SystemInfo.isLinux) {
             JFrame.setDefaultLookAndFeelDecorated(true);
             JDialog.setDefaultLookAndFeelDecorated(true);
@@ -126,7 +125,7 @@ public class Launcher {
         try {
             Theme.getThemeFromName(settings.theme).setupTheme();
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             ErrorShower.showError(loading, "failed to load theme/font " + e.getMessage(), "FlatLaf Error / Font Error",
                     e);
         }
@@ -154,7 +153,7 @@ public class Launcher {
             }
 
         } catch (Exception e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         /*loading.ProgressText.setText("Setting up Blockly...");
@@ -226,11 +225,11 @@ public class Launcher {
                 try {
                     BlockTextures.downloadAllBlockTextures(loading).await();
                 } catch (InterruptedException e) {
-                    fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                 }
             }
         } catch (IOException | InterruptedException e) {
-            fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
@@ -242,7 +241,7 @@ public class Launcher {
                         RWorkspace.openWorkspace(loading, ElementSource.getSourceFromJSON(Files.readString(file.toPath()), SourceWorkspaceFile.class, WorkspaceFile.class));
                         return;
                     } catch (IOException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
                         JOptionPane.showMessageDialog(loading, "Couldn't open up that WPF file!");
                     }
                 }
