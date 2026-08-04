@@ -3,7 +3,7 @@ package fn10.bedrockr.ui;
 import javax.swing.*;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.rendering.BlockTextures;
+import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.Greetings.Greeting;

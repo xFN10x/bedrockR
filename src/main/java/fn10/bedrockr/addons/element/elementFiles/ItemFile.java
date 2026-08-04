@@ -8,16 +8,17 @@ import java.util.HashMap;
 
 import fn10.bedrockr.addons.element.elementSources.SourceItemElement;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.resource.ItemTextureResource;
 import fn10.bedrockr.addons.resource.ResourcePointer;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.ImageHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Item;
 import fn10.bedrockr.addons.element.*;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
-import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.ItemComponents;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
@@ -151,9 +152,8 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
                 StandardOpenOption.WRITE);
     }
 
-    @Override
-    public Byte[] getTexture(String workspace) {
-        return ArrayUtils.toObject(RFileOperations.readAllOfResource("/addons/element/Element.png"));
+    public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
+        return handler.getBytesFromImage(Texture.get(res).loadImage(handler));
     }
 
     @Override

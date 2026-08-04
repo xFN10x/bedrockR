@@ -7,7 +7,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.rendering.BlockTextures;
+import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;

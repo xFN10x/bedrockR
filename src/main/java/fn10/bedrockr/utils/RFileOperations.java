@@ -12,13 +12,14 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.ui.util.ImageIconSerializer;
 import fn10.bedrockr.utils.typeAdapters.ClassSerializer;
-import fn10.bedrockr.utils.typeAdapters.ImageIconSerializer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerializer;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.io.File;
@@ -654,6 +655,10 @@ public class RFileOperations {
      */
     public static void write(Path to, String data) throws IOException {
         write(to, data.getBytes());
+    }
+
+    public static byte @NonNull [] getElementIconData(@NonNull ElementSource<?> source) {
+        return RFileOperations.readAllOfResource("/addons/element/" + source.getDetails().Icon + ".png");
     }
 
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,

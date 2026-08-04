@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
 
+import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import jakarta.annotation.Nonnull;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.NonNull;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
@@ -25,6 +30,23 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 public abstract class ElementSource<T extends ElementFile<? extends ElementSource<T>>> {
     @Nonnull
     private final T serialized;
+    
+    public byte[] getIcon(WorkspaceResources res, ImageHandler<?> handler) throws IOException {
+        if (serialized instanceof ItemLikeElement ile) {
+            try {
+                byte[] tex = ile.getTexture(res, handler);
+                if (tex != null)
+                    return tex;
+            } catch (Exception e) {
+                Launcher.LOG.log(Level.WARNING, "Failed to get item texture.", e);
+            }
+        }
+        return RFileOperations.getElementIconData(this);
+    }
+    
+    public String getDescription() {
+        return getDetails().Description;
+    }
     
     public abstract ElementDetails getDetails();
 

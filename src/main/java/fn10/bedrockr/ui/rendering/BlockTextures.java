@@ -1,4 +1,4 @@
-package fn10.bedrockr.rendering;
+package fn10.bedrockr.ui.rendering;
 
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
@@ -198,7 +198,7 @@ public class BlockTextures {
                 Object texId = terrianTextureJson.get("texture_data").get(textures).get("textures");
                 // System.out.println("texture file name: " + texId.toString());
                 if (texId instanceof String) {
-                    RenderHandler.render6SideBlock(blockId, downloadTexture(texId.toString()));
+                    RenderHandler.renderAllSideBlock(blockId, downloadTexture(texId.toString()));
                 }
             } else {
                 if (((LinkedTreeMap<String, String>) textures).containsKey("side")) {
@@ -222,7 +222,7 @@ public class BlockTextures {
                         texIdDown = list.get(0);
                     }
 
-                    RenderHandler.render6SideBlock(blockId, downloadTexture(texIdTop.toString()),
+                    RenderHandler.renderLogBlock(blockId, downloadTexture(texIdTop.toString()),
                             downloadTexture(texIdSide.toString()), downloadTexture(texIdDown.toString()));
 
                 } else if (((LinkedTreeMap<String, String>) textures).containsKey("east")) {

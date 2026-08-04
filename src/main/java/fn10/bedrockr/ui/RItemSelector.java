@@ -22,13 +22,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.element.elementFiles.BlockFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ItemJsonEntry;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.rendering.BlockTextures;
+import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.base.RDialog;
 
@@ -63,9 +65,19 @@ public class RItemSelector extends RDialog {
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                ImageIcon icon = new ImageIcon(ArrayUtils.toPrimitive(bf.getTexture(Workspace)));
-                if (!ArrayUtils.isEmpty(ArrayUtils.toPrimitive(bf.getTexture(Workspace))))
+                var texRef = new Object() {
+                    byte[] texData = new byte[0];
+                };
+                try {
+                    texRef.texData = bf.getTexture(RFileOperations.getWorkspaceFile(Workspace).getRes(),
+                            ImageUtilities.ImgHandler);
+                } catch (IOException e) {
+                    ErrorShower.exception(this, e);
+                }
+                if (!ArrayUtils.isEmpty(texRef.texData)) {
+                    ImageIcon icon = new ImageIcon(texRef.texData);
                     ToAdd.setIcon(icon);
+                }
                 else
                     ToAdd.setText(bf.getDisplayName());
                 ToAdd.setToolTipText(
@@ -82,18 +94,7 @@ public class RItemSelector extends RDialog {
                                 e1);
                         building.Prefix = "error";
                     }
-                    // convert image to bytes
-                    Image img = icon.getImage();
-                    BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null),
-                            BufferedImage.TYPE_INT_ARGB);
-                    bi.getGraphics().drawImage(img, 0, 0, null);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    try {
-                        ImageIO.write(bi, "png", baos);
-                    } catch (IOException e1) {
-                        Launcher.LOG.log(Level.SEVERE, "Failed to save image", e);
-                    }
-                    building.Texture = org.apache.commons.lang3.ArrayUtils.toObject(baos.toByteArray());
+                    building.Texture = ArrayUtils.toObject(texRef.texData);
                     selected = building;
                 });
                 InnerPanel.add(ToAdd);

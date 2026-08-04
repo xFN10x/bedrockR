@@ -4,7 +4,9 @@ import fn10.bedrockr.addons.element.elementFiles.BlockFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo.BlockJsonEntry;
-import fn10.bedrockr.rendering.BlockTextures;
+import fn10.bedrockr.ui.rendering.BlockTextures;
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.base.RDialog;
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,9 +48,16 @@ public class RBlockSelector extends RDialog {
                 ToAdd.setMinimumSize(size);
                 ToAdd.setPreferredSize(size);
                 ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                byte[] image = ArrayUtils.toPrimitive(bf.getTexture(Workspace));
-                ImageIcon icon = new ImageIcon(image);
-                if (!ArrayUtils.isEmpty(image))
+                var ref = new Object() {
+                    byte[] image = new byte[0];
+                };
+                try {
+                    ref.image = bf.getTexture(RFileOperations.getWorkspaceFile(Workspace).getRes(), ImageUtilities.ImgHandler);
+                } catch (IOException e) {
+                    ErrorShower.exception(this, e);
+                }
+                ImageIcon icon = new ImageIcon(ref.image);
+                if (!ArrayUtils.isEmpty(ref.image))
                     ToAdd.setIcon(icon);
                 else
                     ToAdd.setText(bf.getDisplayName());
@@ -65,7 +74,7 @@ public class RBlockSelector extends RDialog {
                         fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                         building.Prefix = "error";
                     }
-                    building.Texture = ArrayUtils.toObject(image);
+                    building.Texture = ArrayUtils.toObject(ref.image);
                     selected = building;
                 });
                 InnerPanel.add(ToAdd);

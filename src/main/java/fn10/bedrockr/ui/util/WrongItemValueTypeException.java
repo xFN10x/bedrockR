@@ -1,4 +1,4 @@
-package fn10.bedrockr.utils.exception;
+package fn10.bedrockr.ui.util;
 
 import fn10.bedrockr.ui.componets.RItemValue.Type;
 

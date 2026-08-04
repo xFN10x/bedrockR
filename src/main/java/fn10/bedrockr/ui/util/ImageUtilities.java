@@ -11,27 +11,14 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import fn10.bedrockr.Launcher;
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.utils.RFileOperations;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.jspecify.annotations.NonNull;
 
 public class ImageUtilities {
 
-    public static byte[] ImageToBytes(Image img) {
-        // convert image to bytes
-        int width = img.getWidth(null);
-        int height = img.getHeight(null);
-        if (width <= 0 || height <= 0) {
-            return new byte[0];
-        }
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        bi.getGraphics().drawImage(img, 0, 0, null);
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            ImageIO.write(bi, "png", baos);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            Launcher.LOG.log(Level.SEVERE, "Failed to write image.", e);
-            return new byte[0];
-        }
-    }
+    public final static DefaultImageHandler ImgHandler = new DefaultImageHandler();
 
     public static ImageIcon ResizeIcon(ImageIcon OG, int width, int height, int scalingMode) {
         return new ImageIcon(OG.getImage().getScaledInstance(width, height, scalingMode));
@@ -45,25 +32,15 @@ public class ImageUtilities {
         return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), Image.SCALE_SMOOTH);
     }
 
-    public static Image ResizeImage(BufferedImage OG, Dimension size) {
-        return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), Image.SCALE_SMOOTH);
-    }
-
     public static Image ResizeImage(Image OG, Dimension size, int resizeMode) {
         return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), resizeMode);
     }
-
-    public static Image ResizeImage(BufferedImage OG, Dimension size, int resizeMode) {
-        return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), resizeMode);
-    }
+    
 
     public static Image ResizeImage(Image OG, int width, int height) {
         return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
-
-    public static Image ResizeImage(BufferedImage OG, int width, int height) {
-        return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    }
+    
 
     public static Image ResizeImage(Image OG, int width, int height, int resizeMode) {
         return OG.getScaledInstance(width, height, resizeMode);
@@ -159,5 +136,15 @@ public class ImageUtilities {
         g2.dispose();
 
         return output;
+    }
+
+    public static @NonNull ImageIcon getElementIcon(@NonNull ElementSource<?> source) {
+        return new ImageIcon(RFileOperations.getElementIconData(source));
+    }
+
+    public static BufferedImage toBuffered(Image image) {
+        BufferedImage img = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        img.createGraphics().drawImage(image, 0,0, null);
+        return img;
     }
 }

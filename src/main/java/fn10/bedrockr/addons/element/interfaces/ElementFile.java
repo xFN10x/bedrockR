@@ -7,8 +7,7 @@ import fn10.bedrockr.addons.resource.WorkspaceResources;
 import java.io.IOException;
 
 public abstract class ElementFile<T extends ElementSource<? extends ElementFile<T>>> extends SourcelessElementFile { // mostly for making functions better to read
-
-
+    
     public abstract Class<T> getSourceClass();
     
     public abstract ElementSource<? extends ElementFile<T>> getNewSource();
@@ -27,4 +26,8 @@ public abstract class ElementFile<T extends ElementSource<? extends ElementFile<
     public abstract void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
                                ResourcePackBuilder globalResVariables, WorkspaceResources res)
             throws IOException;
+
+    public String getDescription() {
+        return getNewSource().getDescription();
+    }
 }
