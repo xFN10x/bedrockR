@@ -1,4 +1,4 @@
-package fn10.bedrockr.utils.typeAdapters;
+package fn10.bedrockr.ui.util;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

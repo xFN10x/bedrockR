@@ -14,6 +14,7 @@ import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftBlockPlac
 import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDestructibleByMining;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.ui.componets.RItemValue.Type;
@@ -24,6 +25,7 @@ import javax.naming.NameNotFoundException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
@@ -281,8 +283,8 @@ public class RElementMapValue extends JPanel {
             if (entry.getValue() instanceof RItemValue riv) {
                 try {
                     riv.setItem(ReturnItemInfo.getBlockById("minecraft:air",
-                            RFileOperations.getCurrentWorkspace().WorkspaceName));
-                } catch (NameNotFoundException | IncorrectWorkspaceException e) {
+                            RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
+                } catch (NameNotFoundException | IncorrectWorkspaceException | IOException e) {
                     ErrorShower.exception(Ancestor, e);
                 }
             }
@@ -361,21 +363,21 @@ public class RElementMapValue extends JPanel {
                 ((JSpinner) MultipleInputs.get("seaDepthVal")).setValue(surfaceBuilder.builder.sea_floor_depth);
 
                 ((RItemValue) MultipleInputs.get("midMaterialVal")).setItem(ReturnItemInfo.getItemById(
-                        surfaceBuilder.builder.mid_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        surfaceBuilder.builder.mid_material, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
                 ((RItemValue) MultipleInputs.get("foundationMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.foundation_material,
-                        RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
                 ((RItemValue) MultipleInputs.get("seaMaterialVal")).setItem(ReturnItemInfo.getItemById(
-                        surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        surfaceBuilder.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
                 ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).setItem(ReturnItemInfo.getItemById(
                         surfaceBuilder.builder.sea_floor_material,
-                        RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
                 ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).setItem(ReturnItemInfo.getItemById(
-                        surfaceBuilder.builder.top_material, RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        surfaceBuilder.builder.top_material, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
             } else if (rMapElement.Type == Tags.class && val instanceof Tags tags) {
 
@@ -396,7 +398,7 @@ public class RElementMapValue extends JPanel {
                     val = gson.fromJson(gson.toJsonTree(val), minecraftBlockPlacer.class);
                 }
                 ((RItemValue) InputField).setButtonToItem(0, ReturnItemInfo.getBlockById(
-                        ((minecraftBlockPlacer) val).block, RFileOperations.getCurrentWorkspace().WorkspaceName));
+                        ((minecraftBlockPlacer) val).block, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
             } else if (rMapElement.Type == String.class) { // string
                 ((JTextField) InputField).setText(((String) val));
             } else if (rMapElement.Type == Integer.class || rMapElement.Type == int.class

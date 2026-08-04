@@ -1,5 +1,6 @@
 package fn10.bedrockr.addons.element.supporting.item;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,15 +14,18 @@ import java.util.Map;
 
 import javax.naming.NameNotFoundException;
 
+import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
-import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
+import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import org.apache.commons.lang3.ArrayUtils;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
+@SuppressWarnings({"unused", "unchecked"})
 public class ReturnItemInfo {
     public String Id;
     public String Name;
@@ -38,7 +42,6 @@ public class ReturnItemInfo {
                     .version(HttpClient.Version.HTTP_2).GET().build();
             HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
 
-            @SuppressWarnings("unchecked")
             Map<String, String> versionPaths = (Map<String, String>) ((Map<String, Object>) gson
                     .fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
                     .get(RFileOperations.PICKABLE_VERSIONS[0]);
@@ -55,11 +58,9 @@ public class ReturnItemInfo {
             HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
             ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
             ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
-            for (ItemJsonEntry entry : itemEntrys) {
-                ItemJsonEntry building = entry;
-
+            for (ItemJsonEntry building : itemEntrys) {
                 if (!building.name.startsWith("minecraft"))
-                    building.name = "minecraft:" + entry.name;
+                    building.name = "minecraft:" + building.name;
 
                 parsedEntrys.add(building);
             }
@@ -116,18 +117,18 @@ public class ReturnItemInfo {
      *                                     the workspace
      * @throws NameNotFoundException       if the item isnt found
      */
-    public static ReturnItemInfo getBlockById(String fullID, String workspaceName)
-            throws IncorrectWorkspaceException, NameNotFoundException {
+    public static ReturnItemInfo getBlockById(String fullID, String workspaceName, ImageHandler<?> handler)
+            throws IncorrectWorkspaceException, NameNotFoundException, IOException {
         // check the non-vanilla items
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
             if (element instanceof ItemLikeElement ile) {
                 String Id = ile.getItemId();
                 String Name = ile.getDisplayName();
                 String Prefix = RFileOperations.getWorkspacePrefix(workspaceName);
-                Byte[] img = ile.getTexture(workspaceName);
+                byte[] img = ile.getTexture(RFileOperations.getWorkspaceFile(workspaceName).getRes(), handler);
 
                 if (fullID.equals(Prefix + ":" + Id)) {
-                    return new ReturnItemInfo(Id, Name, Prefix, img);
+                    return new ReturnItemInfo(Id, Name, Prefix, ArrayUtils.toObject(img));
                 }
             }
         }
@@ -207,20 +208,20 @@ public class ReturnItemInfo {
         return other.item.equals(Prefix + ":" + Id);
     }
 
-    public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace) {
+    public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace, ImageHandler<?> handler) {
         try {
-            return ReturnItemInfo.getItemById(con.item, workspace);
-        } catch (IncorrectWorkspaceException | NameNotFoundException e) {
+            return ReturnItemInfo.getItemById(con.item, workspace, handler);
+        } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
 
     public static List<ReturnItemInfo> fromUnlockCondition(Collection<? extends UnlockCondition> list,
-            String workspace) {
+            String workspace, ImageHandler<?> handler) {
         ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
         for (UnlockCondition info : list) {
-            building.add(ReturnItemInfo.fromUnlockCondition(info, workspace));
+            building.add(ReturnItemInfo.fromUnlockCondition(info, workspace, handler));
         }
         return building;
     }
@@ -229,22 +230,22 @@ public class ReturnItemInfo {
         return new Item(Prefix + ":" + Id);
     }
 
-    public static ReturnItemInfo fromRecipeItem(Item con, String workspace) {
+    public static ReturnItemInfo fromRecipeItem(Item con, String workspace, ImageHandler<?> handler) {
         try {
-            return ReturnItemInfo.getItemById(con.item, workspace);
-        } catch (IncorrectWorkspaceException | NameNotFoundException e) {
+            return ReturnItemInfo.getItemById(con.item, workspace, handler);
+        } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
             fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
     }
 
     public static List<ReturnItemInfo> fromRecipeItem(Collection<? extends Item> list,
-            String workspace) {
+            String workspace, ImageHandler<?> handler) {
         ArrayList<ReturnItemInfo> building = new ArrayList<ReturnItemInfo>();
         for (Item item : list) {
             try {
-                building.add(ReturnItemInfo.getItemById(item.item, workspace));
-            } catch (NameNotFoundException | IncorrectWorkspaceException e) {
+                building.add(ReturnItemInfo.getItemById(item.item, workspace, handler));
+            } catch (NameNotFoundException | IncorrectWorkspaceException | IOException e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
@@ -261,18 +262,18 @@ public class ReturnItemInfo {
      *                                     the workspace
      * @throws NameNotFoundException       if the item isnt found
      */
-    public static ReturnItemInfo getItemById(String fullID, String workspaceName)
-            throws IncorrectWorkspaceException, NameNotFoundException {
+    public static ReturnItemInfo getItemById(String fullID, String workspaceName, ImageHandler<?> handler)
+            throws IncorrectWorkspaceException, NameNotFoundException, IOException {
         // check the non-vanilla items
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
-            if (element instanceof ItemLikeElement) {
-                String Id = ((ItemLikeElement) element).getItemId();
-                String Name = ((ItemLikeElement) element).getDisplayName();
+            if (element instanceof ItemLikeElement ile) {
+                String Id = ile.getItemId();
                 String Prefix = RFileOperations.getWorkspacePrefix(workspaceName);
-                Byte[] img = ((ItemLikeElement) element).getTexture(workspaceName);
-
                 if (fullID.equals(Prefix + ":" + Id)) {
-                    return new ReturnItemInfo(Id, Name, Prefix, img);
+                    String Name = ile.getDisplayName();
+                byte[] img = ile.getTexture(RFileOperations.getWorkspaceFile(workspaceName).getRes(), handler);
+
+                    return new ReturnItemInfo(Id, Name, Prefix, ArrayUtils.toObject(img));
                 }
             }
         }

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Window;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ import javax.swing.SpringLayout;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
@@ -37,7 +40,7 @@ import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
+import fn10.bedrockr.ui.util.WrongItemValueTypeException;
 import fn10.bedrockr.ui.RBlockSelector;
 import fn10.bedrockr.ui.RItemSelector;
 
@@ -281,9 +284,9 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     ReturnItemInfo item;
                     try {
                         item = ReturnItemInfo.getItemById(
-                                value.key.get(itemString), workspace);
-                    } catch (IncorrectWorkspaceException | NameNotFoundException e) {
-                        fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                                value.key.get(itemString), workspace, ImageUtilities.ImgHandler);
+                    } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
+                        ErrorShower.exception(parent,e);
                         continue;
                     }
                     setButtonToItem((i * 3) + j, item);

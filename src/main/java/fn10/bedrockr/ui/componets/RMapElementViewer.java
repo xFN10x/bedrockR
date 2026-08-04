@@ -8,13 +8,12 @@ import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.element.RMapElement;
 
-public class RMapElementViewer extends RElement {
+public class RMapElementViewer extends RDetailedButton {
 
     protected RMapElement Element;
 
-    public RMapElementViewer(Runnable selectedFunction, RMapElement element)
-            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        super(null, selectedFunction, Color.green, false);
+    public RMapElementViewer(Runnable selectedFunction, RMapElement element) {
+        super(selectedFunction, false);
 
         this.Element = element;
 

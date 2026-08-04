@@ -1,5 +1,10 @@
 package fn10.bedrockr.addons.element.interfaces;
 
+import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.ImageHandler;
+
+import java.io.IOException;
+
 /**
  * An interface used for ItemFiles and BlockFiles.
  * 
@@ -7,14 +12,9 @@ package fn10.bedrockr.addons.element.interfaces;
  * has an item form (like a block), that can be used in recipes.
  */
 public interface ItemLikeElement {
-    /**
-     * Get the texture for the item in GUI
-     * @param workspaceName - the name of the workspace this item is in
-     * @return the image data
-     */
-    Byte[] getTexture(String workspaceName);
-
     String getItemId();
 
     String getDisplayName();
+
+    <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException;
 }

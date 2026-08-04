@@ -1,5 +1,10 @@
-package fn10.bedrockr.rendering;
+package fn10.bedrockr.ui.rendering;
 
+import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
+import fn10.bedrockr.addons.resource.BlockTextureResource;
+import fn10.bedrockr.addons.resource.Resource;
+import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.util.ImageUtilities;
 
@@ -12,6 +17,8 @@ import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+
+import static fn10.bedrockr.ui.util.ImageUtilities.toBuffered;
 
 public class RenderHandler {
 
@@ -42,18 +49,27 @@ public class RenderHandler {
                 makeSolidTest(Color.YELLOW)
         ), 300, 300), 0, 0, null);
     }
-    public static BufferedImage render6SideBlock(String name, BufferedImage t) throws IOException {
-        return render6SideBlock(name,t,t,t,t,t,t);
+    public static BufferedImage renderAllSideBlock(String name, BufferedImage t) throws IOException {
+        return renderLogBlock(name,t,t,t);
     }
 
-    public static BufferedImage render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage side) throws IOException {
+    public static BufferedImage renderLogBlock(String name, BufferedImage t, BufferedImage d, BufferedImage side) throws IOException {
         return render6SideBlock(name,t,d,side,side,side,side);
     }
 
-    public static BufferedImage imgToBuffered(Image img) {
-        final BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        bufferedImage.createGraphics().drawImage(img,0,0,null);
-        return bufferedImage;
+    private static BufferedImage resToBuf(ResourcePointer<BlockTextureResource> tex, WorkspaceResources res) throws IOException {
+        return tex.get(res).loadImage(ImageUtilities.ImgHandler);
+    }
+    
+    public static BufferedImage renderBlock(String name, BlockTexture btex, WorkspaceResources res) throws IOException {
+        return render6SideBlock(name,
+                resToBuf(btex.upTex, res),
+                resToBuf(btex.downTex, res),
+                resToBuf(btex.eastTex, res),
+                resToBuf(btex.westTex, res),
+                resToBuf(btex.northTex, res),
+                resToBuf(btex.southTex, res)
+        );
     }
 
     public record BrightnessFilter(float mul) implements BufferedImageOp {
@@ -114,12 +130,12 @@ public class RenderHandler {
     }
 
     public static BufferedImage render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage e, BufferedImage w, BufferedImage n, BufferedImage s) throws IOException {
-        var top = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(t, missing()), 60, 60));
-        var down = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
-        var east = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
-        var west = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(w, missing()), 50, 50));
-        var north = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(n, missing()), 50, 50));
-        var south = imgToBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(s, missing()), 50, 50));
+        var top = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(t, missing()), 50, 50, Image.SCALE_AREA_AVERAGING));
+        //var down = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
+        //var east = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
+        var west = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(w, missing()), 50, 50, Image.SCALE_AREA_AVERAGING));
+        var north = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(n, missing()), 50, 50, Image.SCALE_AREA_AVERAGING));
+        //var south = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(s, missing()), 50, 50));
         final int width = 100;
         final int height = 100;
         final BufferedImage main = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

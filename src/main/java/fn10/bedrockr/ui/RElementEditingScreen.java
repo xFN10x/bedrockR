@@ -10,15 +10,16 @@ import fn10.bedrockr.addons.element.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement.RecipeType;
 import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
-import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.element.ElementCreationListener;
 import fn10.bedrockr.addons.element.ValidatableValue;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.utils.exception.WrongItemValueTypeException;
+import fn10.bedrockr.ui.util.WrongItemValueTypeException;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.componets.RElementValue;
 import fn10.bedrockr.ui.componets.RItemValue;
@@ -331,9 +332,9 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             serilized.ShapelessIngredients.forEach(item -> {
                                 try {
                                     grid.setButtonToItem(serilized.ShapelessIngredients.indexOf(item),
-                                            ReturnItemInfo.getItemById(item.item, Workspace));
-                                } catch (WrongItemValueTypeException | NameNotFoundException
-                                         | IncorrectWorkspaceException e1) {
+                                            ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                } catch (WrongItemValueTypeException | NameNotFoundException |
+                                         IncorrectWorkspaceException | IOException e1) {
                                     Launcher.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }
@@ -345,19 +346,19 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 RItemValue outputSlot = new RItemValue(Workspace, RItemValue.Type.Single, true);
                 if (serilized.Result != null) {
-                    outputSlot.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.Result.item, Workspace));
+                    outputSlot.setButtonToItem(0, ReturnItemInfo.getItemById(serilized.Result.item, Workspace, ImageUtilities.ImgHandler));
                 }
 
                 RItemValue unlockItems = new RItemValue(Workspace, RItemValue.Type.ListOfItems, true);
                 if (serilized.UnlockConditions != null) {
                     unlockItems.addListElements(Workspace, ReturnItemInfo
-                            .fromUnlockCondition(serilized.UnlockConditions, Workspace).toArray(new ReturnItemInfo[0]));
+                            .fromUnlockCondition(serilized.UnlockConditions, Workspace, ImageUtilities.ImgHandler).toArray(new ReturnItemInfo[0]));
                 }
 
                 RItemValue extraResults = new RItemValue(Workspace, RItemValue.Type.ListOfItems, false);
                 if (serilized.ExtraResults != null) {
                     extraResults.addListElements(Workspace,
-                            ReturnItemInfo.fromRecipeItem(serilized.ExtraResults, Workspace)
+                            ReturnItemInfo.fromRecipeItem(serilized.ExtraResults, Workspace, ImageUtilities.ImgHandler)
                                     .toArray(new ReturnItemInfo[0]));
                 }
 
@@ -514,9 +515,9 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     Serilized.ShapelessIngredients.forEach(item -> {
                                         try {
                                             grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
-                                                    ReturnItemInfo.getItemById(item.item, Workspace));
-                                        } catch (WrongItemValueTypeException | NameNotFoundException
-                                                 | IncorrectWorkspaceException e1) {
+                                                    ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                        } catch (WrongItemValueTypeException | NameNotFoundException |
+                                                 IncorrectWorkspaceException | IOException e1) {
                                             Launcher.LOG.log(Level.SEVERE,
                                                     "Exception thrown", e1);
                                         }
@@ -526,7 +527,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                             case null:
                             default:
-                                arrow.setIcon(new ImageIcon(getClass().getResource("/ui/ArrowShapless.png")));
+                                arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
                                 extraResults.setVisible(false);
                                 break;
                         }
@@ -556,7 +557,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return Integer.compare(o1, o2);
             });
             for (Field field : fields) { // try to get fields
-                RElementValue rev = null;
+                RElementValue rev;
                 String tab = DEFAULT_PANE;
                 if (field.isAnnotationPresent(RAnnotation.CreationMenuTab.class)) {
                     RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);

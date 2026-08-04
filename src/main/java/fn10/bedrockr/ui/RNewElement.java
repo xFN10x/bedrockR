@@ -1,13 +1,8 @@
 package fn10.bedrockr.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Objects;
 
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,9 +13,10 @@ import fn10.bedrockr.addons.element.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.ElementCreationListener;
+import fn10.bedrockr.ui.componets.RDetailedButton;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.componets.RElement;
+import fn10.bedrockr.ui.componets.RNewElementButton;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.SpringUtilities;
 
@@ -50,7 +46,7 @@ public class RNewElement extends RDialog {
         for (Class<? extends ElementSource<?>> class1 : RFileOperations.ELEMENTS) {
             try {
                 ElementSource<?> obj = class1.getConstructor().newInstance();
-                RElement relement = new RElement(obj, () -> createNewElement(obj));
+                RNewElementButton relement = new RNewElementButton(obj, () -> createNewElement(obj));
                 MainPane.add(relement);
             } catch (Exception e) {
                 fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);

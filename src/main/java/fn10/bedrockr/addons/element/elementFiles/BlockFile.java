@@ -1,6 +1,7 @@
 package fn10.bedrockr.addons.element.elementFiles;
 
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.mcjson.behav.Block;
 import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem;
 import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem.Description;
@@ -8,10 +9,10 @@ import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem.Description.MenuCategor
 import fn10.bedrockr.addons.element.FieldFilters;
 import fn10.bedrockr.addons.element.elementSources.SourceBlockElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
-import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.BlockComponents;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
@@ -183,9 +184,8 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
                 StandardOpenOption.WRITE);
     }
 
-    @Override
-    public Byte[] getTexture(String workspace) {
-        return ArrayUtils.toObject(RFileOperations.readAllOfResource("/addons/element/Element.png"));
+    public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
+        return handler.getBytesFromImage(handler.renderBlock(ID, Textures, res));
     }
 
     @Override

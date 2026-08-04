@@ -17,6 +17,15 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class WorkspaceResources {
+    public enum ResourceType {
+        ITEM_TEXTURE("Item Texture", "textures/item"),
+        BLOCK_TEXTURE("Block Texture", "textures/item"),
+        ;
+
+        ResourceType(String name, String folder) {
+            
+        }
+    }
     public final WorkspaceFile wpf;
     public final HashMap<String, Class<? extends Resource>> resourcePaths = new HashMap<>();
     public final ArrayList<Resource> resources = new ArrayList<>();

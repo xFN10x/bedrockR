@@ -6,45 +6,54 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
+import java.util.logging.Level;
 import javax.swing.*;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 
+import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.ui.RElementEditingScreen;
 import fn10.bedrockr.ui.RWorkspace;
+import fn10.bedrockr.ui.laf.BedrockrDark;
 import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class RElementFile extends RElement implements ActionListener {
+public class RElementFileButton extends RDetailedButton implements ActionListener {
 
     protected ElementFile<?> file;
     protected String filePath;
     protected RWorkspace wksp;
 
-    public RElementFile(RWorkspace Workspace, ElementFile<?> File, String FilePath)
-            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public RElementFileButton(RWorkspace Workspace, ElementFile<?> File, String FilePath) {
+        Color clr = (File.getDraft() ? Color.gray : BedrockrDark.BEDROCKR_GREEN);
+        super(clr);
 
-        super(File.getNewSource(), null, (File.getDraft() ? Color.gray : Color.green));
         this.file = File;
         this.filePath = FilePath;
         this.wksp = Workspace;
         this.setName("RElementFile");
-        Color clr = (File.getDraft() ? Color.gray : Color.green);
 
         Name.setText(File.getElementName());
+        Desc.setText(File.getDescription());
         if (clr != Color.green) {
-            Name.setText(File.getElementName() + " (DRAFT)");
+            Name.setText(File.getElementName());
             Name.setForeground(clr.brighter());
             Desc.setForeground(clr.brighter());
             this.setBackground(clr.darker().darker());
         }
 
-        if (file instanceof ItemLikeElement) {
-            setIcon(new ImageIcon(ArrayUtils.toPrimitive(((ItemLikeElement) file).getTexture(wksp.SWPF.workspaceName()))));
+        try {
+            setIcon(
+                    new ImageIcon(File.getNewSource()
+                            .getIcon(Workspace.SWPF.getSerialized().getRes(), ImageUtilities.ImgHandler))
+            );
+        } catch (IOException e) {
+            Launcher.LOG.log(Level.SEVERE, "Failed to get Element icon.", e);
         }
 
         JPopupMenu popup = new JPopupMenu(File.getElementName());

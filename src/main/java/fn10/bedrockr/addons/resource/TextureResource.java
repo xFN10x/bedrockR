@@ -1,12 +1,8 @@
 package fn10.bedrockr.addons.resource;
 
 import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.utils.ImageHandler;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,18 +15,16 @@ public abstract class TextureResource extends Resource {
         this.type = type;
     }
 
-    public void resizeImage(int w, int h) throws IOException {
-        ImageUtilities.ResizeImage(loadImage(), w, h);
+    public <T> void resizeImage(int w, int h, ImageHandler<T> handler) throws IOException {
+        handler.resizeImage(w,h, loadImage(handler));
     }
     
-    public void saveImage(RenderedImage img) throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        ImageIO.write(img, resourceDataExtension(), stream);
-        data = stream.toByteArray();
+    public <T> void readImage(ImageHandler<T> handler, T image) throws IOException {
+        data = handler.getBytesFromImage(image);
     }
     
-    public BufferedImage loadImage() throws IOException {
-        return ImageIO.read(new ByteArrayInputStream(data));
+    public <T> T loadImage(ImageHandler<T> handler) throws IOException {
+        return handler.getImageFromBytes(data);
     }
 
     @Override

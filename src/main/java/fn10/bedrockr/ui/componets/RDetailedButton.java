@@ -1,79 +1,44 @@
 package fn10.bedrockr.ui.componets;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.*;
-
 import com.formdev.flatlaf.ui.FlatLineBorder;
-
-import fn10.bedrockr.addons.element.interfaces.ElementDetails;
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.ui.laf.BedrockrDark;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
-import fn10.bedrockr.utils.RFileOperations;
-import jakarta.annotation.Nullable;
 
-public class RElement extends JPanel implements MouseListener {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
+public class RDetailedButton extends JPanel implements MouseListener {
+    protected final Runnable func;
     public JLabel Icon = new JLabel();
-    protected SpringLayout Lay = new SpringLayout();
     public JLabel Name = new JLabel();
     public JLabel Desc = new JLabel();
-
-    private final Runnable func;
+    public boolean CanBeSelected = true;
+    protected SpringLayout Lay = new SpringLayout();
     protected boolean selected;
     protected Color outlineColour;
-    private ElementSource<?> elementSource;
-    private ElementDetails details;
-    public boolean CanBeSelected = true;
 
-    public RElement(ElementSource<?> source, Runnable selectedFunction)
-             {
-
-        this(source, selectedFunction, Color.green);
+    public RDetailedButton(Color borderColour) {
+        this(borderColour, true);
     }
 
-    public RElement(@Nullable ElementSource<?> source, Runnable selectedFunction, Color borderColour)
-            {
-        this(source, selectedFunction, borderColour, true);
+    public RDetailedButton(Runnable selectedFunction, boolean hasIcon) {
+        this(selectedFunction, BedrockrDark.BEDROCKR_GREEN, hasIcon);
+    }
+    public RDetailedButton(Color borderColour, boolean hasIcon) {
+        this(null, borderColour, hasIcon);
     }
 
-    protected RElement(@Nullable ElementSource<?> source, Runnable selectedFunction, Color borderColour,
-                       boolean icon) {
-        this(source, selectedFunction, borderColour, icon, source != null ? new ImageIcon(RFileOperations.readAllOfResource("/addons/element/" + source.getDetails().Icon + ".png")) : null);
-    }
-
-    /**
-     * A ui-component with an icon, name and description. Can be easily changed to
-     * make it custom.
-     * 
-     * @param source
-     *                         Used for unmodified versions of this, this can be
-     *                         {@code null} if you want to customize it.
-     * @param selectedFunction
-     *                         Runs before making this selected. Used for managing
-     *                         how many you can select in a list for example.
-     * @param borderColour
-     *                         Default is {@code Color.green}
-     * @param icon
-     *                         Declares if this has an icon.
-     */
-    protected RElement(@Nullable ElementSource<?> source, Runnable selectedFunction, Color borderColour,
-            boolean icon, ImageIcon iicon) {
+    public RDetailedButton(Runnable selectedFunction, Color borderColour, boolean hasIcon) {
         super();
-
-        this.outlineColour = borderColour;
         this.func = selectedFunction;
-        if (source != null) {
-            this.elementSource = source;
+        this.outlineColour = borderColour;
 
-            details = source.getDetails();
-        }
+        Icon.setAlignmentX(CENTER_ALIGNMENT);
+        Icon.setAlignmentY(CENTER_ALIGNMENT);
+        Name.setFont(RFonts.RegMinecraftFont.deriveFont(20f));
         setLayout(Lay);
 
         setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.white, 1, 16));
@@ -83,17 +48,8 @@ public class RElement extends JPanel implements MouseListener {
         Icon.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.gray, 1, 16));
         Icon.setPreferredSize(new Dimension(70, 70));
         Icon.setSize(new Dimension(70, 70));
-        if (details != null)
-            Icon.setIcon(ImageUtilities.ResizeIcon(iicon, 64, 64));
-        Icon.setAlignmentX(CENTER_ALIGNMENT);
-        Icon.setAlignmentY(CENTER_ALIGNMENT);
-        if (details != null)
-            Name.setText(details.Name);
-        Name.setFont(RFonts.RegMinecraftFont.deriveFont(20f));
-        if (details != null)
-            Desc.setText(details.Description);
 
-        if (icon) {
+        if (hasIcon) {
             Lay.putConstraint(SpringLayout.WEST, Icon, 5, SpringLayout.WEST, this);
             Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Icon, 0, SpringLayout.VERTICAL_CENTER, this);
 
@@ -131,10 +87,6 @@ public class RElement extends JPanel implements MouseListener {
     public void unselect() {
         this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.white, 1, 16));
         this.selected = false;
-    }
-
-    public ElementSource<?> getElement() {
-        return elementSource;
     }
 
     @Override
