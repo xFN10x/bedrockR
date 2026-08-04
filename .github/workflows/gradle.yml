@@ -12,7 +12,6 @@ env:
 
 jobs:
   build:
-
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -39,10 +38,11 @@ jobs:
       run: ./gradlew build --info
 
     - name: Build Portable
+      if: contains(github.event.head_commit.message, 'BUILD:')
       run: ./gradlew jpackagePORTABLE --info
     #upload portables
     - name: Upload Portable (linux, ARM) 
-      if: matrix.os == 'ubuntu-24.04-arm'
+      if: matrix.os == 'ubuntu-24.04-arm' 
       uses: actions/upload-artifact@v4
       with:
         name: bedrockR-${{env.string_ver}}-linux-arm64-portable
@@ -63,24 +63,25 @@ jobs:
         path: build/builtDist
 
     - name: Build Normal
+      if: contains(github.event.head_commit.message, 'BUILD:')
       run: ./gradlew jpackage --info
     # upload normal
     - name: Upload Normal (linux, ARM) 
-      if: matrix.os == 'ubuntu-24.04-arm'
+      if: matrix.os == 'ubuntu-24.04-arm' && contains(github.event.head_commit.message, 'BUILD:')
       uses: actions/upload-artifact@v4
       with:
         name: bedrockR-${{env.string_ver}}-linux-arm64.deb
         path: build/builtDist/bedrockr_${{env.vector_ver}}_arm64.deb
 
     - name: Upload Normal (linux) 
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && contains(github.event.head_commit.message, 'BUILD:')
       uses: actions/upload-artifact@v4
       with:
         name: bedrockR-${{env.string_ver}}-linux-amd64.deb
         path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
 
     - name: Upload Normal (windows) 
-      if: matrix.os == 'windows-latest'
+      if: matrix.os == 'windows-latest' && contains(github.event.head_commit.message, 'BUILD:')
       uses: actions/upload-artifact@v4
       with:
         name: bedrockR-${{env.string_ver}}-windows-x64.msi
