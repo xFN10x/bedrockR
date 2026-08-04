@@ -13,7 +13,7 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.resource.*;
 import fn10.bedrockr.ui.base.RFrame;
-import fn10.bedrockr.ui.componets.RElementFileButton;
+import fn10.bedrockr.ui.components.RElementFileButton;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.RFileOperations;
@@ -446,8 +446,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             for (ElementFile<?> file : RFileOperations.getElementsFromWorkspace(SWPF.workspaceName())) {
                 try {
                     ElementInnerPanelView
-                            .add(new RElementFileButton(this, file, RFileOperations
-                                    .getFileFromElementFile(SWPF.workspaceName(), file).toString()));
+                            .add(new RElementFileButton(this, file));
 
                 } catch (Exception e) {
                     fn10.bedrockr.Launcher.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);

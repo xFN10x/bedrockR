@@ -4,7 +4,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.componets.RElementValue;
+import fn10.bedrockr.ui.components.RElementValue;
 import fn10.bedrockr.ui.util.WrapLayout;
 
 import javax.swing.*;

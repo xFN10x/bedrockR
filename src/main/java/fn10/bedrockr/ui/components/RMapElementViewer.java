@@ -1,12 +1,11 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.components;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SpringLayout;
 
 import fn10.bedrockr.addons.element.RMapElement;
+import fn10.bedrockr.ui.base.RDetailedButton;
 
 public class RMapElementViewer extends RDetailedButton {
 

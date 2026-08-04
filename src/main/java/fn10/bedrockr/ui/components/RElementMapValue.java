@@ -1,4 +1,4 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.components;
 
 import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.internal.LinkedTreeMap;
@@ -17,7 +17,7 @@ import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.ui.componets.RItemValue.Type;
+import fn10.bedrockr.ui.components.RItemValue.Type;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.RFonts;
 

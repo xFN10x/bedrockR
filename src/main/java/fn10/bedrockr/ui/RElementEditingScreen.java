@@ -21,9 +21,9 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.ui.util.WrongItemValueTypeException;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.componets.RElementValue;
-import fn10.bedrockr.ui.componets.RItemValue;
-import fn10.bedrockr.ui.componets.RItemValue.ShapedOutput;
+import fn10.bedrockr.ui.components.RElementValue;
+import fn10.bedrockr.ui.components.RItemValue;
+import fn10.bedrockr.ui.components.RItemValue.ShapedOutput;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.WrapLayout;
 

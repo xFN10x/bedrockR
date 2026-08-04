@@ -1,4 +1,4 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.base;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.ui.laf.BedrockrDark;
