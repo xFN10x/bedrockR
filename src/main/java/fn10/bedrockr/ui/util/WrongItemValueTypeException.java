@@ -1,6 +1,6 @@
 package fn10.bedrockr.ui.util;
 
-import fn10.bedrockr.ui.componets.RItemValue.Type;
+import fn10.bedrockr.ui.components.RItemValue.Type;
 
 public class WrongItemValueTypeException extends Exception {
 

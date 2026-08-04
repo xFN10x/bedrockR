@@ -1,4 +1,4 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.components;
 
 import java.awt.Color;
 import java.awt.Cursor;

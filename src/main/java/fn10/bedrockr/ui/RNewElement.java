@@ -13,10 +13,9 @@ import fn10.bedrockr.addons.element.elementFiles.ScriptFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.ElementCreationListener;
-import fn10.bedrockr.ui.componets.RDetailedButton;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.componets.RNewElementButton;
+import fn10.bedrockr.ui.components.RNewElementButton;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.SpringUtilities;
 

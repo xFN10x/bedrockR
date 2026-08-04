@@ -8,7 +8,7 @@ import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.Greetings.Greeting;
 import fn10.bedrockr.ui.base.RFrame;
-import fn10.bedrockr.ui.componets.RAddon;
+import fn10.bedrockr.ui.components.RAddon;
 import fn10.bedrockr.ui.util.RFonts;
 import fn10.bedrockr.ui.util.WrapLayout;
 

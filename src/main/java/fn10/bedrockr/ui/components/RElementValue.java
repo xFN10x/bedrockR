@@ -1,4 +1,4 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.components;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.Launcher;

@@ -1,4 +1,4 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.components;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

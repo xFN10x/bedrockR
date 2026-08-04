@@ -1,7 +1,8 @@
-package fn10.bedrockr.ui.componets;
+package fn10.bedrockr.ui.components;
 
 import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.ui.base.RDetailedButton;
 import fn10.bedrockr.ui.laf.BedrockrDark;
 import fn10.bedrockr.ui.util.ImageUtilities;
 
