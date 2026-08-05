@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import org.apache.commons.io.FileUtils;
 
@@ -69,7 +68,7 @@ public class BiomeFile extends ElementFile<SourceBiomeElement> {
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceBiomeElement>> getNewSource() {
+    public SourceBiomeElement getNewSource() {
         return new SourceBiomeElement(this);
     }
 

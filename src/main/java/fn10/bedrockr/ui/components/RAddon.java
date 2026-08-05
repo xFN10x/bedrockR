@@ -50,7 +50,6 @@ public class RAddon extends JPanel implements MouseListener {
     protected JLabel Name;
     protected VerticalLabel Version;
     protected JLabel LoadText;
-    protected SourceWorkspaceFile WPFile;
     protected WorkspaceFile WPF;
     protected JFrame ancestor;
 
@@ -58,15 +57,20 @@ public class RAddon extends JPanel implements MouseListener {
         this.ancestor = parent;
 
         BufferedImage BI;
-        Image resizedImage = null;
+        Image resizedImage;
         int step = 0;
         try {
-            WPFile = new SourceWorkspaceFile(RFileOperations.getWorkspaceFile(WPName));
-            WPF = WPFile.getSerialized();
+            WPF = RFileOperations.getWorkspaceFile(WPName);
             step = 1;
             File iconFile = RFileOperations.getFileFromWorkspace(WPName, true, "icon." + WPF.IconExtension);
             iconFile.setReadable(true);
-            BI = ImageIO.read(iconFile);
+            BufferedImage readIcon = ImageIO.read(iconFile);
+            if (WPF.Format < RFileOperations.CURRENT_WORKSPACE_FORMAT) {
+                BI = new BufferedImage(readIcon.getWidth(), readIcon.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                BI.createGraphics().drawImage(readIcon, 0,0, null);
+            } else {
+                BI = readIcon;
+            }
             resizedImage = ImageUtilities.ResizeImage(BI, 88, 88); // resize
 
         } catch (Exception e) {
@@ -74,7 +78,6 @@ public class RAddon extends JPanel implements MouseListener {
             if (step == 0) {
                 return;
             } else {
-                WPF = WPFile.getSerialized();
                 try {
                     BI = ImageIO.read(getClass().getResourceAsStream("/addons/NotFound.png"));
                     var op = JOptionPane.showConfirmDialog(this, "Woah! The addon " + WPName
@@ -176,10 +179,10 @@ public class RAddon extends JPanel implements MouseListener {
                     "Are you sure you want to delete this addon? (it will be gone for a while!)", "Confirm Deletion?",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                 try {
-                    RFileOperations.LOG.info(RFileOperations.getWorkspace(WPFile.workspaceName()).getAbsolutePath());
-                    FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPFile.workspaceName()));
+                    RFileOperations.LOG.info(RFileOperations.getWorkspace(WPF.WorkspaceName).getAbsolutePath());
+                    FileUtils.deleteDirectory(RFileOperations.getWorkspace(WPF.WorkspaceName));
                     JOptionPane.showMessageDialog(parent,
-                            "The Addon " + WPFile.workspaceName() + " has been deleted.");
+                            "The Addon " + WPF.WorkspaceName + " has been deleted.");
                     parent.refresh();
                 } catch (Exception e) {
                     RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -193,7 +196,7 @@ public class RAddon extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent arg0) {
         if (arg0.getButton() == MouseEvent.BUTTON1)
-            RWorkspace.openWorkspace(ancestor, WPFile);
+            RWorkspace.openWorkspace(ancestor, WPF.getNewSource());
     }
 
     @Override

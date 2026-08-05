@@ -10,7 +10,7 @@ public abstract class ElementFile<T extends ElementSource<? extends ElementFile<
     
     public abstract Class<T> getSourceClass();
     
-    public abstract ElementSource<? extends ElementFile<T>> getNewSource();
+    public abstract T getNewSource();
 
     public abstract String getElementName();
 

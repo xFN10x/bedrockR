@@ -3,7 +3,6 @@ package fn10.bedrockr.addons.element.elementFiles;
 import java.io.IOException;
 import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 
 public class ScriptFile extends ElementFile<SourceScriptElement> {
@@ -20,7 +19,7 @@ public class ScriptFile extends ElementFile<SourceScriptElement> {
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceScriptElement>> getNewSource() {
+    public SourceScriptElement getNewSource() {
         return new SourceScriptElement(this);
     }
 

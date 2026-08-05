@@ -21,6 +21,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
@@ -98,7 +100,6 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
             try {
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
             } catch (IOException e) {
-
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
@@ -106,7 +107,6 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
             try {
                 desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
             } catch (IOException e) {
-
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         });
@@ -178,14 +178,14 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
             ToAdd.setActionCommand("New Addon");
             ToAdd.addActionListener(this);
             ProjectsPart.add(ToAdd);
-            if (RFileOperations.getWorkspaces() != null)
-                for (var folder : RFileOperations.getWorkspaces()) {
-                    SwingUtilities.invokeLater(() -> {
-                        ProjectsPart.add(new RAddon(this, folder));
-                        ProjectsPart.repaint();
-                        ProjectsPart.revalidate();
-                    });
-                }
+            ArrayList<String> workspaces = new ArrayList<>(List.of(RFileOperations.getWorkspaces()));
+            for (String name : workspaces) {
+                SwingUtilities.invokeLater(() -> {
+                    ProjectsPart.add(new RAddon(this, name));
+                    ProjectsPart.repaint();
+                    ProjectsPart.revalidate();
+                });
+            }
 
         }).start();
     }

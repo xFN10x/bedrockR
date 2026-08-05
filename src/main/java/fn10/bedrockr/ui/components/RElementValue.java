@@ -7,6 +7,7 @@ import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.element.ValidatableValue;
+import fn10.bedrockr.addons.resource.ResourcePointer;
 import fn10.bedrockr.utils.RAnnotation.*;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.Theme;
@@ -41,30 +42,15 @@ public class RElementValue extends JPanel implements ValidatableValue {
     private final static String No_Path_Chosen_Text = "(Click to set path.)";
     private final SpringLayout Lay = new SpringLayout();
     private final JLabel Name = new JLabel();
-    public JButton Help = new JButton(new ImageIcon(getClass().getResource("/ui/Help.png")));
+    public JButton Help = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/ui/Help.png")));
     public JComponent Input = null;
     private final JCheckBox EnableDis = new JCheckBox();
 
-    private String Target = "";
+    private final String Target;
     private final FieldFilter Filter;
     private final Class<?> InputType;
     private final Class<?> SourceFileClass;
     private final String WorkspaceName;
-
-    // componets used for uuid of block texture resource
-    private JLabel NameBlock;
-    private JLabel IDBlock;
-    private JLabel TypeBlock;
-    private JButton AddButtonBlock;
-    private JButton SelectButtonBlock;
-    private JLabel IconBlock;
-    // item texture resource
-    private JLabel NameItem;
-    private JLabel IDItem;
-    private JLabel TypeItem;
-    private JButton AddButtonItem;
-    private JButton SelectButtonItem;
-    private JLabel IconItem;
 
     //components for selecting block textures
     private JComboBox<String> BlockTexturesModeDropdown;
@@ -80,9 +66,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
     public Window parentFrame;
 
     protected JPanel HashMapInnerPane = new JPanel();
-    protected JButton HashMapAdd = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
+    protected JButton HashMapAdd = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
 
-    public boolean Required = false;
+    public boolean Required;
     public String Problem = "No problem here!";
     public boolean Changed = false;
     private ChangedStatusListener changedListener = _ -> {
@@ -320,12 +306,11 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input.setBorder(new LineBorder(Color.DARK_GRAY));
                     Input.setBackground(getBackground().brighter());
                     // get the RMapProvider
-
+                    if (field == null) {
+                        return;
+                    }
                     final Class<?> genericType;
                     if (!InputType.isArray()) {
-                        if (field == null) {
-                            return;
-                        }
                         if (field.getGenericType() instanceof ParameterizedType pt) {
                             genericType = (Class<?>) pt.getActualTypeArguments()[0];
                         } else
@@ -337,7 +322,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                         genericType = null;
                     }
 
-                    if (!FromEmpty && field != null) {
+                    if (!FromEmpty) {
                         try {
                             if (InputType.isArray()) {
                                 for (Object entry : (Object[]) field.get(TargetFile)) {
@@ -370,7 +355,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
 
                     final StringDropdownField anno = field.getAnnotation(StringDropdownField.class);
                     // add the button
-                    HashMapAdd.addActionListener((e) -> {
+                    HashMapAdd.addActionListener((_) -> {
                         try {
                             RElementValue toAdd;
                             if (InputType.isArray()) {
@@ -382,7 +367,7 @@ public class RElementValue extends JPanel implements ValidatableValue {
                                         null, WorkspaceName);
                             } else {
 
-                                // fn10.bedrockr.Launcher.LOG.info("make an list value element with
+                                // fn10.bedrockr.Launcher.LOG.info("make a list value element with
                                 // class: "
                                 // + genericType.getCanonicalName());
                                 toAdd = new RElementValue(parentFrame, genericType, Filter, null,
@@ -615,6 +600,9 @@ public class RElementValue extends JPanel implements ValidatableValue {
                     Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
                             anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
                     ((JSpinner) Input).setValue(field.get(TargetFile));
+                }
+                else if (ResourcePointer.class.isAssignableFrom(InputType)) {
+                    
                 }
                 else {
                     Input = new JLabel("Not supported.");
