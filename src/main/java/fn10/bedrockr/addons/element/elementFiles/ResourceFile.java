@@ -2,7 +2,6 @@ package fn10.bedrockr.addons.element.elementFiles;
 
 import fn10.bedrockr.addons.element.elementSources.SourceResourceElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.MapUtilities;
 import fn10.bedrockr.utils.RFileOperations;
@@ -134,7 +133,7 @@ public class ResourceFile extends ElementFile<SourceResourceElement> {
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceResourceElement>> getNewSource() {
+    public SourceResourceElement getNewSource() {
         return new SourceResourceElement(this);
     }
 

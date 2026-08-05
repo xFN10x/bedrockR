@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import org.apache.commons.io.FileUtils;
 
@@ -67,7 +66,7 @@ public class RecipeFile extends ElementFile<SourceRecipeElement> {
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceRecipeElement>> getNewSource() {
+    public SourceRecipeElement getNewSource() {
         return new SourceRecipeElement(this);
     }
 

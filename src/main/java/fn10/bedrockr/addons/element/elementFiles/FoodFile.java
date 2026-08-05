@@ -10,21 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 import fn10.bedrockr.addons.element.elementSources.SourceFoodElement;
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.resource.ItemTextureResource;
 import fn10.bedrockr.addons.resource.ResourcePointer;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Item;
 import fn10.bedrockr.addons.element.*;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.utils.RAnnotation.*;
-import fn10.bedrockr.utils.RFileOperations;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -161,7 +158,7 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceFoodElement>> getNewSource() {
+    public SourceFoodElement getNewSource() {
         return new SourceFoodElement(this);
     }
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,6 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
@@ -38,6 +38,7 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
 
     public int Format;
+    public Instant lastOpened;
     public String LatestBedrockRVersion;
     public ArrayList<String> ModifiedWithBedrockRVersions = new ArrayList<>();
     public String WorkspaceName;
@@ -69,7 +70,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
     }
 
     public WorkspaceFile(String WPName, String MEV, String DES, String IE, String PREFIX) {
-        this.Format = 2;
+        this.Format = RFileOperations.CURRENT_WORKSPACE_FORMAT;
 
         this.WorkspaceName = WPName;
         this.MinimumEngineVersion = MEV;
@@ -89,7 +90,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceWorkspaceFile>> getNewSource() {
+    public SourceWorkspaceFile getNewSource() {
         return new SourceWorkspaceFile(this);
     }
 

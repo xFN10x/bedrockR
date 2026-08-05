@@ -1,6 +1,5 @@
 package fn10.bedrockr.addons.element.elementFiles;
 
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.mcjson.behav.Block;
 import fn10.bedrockr.addons.mcjson.behav.Block.InnerItem;
@@ -15,9 +14,7 @@ import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.*;
-import fn10.bedrockr.utils.RFileOperations;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -132,7 +129,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     }
 
     @Override
-    public ElementSource<? extends ElementFile<SourceBlockElement>> getNewSource() {
+    public SourceBlockElement getNewSource() {
         return new SourceBlockElement(this);
     }
 

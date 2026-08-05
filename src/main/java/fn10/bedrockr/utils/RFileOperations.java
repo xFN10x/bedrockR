@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RFileOperations {
+    public static final int CURRENT_WORKSPACE_FORMAT = 2;
     public static Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
@@ -37,7 +38,6 @@ public class RFileOperations {
                     }.getClass(),
                     new StrictMapSerializer())
             .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
-            .registerTypeAdapter(ImageIcon.class, new ImageIconSerializer())
             .registerTypeAdapter(Class.class, new ClassSerializer())
             .create();
     public static final String SEM_VERSION = "0.9.0";
@@ -52,7 +52,6 @@ public class RFileOperations {
             "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"), "Minecraft Bedrock", "Users", "Shared", "games", "com.mojang"),
             "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local", "share", "mcpelauncher", "games", "com.mojang")
     );
-    @SuppressWarnings("unused")
     private static Path COMMOJANG = null;
     // make sure these are valid versions from here
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
@@ -64,7 +63,7 @@ public class RFileOperations {
 
     public static void init() {
         SettingsFile settings = SettingsFile.load();
-        COMMOJANG = settings.comMojangPath;
+        COMMOJANG = COMMOJANG;
         ReturnItemInfo.downloadVanillaItems();
         ReturnItemInfo.downloadVanillaBlocks();
     }
@@ -115,8 +114,8 @@ public class RFileOperations {
         BASE_PATH = folder.getAbsolutePath();
     }
 
-    public static void setComMojangDir(File folder) {
-        COMMOJANG = folder.toPath();
+    public static void setComMojangDir(Path folder) {
+        COMMOJANG = folder;
     }
 
     /**
@@ -412,106 +411,66 @@ public class RFileOperations {
     public static void mcSync() {
         SettingsFile settings = SettingsFile.load();
         try {
-            String bpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "BP"
-                    + File.separator;
-            String rpPath = getBaseDirectory().getPath() + File.separator + "build" + File.separator + "RP"
-                    + File.separator;
-            if (!settings.comMojangPath.toFile().exists()) {
+            Path bpPath = getBaseDirectory().toPath().resolve("build","BP");
+            Path rpPath = getBaseDirectory().toPath().resolve("build","RP");
+            if (!COMMOJANG.toFile().exists()) {
                 return;
             }
-            File comBpPath = new File(settings.comMojangPath + File.separator + "development_behavior_packs");
-            File comRpPath = new File(settings.comMojangPath + File.separator + "development_resource_packs");
-            if (!comBpPath.exists()) {
-                LOG.info("Making dev BP folder...");
-                Files.createDirectories(comBpPath.toPath());
-            }
-            if (!comRpPath.exists()) {
-                LOG.info("Making dev RP folder...");
-                Files.createDirectories(comRpPath.toPath());
-            }
-            File[] comBpFiles = comBpPath.listFiles();
-            File[] comRpFiles = comRpPath.listFiles();
-            /*
-             * --------------------------------- CHECK BP
-             * -----------------------------------
-             */
-            // check for unrecinized BP
-            if (comBpFiles != null)
-                for (File f : comBpFiles) {
-                    if (f.isDirectory()) {
-                        if (!settings.currentBPSynced.contains(f.getName())
-                                && !settings.ignored.contains(f.getName())) { // if
-                            // it
-                            // doesnt
-                            // recicnise
-                            // it
-                        }
-                    }
-                }
-            /*
-             * --------------------------------- CHECK RP
-             * -----------------------------------
-             */
-            // check for unrececiniewicnew0inq390vj-[ ] (i cannot spell) RP
-            if (comRpFiles != null)
-                for (File f : comRpFiles) {
-                    if (f.isDirectory()) {
-                        if (!settings.currentRPSynced.contains(f.getName())
-                                && !settings.ignored.contains(f.getName())) { // if
-                            // it
-                            // doesnt
-                            // recicnise
-                            // it
 
-                        }
-                    }
-                }
-            /*
-             * --------------------------------- SYNC BP -----------------------------------
-             */
+            Path comBpPath = COMMOJANG.resolve("development_behavior_packs");
+            Path comRpPath = COMMOJANG.resolve("development_resource_packs");
+           
+            if (!Files.exists(comBpPath)) {
+                LOG.info("Making dev BP folder...");
+                Files.createDirectories(comBpPath);
+            }
+            if (!Files.exists(comRpPath)) {
+                LOG.info("Making dev RP folder...");
+                Files.createDirectories(comRpPath);
+            }
+            
+            File[] bpFiles = bpPath.toFile().listFiles();
+            File[] rpFiles = rpPath.toFile().listFiles();
+            
+            if (bpFiles == null || rpFiles == null) return;
+            //region Sync BP
             // clear currently synced
             settings.currentBPSynced.clear();
-            for (File f : new File(bpPath).listFiles()) { //
-                if (f.isDirectory() && Arrays.asList(f.list()).contains("manifest.json")) { // if its a dir, and it has
+            for (File f : bpFiles) { //
+                if (f.isDirectory() && FileUtils.getFile(f, "manifest.json").exists()) { // if its a dir, and it has
                     // manifest
-                    File bpDestPath = new File(
-                            settings.comMojangPath + File.separator + "development_behavior_packs" + File.separator
-                                    + f.getName());
-
+                    File bpDestPath = comBpPath.resolve(f.getName()).toFile();
                     if (bpDestPath.exists())
                         FileUtils.deleteDirectory(bpDestPath);
 
-                    settings.currentBPSynced.add(f.getName()); // add to currently synced
                     try {
                         FileUtils.copyDirectory(f, bpDestPath);
+                        settings.currentBPSynced.add(f.getName()); // add to currently synced
                     } catch (IOException e) {
-                        LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        LOG.log(java.util.logging.Level.SEVERE, "Failed to sync BP of workspace.", e);
                     }
                 }
             }
-            /*
-             * --------------------------------- SYNC RP -----------------------------------
-             */
+            //endregion
+            //region Sync RP
             // clear currently synced
             settings.currentRPSynced.clear();
-            for (File f : new File(rpPath).listFiles()) { //
-                if (f.isDirectory() && Arrays.asList(f.list()).contains("manifest.json")) { // if its a dir, and it has
+            for (File f : rpFiles) { //
+                if (f.isDirectory() && FileUtils.getFile(f, "manifest.json").exists()) { // if its a dir, and it has
                     // manifest
-                    File rpDestPath = new File(
-                            settings.comMojangPath + File.separator + "development_resource_packs" + File.separator
-                                    + f.getName());
-
+                    File rpDestPath = comRpPath.resolve(f.getName()).toFile();
                     if (rpDestPath.exists())
                         FileUtils.deleteDirectory(rpDestPath);
 
-                    settings.currentRPSynced.add(f.getName()); // add to currently synced
                     try {
                         FileUtils.copyDirectory(f, rpDestPath);
+                        settings.currentRPSynced.add(f.getName()); // add to currently synced
                     } catch (IOException e) {
-                        LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                        LOG.log(java.util.logging.Level.SEVERE, "Failed to sync RP of workspace.", e);
                     }
                 }
             }
+            //endregion
         } catch (Exception e) {
             LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         } finally {

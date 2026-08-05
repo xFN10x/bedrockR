@@ -16,7 +16,7 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SettingsFile extends SourcelessElementFile {
 
-    //This is used in load() if its not saved yet.
+    ///This is used in load() if it's not saved yet.
     private static SettingsFile CACHE = null;
 
     @RAnnotation.HelpMessage("The path to the com.mojang folder. Do not change unless you know what you are doing.")
@@ -27,7 +27,6 @@ public class SettingsFile extends SourcelessElementFile {
     public Path comMojangPath = null;
     public List<String> currentBPSynced = new ArrayList<>();
     public List<String> currentRPSynced = new ArrayList<>();
-    public List<String> ignored = new ArrayList<>();
 
     public Long LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = null;
     //Appearance
@@ -51,15 +50,21 @@ public class SettingsFile extends SourcelessElementFile {
     @RAnnotation.SettingsCategory(RAnnotation.SettingsCategory.SettingsCategorys.Network)
     public Boolean shareExtraData = null;
 
+    public final static Path SavePath = RFileOperations.getBaseDirectory().toPath().resolve("settings.json");
+   
     /**
      * Save this settings file to the bedrockR home.
      */
     public void save() {
         CACHE = null;
         var json = gson.toJson(this);
-        var path = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
-            RFileOperations.write(path, json.getBytes());
+            RFileOperations.write(SavePath,
+                    """
+                           // bedrockR Settings file, DO NOT EDIT BY HAND!
+                           """
+                    + json);
+            RFileOperations.setComMojangDir(comMojangPath);
         } catch (IOException e) {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
@@ -67,13 +72,12 @@ public class SettingsFile extends SourcelessElementFile {
 
     public static @Nonnull SettingsFile load() {
         if (CACHE != null) return CACHE;
-        var file = new File(RFileOperations.getBaseDirectory().getPath() + File.separator + "settings.json").toPath();
         try {
-            if (!file.toFile().exists()) {
+            if (!SavePath.toFile().exists()) {
                 new SettingsFile().save();
             }
 
-            final SettingsFile sf = gson.fromJson(new String(Files.readAllBytes(file)), SettingsFile.class);
+            final SettingsFile sf = gson.fromJson(Files.readString(SavePath), SettingsFile.class);
             CACHE = sf;
             return sf;
         } catch (JsonSyntaxException | IOException e) {
