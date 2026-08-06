@@ -1,12 +1,20 @@
 package fn10.bedrockr.addons.element.interfaces;
 
+import fn10.bedrockr.addons.element.FieldFilters;
 import fn10.bedrockr.addons.element.elementFiles.ResourcePackBuilder;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.RAnnotation;
 
 import java.io.IOException;
 
-public abstract class ElementFile<T extends ElementSource<? extends ElementFile<T>>> extends SourcelessElementFile { // mostly for making functions better to read
+public abstract class ElementFile<T extends ElementSource<? extends ElementFile<T>>> extends SourcelessElementFile {
+    @RAnnotation.CantEditAfter
+    @RAnnotation.Order()
+    @RAnnotation.VeryImportant
+    @RAnnotation.HelpMessage("The name of the element in bedrockR")
+    @RAnnotation.FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
+    public String ElementName; // mostly for making functions better to read
     
     public abstract Class<T> getSourceClass();
     

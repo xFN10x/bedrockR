@@ -27,13 +27,6 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLikeElement {
 
-    @HelpMessage("The Name Of The Element")
-    @CantEditAfter
-    @VeryImportant
-    @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
-    @Order(1)
-    public String ElementName;
-
     @HelpMessage("The name of the item. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Item Name", Filter = FieldFilters.RegularStringFilter.class)
     @Order(2)

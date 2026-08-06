@@ -33,11 +33,6 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
  */
 public class RecipeFile extends ElementFile<SourceRecipeElement> {
     // dont add order anno cause this doesnt use auto
-    @CantEditAfter
-    @VeryImportant
-    @HelpMessage("The name of the element. This only shows up in the workspace view.")
-    public String ElementName;
-
     @HelpMessage("The ID of the recipe. Only used internally, and for debugging.")
     public String RecipeID;
 

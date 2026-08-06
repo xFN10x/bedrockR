@@ -30,13 +30,6 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
         ElementVersion = 1;
     }
 
-    @HelpMessage("The Name Of The Element")
-    @CantEditAfter
-    @VeryImportant
-    @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
-    @Order()
-    public String ElementName;
-
     @HelpMessage("The name of the block. e.g. \"Diamond\", \"Coal\"...")
     @FieldDetails(Optional = false, displayName = "Block Name", Filter = FieldFilters.RegularStringFilter.class)
     @Order(1)

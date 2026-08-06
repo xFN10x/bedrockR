@@ -20,7 +20,7 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.ui.util.WrongItemValueTypeException;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.components.RElementValue;
+import fn10.bedrockr.ui.base.RElementValue;
 import fn10.bedrockr.ui.components.RItemValue;
 import fn10.bedrockr.ui.components.RItemValue.ShapedOutput;
 import fn10.bedrockr.ui.util.ErrorShower;
@@ -141,21 +141,18 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public static RElementEditingScreen getElementsCreationScreen(ElementSource<?> src, Window Parent,
                                                                   ElementCreationListener parent2, String Workspace)
-            throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+            throws NoSuchFieldException {
+        Class<? extends ElementFile<?>> eFileClass = src.getSerilizedClass();
         if (src.getClass().equals(SourceBiomeElement.class)) {
             RElementEditingScreen screen = new RElementEditingScreen(Parent, "Biome", src,
-                    src.getSerilizedClass(),
+                    eFileClass,
                     parent2);
             SpringLayout lay = new SpringLayout();
             screen.getDefaultPane().setLayout(lay);
 
-            RElementValue elementnameVal = new RElementValue(screen, String.class,
-                    new FieldFilters.FileNameLikeStringFilter(),
-                    "ElementName", "Element Name", false, src.getSerilizedClass(), src.getSerialized(), Workspace);
-            RElementValue idVal = new RElementValue(screen, String.class, new FieldFilters.IDStringFilter(),
-                    "BiomeID", "Biome ID", false, src.getSerilizedClass(), src.getSerialized(), Workspace);
-            RElementValue compsVal = new RElementValue(screen, HashMap.class, new FieldFilters.IDStringFilter(),
-                    "Comps", "Biome Components", false, src.getSerilizedClass(), src.getSerialized(), Workspace);
+            RElementValue<?,?> elementnameVal = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);;
+            RElementValue<?,?> idVal = RElementValue.ofField(eFileClass.getField("BiomeID"), src.getSerialized(), Workspace);;
+            RElementValue<?,?> compsVal = RElementValue.ofField(eFileClass.getField("Comps"), src.getSerialized(), Workspace);;
 
             screen.addField(elementnameVal);
             screen.addField(idVal);
@@ -306,42 +303,35 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
                 RecipeFile serilized = ((SourceRecipeElement) src).getSerialized();
-                RElementEditingScreen frame = new RElementEditingScreen(Parent, "Recipe", src, src.getSerilizedClass(),
+                RElementEditingScreen frame = new RElementEditingScreen(Parent, "Recipe", src, eFileClass,
                         parent2);
 
                 SpringLayout Layout = new SpringLayout();
-
-                RElementValue ElementName = new RElementValue(Parent, String.class,
-                        new FieldFilters.FileNameLikeStringFilter(),
-                        "ElementName", "Element Name", false, src.getSerilizedClass(), serilized, Workspace);
-
-                RElementValue RecipeID = new RElementValue(Parent, String.class,
-                        new FieldFilters.IDStringFilter(),
-                        "RecipeID", "Recipe ID", false, src.getSerilizedClass(), serilized, Workspace);
+                RElementValue<?,?> ElementName = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);;
+                RElementValue<?,?> RecipeID = RElementValue.ofField(eFileClass.getField("RecipeID"), src.getSerialized(), Workspace);;
 
                 frame.getDefaultPane().setLayout(Layout);
                 RItemValue grid = new RItemValue(Workspace, RItemValue.Type.CraftingTable, true);
-                if (serilized != null) {
-                    switch (serilized.recipeType) {
-                        case RecipeType.Shaped:
-                            grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
-                            break;
+                switch (serilized.recipeType) {
+                    case RecipeType.Shaped:
+                        grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
+                        break;
 
-                        default:
-                            serilized.ShapelessIngredients.forEach(item -> {
-                                try {
-                                    grid.setButtonToItem(serilized.ShapelessIngredients.indexOf(item),
-                                            ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
-                                } catch (WrongItemValueTypeException | NameNotFoundException |
-                                         IncorrectWorkspaceException | IOException e1) {
-                                    RFileOperations.LOG.log(Level.SEVERE,
-                                            "Exception thrown", e1);
-                                }
-                            });
-                            break;
-                    }
-                    grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
+                    case Shapeless:
+                    default:
+                        serilized.ShapelessIngredients.forEach(item -> {
+                            try {
+                                grid.setButtonToItem(serilized.ShapelessIngredients.indexOf(item),
+                                        ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                            } catch (WrongItemValueTypeException | NameNotFoundException |
+                                     IncorrectWorkspaceException | IOException e1) {
+                                RFileOperations.LOG.log(Level.SEVERE,
+                                        "Exception thrown", e1);
+                            }
+                        });
+                        break;
                 }
+                grid.setShapedRecipe(Parent, new ShapedOutput(serilized), Workspace);
 
                 RItemValue outputSlot = new RItemValue(Workspace, RItemValue.Type.Single, true);
                 if (serilized.Result != null) {
@@ -362,12 +352,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 }
 
                 JLabel TypeDropdownText = new JLabel("Recipe Type");
-                JComboBox<RecipeType> TypeDropdown = new JComboBox<RecipeType>(RecipeType.values());
+                JComboBox<RecipeType> TypeDropdown = new JComboBox<>(RecipeType.values());
                 if (serilized.recipeType != null) {
                     TypeDropdown.setSelectedItem(serilized.recipeType);
                 }
 
-                JLabel arrow = new JLabel(new ImageIcon(src.getClass().getResource("/ui/Arrow.png")));
+                JLabel arrow = new JLabel(new ImageIcon(RFileOperations.readAllOfResource("/ui/Arrow.png")));
 
                 JPanel lowerFields = new JPanel();
                 BoxLayout lowerLayout = new BoxLayout(lowerFields, BoxLayout.X_AXIS);
@@ -433,12 +423,14 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             case RecipeType.Shapeless:
                                 building.ShapelessIngredients = grid.getItems();
                                 break;
+                                
+                            case null:
                             default:
                                 break;
                         }
 
                         building.UnlockConditions = UnlockCondition.fromRecipeItem(unlockItems.getItems());
-                        building.Result = outputSlot.getItems().get(0);
+                        building.Result = outputSlot.getItems().getFirst();
 
                         if (isDraft) {
                             Sindow.setVisible(false);
@@ -462,76 +454,67 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 frame.getDefaultPane().add(TypeDropdown);
                 frame.getDefaultPane().add(TypeDropdownText);
 
-                TypeDropdown.addItemListener(new ItemListener() {
+                TypeDropdown.addItemListener(e -> {
+                    RecipeFile Serilized = ((SourceRecipeElement) src).getSerialized();
 
-                    @Override
-                    public void itemStateChanged(ItemEvent e) {
-                        RecipeFile Serilized = ((SourceRecipeElement) src).getSerialized();
+                    try {
+                        ShapedOutput shaped = grid.getShapedRecipe();
+                        Serilized.ShapedPattern = shaped.pattern;
+                        Serilized.ShapedKey = shaped.key;
+                        if (!extraResults.getItems().isEmpty())
+                            Serilized.ExtraResults = extraResults.getItems();
 
-                        try {
-                            ShapedOutput shaped = grid.getShapedRecipe();
-                            Serilized.ShapedPattern = shaped.pattern;
-                            Serilized.ShapedKey = shaped.key;
-                            if (!extraResults.getItems().isEmpty())
-                                Serilized.ExtraResults = extraResults.getItems();
-
-                            Serilized.ShapelessIngredients = grid.getItems();
-                        } catch (WrongItemValueTypeException e1) {
-                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
-                                    e1);
-                        }
-
-                        switch (TypeDropdown.getSelectedItem()) {
-                            case RecipeType.Shaped:
-                                arrow.setIcon(new ImageIcon(getClass().getResource("/ui/Arrow.png")));
-                                extraResults.setVisible(true);
-                                try {
-                                    grid.empty();
-                                } catch (WrongItemValueTypeException e1) {
-                                    RFileOperations.LOG.log(Level.SEVERE,
-                                            "Exception thrown", e1);
-                                }
-                                if (Serilized != null) {
-                                    try {
-                                        grid.setShapedRecipe(Parent, new ShapedOutput(Serilized), Workspace);
-                                    } catch (WrongItemValueTypeException e1) {
-                                        RFileOperations.LOG.log(Level.SEVERE,
-                                                "Exception thrown", e1);
-                                    }
-                                }
-                                break;
-
-                            case RecipeType.Shapeless:
-                                arrow.setIcon(new ImageIcon(getClass().getResource("/ui/ArrowShapless.png")));
-                                extraResults.setVisible(false);
-                                try {
-                                    grid.empty();
-                                } catch (WrongItemValueTypeException e1) {
-                                    RFileOperations.LOG.log(Level.SEVERE,
-                                            "Exception thrown", e1);
-                                }
-                                if (Serilized != null) {
-                                    Serilized.ShapelessIngredients.forEach(item -> {
-                                        try {
-                                            grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
-                                                    ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
-                                        } catch (WrongItemValueTypeException | NameNotFoundException |
-                                                 IncorrectWorkspaceException | IOException e1) {
-                                            RFileOperations.LOG.log(Level.SEVERE,
-                                                    "Exception thrown", e1);
-                                        }
-                                    });
-                                }
-                                break;
-
-                            case null:
-                            default:
-                                arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
-                                extraResults.setVisible(false);
-                                break;
-                        }
+                        Serilized.ShapelessIngredients = grid.getItems();
+                    } catch (WrongItemValueTypeException e1) {
+                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+                                e1);
                     }
 
+                    switch (TypeDropdown.getSelectedItem()) {
+                        case RecipeType.Shaped:
+                            arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/Arrow.png")));
+                            extraResults.setVisible(true);
+                            try {
+                                grid.empty();
+                            } catch (WrongItemValueTypeException e1) {
+                                RFileOperations.LOG.log(Level.SEVERE,
+                                        "Exception thrown", e1);
+                            }
+                            try {
+                                grid.setShapedRecipe(Parent, new ShapedOutput(Serilized), Workspace);
+                            } catch (WrongItemValueTypeException e1) {
+                                RFileOperations.LOG.log(Level.SEVERE,
+                                        "Exception thrown", e1);
+                            }
+                            break;
+
+                        case RecipeType.Shapeless:
+                            arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
+                            extraResults.setVisible(false);
+                            try {
+                                grid.empty();
+                            } catch (WrongItemValueTypeException e1) {
+                                RFileOperations.LOG.log(Level.SEVERE,
+                                        "Exception thrown", e1);
+                            }
+                            Serilized.ShapelessIngredients.forEach(item -> {
+                                try {
+                                    grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
+                                            ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                } catch (WrongItemValueTypeException | NameNotFoundException |
+                                         IncorrectWorkspaceException | IOException e1) {
+                                    RFileOperations.LOG.log(Level.SEVERE,
+                                            "Exception thrown", e1);
+                                }
+                            });
+                            break;
+
+                        case null:
+                        default:
+                            arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
+                            extraResults.setVisible(false);
+                            break;
+                    }
                 });
 
                 return frame;
@@ -544,8 +527,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             // do the automatic creation
             var frame = new RElementEditingScreen(Parent,
                    src.getDetails().Name, src,
-                    src.getSerilizedClass(), parent2);
-            List<Field> fields = new ArrayList<Field>(List.of(src.getSerilizedClass().getFields()));
+                    eFileClass, parent2);
+            List<Field> fields = new ArrayList<Field>(List.of(eFileClass.getFields()));
             fields.sort((f1, f2) -> {
                 int o1 = f1.isAnnotationPresent(RAnnotation.Order.class)
                         ? f1.getAnnotation(RAnnotation.Order.class).value()
@@ -556,7 +539,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return Integer.compare(o1, o2);
             });
             for (Field field : fields) { // try to get fields
-                RElementValue rev;
+                RElementValue<?,?> rev;
                 String tab = DEFAULT_PANE;
                 if (field.isAnnotationPresent(RAnnotation.CreationMenuTab.class)) {
                     RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);
@@ -574,32 +557,22 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     RAnnotation.FieldDetails details = field.getAnnotation(RAnnotation.FieldDetails.class);
                     if (details == null) {
                         //probably should have been marked to not serilize
-                        RFileOperations.LOG.warning("Field: " + field.getName() + " in " + src.getSerilizedClass().getName() + " does not have FieldDetails annotation, assuming this should be marked as UneditableByCreation.");
+                        RFileOperations.LOG.warning("Field: " + field.getName() + " in " + eFileClass.getName() + " does not have FieldDetails annotation, assuming this should be marked as UneditableByCreation.");
                         continue;
                     }
                     if (field.getAnnotation(RAnnotation.UneditableByCreation.class) == null) {
-                        if (src.getSerialized() != null) // create field with a file already there
-                            rev = new RElementValue(Parent, field.getType(),
-                                    details.Filter() != null ? details.Filter().getConstructor().newInstance()
-                                            // if no filter, dont add one
-                                            : field.getType() == String.class ? new RegularStringFilter() : null,
-                                    // if its a string however, add a basic filter
-                                    field.getName(), // target
-                                    details.displayName(), // display name
-                                    details.Optional(),
-                                    src.getSerilizedClass(),
-                                    src.getSerialized(),
-                                    Workspace);
-                        else // create file without anything there
-                            // ---------------------------------------------------------------------
-                            rev = new RElementValue(Parent, field.getType(),
-                                    details.Filter() != null ? details.Filter().getConstructor().newInstance()
-                                            : field.getType() == String.class ? new RegularStringFilter() : null,
-                                    field.getName(), // target
-                                    details.displayName(), // display name
-                                    details.Optional(),
-                                    src.getSerilizedClass(),
-                                    Workspace);
+                        rev = RElementValue.ofField(field, src.getSerialized(), Workspace);
+//                                new RElementValue(Parent, field.getType(),
+//                                details.Filter() != null ? details.Filter().getConstructor().newInstance()
+//                                        // if no filter, dont add one
+//                                        : field.getType() == String.class ? new RegularStringFilter() : null,
+//                                // if its a string however, add a basic filter
+//                                field.getName(), // target
+//                                details.displayName(), // display name
+//                                details.Optional(),
+//                                eFileClass,
+//                                src.getSerialized(),
+//                                Workspace);
                         frame.addField(rev, tab);
                     }
                 } catch (Exception e) {
@@ -617,7 +590,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
      * Call this after adding all fields.
      */
     public void settleLayouts() {
-        panes.forEach((tabName, pane) -> {
+        panes.forEach((_, pane) -> {
             if (pane.getComponents().length > 2 ) {
                 pane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
             } else {
@@ -687,11 +660,11 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile<?>) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (ValidatableValue validatable : Fields) { // add the fields
-                if (validatable instanceof RElementValue rev) {
+                if (validatable instanceof RElementValue<?,?> rev) {
                     if (rev.getOptionallyEnabled()) // if its not enabled, continue
                     {
                         try {
-                            SourceClass.getField(rev.getTarget()).set(workingClass,
+                            rev.getTarget().set(workingClass,
                                     rev.getValue());
                             // try to set field ^
                         } catch (Exception e) {

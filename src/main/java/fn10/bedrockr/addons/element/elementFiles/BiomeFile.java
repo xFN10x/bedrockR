@@ -15,23 +15,14 @@ import fn10.bedrockr.addons.element.FieldFilters;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.supporting.BiomeComponents;
-import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RAnnotation.MapFieldSelectables;
 import fn10.bedrockr.utils.RAnnotation.Order;
-import fn10.bedrockr.utils.RAnnotation.VeryImportant;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class BiomeFile extends ElementFile<SourceBiomeElement> {
-
-    @CantEditAfter
-    @Order(0)
-    @VeryImportant
-    @HelpMessage("The name of the element in bedrockR")
-    @FieldDetails(Optional = false, displayName = "Element Name", Filter = FieldFilters.FileNameLikeStringFilter.class)
-    public String ElementName;
 
     @HelpMessage("The ID of the biome. Used in /locate, and debugging.")
     @FieldDetails(Optional = false, displayName = "Biome ID", Filter = FieldFilters.IDStringFilter.class)
