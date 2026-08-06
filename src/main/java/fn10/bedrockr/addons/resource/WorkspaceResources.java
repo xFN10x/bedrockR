@@ -4,6 +4,7 @@ import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class WorkspaceResources {
     public enum ResourceType {
@@ -104,7 +104,7 @@ public class WorkspaceResources {
             }
             RFileOperations.LOG.info("Saved resources.");
         } catch (IOException e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Failed to save resources.", e);
+            RLogUtils.exception("Failed to save resources.", e);
         }
     }
 
@@ -124,6 +124,7 @@ public class WorkspaceResources {
                 } else continue;
                 actualMap.put(entry.getKey(), (Class<? extends Resource>) clas);
             } catch (Exception e) {
+                RLogUtils.exception(e);
             }
         }
         return actualMap;

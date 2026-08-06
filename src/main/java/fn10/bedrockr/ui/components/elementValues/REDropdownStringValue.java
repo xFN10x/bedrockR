@@ -7,27 +7,26 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
-import java.lang.reflect.Field; 
+import java.lang.reflect.Field;
 
-public class REStringValue extends RElementValue<String, JTextField> {
+public class REDropdownStringValue extends RElementValue<String, JComboBox<String>> {
 
-
-    public REStringValue(@Nullable Field TargetField, @NonNull Class<String> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
+    public REDropdownStringValue(@Nullable Field TargetField, @NonNull Class<String> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
         super(TargetField, type, TargetFile, WorkspaceName, details);
     }
 
     @Override
-    public JTextField createInput() {
-        return new JTextField("");
+    public JComboBox<String> createInput() {
+        return null;
     }
 
     @Override
     public void setValueInternal(String value) {
-        Input.setText(value);
+
     }
 
     @Override
-    public String getValueInternal(boolean shouldLog) {
+    protected String getValueInternal(boolean shouldLog) {
         return "";
     }
 

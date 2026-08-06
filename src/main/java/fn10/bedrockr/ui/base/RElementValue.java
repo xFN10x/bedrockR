@@ -1,11 +1,15 @@
 package fn10.bedrockr.ui.base;
 
+import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.addons.element.ValidatableValue;
+import fn10.bedrockr.ui.components.elementValues.REPathValue;
 import fn10.bedrockr.ui.components.elementValues.REStringValue;
-import fn10.bedrockr.utils.RAnnotation.*;
+import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
+import fn10.bedrockr.utils.RAnnotation.FieldDetails;
+import fn10.bedrockr.utils.RAnnotation.HelpMessage;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.Theme;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -16,30 +20,35 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.logging.Level;
+import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+
 
 /**
- * The main Components for {@code RElementCreationScreen}.
- * This class includes lots of useful tools for making a field for a user to
- * edit, and to save certain {@code java.reflect.Field}s.
+ * A component used to easily edit fields
+ *
+ * @param <T> The type this element value is based on.
+ * @param <I> The type of the input component
  */
-@SuppressWarnings("FieldCanBeLocal")
 public abstract class RElementValue<T, I extends JComponent> extends JPanel implements ValidatableValue {
     public interface ChangedStatusListener {
         void changed(boolean to);
     }
 
     //private final static String No_Path_Chosen_Text = "(Click to set path.)";
-    private final SpringLayout Lay = new SpringLayout();
-    private final JLabel Name = new JLabel();
+    protected final SpringLayout Lay = new SpringLayout();
+    protected final JLabel Name = new JLabel();
     public JButton Help = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/ui/Help.png")));
-    public final I Input;
-    private final JCheckBox EnableCheckbox = new JCheckBox();
+    public I Input;
+    protected final JCheckBox EnableCheckbox = new JCheckBox();
 
-    protected final @Nonnull Field Target;
-    protected final @Nullable String WorkspaceName;
-    protected final @Nullable SourcelessElementFile TargetFile;
+    protected @Nullable Field Target = null;
+    protected @Nullable String WorkspaceName = null;
+    protected @Nullable SourcelessElementFile TargetFile = null;
+
+    protected final Class<T> type;
 
     //components for selecting block textures
 //    private JComboBox<String> BlockTexturesModeDropdown;
@@ -50,13 +59,13 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //    private RElementValue BlockTexturesEast;
 //    private RElementValue BlockTexturesWest;
 
-    private Object initValue;
+    private T initValue;
 
-   // protected JPanel HashMapInnerPane = new JPanel();
+    // protected JPanel HashMapInnerPane = new JPanel();
     //protected JButton HashMapAdd = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
 
     public boolean Required;
-    public String Problem = "No problem here!";
+    public String Problem = "Not checked...";
     public boolean Changed = false;
     private ChangedStatusListener changedListener = _ -> {
     };
@@ -86,52 +95,92 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             changedListener.changed(false);
         }
     }
-    
+
     public abstract I createInput();
 
-    private static boolean are(Field field, Class<?> cls) {
-        return cls.isAssignableFrom(field.getType());
+    protected boolean problem(boolean check, String fals, String tru) {
+        Problem = check ? tru : fals;
+        return check;
+    }
+
+    protected boolean problem(boolean check, String fals) {
+        return problem(check, fals, "Passed!");
+    }
+
+    protected static boolean are(Field field, Class<?> cls) {
+        return are(field.getType(), cls);
+    }
+
+    protected static boolean are(Class<?> cls0, Class<?> cls1) {
+        return cls1.isAssignableFrom(cls0);
+    }
+
+    public static RElementValue<?, ?> ofClass(
+            @Nonnull Class<?> type) {
+        RElementValue<?, ?> returning;
+        if (are(type, String.class)) {
+            returning =  new REStringValue(null, (Class<String>) type, null, null, null);
+        } else if (are(type, Path.class)) {
+            returning =  new REPathValue(null, (Class<Path>) type, null, null, null);
+        } else {
+            returning = empty(type);
+        }
+
+        return returning;
+    }
+
+    public static <T> RElementValue<T, ?> ofField(@Nonnull Field field,
+                                              @Nonnull SourcelessElementFile TargetFile,
+                                              @Nullable String WorkspaceName) {
+        FieldDetails anno = field.getAnnotation(FieldDetails.class);
+
+        RElementValue<T, ?> returning;
+        Class<T> type = (Class<T>) field.getType();
+        if (type.isAssignableFrom(String.class)) {
+            returning = (RElementValue<T, ?>) new REStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
+        } else if (are(field, Path.class)) {
+            returning = (RElementValue<T, ?>) new REPathValue(field, ((Class<Path>) type), TargetFile, WorkspaceName, anno);
+        } else {
+            returning = empty(type);
+        }
+
+        try {
+            Object v = field.get(TargetFile);
+            if (v != null && returning.getType().isAssignableFrom(v.getClass())) {
+                returning.setValue(returning.getType().cast(v));
+            }
+        } catch (IllegalAccessException e) {
+            RLogUtils.exception("This field doesn't belong to the target file.",e);
+        }
+
+        return returning;
     }
     
-    public static RElementValue<?,?> ofField(@Nonnull Field field, 
-                                             @Nullable SourcelessElementFile TargetFile,
-                                             @Nullable String WorkspaceName) {
-        FieldDetails anno = field.getAnnotation(FieldDetails.class);
-        
-        if (are(field, String.class)) {
-            return new REStringValue(field, TargetFile, WorkspaceName, anno);
-        } 
-        
-        return new RElementValue<>(field, TargetFile, WorkspaceName) {
-            @Override
-            public JComponent createInput() {
-                return new JLabel("Unsupported type: " + field.getType().getName());
-            }
+    private static <T> RElementValue<T, JLabel> empty(Class<T> type) {return new RElementValue<>(type) {
 
-            @Override
-            public void setValueInternal(Object value) {
-            }
+        @Override
+        public JLabel createInput() {
+            return new JLabel("Unsupported: " + super.type.getTypeName());
+        }
 
-            @Override
-            public Object getValue(boolean shouldLog) {
-                return null;
-            }
+        @Override
+        protected T getValueInternal(boolean shouldLog) {
+            return null;
+        }
 
-            @Override
-            public boolean valid(boolean strict, boolean log0) {
-                return false;
-            }
-        };
-    }
+        @Override
+        public boolean valid(boolean strict, boolean log0) {
+            return false;
+        }
 
-    public RElementValue(@Nonnull Field TargetField,
-                            @Nullable SourcelessElementFile TargetFile,
-                            @Nullable String WorkspaceName) {
-        FieldDetails anno = TargetField.getAnnotation(FieldDetails.class);
-        this(TargetField, TargetFile, WorkspaceName, anno);
-    }
+        @Override
+        public void setValueInternal(T value) {
 
-    public RElementValue(@Nonnull Field TargetField,
+        }
+    };}
+
+    public RElementValue(@Nullable Field TargetField,
+                            @Nonnull Class<T> type,
                             @Nullable SourcelessElementFile TargetFile,
                             @Nullable String WorkspaceName,
                             @Nullable FieldDetails details) {
@@ -139,43 +188,28 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         boolean op;
         if (details == null) {
             op = false;
-            name = TargetField.getName();
+            if (TargetField != null)
+                name = TargetField.getName();
+            else
+                name = "";
         } else {
             op = details.Optional();
             name = details.displayName();
         }
         this(TargetField, name, op, TargetFile, WorkspaceName);
     }
-    
-    @SuppressWarnings({"unchecked", "null"})
-    protected RElementValue(@Nonnull Field TargetField,
-                            String DisplayName,
-                            boolean Optional,
-                            @Nullable SourcelessElementFile TargetFile,
-                            @Nullable String WorkspaceName
-    ) {
-        super();
 
-        this.TargetFile = TargetFile;
+    private RElementValue(Class<T> type) {
+        super();
+        this.type = type;
         this.Input = createInput();
-        this.Target = TargetField;
-        this.Required = !Optional;
-        //this.Filter = Filter;
-        //this.InputType = InputType;
-        this.WorkspaceName = WorkspaceName;
-        boolean FromEmpty = TargetFile == null;
         final Dimension Size;
-//        if (Map.class.isAssignableFrom(InputType) || List.class.isAssignableFrom(InputType))
-//            Size = new Dimension(350, 150);
-//        else
-            Size = new Dimension(350, 40);
+        Size = new Dimension(350, 40);
 
         setMaximumSize(Size);
         setPreferredSize(Size);
         setBorder(new LineBorder(getBackground()));
         setLayout(Lay);
-
-        Help.putClientProperty("JButton.buttonType", "help");
 
 //        // don't do this if its set manually
 //        if (Input == null)
@@ -271,26 +305,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //
 //                    BlockTexturesModeDropdown.setSelectedIndex(0);
 //                } 
-//                else if (Path.class.isAssignableFrom(InputType)) {
-//                    if (field == null) {
-//                        return;
-//                    }
-//                    final JButton button = new JButton(No_Path_Chosen_Text);
-//                    PathType type = field.getAnnotation(PathType.class);
-//                    button.setHorizontalAlignment(SwingConstants.LEFT);
-//                    button.addActionListener(_ -> {
-//                        // new SystemFileChooser(RFileOperations.getFileChooserDefaultPath())
-//                        // new SystemFileChooser(RFileOperations.getFileChooserDefaultPath())
-//                        final SystemFileChooser chooser = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
-//                        chooser.setFileSelectionMode(type == null ? SystemFileChooser.FILES_ONLY : type.value());
-//                        chooser.showOpenDialog(this);
-//                        final File sel = chooser.getSelectedFile();
-//                        if (sel != null) {
-//                            button.setText(sel.getPath());
-//                        }
-//                    });
-//                    Input = button;
-//                } 
+//                
 //                else if (List.class.isAssignableFrom(InputType)) {
 //                    /*
 //                     * im just stealing most of the hash map stuff, since it is basicly already a
@@ -351,7 +366,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                                }
 //                            }
 //                        } catch (Exception e) {
-//                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+//                            RLogUtils.exception("Exception thrown",
 //                                    e);
 //                            ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
 //                        }
@@ -419,7 +434,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                            HashMapInnerPane.repaint();
 //
 //                        } catch (Exception e1) {
-//                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+//                            RLogUtils.exception("Exception thrown",
 //                                    e1);
 //                            ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
 //                        }
@@ -440,7 +455,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                        ((JComboBox<String>) Input).setSelectedItem("false");
 //                    } catch (Exception e) {
 //
-//                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+//                        RLogUtils.exception("Exception thrown", e);
 //                        if (!FromEmpty)
 //                            if (TargetFile.getDraft())
 //                                return;
@@ -470,7 +485,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                            if (!FromEmpty)
 //                                if (TargetFile.getDraft())
 //                                    return;
-//                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+//                            RLogUtils.exception("Exception thrown",
 //                                    e);
 //                            ErrorShower.showError(parentFrame,
 //                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
@@ -491,7 +506,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //
 //                        } catch (Exception e) {
 //
-//                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+//                            RLogUtils.exception("Exception thrown",
 //                                    e);
 //                            if (!FromEmpty)
 //                                if (TargetFile.getDraft())
@@ -539,7 +554,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                                HashMapInnerPane.add(ToAdd);
 //                            }
 //                        } catch (Exception e) {
-//                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+//                            RLogUtils.exception("Exception thrown",
 //                                    e);
 //                            ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
 //                        }
@@ -612,8 +627,63 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                    Input = new JLabel("Not supported.");
 //                }
 //            } catch (Exception e) {
-//                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+//                RLogUtils.exception("Exception thrown", e);
 //            }
+
+//        if (Optional) // stop the enable check affecting non-optional things
+//            EnableCheckbox.addItemListener(new ItemListener() {
+//                {
+//                    Input.setEnabled(EnableCheckbox.isSelected());
+//                }
+//
+//                @Override
+//                public void itemStateChanged(ItemEvent e) {
+//                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
+//                }
+//
+//            });
+
+        //Name.setText(DisplayName);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
+        //}
+
+        Lay.putConstraint(SpringLayout.WEST, Name, 0, SpringLayout.WEST, this);
+
+
+        Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
+        Lay.putConstraint(SpringLayout.NORTH, Input, 3, SpringLayout.NORTH, this);
+        Lay.putConstraint(SpringLayout.SOUTH, Input, -3, SpringLayout.SOUTH, this);
+//        if (Optional)
+//            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableCheckbox);
+//        else
+            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.EAST, this);
+
+//        if (!Optional)
+//            EnableCheckbox.setEnabled(false);
+
+        add(Name);
+        add(Input);
+//        if (Optional)
+//            add(EnableCheckbox);
+    }
+
+    @SuppressWarnings({"unchecked", "null"})
+    private RElementValue(@Nonnull Field TargetField,
+                          String DisplayName,
+                          boolean Optional,
+                          @Nullable SourcelessElementFile TargetFile,
+                          @Nullable String WorkspaceName
+    ) {
+        this((Class<T>) TargetField.getType());
+        this.TargetFile = TargetFile;
+        this.Target = TargetField;
+        this.Required = !Optional;
+        //this.Filter = Filter;
+        //this.InputType = InputType;
+        this.WorkspaceName = WorkspaceName;
+        boolean FromEmpty = TargetFile == null;
+
+        Help.putClientProperty("JButton.buttonType", "help");
 
         if (Optional) // stop the enable check affecting non-optional things
             EnableCheckbox.addItemListener(new ItemListener() {
@@ -627,7 +697,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                 }
 
             });
-        Help.addActionListener(e -> {
+        Help.addActionListener(_ -> {
             try {
                 JOptionPane.showMessageDialog(this,
                         Target.getAnnotation(HelpMessage.class).value(),
@@ -649,36 +719,18 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                 }
             }
         } catch (Exception e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+            RLogUtils.exception("Exception thrown", e);
         }
 
-//        // put in center is not hashmap
-//        if (Map.class.isAssignableFrom(InputType)) {
-//            Lay.putConstraint(SpringLayout.NORTH, Name, 10, SpringLayout.NORTH, this);
-//            Lay.putConstraint(SpringLayout.NORTH, Help, 10, SpringLayout.NORTH, this);
-//        } else {
-            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
-            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);
-        //}
-
-        Lay.putConstraint(SpringLayout.WEST, Name, 0, SpringLayout.WEST, this);
-
-        Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
-
-        Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
-        Lay.putConstraint(SpringLayout.NORTH, Input, 3, SpringLayout.NORTH, this);
-        Lay.putConstraint(SpringLayout.SOUTH, Input, -3, SpringLayout.SOUTH, this);
         if (Optional)
             Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableCheckbox);
         else
             Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, Help);
 
+        Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.EAST, EnableCheckbox, -3, SpringLayout.WEST, Help);
-        // put in center is not hashmap
-//        if (Map.class.isAssignableFrom(InputType))
-//            Lay.putConstraint(SpringLayout.NORTH, EnableCheckbox, 10, SpringLayout.NORTH, this);
-//        else
-            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableCheckbox, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableCheckbox, 0, SpringLayout.VERTICAL_CENTER, this);
 
         if (!Optional)
             EnableCheckbox.setEnabled(false);
@@ -692,11 +744,8 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                 }
             }
         } catch (Exception e1) {
-            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e1);
+            RLogUtils.exception("Exception thrown", e1);
         }
-
-        add(Name);
-        add(Input);
         if (Optional)
             add(EnableCheckbox);
 
@@ -708,7 +757,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         try {
             setValue((T) Target.get(TargetFile));
         } catch (Exception e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Exception", e);
+            RLogUtils.exception("Exception", e);
         }
     }
 
@@ -721,41 +770,39 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         return EnableCheckbox.isSelected();
     }
 
-    public Field getTarget() {
-        return Target;
-    }
-
     public void setValue(T value) {
         if (value == null) return;
         initValue = value;
         setValueInternal(value);
     }
+
     public abstract void setValueInternal(T value);
 //    {
 //        if (value == null) return;
 //        initValue = value;
-////        if (value instanceof BlockTexture bt) {
-////            int mode = bt.getMode();
-////            BlockTexturesModeDropdown.setSelectedIndex(mode);
-////            switch (mode) {
-////                case BlockTexture.ALL_FACES_MODE:
-////                    BlockTexturesTop.setValue(bt.upTexID);
-////                    break;
-////                case BlockTexture.PILLAR_MODE:
-////                    BlockTexturesTop.setValue(bt.upTexID);
-////                    BlockTexturesBottom.setValue(bt.downTexID);
-////                    BlockTexturesNorth.setValue(bt.northTexID);
-////                    break;
-////                default:
-////                    BlockTexturesTop.setValue(bt.upTexID);
-////                    BlockTexturesBottom.setValue(bt.downTexID);
-////                    BlockTexturesNorth.setValue(bt.northTexID);
-////                    BlockTexturesSouth.setValue(bt.southTexID);
-////                    BlockTexturesEast.setValue(bt.eastTexID);
-////                    BlockTexturesWest.setValue(bt.westTexID);
-////                    break;
-////            }
-////        } else
+
+    /// /        if (value instanceof BlockTexture bt) {
+    /// /            int mode = bt.getMode();
+    /// /            BlockTexturesModeDropdown.setSelectedIndex(mode);
+    /// /            switch (mode) {
+    /// /                case BlockTexture.ALL_FACES_MODE:
+    /// /                    BlockTexturesTop.setValue(bt.upTexID);
+    /// /                    break;
+    /// /                case BlockTexture.PILLAR_MODE:
+    /// /                    BlockTexturesTop.setValue(bt.upTexID);
+    /// /                    BlockTexturesBottom.setValue(bt.downTexID);
+    /// /                    BlockTexturesNorth.setValue(bt.northTexID);
+    /// /                    break;
+    /// /                default:
+    /// /                    BlockTexturesTop.setValue(bt.upTexID);
+    /// /                    BlockTexturesBottom.setValue(bt.downTexID);
+    /// /                    BlockTexturesNorth.setValue(bt.northTexID);
+    /// /                    BlockTexturesSouth.setValue(bt.southTexID);
+    /// /                    BlockTexturesEast.setValue(bt.eastTexID);
+    /// /                    BlockTexturesWest.setValue(bt.westTexID);
+    /// /                    break;
+    /// /            }
+    /// /        } else
 //        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
 //            var casted = ((JComboBox<String>) Input);
 //            casted.setSelectedItem(value.toString());
@@ -850,7 +897,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                    HashMapInnerPane.add(ToAdd);
 //                }
 //            } catch (Exception e) {
-//                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+//                RLogUtils.exception("Exception thrown", e);
 //                ErrorShower.showError(parentFrame, e.getMessage(), e);
 //            }
 //        }
@@ -870,32 +917,41 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                    + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
 //        }
 //    }
-
     public T getValue() {
         return getValue(true);
     }
 
-    public abstract T getValue(boolean shouldLog) ;
+    public T getValue(boolean shouldLog) {
+        if (valid(true, shouldLog)) {
+            return getValueInternal(shouldLog);
+        } else {
+
+            return null;
+        }
+    }
+
+    protected abstract T getValueInternal(boolean shouldLog);
 //    {
 //        // fn10.bedrockr.Launcher.LOG.info(InputType.getName());
 //        if (valid(true, log)) {
 //            try {
 //                //if (BlockTexture.class.isAssignableFrom(InputType)) {
-////                    return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
-////                        case BlockTexture.ALL_FACES_MODE -> new BlockTexture((UUID) BlockTexturesTop.getValue(log));
-////                        case BlockTexture.PILLAR_MODE -> new BlockTexture(
-////                                (UUID) BlockTexturesTop.getValue(log),
-////                                (UUID) BlockTexturesBottom.getValue(log),
-////                                (UUID) BlockTexturesNorth.getValue(log));
-////                        //perface
-////                        default -> new BlockTexture(
-////                                (UUID) BlockTexturesTop.getValue(log),
-////                                (UUID) BlockTexturesBottom.getValue(log),
-////                                (UUID) BlockTexturesNorth.getValue(log),
-////                                (UUID) BlockTexturesSouth.getValue(log),
-////                                (UUID) BlockTexturesEast.getValue(log),
-////                                (UUID) BlockTexturesWest.getValue(log));
-////                    };
+
+    /// /                    return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
+    /// /                        case BlockTexture.ALL_FACES_MODE -> new BlockTexture((UUID) BlockTexturesTop.getValue(log));
+    /// /                        case BlockTexture.PILLAR_MODE -> new BlockTexture(
+    /// /                                (UUID) BlockTexturesTop.getValue(log),
+    /// /                                (UUID) BlockTexturesBottom.getValue(log),
+    /// /                                (UUID) BlockTexturesNorth.getValue(log));
+    /// /                        //perface
+    /// /                        default -> new BlockTexture(
+    /// /                                (UUID) BlockTexturesTop.getValue(log),
+    /// /                                (UUID) BlockTexturesBottom.getValue(log),
+    /// /                                (UUID) BlockTexturesNorth.getValue(log),
+    /// /                                (UUID) BlockTexturesSouth.getValue(log),
+    /// /                                (UUID) BlockTexturesEast.getValue(log),
+    /// /                                (UUID) BlockTexturesWest.getValue(log));
+    /// /                    };
 //                //} else
 //                if (Path.class.isAssignableFrom(InputType)) {
 //                    return Path.of(((JButton) Input).getText());
@@ -958,7 +1014,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                        }
 //
 //                    } catch (Exception ex) {
-//                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+//                        RLogUtils.exception("Exception thrown",
 //                                ex);
 //                        ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
 //                        return null;
@@ -966,7 +1022,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                }
 //            } catch (IllegalArgumentException
 //                     | SecurityException e) {
-//                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+//                RLogUtils.exception("Exception thrown", e);
 //                return null;
 //            }
 //        } else {
@@ -974,12 +1030,11 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //            return null;
 //        }
 //    }
-
     public boolean valid(boolean strict) {
         return valid(strict, true);
     }
 
-    public abstract boolean valid(boolean strict, boolean log0); 
+    public abstract boolean valid(boolean strict, boolean log0);
 //    {
 //        var log = RFileOperations.LOG;
 //        if (log0)
@@ -1143,7 +1198,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                        return true;
 //                    }
 //                } catch (Exception e) {
-//                    RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+//                    RLogUtils.exception("Exception thrown", e);
 //                }
 //            }
 //        } catch (Exception e) {
@@ -1166,19 +1221,23 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         return Name.getText();
     }
 
-    @Override
-    public String getName() {
-        return getTarget().getName();
+    public Class<T> getType() {
+        return type;
     }
 
+    @Nullable
+    public Field getTarget() {
+        return Target;
+    }
+    
     /**
      * Passes a string through to substitute it if it can be.
+     *
      * @param input The array of strings, if the first element matches a subsitution, well the whole array is overwritten.
      * @return The input if nothing matched.
      */
     public String[] substituteArray(String[] input) {
-        return switch (input[0])
-        {
+        return switch (input[0]) {
             case "_VANILLABIOMES" -> SourceBiomeElement.getVanillaBiomeNames();
             case "_PREFIXEDVANILLABIOMES" -> SourceBiomeElement.getPrefixedVanillaBiomeNames();
             case "_THEMENAMES" -> Theme.getNames();

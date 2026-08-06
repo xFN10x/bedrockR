@@ -16,6 +16,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.RLogUtils;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 
@@ -64,7 +65,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         try {
             return WorkspaceResources.load(WorkspaceName);
         } catch (Exception e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Failed to get resources from workspace: " + WorkspaceName, e);
+            RLogUtils.exception("Failed to get resources from workspace: " + WorkspaceName, e);
             return null;
         }
     }

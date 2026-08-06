@@ -11,7 +11,6 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
-import fn10.bedrockr.ui.util.ImageIconSerializer;
 import fn10.bedrockr.utils.typeAdapters.ClassSerializer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerializer;
@@ -20,7 +19,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.NonNull;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

@@ -4,8 +4,6 @@ import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement;
 import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
-import fn10.bedrockr.addons.element.*;
-import fn10.bedrockr.addons.element.FieldFilters.RegularStringFilter;
 import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement.RecipeType;
 import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
@@ -17,6 +15,7 @@ import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.ui.util.WrongItemValueTypeException;
 import fn10.bedrockr.ui.base.RDialog;
@@ -31,11 +30,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -440,7 +436,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             Listener.onElementCreate(new SourceRecipeElement(building));
                         }
                     } catch (Exception e) {
-                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+                        RLogUtils.exception("Exception thrown",
                                 e);
                     }
                 }).addVaildations(ElementName, RecipeID, grid, outputSlot, unlockItems, extraResults);
@@ -466,7 +462,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                         Serilized.ShapelessIngredients = grid.getItems();
                     } catch (WrongItemValueTypeException e1) {
-                        RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+                        RLogUtils.exception("Exception thrown",
                                 e1);
                     }
 
@@ -519,7 +515,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 return frame;
             } catch (Exception e) {
-                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+                RLogUtils.exception("Exception thrown", e);
                 return null;
             }
         }
@@ -576,7 +572,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         frame.addField(rev, tab);
                     }
                 } catch (Exception e) {
-                    RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+                    RLogUtils.exception("Exception thrown", e);
                     ErrorShower.showError(Parent, "Failed to create a field for " + field.getName(), "Field Error", e);
                 }
             }
@@ -668,7 +664,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     rev.getValue());
                             // try to set field ^
                         } catch (Exception e) {
-                            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown",
+                            RLogUtils.exception("Exception thrown",
                                     e);
                             ErrorShower.showError(null, "Failed to change a field; continuing", e.getMessage(), e);
                         }
@@ -682,7 +678,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             Listener.onElementCreate(SourceElementClass.getConstructor(SourceClass).newInstance(workingClass)); // create
             this.dispose();
         } catch (Exception ex) {
-            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", ex);
+            RLogUtils.exception("Exception thrown", ex);
             ErrorShower.showError(getParent(), "Failed to create ElementSource",
                     "Source Creation Error", ex);
         }
