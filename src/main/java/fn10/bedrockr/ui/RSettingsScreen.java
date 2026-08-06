@@ -4,7 +4,7 @@ import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.components.RElementValue;
+import fn10.bedrockr.ui.base.RElementValue;
 import fn10.bedrockr.ui.util.WrapLayout;
 
 import javax.swing.*;
@@ -69,7 +69,7 @@ public class RSettingsScreen extends RDialog {
     public void save() {
         vals.forEach(val -> {
             try {
-                final Field field = SettingsFile.class.getField(val.getTarget());
+                final Field field = val.getTarget();
                 field.set(settings, val.getValue());
             } catch (Exception e) {
                 RFileOperations.LOG.log(Level.SEVERE, "Failed to save settings", e);
@@ -78,7 +78,7 @@ public class RSettingsScreen extends RDialog {
         try {
             if (!changedNeedingRestart.isEmpty()) {
                 List<String> names = new ArrayList<>();
-                for (RElementValue rval : changedNeedingRestart.keySet()) {
+                for (RElementValue<?,?> rval : changedNeedingRestart.keySet()) {
                     names.add(rval.getDisplayName());
                 }
                 JOptionPane.showMessageDialog(this, "The following settings require a restart to take effect: " + String.join(", ", names.toArray(new String[0])));
@@ -113,7 +113,7 @@ public class RSettingsScreen extends RDialog {
                 tabs.addTab(category.value().Name, panel);
             }
             final JPanel panel = panels.get(category.value());
-            final RElementValue elementV = new RElementValue(this, field.getType(), details.Filter().getConstructor().newInstance(), field.getName(), details.displayName(), details.Optional(), SettingsFile.class, null);
+            final RElementValue<?,?> elementV = RElementValue.ofField(field, settings, null);
             RAnnotation.RequiresRestart requiresRestartAnno;
             if (field.isAnnotationPresent(RAnnotation.RequiresRestart.class)) {
                 requiresRestartAnno = field.getAnnotation(RAnnotation.RequiresRestart.class);
@@ -128,11 +128,11 @@ public class RSettingsScreen extends RDialog {
                 }
             });
 
-            try {
-                elementV.setValue(field.get(settings));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                elementV.setValue(field.get(settings));
+//            } catch (ClassNotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
 
             vals.add(elementV);
             panel.add(elementV);

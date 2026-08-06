@@ -13,6 +13,7 @@ import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftBlockPlac
 import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDestructibleByMining;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.ui.base.RElementValue;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
@@ -38,14 +39,13 @@ public class RElementMapValue extends JPanel {
     private final Dimension Size = new Dimension(240, 80);
 
     protected final JButton HelpButton = new JButton();
-
     {
         HelpButton.putClientProperty("JButton.buttonType", "help");
     }
 
     protected final JLabel DisplayNameLabel = new JLabel();
     protected final JLabel IDNameLabel = new JLabel();
-    protected Component InputField = null;
+    protected Component InputField;
     protected Map<String, Component> MultipleInputs = new HashMap<String, Component>();
 
     public final RMapElement rMapElement;
@@ -176,9 +176,10 @@ public class RElementMapValue extends JPanel {
             MultipleInputs.put("noiseVal", noiseVal);
             ((JPanel) InputField).add(noisePanel);
 
-            RElementValue targetsVal = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
-                    "Replace Biomes", false,
-                    Replacement.class, null, true, null);
+            RElementValue<?,?> targetsVal = null;
+//            new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
+//                    "Replace Biomes", false,
+//                    Replacement.class, null, true, null);
             MultipleInputs.put("targetsVal", targetsVal);
             ((JPanel) InputField).add(targetsVal);
 
@@ -238,9 +239,10 @@ public class RElementMapValue extends JPanel {
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         } else if (RME.Type == Tags.class) {
             Size.setSize(600, 500);
-            InputField = new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "tags",
-                    "Tags", false,
-                    Tags.class, null, true, null);
+            InputField = null;
+//                    new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "tags",
+//                    "Tags", false,
+//                    Tags.class, null, true, null);
 
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         }
