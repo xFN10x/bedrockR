@@ -16,6 +16,7 @@ import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.ui.base.RElementValue;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.ui.components.RItemValue.Type;
 import fn10.bedrockr.ui.util.ErrorShower;
@@ -420,7 +421,7 @@ public class RElementMapValue extends JPanel {
                                 + rMapElement.Type.getSimpleName());
             }
         } catch (Exception e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+            RLogUtils.exception("Exception thrown", e);
             ErrorShower.showError(this, "Failed to set value of map value. Type: ${}", e.getMessage(), e);
         }
     }
@@ -488,7 +489,7 @@ public class RElementMapValue extends JPanel {
                                 .floatValue();
                         replacement.noise_frequency_scale = ((Number) ((JSpinner) MultipleInputs.get("noiseVal"))
                                 .getValue()).floatValue();
-                        replacement.targets = (List<String>) ((RElementValue) MultipleInputs.get("targetsVal")).getValue();
+                        replacement.targets = (List<String>) ((RElementValue<?, ?>) MultipleInputs.get("targetsVal")).getValue();
 
                         ((ReplaceBiomes) val).replacements = new Replacement[]{replacement};
                     } else if (rMapElement.Type == SurfaceBuilder.class) {
@@ -515,7 +516,7 @@ public class RElementMapValue extends JPanel {
                     } else if (rMapElement.Type == Tags.class) {
 
                         val = new Tags();
-                        ((Tags) val).tags = (List<String>) ((RElementValue) InputField).getValue();
+                        ((Tags) val).tags = (List<String>) ((RElementValue<?, ?>) InputField).getValue();
 
                     } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                         val = new minecraftDamage();
@@ -546,7 +547,7 @@ public class RElementMapValue extends JPanel {
                     }
                 }
             } catch (Exception e) {
-                RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e);
+                RLogUtils.exception("Exception thrown", e);
                 ErrorShower.showError(this, "Failed to get value of Map Entry.", e.getMessage(), e);
                 return null;
             }

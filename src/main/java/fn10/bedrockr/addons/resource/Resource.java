@@ -1,6 +1,7 @@
 package fn10.bedrockr.addons.resource;
 
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public abstract class Resource {
         try {
             bytes = Files.readAllBytes(data.toPath());
         } catch (IOException e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Failed to read resource data.", e);
+            RLogUtils.exception("Failed to read resource data.", e);
             bytes = new byte[0];
         }
         this(name, id, bytes);

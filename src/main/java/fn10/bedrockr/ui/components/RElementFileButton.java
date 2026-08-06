@@ -20,6 +20,7 @@ import fn10.bedrockr.ui.laf.BedrockrDark;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 
 public class RElementFileButton extends RDetailedButton implements ActionListener {
 
@@ -49,7 +50,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                             .getIcon(Workspace.SWPF.getSerialized().getRes(), ImageUtilities.ImgHandler))
             );
         } catch (IOException e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Failed to get Element icon.", e);
+            RLogUtils.exception("Failed to get Element icon.", e);
         }
 
         JPopupMenu popup = new JPopupMenu(File.getElementName());
@@ -139,7 +140,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                     src.saveJSONFile(wksp.SWPF.getSerialized().WorkspaceName);
                     wksp.refreshElements();
                 } catch (Exception e1) {
-                    RFileOperations.LOG.log(Level.SEVERE, "Exception thrown", e1);
+                    RLogUtils.exception("Exception thrown", e1);
                     ErrorShower.showError(wksp, "Failed to create a new Source.", "Error", e1);
                 }
                 break;

@@ -18,6 +18,7 @@ import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFileOperations.ElementMade;
+import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.SettingsFile;
 import org.apache.commons.io.FileUtils;
 
@@ -576,7 +577,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                             RFileOperations.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
                         }
                     } catch (IOException | InterruptedException e) {
-                        RFileOperations.LOG.log(Level.SEVERE, "Failed to send data to API.", e);
+                        RLogUtils.exception("Failed to send data to API.", e);
                     }
                 }
             }).start();
@@ -598,7 +599,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             WPF.saveJSONFile( // save the workspace file again
                     WPF.workspaceName());
         } catch (IOException e) {
-            RFileOperations.LOG.log(Level.SEVERE, "Failed to save workspace.", e);
+            RLogUtils.exception("Failed to save workspace.", e);
         }
 
         String[] platforms = RFileOperations.MC_SYNC_OPTIONS.keySet().toArray(new String[0]);

@@ -2,6 +2,7 @@ package fn10.bedrockr.ui;
 
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.base.RElementValue;
@@ -72,7 +73,7 @@ public class RSettingsScreen extends RDialog {
                 final Field field = val.getTarget();
                 field.set(settings, val.getValue());
             } catch (Exception e) {
-                RFileOperations.LOG.log(Level.SEVERE, "Failed to save settings", e);
+                RLogUtils.exception("Failed to save settings", e);
             }
         });
         try {
