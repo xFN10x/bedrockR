@@ -45,9 +45,9 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     public I Input;
     protected final JCheckBox EnableCheckbox = new JCheckBox();
 
-    protected @Nullable Field Target = null;
-    protected @Nullable String WorkspaceName = null;
-    protected @Nullable SourcelessElementFile TargetFile = null;
+    protected @Nullable Field Target;
+    protected @Nullable String WorkspaceName;
+    protected @Nullable SourcelessElementFile TargetFile;
 
     protected final Class<T> type;
 
@@ -61,10 +61,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //    private RElementValue BlockTexturesWest;
 
     private T initValue;
-
-    // protected JPanel HashMapInnerPane = new JPanel();
-    //protected JButton HashMapAdd = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
-
+    
     public boolean Required;
     public String Problem = "Not checked...";
     public boolean Changed = false;
@@ -138,8 +135,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
         RElementValue<T, ?> returning;
         if (are(type, String.class)) {
-            RAnnotation.StringDropdownField dd;
-            if (field != null && (dd = field.getAnnotation(RAnnotation.StringDropdownField.class)) != null) {
+            if (field != null && field.getAnnotation(RAnnotation.StringDropdownField.class) != null) {
                 returning = (RElementValue<T, ?>) new REDropdownStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
             } else
                 returning = (RElementValue<T, ?>) new REStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
@@ -280,7 +276,9 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         Help.addActionListener(_ -> {
             try {
                 JOptionPane.showMessageDialog(this,
-                        Target.getAnnotation(HelpMessage.class).value(),
+                        Target != null ?
+                        Target.getAnnotation(HelpMessage.class).value() :
+                        "No help message.",
                         "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,

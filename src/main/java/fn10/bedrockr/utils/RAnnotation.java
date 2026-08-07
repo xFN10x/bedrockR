@@ -51,14 +51,13 @@ public class RAnnotation {
         @Nullable
         String displayName();
     }
-
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
     /**
      * Used to define the order in which fields are automatically added to a creation screen.
-     * 
+     *
      * @since a2.0
      */
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface Order {
         int value() default 0;
     }
@@ -68,44 +67,39 @@ public class RAnnotation {
     public @interface MapFieldSelectables {
         Class<? extends RMapElementProvider> value();
     }
-
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
     /**
      * This annotation is used to mark a field for automatic builder window
      * creations. Don't use if not doing automatic creation.
      */
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface UneditableByCreation {
     }
 
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
     /**
      * Used to specify if this field can be edited after the Element has been
      * created initially.
      */
-    public @interface CantEditAfter {
-    }
-
     @Target({ ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
+    public @interface CantEditAfter {
+    }
+    
     /**
      * Specifies if this field needs to have a value even if drafting.
      */
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface VeryImportant {
     }
 
 
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
     /**
      * Used to specify that a String field should be a dropdown.
-     * 
-     * @param value  - an array of strings that are selectable
-     * 
-     * @param strict - Specifies if the user can write whatever into the combobox or
-     *               not. Default: {@code false}
+     *
      */
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface StringDropdownField {
 
         String[] value();
@@ -125,18 +119,18 @@ public class RAnnotation {
     public @interface RequiresRestart {
     }
 
-    @Target({ ElementType.FIELD })
-    @Retention(RetentionPolicy.RUNTIME)
     /**
      * Used to specify that a Number; like an Integer/int, or Float/float; has
      * bounds.
-     * 
-     * @param min - a float being the minimum number. Casted to int if the field is
+     *<p>
+     *<b>min</b> - a float being the minimum number. Casted to int if the field is
      *            one
-     * 
-     * @param max - a float being the maximum number. Casted to int if the field is
+     *<p>
+     *<b>max</b> - a float being the maximum number. Casted to int if the field is
      *            one
      */
+    @Target({ ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface NumberRange {
 
         float max() default 1;
