@@ -8,6 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public class REDropdownStringValue extends RElementValue<String, JComboBox<String>> {
 
@@ -17,21 +18,29 @@ public class REDropdownStringValue extends RElementValue<String, JComboBox<Strin
 
     @Override
     public JComboBox<String> createInput() {
-        return null;
+        RAnnotation.StringDropdownField dropdownAnno = getAnno(RAnnotation.StringDropdownField.class);
+        assert dropdownAnno != null;
+        JComboBox<String> input = new JComboBox<>(substituteArray(dropdownAnno.value()));
+        
+        input.setEditable(!dropdownAnno.strict());
+        input.setSelectedIndex(0);
+
+        return input;
     }
 
     @Override
     public void setValueInternal(String value) {
-
+        Input.setSelectedItem(value);
     }
 
     @Override
     protected String getValueInternal(boolean shouldLog) {
-        return "";
+        return Objects.requireNonNullElse(Input.getSelectedItem(), "null").toString();
     }
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        return false;
+        Problem = "This should always be valid.";
+        return true;
     }
 }

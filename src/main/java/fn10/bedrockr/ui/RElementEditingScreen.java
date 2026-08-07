@@ -1,29 +1,29 @@
 package fn10.bedrockr.ui;
 
+import fn10.bedrockr.addons.element.ElementCreationListener;
+import fn10.bedrockr.addons.element.ValidatableValue;
+import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement;
-import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
-import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.element.elementSources.SourceRecipeElement.RecipeType;
-import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
+import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.element.ElementCreationListener;
-import fn10.bedrockr.addons.element.ValidatableValue;
-import fn10.bedrockr.ui.util.ImageUtilities;
-import fn10.bedrockr.utils.RAnnotation;
-import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.RLogUtils;
-import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.ui.util.WrongItemValueTypeException;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.base.RElementValue;
 import fn10.bedrockr.ui.components.RItemValue;
 import fn10.bedrockr.ui.components.RItemValue.ShapedOutput;
 import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.WrapLayout;
+import fn10.bedrockr.ui.util.WrongItemValueTypeException;
+import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 
 import javax.naming.NameNotFoundException;
 import javax.swing.*;
@@ -50,11 +50,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
     public Class<?> SourceClass;
     public Class<? extends ElementSource<?>> SourceElementClass;
-    public ElementSource<?> SourceElement;
 
-    public List<ValidatableValue> Fields = new ArrayList<ValidatableValue>();
-    public List<ValidatableValue> RequiredFields = new ArrayList<ValidatableValue>();
-    public List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
+    public List<ValidatableValue> Fields = new ArrayList<>();
+    public List<ValidatableValue> RequiredFields = new ArrayList<>();
+    public List<ValidatableValue> IncorrectFields = new ArrayList<>();
 
     private CustomCreateFunction createFunction = null;
 
@@ -146,9 +145,9 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             SpringLayout lay = new SpringLayout();
             screen.getDefaultPane().setLayout(lay);
 
-            RElementValue<?,?> elementnameVal = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);;
-            RElementValue<?,?> idVal = RElementValue.ofField(eFileClass.getField("BiomeID"), src.getSerialized(), Workspace);;
-            RElementValue<?,?> compsVal = RElementValue.ofField(eFileClass.getField("Comps"), src.getSerialized(), Workspace);;
+            RElementValue<?, ?> elementnameVal = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);
+            RElementValue<?, ?> idVal = RElementValue.ofField(eFileClass.getField("BiomeID"), src.getSerialized(), Workspace);
+            RElementValue<?, ?> compsVal = RElementValue.ofField(eFileClass.getField("Comps"), src.getSerialized(), Workspace);
 
             screen.addField(elementnameVal);
             screen.addField(idVal);
@@ -166,8 +165,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
             lay.putConstraint(SpringLayout.NORTH, compsVal, 5, SpringLayout.SOUTH, elementnameVal);
 
             return screen;
-        }
-        else if (src.getClass().equals(SourceScriptElement.class)) {
+        } else if (src.getClass().equals(SourceScriptElement.class)) {
             JOptionPane.showMessageDialog(Parent, "Sadly, scripts are unavailable since a2.0.");
             return null;
             /*
@@ -295,16 +293,15 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
              *
              * return frame;
              */
-        }
-        else if (src.getClass().equals(SourceRecipeElement.class)) {
+        } else if (src.getClass().equals(SourceRecipeElement.class)) {
             try {
                 RecipeFile serilized = ((SourceRecipeElement) src).getSerialized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Recipe", src, eFileClass,
                         parent2);
 
                 SpringLayout Layout = new SpringLayout();
-                RElementValue<?,?> ElementName = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);;
-                RElementValue<?,?> RecipeID = RElementValue.ofField(eFileClass.getField("RecipeID"), src.getSerialized(), Workspace);;
+                RElementValue<?, ?> ElementName = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);
+                RElementValue<?, ?> RecipeID = RElementValue.ofField(eFileClass.getField("RecipeID"), src.getSerialized(), Workspace);
 
                 frame.getDefaultPane().setLayout(Layout);
                 RItemValue grid = new RItemValue(Workspace, RItemValue.Type.CraftingTable, true);
@@ -419,7 +416,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             case RecipeType.Shapeless:
                                 building.ShapelessIngredients = grid.getItems();
                                 break;
-                                
+
                             case null:
                             default:
                                 break;
@@ -450,7 +447,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 frame.getDefaultPane().add(TypeDropdown);
                 frame.getDefaultPane().add(TypeDropdownText);
 
-                TypeDropdown.addItemListener(e -> {
+                TypeDropdown.addItemListener(_ -> {
                     RecipeFile Serilized = ((SourceRecipeElement) src).getSerialized();
 
                     try {
@@ -518,13 +515,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 RLogUtils.exception("Exception thrown", e);
                 return null;
             }
-        }
-        else {
+        } else {
             // do the automatic creation
             var frame = new RElementEditingScreen(Parent,
-                   src.getDetails().Name, src,
+                    src.getDetails().Name, src,
                     eFileClass, parent2);
-            List<Field> fields = new ArrayList<Field>(List.of(eFileClass.getFields()));
+            List<Field> fields = new ArrayList<>(List.of(eFileClass.getFields()));
             fields.sort((f1, f2) -> {
                 int o1 = f1.isAnnotationPresent(RAnnotation.Order.class)
                         ? f1.getAnnotation(RAnnotation.Order.class).value()
@@ -535,7 +531,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 return Integer.compare(o1, o2);
             });
             for (Field field : fields) { // try to get fields
-                RElementValue<?,?> rev;
+                RElementValue<?, ?> rev;
                 String tab = DEFAULT_PANE;
                 if (field.isAnnotationPresent(RAnnotation.CreationMenuTab.class)) {
                     RAnnotation.CreationMenuTab anno = field.getAnnotation(RAnnotation.CreationMenuTab.class);
@@ -587,7 +583,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
      */
     public void settleLayouts() {
         panes.forEach((_, pane) -> {
-            if (pane.getComponents().length > 2 ) {
+            if (pane.getComponents().length > 2) {
                 pane.setLayout(new WrapLayout(FlowLayout.CENTER, 6, 6));
             } else {
                 SpringLayout lay = new SpringLayout();
@@ -606,10 +602,10 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         });
     }
 
-    public void addField(RElementValue Field) {
+    public void addField(RElementValue<?,?> Field) {
         addField(Field, DEFAULT_PANE);
     }
-    
+
     public JPanel getScrollPane(String tab) {
         int tabI = tabs.indexOfTab(tab);
         if (tabI == -1) {
@@ -622,12 +618,12 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         }
         return panes.get(tab);
     }
-    
+
     public JPanel getDefaultPane() {
         return getScrollPane(DEFAULT_PANE);
     }
 
-    public void addField(RElementValue Field, String tab) {
+    public void addField(RElementValue<?,?> Field, String tab) {
         JPanel pane = getScrollPane(tab);
         pane.add(Field);
         pane.add(Box.createRigidArea(new Dimension(0, 4)));
@@ -638,7 +634,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     }
 
     public List<ValidatableValue> checkForErrors(boolean strict) {
-        List<ValidatableValue> IncorrectFields = new ArrayList<ValidatableValue>();
+        List<ValidatableValue> IncorrectFields = new ArrayList<>();
         RFileOperations.LOG.info("--------------------- CHECKING FOR ERRORS-----------------------");
         for (ValidatableValue validatable : Fields) {
             if (!validatable.valid(strict))
@@ -656,11 +652,16 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
         try { // handle if there is no constructor
             var workingClass = ((ElementFile<?>) SourceClass.getConstructor().newInstance()); // make new elementfile
             for (ValidatableValue validatable : Fields) { // add the fields
-                if (validatable instanceof RElementValue<?,?> rev) {
-                    if (rev.getOptionallyEnabled()) // if its not enabled, continue
+                if (validatable instanceof RElementValue<?, ?> rev) {
+                    if (rev.getOptionallyEnabled()) // if it's not enabled, continue
                     {
                         try {
-                            rev.getTarget().set(workingClass,
+                            Field field = rev.getTarget();
+                            if (field == null) {
+                                RFileOperations.LOG.warning("Field is null!?? 🤯");
+                                continue;
+                            }
+                            field.set(workingClass,
                                     rev.getValue());
                             // try to set field ^
                         } catch (Exception e) {
@@ -687,47 +688,58 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         var action = e.getActionCommand();
-        if (action.equals("create")) { // create, check for errors, get user to solve them, ready for build
-            if (checkForErrors(true) == null) {
-                if (createFunction == null)
-                    create(false);
-                else
-                    createFunction.onCreate(this, Listener, false);
-            } else { // show errored things
-                var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
-                for (ValidatableValue EV : IncorrectFields) {
-                    builder.append("<li>" + EV.getName() + ": " + EV.getProblemMessage() + "</li>");
+        switch (action) {
+            case "create" -> {
+                if (checkForErrors(true) == null) {
+                    if (createFunction == null)
+                        create(false);
+                    else
+                        createFunction.onCreate(this, Listener, false);
+                } else { // show errored things
+                    var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
+                    for (ValidatableValue EV : IncorrectFields) {
+                        builder.append("<li>")
+                                .append(EV.getName())
+                                .append(": ")
+                                .append(EV.getProblemMessage())
+                                .append("</li>");
+                    }
+
+                    JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-
-                JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
-                        JOptionPane.ERROR_MESSAGE);
             }
-        } else if (action.equals("draft")) { // drafting, check if nessesary fields are entered
-            if (checkForErrors(false) == null) {
-                if (createFunction == null)
-                    create(true);
-                else
-                    createFunction.onCreate(this, Listener, true);
-            } else { // show errored things
-                // pov: you thought something was going to complicated, but you didnt need to
-                // search anything up VVVVVVV
-                var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
-                for (ValidatableValue EV : IncorrectFields) {
-                    builder.append("<li>" + EV.getName() + ": " + EV.getProblemMessage() + "</li>");
+            case "draft" -> {
+                if (checkForErrors(false) == null) {
+                    if (createFunction == null)
+                        create(true);
+                    else
+                        createFunction.onCreate(this, Listener, true);
+                } else { // show errored things
+                    // pov: you thought something was going to complicated, but you didnt need to
+                    // search anything up VVVVVVV
+                    var builder = new StringBuilder("<html>There were error(s) while creating this element: <br><ul>");
+                    for (ValidatableValue EV : IncorrectFields) {
+                        builder.append("<li>")
+                                .append(EV.getName())
+                                .append(": ")
+                                .append(EV.getProblemMessage())
+                                .append("</li>");
+                    }
+
+                    JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-
-                JOptionPane.showMessageDialog(this, builder.toString(), "Element Creation Error",
-                        JOptionPane.ERROR_MESSAGE);
             }
-        } else if (action.equals("cancel")) {
-            Listener.onElementCancel();
-            this.dispose();
-        } else {
-            var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");
-            ErrorShower.showError(getParent(),
-                    "woah mate, button dont fit, dont fit, button, it dont fit, wont fit", "I did an oppsie", ex);
-
-            throw new IllegalAccessError();
+            case "cancel" -> {
+                Listener.onElementCancel();
+                this.dispose();
+            }
+            default -> {
+                var ex = new Exception("That button dont exist! man i forgot how good dark tranquility is");
+                ErrorShower.showError(getParent(),
+                        "woah mate, button dont fit, dont fit, button, it dont fit, wont fit", "I did an oppsie", ex);
+            }
         }
     }
 }

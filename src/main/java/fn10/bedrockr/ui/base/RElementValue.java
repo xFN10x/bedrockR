@@ -3,8 +3,8 @@ package fn10.bedrockr.ui.base;
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.ui.components.elementValues.REPathValue;
-import fn10.bedrockr.ui.components.elementValues.REStringValue;
+import fn10.bedrockr.ui.components.elementValues.*;
+import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
@@ -19,8 +19,8 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -33,12 +33,13 @@ import java.util.Objects;
  * @param <I> The type of the input component
  */
 public abstract class RElementValue<T, I extends JComponent> extends JPanel implements ValidatableValue {
+
     public interface ChangedStatusListener {
         void changed(boolean to);
     }
 
     //private final static String No_Path_Chosen_Text = "(Click to set path.)";
-    protected final SpringLayout Lay = new SpringLayout();
+    public final SpringLayout Lay = new SpringLayout();
     protected final JLabel Name = new JLabel();
     public JButton Help = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/ui/Help.png")));
     public I Input;
@@ -117,73 +118,110 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
     public static RElementValue<?, ?> ofClass(
             @Nonnull Class<?> type) {
-        RElementValue<?, ?> returning;
-        if (are(type, String.class)) {
-            returning =  new REStringValue(null, (Class<String>) type, null, null, null);
-        } else if (are(type, Path.class)) {
-            returning =  new REPathValue(null, (Class<Path>) type, null, null, null);
-        } else {
-            returning = empty(type);
-        }
-
-        return returning;
+        return ofField(null, type, null, null);
     }
 
-    public static <T> RElementValue<T, ?> ofField(@Nonnull Field field,
-                                              @Nonnull SourcelessElementFile TargetFile,
+    public static RElementValue<?, ?> ofField(@Nonnull Field field,
+                                              @Nullable SourcelessElementFile TargetFile,
                                               @Nullable String WorkspaceName) {
-        FieldDetails anno = field.getAnnotation(FieldDetails.class);
+        return ofField(field, field.getType(), TargetFile, WorkspaceName);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> RElementValue<T, ?> ofField(@Nullable Field field,
+                                                  @Nonnull Class<T> type,
+                                                  @Nullable SourcelessElementFile TargetFile,
+                                                  @Nullable String WorkspaceName) {
+        FieldDetails anno = null;
+        if (field != null)
+            anno = field.getAnnotation(FieldDetails.class);
 
         RElementValue<T, ?> returning;
-        Class<T> type = (Class<T>) field.getType();
-        if (type.isAssignableFrom(String.class)) {
-            returning = (RElementValue<T, ?>) new REStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
-        } else if (are(field, Path.class)) {
+        if (are(type, String.class)) {
+            RAnnotation.StringDropdownField dd;
+            if (field != null && (dd = field.getAnnotation(RAnnotation.StringDropdownField.class)) != null) {
+                returning = (RElementValue<T, ?>) new REDropdownStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
+            } else
+                returning = (RElementValue<T, ?>) new REStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
+        } else if (are(type, Path.class)) {
             returning = (RElementValue<T, ?>) new REPathValue(field, ((Class<Path>) type), TargetFile, WorkspaceName, anno);
+        } else if (are(type, List.class)) {
+            returning = (RElementValue<T, ?>) new REListValue(field, ((Class<List<?>>) type), TargetFile, WorkspaceName, anno);
+        } else if (are(type, Integer.class) || are(type, Float.class)) {
+            RAnnotation.NumberRange range = new RAnnotation.NumberRange() {
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return RAnnotation.NumberRange.class;
+                }
+
+                @Override
+                public float max() {
+                    return Float.MAX_VALUE;
+                }
+
+                @Override
+                public float min() {
+                    return Float.MIN_VALUE;
+                }
+
+                @Override
+                public float step() {
+                    return 0.1f;
+                }
+            };
+            if (field != null) {
+                RAnnotation.NumberRange prop = field.getAnnotation(RAnnotation.NumberRange.class);
+                if (prop != null)
+                    range = prop;
+            }
+            returning = (RElementValue<T, ?>) new RENumberScroll(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
         } else {
-            returning = empty(type);
+            returning = empty(field == null ? "" : field.getName(), type);
         }
 
-        try {
-            Object v = field.get(TargetFile);
-            if (v != null && returning.getType().isAssignableFrom(v.getClass())) {
-                returning.setValue(returning.getType().cast(v));
+        if (field != null)
+            try {
+                Object v = field.get(TargetFile);
+                if (v != null && returning.getType().isAssignableFrom(v.getClass())) {
+                    returning.setValue(returning.getType().cast(v));
+                }
+            } catch (IllegalAccessException e) {
+                RLogUtils.exception("This field doesn't belong to the target file.", e);
             }
-        } catch (IllegalAccessException e) {
-            RLogUtils.exception("This field doesn't belong to the target file.",e);
-        }
 
         return returning;
     }
-    
-    private static <T> RElementValue<T, JLabel> empty(Class<T> type) {return new RElementValue<>(type) {
 
-        @Override
-        public JLabel createInput() {
-            return new JLabel("Unsupported: " + super.type.getTypeName());
-        }
+    private static <T> RElementValue<T, JLabel> empty(String name, Class<T> type) {
+        return new RElementValue<>(null, type, name, false, null, null) {
+            @Override
+            public JLabel createInput() {
+                return new JLabel("Unsupported type: " + super.type.getName());
+            }
 
-        @Override
-        protected T getValueInternal(boolean shouldLog) {
-            return null;
-        }
+            @Override
+            public void setValueInternal(T value) {
 
-        @Override
-        public boolean valid(boolean strict, boolean log0) {
-            return false;
-        }
+            }
 
-        @Override
-        public void setValueInternal(T value) {
+            @Override
+            protected T getValueInternal(boolean shouldLog) {
+                return null;
+            }
 
-        }
-    };}
+            @Override
+            public boolean valid(boolean strict, boolean log0) {
+                return true;
+            }
+        };
+    }
 
     public RElementValue(@Nullable Field TargetField,
-                            @Nonnull Class<T> type,
-                            @Nullable SourcelessElementFile TargetFile,
-                            @Nullable String WorkspaceName,
-                            @Nullable FieldDetails details) {
+                         @Nonnull Class<T> type,
+                         @Nullable SourcelessElementFile TargetFile,
+                         @Nullable String WorkspaceName,
+                         @Nullable FieldDetails details) {
         String name;
         boolean op;
         if (details == null) {
@@ -196,13 +234,25 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             op = details.Optional();
             name = details.displayName();
         }
-        this(TargetField, name, op, TargetFile, WorkspaceName);
+        this(TargetField, type, name, op, TargetFile, WorkspaceName);
     }
 
-    private RElementValue(Class<T> type) {
-        super();
+    @SuppressWarnings({"unchecked", "null"})
+    private RElementValue(@Nullable Field TargetField,
+                          @Nonnull Class<T> type,
+                          String DisplayName,
+                          boolean Optional,
+                          @Nullable SourcelessElementFile TargetFile,
+                          @Nullable String WorkspaceName
+    ) {
+        this.TargetFile = TargetFile;
+        this.Target = TargetField;
+        this.Required = !Optional;
+        //this.Filter = Filter;
+        //this.InputType = InputType;
+        this.WorkspaceName = WorkspaceName;
+        boolean FromEmpty = TargetFile == null;
         this.type = type;
-        this.Input = createInput();
         final Dimension Size;
         Size = new Dimension(350, 40);
 
@@ -210,6 +260,57 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         setPreferredSize(Size);
         setBorder(new LineBorder(getBackground()));
         setLayout(Lay);
+
+        this.Input = createInput();
+
+        Help.putClientProperty("JButton.buttonType", "help");
+
+        if (Optional) // stop the enable check affecting non-optional things
+            EnableCheckbox.addItemListener(new ItemListener() {
+                {
+                    Input.setEnabled(EnableCheckbox.isSelected());
+                }
+
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
+                }
+
+            });
+        Help.addActionListener(_ -> {
+            try {
+                JOptionPane.showMessageDialog(this,
+                        Target.getAnnotation(HelpMessage.class).value(),
+                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Failed to get help message! Tell the dev (or plugin creator)!   Field: " + Target.getName() + " Class: "
+                                + Target.getDeclaringClass().getName(),
+                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        Name.setText(DisplayName);
+
+        try {
+            if (!FromEmpty) {
+                if (Target.get(TargetFile) != null) {
+                    EnableCheckbox.setSelected(true);
+                }
+            }
+        } catch (Exception e) {
+            RLogUtils.exception("Exception thrown", e);
+        }
+
+        if (Optional)
+            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableCheckbox);
+        else
+            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, Help);
+
+        Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
+        Lay.putConstraint(SpringLayout.EAST, EnableCheckbox, -3, SpringLayout.WEST, Help);
+        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableCheckbox, 0, SpringLayout.VERTICAL_CENTER, this);
 
 //        // don't do this if its set manually
 //        if (Input == null)
@@ -653,84 +754,12 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         Lay.putConstraint(SpringLayout.WEST, Input, 3, SpringLayout.EAST, Name);
         Lay.putConstraint(SpringLayout.NORTH, Input, 3, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.SOUTH, Input, -3, SpringLayout.SOUTH, this);
-//        if (Optional)
-//            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableCheckbox);
-//        else
-            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.EAST, this);
 
-//        if (!Optional)
-//            EnableCheckbox.setEnabled(false);
+        if (!Optional)
+            EnableCheckbox.setEnabled(false);
 
         add(Name);
         add(Input);
-//        if (Optional)
-//            add(EnableCheckbox);
-    }
-
-    @SuppressWarnings({"unchecked", "null"})
-    private RElementValue(@Nonnull Field TargetField,
-                          String DisplayName,
-                          boolean Optional,
-                          @Nullable SourcelessElementFile TargetFile,
-                          @Nullable String WorkspaceName
-    ) {
-        this((Class<T>) TargetField.getType());
-        this.TargetFile = TargetFile;
-        this.Target = TargetField;
-        this.Required = !Optional;
-        //this.Filter = Filter;
-        //this.InputType = InputType;
-        this.WorkspaceName = WorkspaceName;
-        boolean FromEmpty = TargetFile == null;
-
-        Help.putClientProperty("JButton.buttonType", "help");
-
-        if (Optional) // stop the enable check affecting non-optional things
-            EnableCheckbox.addItemListener(new ItemListener() {
-                {
-                    Input.setEnabled(EnableCheckbox.isSelected());
-                }
-
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-                }
-
-            });
-        Help.addActionListener(_ -> {
-            try {
-                JOptionPane.showMessageDialog(this,
-                        Target.getAnnotation(HelpMessage.class).value(),
-                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Failed to get help message! Tell the dev (or plugin creator)!   Field: " + Target.getName() + " Class: "
-                                + Target.getDeclaringClass().getName(),
-                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
-        Name.setText(DisplayName);
-
-        try {
-            if (!FromEmpty) {
-                if (Target.get(TargetFile) != null) {
-                    EnableCheckbox.setSelected(true);
-                }
-            }
-        } catch (Exception e) {
-            RLogUtils.exception("Exception thrown", e);
-        }
-
-        if (Optional)
-            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, EnableCheckbox);
-        else
-            Lay.putConstraint(SpringLayout.EAST, Input, -3, SpringLayout.WEST, Help);
-
-        Lay.putConstraint(SpringLayout.EAST, Help, 0, SpringLayout.EAST, this);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
-        Lay.putConstraint(SpringLayout.EAST, EnableCheckbox, -3, SpringLayout.WEST, Help);
-        Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableCheckbox, 0, SpringLayout.VERTICAL_CENTER, this);
 
         if (!Optional)
             EnableCheckbox.setEnabled(false);
@@ -748,16 +777,17 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         }
         if (Optional)
             add(EnableCheckbox);
-
-        final HelpMessage anno;
-        anno = Target.getAnnotation(HelpMessage.class);
-        if (anno != null) {
-            add(Help);
-        }
-        try {
-            setValue((T) Target.get(TargetFile));
-        } catch (Exception e) {
-            RLogUtils.exception("Exception", e);
+        if (Target != null) {
+            final HelpMessage anno;
+            anno = Target.getAnnotation(HelpMessage.class);
+            if (anno != null) {
+                add(Help);
+            }
+            try {
+                setValue((T) Target.get(TargetFile));
+            } catch (Exception e) {
+                RLogUtils.exception("Exception", e);
+            }
         }
     }
 
@@ -1226,10 +1256,22 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     @Nullable
+    public <A extends Annotation> A getAnno(Class<A> annotation) {
+        return getAnno(annotation, null);
+    }
+
+    public <A extends Annotation> A getAnno(Class<A> annotation, A defaul) {
+        if (getTarget() == null || Target == null) return defaul;
+        A anno = Target.getAnnotation(annotation);
+        if (anno == null) return defaul;
+        return anno;
+    }
+
+    @Nullable
     public Field getTarget() {
         return Target;
     }
-    
+
     /**
      * Passes a string through to substitute it if it can be.
      *
