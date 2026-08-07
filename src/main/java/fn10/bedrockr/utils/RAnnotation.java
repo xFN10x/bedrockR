@@ -142,5 +142,7 @@ public class RAnnotation {
         float max() default 1;
 
         float min() default 0;
+        
+        float step() default 0.5f;
     }
 }

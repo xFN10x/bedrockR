@@ -77,7 +77,6 @@ public class REListValue extends RElementValue<List<?>, JScrollPane> {
                     // + genericType.getCanonicalName());
                     toAdd = RElementValue.ofClass(genericType);
                 }
-// have no idea why this is here
 //                if (anno != null) {
 //                    toAdd.remove(toAdd.Input);
 //                    JComboBox<String> newInput = new JComboBox<>(substituteArray(anno.value()));
@@ -94,27 +93,27 @@ public class REListValue extends RElementValue<List<?>, JScrollPane> {
 //                        newInput.setSelectedIndex(0);
 //                    }
 //                }
-//
-//                JButton removeButton = new JButton("-");
-//
-//                toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0,
-//                        SpringLayout.VERTICAL_CENTER, toAdd);
-//                toAdd.Lay.putConstraint(SpringLayout.WEST, toAdd.Input, 3, SpringLayout.EAST, removeButton);
-//
-//                toAdd.add(removeButton);
-//                removeButton.addActionListener(ac -> {
-//                    HashMapInnerPane.remove(toAdd);
-//                    HashMapInnerPane.repaint();
-//                    HashMapInnerPane.revalidate();
-//                });
-//
-//                toAdd.setAlignmentX(0.5f);
-//
-//                HashMapInnerPane.add(Box.createVerticalStrut(10));
-//                HashMapInnerPane.add(toAdd);
-//
-//                HashMapInnerPane.revalidate();
-//                HashMapInnerPane.repaint();
+
+                JButton removeButton = new JButton("-");
+
+                toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0,
+                        SpringLayout.VERTICAL_CENTER, toAdd);
+                toAdd.Lay.putConstraint(SpringLayout.WEST, toAdd.Input, 3, SpringLayout.EAST, removeButton);
+
+                toAdd.add(removeButton);
+                removeButton.addActionListener(_ -> {
+                    HashMapInnerPane.remove(toAdd);
+                    HashMapInnerPane.repaint();
+                    HashMapInnerPane.revalidate();
+                });
+
+                toAdd.setAlignmentX(0.5f);
+
+                HashMapInnerPane.add(Box.createVerticalStrut(10));
+                HashMapInnerPane.add(toAdd);
+
+                HashMapInnerPane.revalidate();
+                HashMapInnerPane.repaint();
 
             } catch (Exception e1) {
                 RLogUtils.exception("Exception thrown",
