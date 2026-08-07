@@ -64,7 +64,7 @@ public class REListValue extends RElementValue<List<?>, JScrollPane> {
         // add the button
         HashMapAdd.addActionListener((_) -> {
             try {
-                RElementValue toAdd;
+                RElementValue<?,?> toAdd;
                 if (type.isArray()) {
                     // fn10.bedrockr.Launcher.LOG.info("make an array value element with
                     // class: "
