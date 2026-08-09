@@ -3,17 +3,8 @@ package fn10.bedrockr.utils;
 import java.util.Random;
 
 public class Greetings { // no, the class is not welcoming you, it is for those greetings that appear 
-    public static class Greeting {
-        
-        public String Text;
-        public int Size;
-
-        public Greeting(String Text, int Size) {
-            this.Text = Text;
-            this.Size = Size;
-        }
-        
-    }
+    public record Greeting(String Text, int Size) { }
+    
     protected static Greeting[] GREETINGS = {
         new Greeting("Welcome back!",25),
         new Greeting("Welcome to BR, how may I serve you today?",15),
@@ -26,7 +17,9 @@ public class Greetings { // no, the class is not welcoming you, it is for those 
         new Greeting("bedrockR, my rival",26),
         new Greeting("PSPTools, now out!",26),
         new Greeting("Remember major updates?",26),
-        new Greeting("I love when Microsoft breaks things",24),
+            new Greeting("I love when Microsoft breaks things",24),
+            new Greeting("I've been waiting so long...",24),
+            new Greeting("Now for 26.3! Wait, no- 26.30... wait 1.26.30? HELP",23),
     };
 
     

@@ -30,7 +30,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
     private final Greeting greeting = Greetings.GetGreeting();
-    private final JLabel greetingText = new JLabel(greeting.Text) {
+    private final JLabel greetingText = new JLabel(greeting.Text()) {
         @Override
         protected void paintComponent(Graphics g) {
             Shape clip = g.getClip();
@@ -71,7 +71,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                 false);
 
         // Add things to the window.
-        greetingText.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, greeting.Size));
+        greetingText.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, greeting.Size()));
         greetingText.setSize(Size.width, 100);
         greetingText.setHorizontalTextPosition(SwingConstants.LEFT);
 
