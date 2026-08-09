@@ -3,19 +3,15 @@ package fn10.bedrockr.ui.util;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import fn10.bedrockr.Launcher;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jspecify.annotations.NonNull;
 
+@SuppressWarnings("unused")
 public class ImageUtilities {
 
     public final static DefaultImageHandler ImgHandler = new DefaultImageHandler();
@@ -61,13 +57,16 @@ public class ImageUtilities {
     }
 
     public static Point getScreenCenter(Component target) {
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
         GraphicsDevice mouseScreen = MouseInfo.getPointerInfo().getDevice();
         GraphicsConfiguration config = mouseScreen.getDefaultConfiguration();
+        
         Rectangle bounds = config.getBounds();
         Dimension size = bounds.getSize();
-        return new Point(((int) ((size.getWidth() - target.getWidth()) /2) + bounds.x),
-                ((int) ((size.getHeight() - target.getHeight()) /2) + bounds.y));
+        
+        return new Point(
+                (int) ((size.getWidth() - target.getWidth()) /2) + bounds.x,
+                (int) ((size.getHeight() - target.getHeight()) /2) + bounds.y
+        );
     }
 
     /// totally didn't steal this from {@link Color#brighter()}
@@ -107,7 +106,7 @@ public class ImageUtilities {
     }
 
     /**
-     * credit: https://stackoverflow.com/a/7603815
+     * <a href="https://stackoverflow.com/a/7603815">credit</a>
      */
     public static BufferedImage makeRoundedCorner(Image image, int cornerRadius) {
         int w = image.getWidth(null);
