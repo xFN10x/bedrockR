@@ -9,14 +9,14 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.*;
 import java.lang.reflect.Field;
 
-public class RENumberScroll extends RElementValue<Float, JSpinner> {
+public class RENumberScrollValue extends RElementValue<Float, JSpinner> {
 
     private final Float min;
     private final Float max;
     private final Float step;
     private final boolean isInt;
     
-     public RENumberScroll(@Nullable Field TargetField, @NonNull Class<Float> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details, float min, float max, float step, boolean isInt) {
+     public RENumberScrollValue(@Nullable Field TargetField, @NonNull Class<Float> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details, float min, float max, float step, boolean isInt) {
         super(TargetField, type, TargetFile, WorkspaceName, details);
          this.min = min;
          this.max = max;

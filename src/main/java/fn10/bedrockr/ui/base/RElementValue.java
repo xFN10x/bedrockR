@@ -3,6 +3,7 @@ package fn10.bedrockr.ui.base;
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
+import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.elementValues.*;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
@@ -42,7 +43,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     //private final static String No_Path_Chosen_Text = "(Click to set path.)";
     public final SpringLayout Lay = new SpringLayout();
     protected final JLabel Name = new JLabel();
-    public JButton Help = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/ui/Help.png")));
+    public RHelpButton Help = new RHelpButton();
     public I Input;
     protected final JCheckBox EnableCheckbox = new JCheckBox();
 
@@ -173,7 +174,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                 if (prop != null)
                     range = prop;
             }
-            returning = (RElementValue<T, ?>) new RENumberScroll(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
+            returning = (RElementValue<T, ?>) new RENumberScrollValue(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
         }
         if (returning == null)
             returning = empty(field == null ? "" : field.getName(), type);
@@ -261,8 +262,6 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
         this.Input = createInput();
 
-        Help.putClientProperty("JButton.buttonType", "help");
-
         if (Optional) // stop the enable check affecting non-optional things
             EnableCheckbox.addItemListener(new ItemListener() {
                 {
@@ -275,20 +274,11 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                 }
 
             });
-        Help.addActionListener(_ -> {
-            try {
-                JOptionPane.showMessageDialog(this,
-                        Target != null ?
-                        Target.getAnnotation(HelpMessage.class).value() :
-                        "No help message.",
-                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Failed to get help message! Tell the dev (or plugin creator)!   Field: " + Target.getName() + " Class: "
-                                + Target.getDeclaringClass().getName(),
-                        "Help for: " + DisplayName, JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+        Help.setTitle("Help for: " + DisplayName);
+        Help.setMessage(Target != null ?
+                Target.getAnnotation(HelpMessage.class).value() :
+                "No help message.");
+
 
         Name.setText(DisplayName);
 
