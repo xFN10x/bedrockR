@@ -8,9 +8,11 @@ public interface ValidatableValue {
      */
     boolean valid(boolean strict);
     
-    boolean valid();
+    default boolean valid() {
+        return valid(true);
+    }
 
     String getProblemMessage();
 
-    String getName();
+    String getValueName();
 }

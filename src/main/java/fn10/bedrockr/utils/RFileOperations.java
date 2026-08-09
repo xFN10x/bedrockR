@@ -220,7 +220,7 @@ public class RFileOperations {
             }
             return list.toArray(new String[0]);
         } catch (IOException e) {
-            return null;
+            return new String[0];
         }
     }
 

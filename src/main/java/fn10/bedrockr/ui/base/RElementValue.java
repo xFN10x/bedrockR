@@ -21,6 +21,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -125,7 +126,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> RElementValue<T, ?> ofField(@Nullable Field field,
+    public static <T, L> RElementValue<T, ?> ofField(@Nullable Field field,
                                                   @Nonnull Class<T> type,
                                                   @Nullable SourcelessElementFile TargetFile,
                                                   @Nullable String WorkspaceName) {
@@ -133,7 +134,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         if (field != null)
             anno = field.getAnnotation(FieldDetails.class);
 
-        RElementValue<T, ?> returning;
+        RElementValue<T, ?> returning = null;
         if (are(type, String.class)) {
             if (field != null && field.getAnnotation(RAnnotation.StringDropdownField.class) != null) {
                 returning = (RElementValue<T, ?>) new REDropdownStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
@@ -142,7 +143,8 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         } else if (are(type, Path.class)) {
             returning = (RElementValue<T, ?>) new REPathValue(field, ((Class<Path>) type), TargetFile, WorkspaceName, anno);
         } else if (are(type, List.class)) {
-            returning = (RElementValue<T, ?>) new REListValue(field, ((Class<List<?>>) type), TargetFile, WorkspaceName, anno);
+            if ( field != null)
+                returning = (RElementValue<T, ?>) new REListValue<L>(field, (Class<List<L>>) type, ((Class<L>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]),TargetFile, WorkspaceName, anno);
         } else if (are(type, Integer.class) || are(type, Float.class)) {
             RAnnotation.NumberRange range = new RAnnotation.NumberRange() {
 
@@ -172,9 +174,9 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                     range = prop;
             }
             returning = (RElementValue<T, ?>) new RENumberScroll(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
-        } else {
-            returning = empty(field == null ? "" : field.getName(), type);
         }
+        if (returning == null)
+            returning = empty(field == null ? "" : field.getName(), type);
 
         if (field != null)
             try {
@@ -314,235 +316,9 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //        if (Input == null)
 //            // do corrisponding actions depending on the type
 //            try {
-//                if (BlockTexture.class.isAssignableFrom(InputType)) {
-//                    //the input will be a scroll pane with a panel that has a dropdown for what mode, and 6 other elementvalues.
-//                    JPanel inner = new JPanel();
-//                    BlockTexturesModeDropdown = new JComboBox<>(new String[]{
-//                            "One Texture",
-//                            "Log",
-//                            "Per-face"
-//                    });
-//
-//                    Dimension dropdownsize = new Dimension(500, 30);
-//                    BlockTexturesModeDropdown.setPreferredSize(dropdownsize);
-//                    BlockTexturesModeDropdown.setMaximumSize(dropdownsize);
-//
-//                    Input = new JScrollPane(inner);
-//                    ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(12);
-//
-//                    inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
-//                    Dimension sizes = new Dimension(500, 80);
-//                    BlockTexturesTop = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "Top Texture/All Sides", false, null, WorkspaceName);
-//                    BlockTexturesBottom = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "Bottom Texture", false, null, WorkspaceName);
-//                    BlockTexturesNorth = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "North Texture/Side Texture", false, null, WorkspaceName);
-//                    BlockTexturesSouth = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "South Texture", false, null, WorkspaceName);
-//                    BlockTexturesEast = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "East Texture", false, null, WorkspaceName);
-//                    BlockTexturesWest = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "West Texture", false, null, WorkspaceName);
-//
-//                    BlockTexturesModeDropdown.addActionListener(_ -> {
-//                        int selected = BlockTexturesModeDropdown.getSelectedIndex();
-//
-//                        switch (selected) {
-//                            // one tex
-//                            case 0:
-//                                BlockTexturesTop.Input.setEnabled(true);
-//                                BlockTexturesBottom.Input.setEnabled(false);
-//                                BlockTexturesNorth.Input.setEnabled(false);
-//                                BlockTexturesSouth.Input.setEnabled(false);
-//                                BlockTexturesEast.Input.setEnabled(false);
-//                                BlockTexturesWest.Input.setEnabled(false);
-//                                break;
-//
-//                            // log
-//                            case 1:
-//                                BlockTexturesTop.Input.setEnabled(true);
-//                                BlockTexturesBottom.Input.setEnabled(true);
-//                                BlockTexturesNorth.Input.setEnabled(true);
-//                                BlockTexturesSouth.Input.setEnabled(false);
-//                                BlockTexturesEast.Input.setEnabled(false);
-//                                BlockTexturesWest.Input.setEnabled(false);
-//                                break;
-//
-//                            // all
-//                            default:
-//                                BlockTexturesTop.Input.setEnabled(true);
-//                                BlockTexturesBottom.Input.setEnabled(true);
-//                                BlockTexturesNorth.Input.setEnabled(true);
-//                                BlockTexturesSouth.Input.setEnabled(true);
-//                                BlockTexturesEast.Input.setEnabled(true);
-//                                BlockTexturesWest.Input.setEnabled(true);
-//                                break;
-//                        }
-//                    });
-//
-//                    BlockTexturesTop.setPreferredSize(sizes);
-//                    BlockTexturesTop.setMaximumSize(sizes);
-//
-//                    BlockTexturesBottom.setPreferredSize(sizes);
-//                    BlockTexturesBottom.setMaximumSize(sizes);
-//
-//                    BlockTexturesNorth.setPreferredSize(sizes);
-//                    BlockTexturesNorth.setMaximumSize(sizes);
-//
-//                    BlockTexturesSouth.setPreferredSize(sizes);
-//                    BlockTexturesSouth.setMaximumSize(sizes);
-//
-//                    BlockTexturesEast.setPreferredSize(sizes);
-//                    BlockTexturesEast.setMaximumSize(sizes);
-//
-//                    BlockTexturesWest.setPreferredSize(sizes);
-//                    BlockTexturesWest.setMaximumSize(sizes);
-//
-//                    inner.add(BlockTexturesModeDropdown);
-//                    inner.add(Box.createVerticalStrut(5));
-//                    inner.add(BlockTexturesTop);
-//                    inner.add(BlockTexturesBottom);
-//                    inner.add(BlockTexturesNorth);
-//                    inner.add(BlockTexturesSouth);
-//                    inner.add(BlockTexturesEast);
-//                    inner.add(BlockTexturesWest);
-//
-//                    BlockTexturesModeDropdown.setSelectedIndex(0);
-//                } 
+//               
 //                
-//                else if (List.class.isAssignableFrom(InputType)) {
-//                    /*
-//                     * im just stealing most of the hash map stuff, since it is basicly already a
-//                     * list view.
-//                     */
-//                    Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-//                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//                    ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
-//
-//                    /*
-//                     * HashMapInnerScroll is the pane that is inside input, IT IS A JPANEL, NOT A
-//                     * JSCROLLPANE!!!!
-//                     */
-//
-//                    // do things to the panels
-//                    HashMapInnerPane.setLayout(new BoxLayout(HashMapInnerPane, BoxLayout.Y_AXIS));
-//                    Input.setBorder(new LineBorder(Color.DARK_GRAY));
-//                    Input.setBackground(getBackground().brighter());
-//                    // get the RMapProvider
-//                    if (field == null) {
-//                        return;
-//                    }
-//                    final Class<?> genericType;
-//                    if (!InputType.isArray()) {
-//                        if (field.getGenericType() instanceof ParameterizedType pt) {
-//                            genericType = (Class<?>) pt.getActualTypeArguments()[0];
-//                        } else
-//                            genericType = null;
-//                        if (genericType == null) {
-//                            throw new NullPointerException("This list doesnt have a type.");
-//                        }
-//                    } else {
-//                        genericType = null;
-//                    }
-//
-//                    if (!FromEmpty) {
-//                        try {
-//                            if (InputType.isArray()) {
-//                                for (Object entry : (Object[]) field.get(TargetFile)) {
-//                                    RElementValue toAdd = new RElementValue(parentFrame, InputType.getComponentType(),
-//                                            Filter,
-//                                            null, "",
-//                                            false, null, WorkspaceName);
-//                                    toAdd.setValue(entry);
-//
-//                                    HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-//                                    HashMapInnerPane.add(toAdd);
-//                                }
-//                            } else {
-//                                for (Object entry : (List<?>) field.get(TargetFile)) {
-//                                    RElementValue toAdd = new RElementValue(parentFrame, genericType, Filter,
-//                                            null, "",
-//                                            false, null, WorkspaceName);
-//                                    toAdd.setValue(entry);
-//
-//                                    HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-//                                    HashMapInnerPane.add(toAdd);
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            RLogUtils.exception("Exception thrown",
-//                                    e);
-//                            ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
-//                        }
-//                    }
-//
-//                    final StringDropdownField anno = field.getAnnotation(StringDropdownField.class);
-//                    // add the button
-//                    HashMapAdd.addActionListener((_) -> {
-//                        try {
-//                            RElementValue toAdd;
-//                            if (InputType.isArray()) {
-//                                // fn10.bedrockr.Launcher.LOG.info("make an array value element with
-//                                // class: "
-//                                // + InputType.getComponentType().getCanonicalName());
-//                                toAdd = new RElementValue(parentFrame, InputType.getComponentType(), Filter, null, "",
-//                                        false,
-//                                        null, WorkspaceName);
-//                            } else {
-//
-//                                // fn10.bedrockr.Launcher.LOG.info("make a list value element with
-//                                // class: "
-//                                // + genericType.getCanonicalName());
-//                                toAdd = new RElementValue(parentFrame, genericType, Filter, null,
-//                                        "",
-//                                        false,
-//                                        null, WorkspaceName);
-//                            }
-//
-//                            if (anno != null) {
-//                                toAdd.remove(toAdd.Input);
-//                                JComboBox<String> newInput = new JComboBox<>(substituteArray(anno.value()));
-//
-//                                toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
-//                                toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
-//                                toAdd.Lay.putConstraint(SpringLayout.SOUTH, newInput, -3, SpringLayout.SOUTH, toAdd);
-//                                toAdd.Lay.putConstraint(SpringLayout.EAST, newInput, -3, SpringLayout.WEST, toAdd.Help);
-//                                toAdd.add(newInput);
-//                                toAdd.Input = newInput;
-//
-//                                if (anno.strict()) {
-//                                    newInput.setEditable(false);
-//                                    newInput.setSelectedIndex(0);
-//                                }
-//                            }
-//
-//                            JButton removeButton = new JButton("-");
-//
-//                            toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0,
-//                                    SpringLayout.VERTICAL_CENTER, toAdd);
-//                            toAdd.Lay.putConstraint(SpringLayout.WEST, toAdd.Input, 3, SpringLayout.EAST, removeButton);
-//
-//                            toAdd.add(removeButton);
-//                            removeButton.addActionListener(ac -> {
-//                                HashMapInnerPane.remove(toAdd);
-//                                HashMapInnerPane.repaint();
-//                                HashMapInnerPane.revalidate();
-//                            });
-//
-//                            toAdd.setAlignmentX(0.5f);
-//
-//                            HashMapInnerPane.add(Box.createVerticalStrut(10));
-//                            HashMapInnerPane.add(toAdd);
-//
-//                            HashMapInnerPane.revalidate();
-//                            HashMapInnerPane.repaint();
-//
-//                        } catch (Exception e1) {
-//                            RLogUtils.exception("Exception thrown",
-//                                    e1);
-//                            ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
-//                        }
-//                    });
-//                    add(HashMapAdd);
-//
-//                    Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
-//                    Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-//                } 
+//               
 //                else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
 //                    // if
 //                    // bool,
@@ -563,59 +339,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                                DisplayName, e);
 //                    }
 //                } 
-//                else if (String.class.isAssignableFrom(InputType)) {
-//                    // if string, do this
-//                    // if normal do this
-//
-//                    final StringDropdownField anno;
-//                    if (field != null) {
-//                        anno = field.getAnnotation(StringDropdownField.class);
-//                    } else {
-//                        anno = null;
-//                    }
-//                    Input = new JTextField();
-//                    if (anno == null && field != null && TargetFile != null) { // normal string
-//                        Input = new JTextField();
-//                        try {
-//                            ((JTextField) Input).setText(((String) field.get(TargetFile))); // set text to string in
-//                            // field,
-//                            // if it is editing
-//                        } catch (Exception e) {
-//                            if (!FromEmpty)
-//                                if (TargetFile.getDraft())
-//                                    return;
-//                            RLogUtils.exception("Exception thrown",
-//                                    e);
-//                            ErrorShower.showError(parentFrame,
-//                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
-//                                    DisplayName, e);
-//                        }
-//                    } else if (anno != null) { // dropdown string
-//                        switch (anno.value()[0]) {
-//                            case "_VANILLABIOMES" -> Input = new JComboBox<>(SourceBiomeElement.getVanillaBiomeNames());
-//                            case "_PREFIXEDVANILLABIOMES" ->
-//                                    Input = new JComboBox<>(SourceBiomeElement.getPrefixedVanillaBiomeNames());
-//                            case "_THEMENAMES" -> Input = new JComboBox<>(Theme.getNames());
-//                            default -> Input = new JComboBox<>(anno.value());
-//                        }
-//                        try {
-//                            // if its strict, dont make it editable
-//                            ((JComboBox<String>) Input).setEditable(!anno.strict());
-//                            ((JComboBox<String>) Input).setSelectedIndex(0);
-//
-//                        } catch (Exception e) {
-//
-//                            RLogUtils.exception("Exception thrown",
-//                                    e);
-//                            if (!FromEmpty)
-//                                if (TargetFile.getDraft())
-//                                    return;
-//                            ErrorShower.showError(parentFrame,
-//                                    "Failed to get field (does the passed ElementFile match the ElementSource?)",
-//                                    DisplayName, e);
-//                        }
-//                    }
-//                } 
+//                
 //                else if (Map.class.isAssignableFrom(InputType)) {
 //                    Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 //                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -694,37 +418,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //                    Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
 //                    Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
 //                } 
-//                else if (Integer.class.isAssignableFrom(InputType) || int.class.isAssignableFrom(InputType)) { // int
-//                    final NumberRange anno;
-//                    if (field != null) {
-//                        anno = field.getAnnotation(NumberRange.class);
-//                    } else {
-//                        anno = null;
-//                    }
-//                    Input = new JSpinner(new SpinnerNumberModel(0, anno != null ? (int) anno.min() : Integer.MIN_VALUE,
-//                            anno != null ? (int) anno.max() : Integer.MAX_VALUE, 1));
-//
-//                    ((JSpinner) Input).setValue(field.get(TargetFile));
-//
-//                } 
-//                else if (Float.class.isAssignableFrom(InputType) || float.class.isAssignableFrom(InputType)) { // int
-//                    final NumberRange anno;
-//                    if (field != null) {
-//                        anno = field.getAnnotation(NumberRange.class);
-//                    } else {
-//                        anno = null;
-//                    }
-//
-//                    Input = new JSpinner(new SpinnerNumberModel(0f, anno != null ? anno.min() : -Float.MAX_VALUE,
-//                            anno != null ? anno.max() : Float.MAX_VALUE, 0.01f));
-//                    ((JSpinner) Input).setValue(field.get(TargetFile));
-//                }
-//                else if (ResourcePointer.class.isAssignableFrom(InputType)) {
-//                    
-//                }
-//                else {
-//                    Input = new JLabel("Not supported.");
-//                }
+//                
 //            } catch (Exception e) {
 //                RLogUtils.exception("Exception thrown", e);
 //            }
@@ -763,7 +457,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             EnableCheckbox.setEnabled(false);
         try {
             // if you cant edit a value after its created,
-            if (Target.getAnnotation(CantEditAfter.class) != null) {
+            if (getAnno(CantEditAfter.class) != null) {
                 //and the input isn't null,
                 if (TargetFile != null && Target.get(TargetFile) != null) {
                     //you cant edit it.
@@ -777,7 +471,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             add(EnableCheckbox);
         if (Target != null) {
             final HelpMessage anno;
-            anno = Target.getAnnotation(HelpMessage.class);
+            anno = getAnno(HelpMessage.class);
             if (anno != null) {
                 add(Help);
             }
@@ -1236,13 +930,13 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //    }
 
     @Override
-    public boolean valid() {
-        return valid(true);
+    public String getProblemMessage() {
+        return Problem;
     }
 
     @Override
-    public String getProblemMessage() {
-        return Problem;
+    public String getValueName() {
+        return getDisplayName();
     }
 
     public String getDisplayName() {

@@ -1,24 +1,22 @@
 package fn10.bedrockr.ui;
 
-import javax.swing.*;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.Launcher;
-import fn10.bedrockr.ui.rendering.BlockTextures;
-import fn10.bedrockr.utils.Greetings;
-import fn10.bedrockr.utils.RFileOperations;
-import fn10.bedrockr.utils.Greetings.Greeting;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RAddon;
+import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.ui.util.RFonts;
 import fn10.bedrockr.ui.util.WrapLayout;
+import fn10.bedrockr.utils.Greetings;
+import fn10.bedrockr.utils.Greetings.Greeting;
+import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -26,13 +24,22 @@ import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RLaunchPage extends RFrame implements ActionListener, ItemListener {
-    
+
     private final JPanel ProjectsPart = new JPanel();
     private final JScrollPane ProjectsScrollPart = new JScrollPane(ProjectsPart, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
     private final Greeting greeting = Greetings.GetGreeting();
-    private final JLabel greetingText = new JLabel(greeting.Text);
+    private final JLabel greetingText = new JLabel(greeting.Text) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Shape clip = g.getClip();
+            Rectangle2D clip2d = clip.getBounds2D();
+            Rectangle bigger = new Rectangle((int) clip2d.getX(), (int) clip2d.getY(), (int) (clip2d.getWidth() + 10), (int) clip2d.getHeight());
+            g.setClip(bigger);
+            super.paintComponent(g);
+        }
+    };
 
     private final JSeparator seperater = new JSeparator(JSeparator.HORIZONTAL);
 
@@ -52,6 +59,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     private final JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
     private final JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
     private final JMenuItem ftButton = new JMenuItem("bedrockR on Flavourtown", KeyEvent.VK_F);
+    private final JMenuItem sdButton = new JMenuItem("bedrockR on Stardance", KeyEvent.VK_D);
     private final JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
     private final JMenuItem websiteButton = new JMenuItem("bedrockR Website", KeyEvent.VK_E);
 
@@ -79,53 +87,15 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         ProjectsScrollPart.getVerticalScrollBar().setUnitIncrement(16);
 
         newaddonButton.addActionListener(this);
-        siegeButton.addActionListener(_ -> {
-            try {
-                desk.browse(URI.create("https://siege.hackclub.com/armory/1948"));
-            } catch (IOException e) {
+        siegeButton.addActionListener(openLink("https://siege.hackclub.com/armory/1948"));
+        somButton.addActionListener(openLink("https://summer.hackclub.com/projects/703"));
+        ftButton.addActionListener(openLink("https://flavortown.hackclub.com/projects/3844"));
+        sdButton.addActionListener(openLink("https://stardance.hackclub.com/projects/336"));
 
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
-        somButton.addActionListener(_ -> {
-            try {
-                desk.browse(URI.create("https://summer.hackclub.com/projects/703"));
-            } catch (IOException e) {
-
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
-
-        gitButton.addActionListener(_ -> {
-            try {
-                desk.browse(URI.create("https://github.com/xFN10x/bedrockR"));
-            } catch (IOException e) {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
-        helpButton.addActionListener(_ -> {
-            try {
-                desk.browse(URI.create("https://github.com/xFN10x/bedrockR/wiki"));
-            } catch (IOException e) {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
-        websiteButton.addActionListener(_ -> {
-            try {
-                desk.browse(URI.create("https://bedrockr.xplate.dev"));
-            } catch (IOException e) {
-
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
-        ftButton.addActionListener(_ -> {
-            try {
-                desk.browse(URI.create("https://flavortown.hackclub.com/projects/3844"));
-            } catch (IOException e) {
-
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
-        });
+        gitButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR"));
+        helpButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR/wiki"));
+        websiteButton.addActionListener(openLink("https://bedrockr.xplate.dev"));
+        
         newaddonButton.setActionCommand("New Addon");
         addonsMenu.add(newaddonButton);
 
@@ -171,10 +141,20 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
     }
 
+    private @NonNull ActionListener openLink(String url) {
+        return _ -> {
+            try {
+                desk.browse(URI.create(url));
+            } catch (IOException e) {
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            }
+        };
+    }
+
     public void refresh() {
         new Thread(() -> {
             ProjectsPart.removeAll();
-            JButton ToAdd = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
+            JButton ToAdd = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
             ToAdd.setActionCommand("New Addon");
             ToAdd.addActionListener(this);
             ProjectsPart.add(ToAdd);
@@ -186,17 +166,17 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
                     ProjectsPart.revalidate();
                 });
             }
-
+            pack();
         }).start();
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
         //if (arg0.getActionCommand().equals("New Addon")) {
-            SwingUtilities.invokeLater(() -> {
-                RNewAddon newAddonPage = new RNewAddon(this);
-                newAddonPage.setVisible(true);
-            });
+        SwingUtilities.invokeLater(() -> {
+            RNewAddon newAddonPage = new RNewAddon(this);
+            newAddonPage.setVisible(true);
+        });
         //}
     }
 

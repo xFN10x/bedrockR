@@ -29,7 +29,7 @@ public class RLogFormatter extends Formatter {
         } else {
             builder.append(ANSI_GREEN);
         }
-        
+
         builder.append("(");
         String sourceClassName = record.getSourceClassName();
         if (sourceClassName != null) {
@@ -37,9 +37,11 @@ public class RLogFormatter extends Formatter {
             builder.append(" @ ");
         }
         DateFormat format = DateFormat.getTimeInstance();
-        
+
         builder.append(format.format(cal.getTime()));
         builder.append(") : ");
+        if (level < Level.INFO.intValue())
+            builder.append(ANSI_RESET);
         builder.append(record.getMessage());
 
         Throwable thrown = record.getThrown();
