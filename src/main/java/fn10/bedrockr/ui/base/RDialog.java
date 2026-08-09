@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.utils.RFileOperations;
 
 public class RDialog extends JDialog {
 
@@ -19,8 +20,8 @@ public class RDialog extends JDialog {
     }
 
     public RDialog(Window Parent, int CloseOperation, String WindowTitle, Dimension Size,
-            Boolean IDKWhatToCallItSoItsNameIsWeridNameBit) {
-        super(Parent, WindowTitle + (IDKWhatToCallItSoItsNameIsWeridNameBit ? " - bedrockR" : ""));
+            Boolean AppendName) {
+        super(Parent, WindowTitle + (AppendName ? " - bedrockR " + RFileOperations.VERSION : ""));
         JPanel bottomBar = new JPanel();
         bottomBar.setBackground(Color.GREEN);
         bottomBar.setPreferredSize(new Dimension(Size.width, 40));
