@@ -61,18 +61,16 @@ public class ImageUtilities {
     }
 
     public static Point getScreenCenter(Component target) {
-        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        return new Point(((int) ((size.getWidth() - target.getWidth()) * 0.5)),
-                ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        GraphicsDevice mouseScreen = MouseInfo.getPointerInfo().getDevice();
+        GraphicsConfiguration config = mouseScreen.getDefaultConfiguration();
+        Rectangle bounds = config.getBounds();
+        Dimension size = bounds.getSize();
+        return new Point(((int) ((size.getWidth() - target.getWidth()) /2) + bounds.x),
+                ((int) ((size.getHeight() - target.getHeight()) /2) + bounds.y));
     }
 
-    public static Point getCenter(Component target) {
-        Dimension size = target.getParent().getSize();
-        return new Point(((int) ((size.getWidth() - target.getWidth()) * 0.5)),
-                ((int) ((size.getHeight() - target.getHeight()) * 0.5)));
-    }
-
-    /// totally didn't steal this from Color$brighter()
+    /// totally didn't steal this from {@link Color#brighter()}
     ///<p>also factor is .7 by default
     public static Color brighter(Color colour, float FACTOR) {
         int r = colour.getRed();
