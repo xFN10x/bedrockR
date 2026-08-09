@@ -11,7 +11,10 @@ import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.resource.*;
+import fn10.bedrockr.addons.resource.BlockTextureResource;
+import fn10.bedrockr.addons.resource.ItemTextureResource;
+import fn10.bedrockr.addons.resource.Resource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RElementFileButton;
 import fn10.bedrockr.ui.util.ErrorShower;
@@ -40,7 +43,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -62,16 +64,16 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     private final JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private final JButton AddElement = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/NewElement.png")));
+    private final JButton AddElement = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/NewElement.png")));
     private final JButton AddTextureResource = new JButton(
-            new ImageIcon(getClass().getResource("/addons/workspace/NewResource.png")));
-    private final JButton LaunchMC = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/LaunchMC.png")));
-    private final JButton BuildLaunch = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build&Play.png")));
-    private final JButton BuildElements = new JButton(new ImageIcon(getClass().getResource("/addons/workspace/Build.png")));
+            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/NewResource.png")));
+    private final JButton LaunchMC = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/LaunchMC.png")));
+    private final JButton BuildLaunch = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/Build&Play.png")));
+    private final JButton BuildElements = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/Build.png")));
     private final JButton ReBuildElements = new JButton(
-            new ImageIcon(getClass().getResource("/addons/workspace/ReBuild.png")));
+            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/ReBuild.png")));
     private final JButton HelpWikiButton = new JButton(
-            new ImageIcon(getClass().getResource("/addons/workspace/Help.png")));
+            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/Help.png")));
 
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("File");
@@ -554,28 +556,29 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             new Thread(() -> {
                 if (!alreadyExists && settings.shareElementAndWorkspaceData) {
                     // this is the first time
-                    HttpClient client = HttpClient.newBuilder().build();
-                    final T elementData = settings.shareExtraData ? element.getSerialized() : null;
-                    final ElementMade<T> src = new ElementMade<>(Date.from(Instant.now()),
-                            elementData,
-                            RFileOperations.NUM_VERSION, SWPF.workspaceName());
-                    final String body = gson.toJson(
-                            src);
+                    try (HttpClient client = HttpClient.newBuilder().build()) {
+                        final T elementData = settings.shareExtraData ? element.getSerialized() : null;
+                        final ElementMade<T> src = new ElementMade<>(Date.from(Instant.now()),
+                                elementData,
+                                RFileOperations.NUM_VERSION, SWPF.workspaceName());
+                        final String body = gson.toJson(
+                                src);
 
-                    HttpRequest req = HttpRequest.newBuilder()
-                            .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
-                            .version(HttpClient.Version.HTTP_2)
-                            .POST(BodyPublishers.ofString(
-                                    body))
-                            .setHeader("Content-Type", "application/json")
-                            .build();
-                    RFileOperations.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
-                            body);
-                    try {
+                        HttpRequest req = HttpRequest.newBuilder()
+                                .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
+                                .version(HttpClient.Version.HTTP_2)
+                                .POST(BodyPublishers.ofString(
+                                        body))
+                                .setHeader("Content-Type", "application/json")
+                                .build();
+                        RFileOperations.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
+                                body);
+
                         final HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
                         if (resp.statusCode() != 200) {
                             RFileOperations.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
                         }
+                        
                     } catch (IOException | InterruptedException e) {
                         RLogUtils.exception("Failed to send data to API.", e);
                     }
@@ -666,10 +669,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     });
                 }).start();
             } else {
-
+                throw new RuntimeException("Refused to open workspace.");
             }
         } catch (WorkspaceResources.WorkspaceUnsupportedException e) {
             ErrorShower.exception(doingThis, "This workspace format is not supported on this version of bedrockR.", e);
+        } catch (RuntimeException e) {
+            ErrorShower.exception(doingThis, e);
         }
     }
 }

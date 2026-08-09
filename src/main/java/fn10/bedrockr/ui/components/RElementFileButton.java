@@ -28,17 +28,17 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
     protected RWorkspace wksp;
 
     public RElementFileButton(RWorkspace Workspace, ElementFile<?> File) {
-        Color clr = (File.getDraft() ? Color.gray : BedrockrDark.BEDROCKR_GREEN);
+        Boolean draft = File.getDraft();
+        Color clr = (draft ? Color.gray : BedrockrDark.BEDROCKR_GREEN);
         super(clr);
 
         this.file = File;
         this.wksp = Workspace;
         this.setName("RElementFile");
 
-        Name.setText(File.getElementName());
+        Name.setText(File.getElementName() + (draft ? " (DRAFT)" : ""));
         Desc.setText(File.getDescription());
         if (clr != BedrockrDark.BEDROCKR_GREEN) {
-            Name.setText(File.getElementName());
             Name.setForeground(clr.brighter());
             Desc.setForeground(clr.brighter());
             this.setBackground(clr.darker().darker());

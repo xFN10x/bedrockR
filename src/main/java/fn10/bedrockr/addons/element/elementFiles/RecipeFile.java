@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fn10.bedrockr.addons.element.FieldFilters;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.RAnnotation;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Recipe;
@@ -32,8 +34,9 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
  * https://wiki.bedrock.dev/loot/recipes
  */
 public class RecipeFile extends ElementFile<SourceRecipeElement> {
-    // dont add order anno cause this doesnt use auto
+
     @HelpMessage("The ID of the recipe. Only used internally, and for debugging.")
+    @RAnnotation.FieldDetails(displayName = "Recipe ID", Optional = false, Filter = FieldFilters.IDStringFilter.class)
     public String RecipeID;
 
     @HelpMessage("The group that the recipe is in. This field doesn't have any known effects.")

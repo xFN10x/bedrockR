@@ -1,49 +1,30 @@
 package fn10.bedrockr.ui.components;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Window;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Vector;
-
-import javax.naming.NameNotFoundException;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.SpringLayout;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import fn10.bedrockr.ui.util.ErrorShower;
-import fn10.bedrockr.ui.util.ImageUtilities;
-import fn10.bedrockr.utils.RFileOperations;
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.formdev.flatlaf.ui.FlatLineBorder;
-
-import fn10.bedrockr.addons.mcjson.behav.Recipe;
-import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
+import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.element.ValidatableValue;
-import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
-import fn10.bedrockr.ui.util.WrongItemValueTypeException;
+import fn10.bedrockr.addons.mcjson.behav.Recipe;
+import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
 import fn10.bedrockr.ui.RBlockSelector;
 import fn10.bedrockr.ui.RItemSelector;
+import fn10.bedrockr.ui.laf.BedrockrDark;
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.ui.util.WrongItemValueTypeException;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import org.apache.commons.lang3.ArrayUtils;
+
+import javax.naming.NameNotFoundException;
+import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -76,7 +57,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             setLayout(lay);
             setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY));
 
-            RemoveButton.addActionListener(act -> {
+            RemoveButton.addActionListener(_ -> {
                 parent.remove(this);
                 parent.revalidate();
                 parent.repaint();
@@ -116,7 +97,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
          * <p>
          * value is the item id
          */
-        public Map<String, String> key = new HashMap<String, String>();
+        public Map<String, String> key = new HashMap<>();
         public String[] pattern;
 
         public ShapedOutput() {
@@ -134,7 +115,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
     private static final Dimension SIZE = new Dimension(200, 200);
     private static final Dimension SIZE_SINGLE = new Dimension(69, 69);
-    private static final ImageIcon bg = new ImageIcon(RItemValue.class.getResource("/ui/CraftingGrid.png"));
+    private static final ImageIcon bg = new ImageIcon(RFileOperations.readAllOfResource("/ui/CraftingGrid.png"));
 
     public final JLabel Background = new JLabel(bg);
 
@@ -149,13 +130,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public final JScrollPane ListScroll = new JScrollPane(ListInnerScroll, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     public final JButton ListAddButton = new JButton(
-            new ImageIcon(getClass().getResource("/addons/workspace/New.png")));
+            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
 
-    public final Vector<JButton> buttons = new Vector<JButton>(9);
+    public final Vector<JButton> buttons = new Vector<>(9);
 
     public static ReturnItemInfo copied = null;
     private final boolean needsItems;
     private final Type currentType;
+    private final String name;
 
     public void addListElements(String workspace, ReturnItemInfo... item) throws WrongItemValueTypeException {
         if (currentType != Type.ListOfItems) {
@@ -176,7 +158,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             throw new WrongItemValueTypeException("Can't get list elements from this type!", Type.ListOfItems,
                     currentType);
         }
-        ArrayList<ListElement> building = new ArrayList<ListElement>();
+        ArrayList<ListElement> building = new ArrayList<>();
         for (Component comp : ListInnerScroll.getComponents()) {
             if (comp instanceof ListElement) {
                 building.add((ListElement) comp);
@@ -184,7 +166,14 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
         return building;
     }
-
+    
+    public Item getItem() throws WrongItemValueTypeException {
+        ArrayList<Item> items = getItems();
+        if (items.isEmpty()) return null;
+        else 
+            return items.getFirst();
+    }
+    
     public ArrayList<Item> getItems() throws WrongItemValueTypeException {
         ArrayList<Item> building = new ArrayList<>();
         if (currentType == Type.ListOfItems || currentType == Type.ListOfBlocks) {
@@ -229,12 +218,12 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     public void setItem(ReturnItemInfo info) {
-            try {
-                setButtonToItem(0, info);
-            } catch (WrongItemValueTypeException e) {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-            }
+        try {
+            setButtonToItem(0, info);
+        } catch (WrongItemValueTypeException e) {
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
+    }
 
     public void setButtonToItem(JButton button, ReturnItemInfo item) throws WrongItemValueTypeException {
         if (item == null)
@@ -287,7 +276,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                         item = ReturnItemInfo.getItemById(
                                 value.key.get(itemString), workspace, ImageUtilities.ImgHandler);
                     } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
-                        ErrorShower.exception(parent,e);
+                        ErrorShower.exception(parent, e);
                         continue;
                     }
                     setButtonToItem((i * 3) + j, item);
@@ -296,15 +285,11 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     public ShapedOutput getShapedRecipe() throws WrongItemValueTypeException {
-        return getShapedRecipe(true);
-    }
-
-    public ShapedOutput getShapedRecipe(boolean trim) throws WrongItemValueTypeException {
         if (currentType != Type.CraftingTable)
             throw new WrongItemValueTypeException("Can't get shaped recipe from this item value!", Type.CraftingTable,
                     currentType);
         ShapedOutput output = new ShapedOutput();
-        String[] patternKeys = new String[] {
+        String[] patternKeys = new String[]{
                 "A",
                 "B",
                 "C",
@@ -316,27 +301,24 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 "I"
         };
         int currentKey = 0;
-        /**
-         * key is prefix:id
-         * 
-         * value is the letter
-         */
-        HashMap<String, String> patternKey = new HashMap<String, String>();
 
-        List<String> patternRows = new ArrayList<String>();
+        //key is prefix:id, value is the letter
+        HashMap<String, String> patternKey = new HashMap<>();
+
+        List<String> patternRows = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) { // go for each vertical row
             StringBuilder string = new StringBuilder();
             for (int j = 0; j < 3; j++) { // go for the 3 buttons to make the string
                 JButton button = buttons.get((i * 3) + j); // times the vertical row by 3 to get the buttons (e.g., row
-                                                           // 0, button 0 is button 1, row 2 gbutton 0 is 7.)
+                // 0, button 0 is button 1, row 2 gbutton 0 is 7.)
                 if (button.getName().isBlank()) {
                     string.append(' ');
                     continue;
                 }
                 ReturnItemInfo info = gson.fromJson(button.getName(), ReturnItemInfo.class);
-                if (!patternKey.containsKey(info.Prefix + ":" + info.Id)) { // if this item doesnt already has a pattern
-                                                                            // key
+                if (!patternKey.containsKey(info.Prefix + ":" + info.Id)) { // if this item doesn't already has a pattern
+                    // key
                     patternKey.put(info.Prefix + ":" + info.Id, patternKeys[currentKey]);
                     currentKey++;
                 }
@@ -348,27 +330,27 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 patternRows.add(str);
             }
         }
-        if (patternRows.size() >= 3) { // if there are 3 rows
-            if (!patternRows.get(0).isBlank() && !patternRows.get(2).isBlank()) {
-                // if row 1 and 3 have something in it, dont get rid of middle
-            } else {
-                // if one has nothing, get rid of it
-                patternRows.remove(1);
-            }
-        } else if (patternRows.size() == 2) { // if the last, or the first is gone, then get rid of all of the blank
-                                              // ones (idk which one is the last index 1; 0, or 1)
-            ArrayList<String> building = new ArrayList<String>();
-            for (String string : patternRows) {
-                if (!string.isBlank())
-                    building.add(string);
-            }
-            patternRows = building;
-        }
+
+//        if (patternRows.size() >= 3) { // if there are 3 rows
+//            if (patternRows.get(0).isBlank() || patternRows.get(2).isBlank()) {
+//                // if one has nothing, get rid of it
+//                patternRows.remove(1);
+//            }
+//                // if row 1 and 3 have something in it, don't get rid of middle
+//        } else if (patternRows.size() == 2) { // if the last, or the first is gone, then get rid of all of the blank
+//                                              // ones (idk which one is the last index 1; 0, or 1)
+//            ArrayList<String> building = new ArrayList<>();
+//            for (String string : patternRows) {
+//                if (!string.isBlank())
+//                    building.add(string);
+//            }
+//            patternRows = building;
+//        }
 
         for (Entry<String, String> set : patternKey.entrySet()) {
             output.key.put(set.getValue(), set.getKey());
         }
-        output.pattern = patternRows.toArray(new String[] {});
+        output.pattern = patternRows.toArray(new String[]{});
         return output;
     }
 
@@ -381,8 +363,12 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     public RItemValue(String WorkspaceName, Type type, boolean needsToHaveItems) {
-        super();
+        this("Unnamed Item Selector", WorkspaceName, type, needsToHaveItems);
+    }
 
+    public RItemValue(String name, String WorkspaceName, Type type, boolean needsToHaveItems) {
+        super();
+        this.name = name;
         this.currentType = type;
         this.needsItems = needsToHaveItems;
         setLayout(Layout);
@@ -394,7 +380,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                 ListScroll.setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.GRAY.darker()));
                 ListInnerScroll.setLayout(ListInnerLayout);
 
-                ListAddButton.addActionListener(ac -> {
+                ListAddButton.addActionListener(_ -> {
                     ListInnerScroll.add(new ListElement(ListInnerScroll, WorkspaceName,
                             currentType == Type.ListOfBlocks));
                     ListInnerScroll.revalidate();
@@ -474,7 +460,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     });
 
                     paste.setEnabled(copied != null);
-                    paste.addActionListener(ac -> {
+                    paste.addActionListener(_ -> {
                         if (copied != null) {
                             try {
                                 setButtonToItem(building, copied);
@@ -483,13 +469,13 @@ public class RItemValue extends JPanel implements ValidatableValue {
                             }
                         }
                     });
-                    copy.addActionListener(ac -> {
+                    copy.addActionListener(_ -> {
                         copied = gson.fromJson(building.getName(), ReturnItemInfo.class);
                         paste.setEnabled(copied != null);
                     });
 
                     JMenuItem remove = buttonPopup.add("Remove");
-                    remove.addActionListener(ac -> {
+                    remove.addActionListener(_ -> {
                         building.setIcon(null);
                         building.setText("");
                         building.setToolTipText("");
@@ -500,7 +486,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
                     building.setComponentPopupMenu(buttonPopup);
                     building.setMargin(new Insets(1, 1, 1, 1));
-                    building.addActionListener(ac -> {
+                    building.addActionListener(_ -> {
                         try {
                             ReturnItemInfo itemInfo;
                             if (currentType == Type.SingleBlock)
@@ -516,7 +502,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     });
                     ButtonGrid.add(building);
                 }
-                ButtonGrid.setBackground(new Color(76, 255, 0));
+                ButtonGrid.setBackground(BedrockrDark.BEDROCKR_GREEN);
 
                 Layout.putConstraint(SpringLayout.EAST, Background, 0, SpringLayout.EAST, this);
                 Layout.putConstraint(SpringLayout.WEST, Background, 0, SpringLayout.WEST, this);
@@ -541,7 +527,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
         switch (currentType) {
             case Type.ListOfBlocks:
             case Type.ListOfItems:
-                if (needsItems) {
+                if (needsItems && strict) {
                     try {
                         if (getListElements().isEmpty())
                             return false;
@@ -562,8 +548,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
             case Type.SingleBlock:
             case Type.CraftingTable:
             default:
-                if (strict) {
-                    if (needsItems) {
+                    if (needsItems && strict) {
                         try {
                             return !getItems().isEmpty();
                         } catch (WrongItemValueTypeException e) {
@@ -573,17 +558,10 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     } else {
                         return true;
                     }
-                } else {
-                    return true;
-                }
         }
         return true;
     }
 
-    @Override
-    public boolean valid() {
-        return valid(true);
-    }
 
     @Override
     public String getProblemMessage() {
@@ -591,7 +569,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
     }
 
     @Override
-    public String getName() {
-        return "Item Selector";
+    public String getValueName() {
+        return name;
     }
 }
