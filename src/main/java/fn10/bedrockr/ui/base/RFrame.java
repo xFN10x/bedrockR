@@ -3,8 +3,11 @@ package fn10.bedrockr.ui.base;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.utils.RLogUtils;
+import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,11 +27,11 @@ public class RFrame extends JFrame {
 
     public static final JLabel verText = new JLabel(RFileOperations.VERSION);
 
-    public final JButton websiteButton = new JButton(new ImageIcon(RFrame.class.getResource("/website.png")));
+    public final JButton websiteButton = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/website.png")));
     public final JButton ghButton = new JButton(
-            ImageUtilities.ResizeIcon(new ImageIcon(RFrame.class.getResource("/gh.png")), 32, 32));
+            ImageUtilities.ResizeIcon(new ImageIcon(RFileOperations.readAllOfResource("/gh.png")), 32, 32));
     public final JButton ftButton = new JButton(
-            ImageUtilities.ResizeIcon(new ImageIcon(RFrame.class.getResource("/ft.png")), 32, 32));
+            ImageUtilities.ResizeIcon(new ImageIcon(RFileOperations.readAllOfResource("/gh.png")), 32, 32));
 
     public final JLabel titleImg = new JLabel(ImageUtilities
             .ResizeImageByURL(RFrame.class.getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH,
@@ -39,7 +42,7 @@ public class RFrame extends JFrame {
     }
 
     public RFrame(int CloseOperation, String WindowTitle, Dimension Size, boolean Resizeable, boolean hasBottomBar) {
-        super(WindowTitle + " - bedrockR Alpha");
+        super(WindowTitle + " - bedrockR " + RFileOperations.VERSION);
 
         setIconImage(Launcher.ICON);
 
@@ -81,29 +84,9 @@ public class RFrame extends JFrame {
         ghButton.setToolTipText("bedrockR's Github Repository");
         ftButton.setToolTipText("bedrockR's Flavourtown Page");
 
-        websiteButton.addActionListener(e -> {
-            try {
-                Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev"));
-            } catch (IOException | URISyntaxException e1) {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            }
-
-        });
-        ghButton.addActionListener(e -> {
-            try {
-                Desktop.getDesktop().browse(new URI("https://github.com/xFN10x/bedrockR"));
-            } catch (IOException | URISyntaxException e1) {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            }
-        });
-        ftButton.addActionListener(e -> {
-            try {
-                Desktop.getDesktop().browse(new URI("https://flavortown.hackclub.com/projects/3844"));
-            } catch (IOException | URISyntaxException e1) {
-
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
-            }
-        });
+        websiteButton.addActionListener(openLink("https://bedrockr.xplate.dev"));
+        ghButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR"));
+        ftButton.addActionListener(openLink("https://flavortown.hackclub.com/projects/3844"));
 
         websiteButton.setBorder(new LineBorder(Color.green.darker(), 3));
         ghButton.setBorder(new LineBorder(Color.green.darker(), 3));
@@ -127,5 +110,15 @@ public class RFrame extends JFrame {
 
         pack();
         setLocation(ImageUtilities.getScreenCenter(this));
+    }
+
+    private static @NonNull ActionListener openLink(String url) {
+        return _ -> {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (Exception e1) {
+                RLogUtils.warnException(e1);
+            }
+        };
     }
 }
