@@ -37,7 +37,7 @@ public class RHelpButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(this,
                     getMessage(),
                     getTitle(), JOptionPane.INFORMATION_MESSAGE);
 
