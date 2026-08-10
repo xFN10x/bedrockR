@@ -61,14 +61,12 @@ public class RFileOperations {
 
     public static void init() {
         SettingsFile settings = SettingsFile.load();
-        COMMOJANG = COMMOJANG;
+        COMMOJANG = settings.comMojangPath;
         ReturnItemInfo.downloadVanillaItems();
         ReturnItemInfo.downloadVanillaBlocks();
     }
 
-    /**
-     * taken from https://stackoverflow.com/a/31976060
-     */
+    /// taken from [this](https://stackoverflow.com/a/31976060)
     private static final char[] ILLEGAL_CHARACTERS = {
             '<',
             '>',
@@ -156,13 +154,17 @@ public class RFileOperations {
     }
 
     public static byte[] readAllOfResource(String path) {
-        try (InputStream stream = RFileOperations.class.getResourceAsStream(path)) {
+        try (InputStream stream = streamAllOfResource(path)) {
             if (stream == null)
                 return new byte[0];
             return stream.readAllBytes();
         } catch (IOException e) {
             return new byte[0];
         }
+    }
+
+    public static InputStream streamAllOfResource(String path) {
+        return RFileOperations.class.getResourceAsStream(path);
     }
 
     /**
@@ -259,7 +261,7 @@ public class RFileOperations {
         }
 
         if (serilized.Format < 2) {
-            LOG.info("Can't open workspace, format is older.");
+            LOG.warning("Can't open workspace, format is older.");
             return false;
         }
         // update version things
@@ -489,41 +491,34 @@ public class RFileOperations {
                                                        WorkspaceFile wpf, Byte[] addonIcon) throws IOException {
 
         String[] wsFolders = {
-                File.separator + "elements" + File.separator,
-                File.separator + "resources" + File.separator
+                "elements",
+                "resources"
         };
 
-        File base = getBaseDirectory();
-
-        File wsFolder = new File(base.getAbsolutePath() + File.separator + "workspace" + File.separator
-                + wpf.WorkspaceName + File.separator);
+        Path base = getBaseDirectory().toPath();
+        
+        File wsFolder = base.resolve("workspace", wpf.WorkspaceName).toFile();
 
         if (wsFolder.exists()) { // throw if folder is already here
-            IOException e = new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
-            throw e;
+            throw new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
         } else {
-            File trying;
             try { // try making dirs
 
-                trying = wsFolder;
 
                 Files.createDirectories(wsFolder.toPath());
 
                 for (String string : wsFolders) {
-                    trying = new File(wsFolder.getAbsolutePath() + File.separator + string);
-                    Files.createDirectories(trying.toPath());
+                    Files.createDirectories(wsFolder.toPath().resolve(string));
                 }
 
                 SourceWorkspaceFile srcWPF = new SourceWorkspaceFile(wpf);
                 srcWPF.saveJSONFile(wpf.WorkspaceName);
 
-                File srcIcon = java.nio.file.Paths.get(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension)
+                File srcIcon = Path.of(wsFolder.getAbsolutePath(), "icon." + wpf.IconExtension)
                         .toFile();
-                if (!srcIcon.exists())
-                    if (!srcIcon.createNewFile())
-                        throw new IOException("Failed to create source addon icon file");
+                if (!srcIcon.exists() && !srcIcon.createNewFile())
+                    throw new IOException("Failed to create source addon icon file");
 
-                trying = srcIcon;
 
                 Files.write(srcIcon.toPath(), ArrayUtils.toPrimitive(addonIcon), StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING);
@@ -579,7 +574,8 @@ public class RFileOperations {
                     .listFiles())) {
                 ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
-                String jsonString = new String(Files.readAllBytes(file.toPath()));
+                if (source == null) continue;
+                String jsonString = Files.readString(file.toPath());
                 JsonObject element = JsonParser.parseString(jsonString).getAsJsonObject();
                 SourcelessElementFile sef = SourcelessElementFile.upToDate(workspace, element, source.getSerilizedClass());
                 if (sef instanceof ElementFile<?> ef) {
