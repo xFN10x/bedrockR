@@ -15,13 +15,11 @@ import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.RItemValue;
 import fn10.bedrockr.ui.components.RItemValue.ShapedOutput;
 import fn10.bedrockr.ui.components.VerticalLabel;
-import fn10.bedrockr.ui.util.ErrorShower;
-import fn10.bedrockr.ui.util.ImageUtilities;
-import fn10.bedrockr.ui.util.WrapLayout;
-import fn10.bedrockr.ui.util.WrongItemValueTypeException;
+import fn10.bedrockr.ui.util.*;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
@@ -301,16 +299,14 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 RecipeFile serialized = ((SourceRecipeElement) src).getSerialized();
                 RElementEditingScreen frame = new RElementEditingScreen(Parent, "Recipe", src, eFileClass,
                         parent2);
+                frame.setSize(850,450);
 
                 SpringLayout PatternLay = new SpringLayout();
-                SpringLayout ExtrasLay = new SpringLayout();
                 RElementValue<?, ?> ElementName = RElementValue.ofField(eFileClass.getField("ElementName"), src.getSerialized(), Workspace);
                 RElementValue<?, ?> RecipeID = RElementValue.ofField(eFileClass.getField("RecipeID"), src.getSerialized(), Workspace);
 
                 JPanel patternPane = frame.getScrollPane("Pattern");
-                JPanel extrasPane = frame.getScrollPane("Unlock & Extra");
                 patternPane.setLayout(PatternLay);
-                extrasPane.setLayout(ExtrasLay);
                 RItemValue grid = new RItemValue("Pattern", Workspace, RItemValue.Type.CraftingTable, true);
 
                 switch (serialized.recipeType) {
@@ -345,7 +341,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             .fromUnlockCondition(serialized.UnlockConditions, Workspace, ImageUtilities.ImgHandler).toArray(new ReturnItemInfo[0]));
                 }
 
-                RItemValue extraResults = new RItemValue("Extra Output", Workspace, RItemValue.Type.ListOfItems, false);
+                RItemValue extraResults = new RItemValue("Extra Results", Workspace, RItemValue.Type.ListOfItems, false);
                 if (serialized.ExtraResults != null) {
                     extraResults.addListElements(Workspace,
                             ReturnItemInfo.fromRecipeItem(serialized.ExtraResults, Workspace, ImageUtilities.ImgHandler)
@@ -382,31 +378,61 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 PatternLay.putConstraint(SpringLayout.NORTH, TypeDropdown, 2, SpringLayout.SOUTH, TypeDropdownText);
                 PatternLay.putConstraint(SpringLayout.SOUTH, TypeDropdown, -20, SpringLayout.NORTH, grid);
 
+                JLabel outputLabel = new JLabel("Result");
+                
                 PatternLay.putConstraint(SpringLayout.VERTICAL_CENTER, arrow, 0, SpringLayout.VERTICAL_CENTER, patternPane);
-                PatternLay.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, 30, SpringLayout.HORIZONTAL_CENTER, patternPane);
+                PatternLay.putConstraint(SpringLayout.HORIZONTAL_CENTER, arrow, 63, SpringLayout.HORIZONTAL_CENTER, patternPane);
 
                 PatternLay.putConstraint(SpringLayout.VERTICAL_CENTER, grid, 0, SpringLayout.VERTICAL_CENTER, patternPane);
                 PatternLay.putConstraint(SpringLayout.EAST, grid, -30, SpringLayout.WEST, arrow);
 
+                
+                PatternLay.putConstraint(SpringLayout.WEST, outputLabel, 0, SpringLayout.WEST, outputSlot);
+                PatternLay.putConstraint(SpringLayout.SOUTH, outputLabel, -2, SpringLayout.NORTH, outputSlot);
+                
                 PatternLay.putConstraint(SpringLayout.VERTICAL_CENTER, outputSlot, 0, SpringLayout.VERTICAL_CENTER, arrow);
-                PatternLay.putConstraint(SpringLayout.WEST, outputSlot, 50, SpringLayout.EAST, arrow);
+                PatternLay.putConstraint(SpringLayout.WEST, outputSlot, 30, SpringLayout.EAST, arrow);
 
                 VerticalLabel extraResultsLabel = new VerticalLabel("Extra Results");
-                VerticalLabel unlocksLabel = new VerticalLabel("Unlock Items");
+                extraResultsLabel.setFont(RFonts.RegMinecraftFont.deriveFont(12f));
+                VerticalLabel unlockItemsLabel = new VerticalLabel("Unlock Items", true);
 
-                PatternLay.putConstraint(SpringLayout.NORTH, extraResultsLabel, 10, SpringLayout.NORTH, patternPane);
-                PatternLay.putConstraint(SpringLayout.EAST, extraResultsLabel, -5, SpringLayout.WEST, extraResults);
+                RHelpButton extraResultsHelp = new RHelpButton("Extra items you get when crafting this recipe.","Help for: Extra Results") {
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        ((Graphics2D) g).rotate(Math.toRadians(-90), getWidth()/2, getHeight()/2);
+                        super.paintComponent(g);
+                    }
+                };
+                RHelpButton unlockItemsHelp = new RHelpButton("Items that let the player unlock this item. By default, the output item will unlock this recipe.","Help for: Unlock Items") {
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        ((Graphics2D) g).rotate(Math.toRadians(90), getWidth()/2, getHeight()/2);
+                        super.paintComponent(g);
+                    }
+                };
+
+                PatternLay.putConstraint(SpringLayout.NORTH, extraResultsLabel, 85, SpringLayout.NORTH, patternPane);
+                PatternLay.putConstraint(SpringLayout.EAST, extraResultsLabel, -8, SpringLayout.WEST, extraResults);
+
+                PatternLay.putConstraint(SpringLayout.EAST, extraResultsHelp, -1, SpringLayout.WEST, extraResults);
+                PatternLay.putConstraint(SpringLayout.NORTH, extraResultsHelp, 2, SpringLayout.SOUTH, extraResultsLabel);
                 
                 PatternLay.putConstraint(SpringLayout.EAST, extraResults, -5, SpringLayout.EAST, patternPane);
                 PatternLay.putConstraint(SpringLayout.WEST, extraResults, 30, SpringLayout.EAST, outputSlot);
                 PatternLay.putConstraint(SpringLayout.SOUTH, extraResults, -5, SpringLayout.NORTH, lowerFields);
                 PatternLay.putConstraint(SpringLayout.NORTH, extraResults, 5, SpringLayout.NORTH, patternPane);
                 
-                ExtrasLay.putConstraint(SpringLayout.EAST, unlockItems, 0, SpringLayout.EAST, outputSlot);
-                ExtrasLay.putConstraint(SpringLayout.WEST, unlockItems, 0, SpringLayout.WEST, arrow);
-                ExtrasLay.putConstraint(SpringLayout.SOUTH, unlockItems, -5, SpringLayout.NORTH, lowerFields);
-                ExtrasLay.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.SOUTH, outputSlot);
+                PatternLay.putConstraint(SpringLayout.SOUTH, unlockItemsLabel, -65, SpringLayout.NORTH, lowerFields);
+                PatternLay.putConstraint(SpringLayout.WEST, unlockItemsLabel, -65, SpringLayout.EAST, unlockItems);
 
+                PatternLay.putConstraint(SpringLayout.WEST, unlockItemsHelp, 1, SpringLayout.EAST, unlockItems);
+                PatternLay.putConstraint(SpringLayout.SOUTH, unlockItemsHelp, -10, SpringLayout.NORTH, unlockItemsLabel);
+                
+                PatternLay.putConstraint(SpringLayout.WEST, unlockItems, 0, SpringLayout.WEST, patternPane);
+                PatternLay.putConstraint(SpringLayout.EAST, unlockItems, -30, SpringLayout.WEST, grid);
+                PatternLay.putConstraint(SpringLayout.SOUTH, unlockItems, -5, SpringLayout.NORTH, lowerFields);
+                PatternLay.putConstraint(SpringLayout.NORTH, unlockItems, 5, SpringLayout.NORTH, patternPane);
 
                 frame.setCustomCreateFunction((Sindow, Listener, isDraft) -> {
                     try {
@@ -451,14 +477,21 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 }).addValidations(ElementName, RecipeID, grid, outputSlot, unlockItems, extraResults);
 
                 patternPane.add(grid);
+
+                patternPane.add(outputLabel);
                 patternPane.add(outputSlot);
+                
                 patternPane.add(arrow);
                 patternPane.add(lowerFields);
-                
-                extrasPane.add(unlockItems);
+
+                patternPane.add(unlockItems);
+                patternPane.add(unlockItemsLabel);
+                patternPane.add(unlockItemsHelp);
 
                 patternPane.add(extraResults);
                 patternPane.add(extraResultsLabel);
+                patternPane.add(extraResultsHelp);
+                
                 patternPane.add(TypeDropdown);
                 patternPane.add(TypeDropdownText);
 
