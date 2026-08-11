@@ -185,12 +185,13 @@ public class RAddon extends JPanel implements MouseListener {
             RWorkspace.openWorkspace(ancestor, WPF.getNewSource());
     }
     
-    private int currentSize = 90;
-    private int targetSize = 90;
+    private float currentSize = 0;
+    private float targetSize = 90;
     private final Timer tweenTimer = new Timer(16, _ -> {
 
-        currentSize = (int) lerp(currentSize, targetSize, 0.2f);
-        setPreferredSize(new Dimension(currentSize, currentSize));
+        currentSize = lerp(currentSize, targetSize, 0.2f);
+        int intsize = Math.round(currentSize);
+        setPreferredSize(new Dimension(intsize, intsize));
         revalidate();
         repaint();
     });
