@@ -44,6 +44,16 @@ public class BlockTexture {
         this.westTex = west;
     }
 
+    public BlockTexture(ResourcePointer<BlockTextureResource> top, ResourcePointer<BlockTextureResource> bottom, ResourcePointer<BlockTextureResource> north, ResourcePointer<BlockTextureResource> south, ResourcePointer<BlockTextureResource> east, ResourcePointer<BlockTextureResource> west, int mode) {
+        this.mode = mode;
+        this.upTex = top;
+        this.downTex = bottom;
+        this.northTex = north;
+        this.southTex = south;
+        this.eastTex = east;
+        this.westTex = west;
+    }
+
     public int getMode() {
         return mode;
     }

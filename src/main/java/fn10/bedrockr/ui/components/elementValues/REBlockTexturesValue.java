@@ -7,6 +7,7 @@ import fn10.bedrockr.addons.resource.BlockTextureResource;
 import fn10.bedrockr.addons.resource.ResourcePointer;
 import fn10.bedrockr.ui.base.RElementValue;
 import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RFileOperations;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -156,16 +157,60 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
 
     @Override
     public void setValueInternal(BlockTexture value) {
+        try {
+            int mode = value.getMode();
+            BlockTexturesModeDropdown.setSelectedIndex(mode);
 
+            BlockTexturesTop.setValue(value.upTex);
+            BlockTexturesBottom.setValue(value.downTex);
+            BlockTexturesNorth.setValue(value.northTex);
+            BlockTexturesSouth.setValue(value.southTex);
+            BlockTexturesEast.setValue(value.eastTex);
+            BlockTexturesWest.setValue(value.westTex);
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     protected BlockTexture getValueInternal(boolean shouldLog) {
-        return null;
+        return new BlockTexture(
+                BlockTexturesTop.getValue(shouldLog),
+                BlockTexturesBottom.getValue(shouldLog),
+                BlockTexturesNorth.getValue(shouldLog),
+                BlockTexturesSouth.getValue(shouldLog),
+                BlockTexturesEast.getValue(shouldLog),
+                BlockTexturesWest.getValue(shouldLog),
+                BlockTexturesModeDropdown.getSelectedIndex()
+        );
     }
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        return false;
+        var log = RFileOperations.LOG;
+        return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
+            case 0 -> {
+                if (log0)
+                    log.info(Target + ": Block texture mode is single...");
+                yield problem(BlockTexturesTop.valid(strict), "Texture isn't valid, so this fails");
+            }
+            case 1 -> {
+                if (log0)
+                    log.info(Target + ": Block texture mode is pillar mode...");
+                yield problem(BlockTexturesTop.valid(strict) && BlockTexturesBottom.valid(strict) && BlockTexturesNorth.valid(strict), "Texture isn't valid, so this fails");
+            }
+            default -> {
+                if (log0)
+                    log.info(Target + ": Block texture mode is all side mode...");
+                yield problem(BlockTexturesTop.valid(strict)
+                        && BlockTexturesBottom.valid(strict)
+                        && BlockTexturesNorth.valid(strict)
+                        && BlockTexturesSouth.valid(strict)
+                        && BlockTexturesEast.valid(strict)
+                        && BlockTexturesWest.valid(strict), "Textures aren't valid, so this fails");
+            }
+        };
     }
 }

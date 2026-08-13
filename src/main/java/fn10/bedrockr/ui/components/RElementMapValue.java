@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -43,6 +42,7 @@ public class RElementMapValue extends JPanel {
     {
         HelpButton.putClientProperty("JButton.buttonType", "help");
     }
+    protected final JButton removeButton = new JButton("-");
 
     protected final JLabel DisplayNameLabel = new JLabel();
     protected final JLabel IDNameLabel = new JLabel();
@@ -59,11 +59,11 @@ public class RElementMapValue extends JPanel {
         this.rMapElement = RME;
         this.Ancestor = Ancestor;
 
-        DisplayNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 16 - (RME.DisplayName.length() / 10)));
+        DisplayNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 16 - ((float) RME.DisplayName.length() / 10)));
         DisplayNameLabel.setText(RME.DisplayName);
 
         IDNameLabel.setText(RME.ID);
-        IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - (RME.DisplayName.length() / 10)));
+        IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - ((float) RME.DisplayName.length() / 10)));
 
         // check for custom ones first
         if (RME instanceof RStringDropdownMapElement) {
@@ -128,7 +128,7 @@ public class RElementMapValue extends JPanel {
             InputField = new JSpinner(new SpinnerNumberModel(0.1f, 0f, 0.75f, 0.01f));
         } else if (RME.Type == Humidity.class) {
             String[] ars = {"true", "false"};
-            InputField = new JComboBox<String>(ars);
+            InputField = new JComboBox<>(ars);
         } else if (RME.Type == MapTints.class) {
             Size.setSize(400, 150);
             InputField = new JPanel();

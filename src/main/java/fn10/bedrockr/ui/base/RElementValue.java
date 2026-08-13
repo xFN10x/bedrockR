@@ -4,6 +4,8 @@ import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
+import fn10.bedrockr.addons.resource.Resource;
+import fn10.bedrockr.addons.resource.ResourcePointer;
 import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.elementValues.*;
 import fn10.bedrockr.utils.RAnnotation;
@@ -24,8 +26,10 @@ import java.awt.event.ItemListener;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -64,7 +68,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //    private RElementValue BlockTexturesWest;
 
     private T initValue;
-    
+
     public boolean Required;
     public String Problem = "Not checked...";
     public boolean Changed = false;
@@ -129,15 +133,20 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, L> RElementValue<T, ?> ofField(@Nullable Field field,
-                                                  @Nonnull Class<T> type,
-                                                  @Nullable SourcelessElementFile TargetFile,
-                                                  @Nullable String WorkspaceName) {
+    public static <T, L, V, R extends Resource> RElementValue<T, ?> ofField(@Nullable Field field,
+                                                                            @Nonnull Class<T> type,
+                                                                            @Nullable SourcelessElementFile TargetFile,
+                                                                            @Nullable String WorkspaceName) {
         FieldDetails anno = null;
-        if (field != null)
+        Type[] typeArgs = null;
+        if (field != null) {
             anno = field.getAnnotation(FieldDetails.class);
-
+            Type genericType = field.getGenericType();
+            if (genericType instanceof ParameterizedType ptype)
+                typeArgs = ptype.getActualTypeArguments();
+        }
         RElementValue<T, ?> returning = null;
+
         if (are(type, String.class)) {
             if (field != null && field.getAnnotation(RAnnotation.StringDropdownField.class) != null) {
                 returning = (RElementValue<T, ?>) new REDropdownStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
@@ -146,8 +155,9 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         } else if (are(type, Path.class)) {
             returning = (RElementValue<T, ?>) new REPathValue(field, ((Class<Path>) type), TargetFile, WorkspaceName, anno);
         } else if (are(type, List.class)) {
-            if ( field != null)
-                returning = (RElementValue<T, ?>) new REListValue<L>(field, (Class<List<L>>) type, ((Class<L>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]),TargetFile, WorkspaceName, anno);
+            if (field != null) {
+                returning = (RElementValue<T, ?>) new REListValue<>(field, (Class<List<L>>) type, ((Class<L>) typeArgs[0]), TargetFile, WorkspaceName, anno);
+            }
         } else if (are(type, Integer.class) || are(type, Float.class)) {
             RAnnotation.NumberRange range = new RAnnotation.NumberRange() {
 
@@ -179,6 +189,14 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             returning = (RElementValue<T, ?>) new RENumberScrollValue(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
         } else if (are(type, BlockTexture.class)) {
             returning = (RElementValue<T, ?>) new REBlockTexturesValue(field, ((Class<BlockTexture>) type), TargetFile, WorkspaceName, anno);
+        } else if (are(type, Boolean.class) || are(type, boolean.class)) {
+            returning = (RElementValue<T, ?>) new REBooleanValue(field, ((Class<Boolean>) type), TargetFile, WorkspaceName, anno);
+        } else if (are(type, Map.class)) {
+            if (typeArgs != null)
+                returning = (RElementValue<T, ?>) new REMapValue<>(((Class<L>) typeArgs[0]), ((Class<V>) typeArgs[1]), field, (Class<Map<L, V>>) type, TargetFile, WorkspaceName, anno);
+        } else if (are(type, ResourcePointer.class)) {
+            if (typeArgs != null)
+                returning = (RElementValue<T, ?>) new REResourceValue<>((Class<R>) typeArgs[0], field, ((Class<ResourcePointer<R>>) type), TargetFile, WorkspaceName, anno);
         }
         if (returning == null)
             returning = empty(field == null ? "" : field.getName(), type);
@@ -279,10 +297,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
             });
         Help.setTitle("Help for: " + DisplayName);
-        Help.setMessage(Target != null ?
-                Target.getAnnotation(HelpMessage.class).value() :
-                "No help message.");
-
+        HelpMessage helpMsg = getAnno(HelpMessage.class);
 
         Name.setText(DisplayName);
 
@@ -313,26 +328,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 //               
 //                
 //               
-//                else if (Boolean.class.isAssignableFrom(InputType) || boolean.class.isAssignableFrom(InputType)) {
-//                    // if
-//                    // bool,
-//                    // its
-//                    // dropdown
-//                    String[] vals = {"true", "false"};
-//                    Input = new JComboBox<>(vals);
-//                    try {
-//                        ((JComboBox<String>) Input).setSelectedItem("false");
-//                    } catch (Exception e) {
-//
-//                        RLogUtils.exception("Exception thrown", e);
-//                        if (!FromEmpty)
-//                            if (TargetFile.getDraft())
-//                                return;
-//                        ErrorShower.showError(parentFrame,
-//                                "Failed to get field (does the passed ElementFile match the ElementSource?)",
-//                                DisplayName, e);
-//                    }
-//                } 
+//                
 //                
 //                else if (Map.class.isAssignableFrom(InputType)) {
 //                    Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -464,10 +460,11 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         if (Optional)
             add(EnableCheckbox);
         if (Target != null) {
-            final HelpMessage anno;
-            anno = getAnno(HelpMessage.class);
-            if (anno != null) {
+            if (helpMsg != null) {
+                Help.setMessage(helpMsg.value());
                 add(Help);
+            } else {
+                Help.setMessage("No help provided.");
             }
             try {
                 setValue((T) Target.get(TargetFile));
@@ -493,146 +490,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     public abstract void setValueInternal(T value);
-//    {
-//        if (value == null) return;
-//        initValue = value;
 
-    /// /        if (value instanceof BlockTexture bt) {
-    /// /            int mode = bt.getMode();
-    /// /            BlockTexturesModeDropdown.setSelectedIndex(mode);
-    /// /            switch (mode) {
-    /// /                case BlockTexture.ALL_FACES_MODE:
-    /// /                    BlockTexturesTop.setValue(bt.upTexID);
-    /// /                    break;
-    /// /                case BlockTexture.PILLAR_MODE:
-    /// /                    BlockTexturesTop.setValue(bt.upTexID);
-    /// /                    BlockTexturesBottom.setValue(bt.downTexID);
-    /// /                    BlockTexturesNorth.setValue(bt.northTexID);
-    /// /                    break;
-    /// /                default:
-    /// /                    BlockTexturesTop.setValue(bt.upTexID);
-    /// /                    BlockTexturesBottom.setValue(bt.downTexID);
-    /// /                    BlockTexturesNorth.setValue(bt.northTexID);
-    /// /                    BlockTexturesSouth.setValue(bt.southTexID);
-    /// /                    BlockTexturesEast.setValue(bt.eastTexID);
-    /// /                    BlockTexturesWest.setValue(bt.westTexID);
-    /// /                    break;
-    /// /            }
-    /// /        } else
-//        if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
-//            var casted = ((JComboBox<String>) Input);
-//            casted.setSelectedItem(value.toString());
-//        } else if (Path.class.isAssignableFrom(InputType)) {
-//            ((JButton) Input).setText(((Path) value).toString());
-//        }
-//        else if (List.class.isAssignableFrom(InputType)) {
-//            try {
-//                Field field;
-//                try { // try to get field
-//                    if (SourceFileClass != null) {
-//                        field = SourceFileClass.getField(Target);
-//                    } else {
-//                        field = null;
-//                    }
-//                } catch (Exception e) {
-//                    return;
-//                }
-//                final Class<?> genericType;
-//                if (!InputType.isArray()) {
-//                    if (field == null) {
-//                        return;
-//                    }
-//                    if (field.getGenericType() instanceof ParameterizedType pt) {
-//                        genericType = (Class<?>) pt.getActualTypeArguments()[0];
-//                    } else
-//                        genericType = null;
-//                    if (genericType == null) {
-//                        throw new NullPointerException("This list doesnt have a type.");
-//                    }
-//                } else {
-//                    genericType = null;
-//                }
-//                final StringDropdownField anno;
-//                if (field != null) {
-//                    anno = field.getAnnotation(StringDropdownField.class);
-//                } else {
-//                    anno = null;
-//                }
-//                for (Object entry : ((List<Object>) value)) {
-//                    RElementValue toAdd = new RElementValue(parentFrame, genericType,
-//                            Filter,
-//                            null, "",
-//                            false, null, WorkspaceName);
-//                    toAdd.setValue(entry);
-//
-//                    if (anno != null) {
-//                        toAdd.remove(toAdd.Input);
-//                        JComboBox<String> newInput = new JComboBox<>(substituteArray(anno.value()));
-//
-//                        toAdd.Lay.putConstraint(SpringLayout.WEST, newInput, 3, SpringLayout.EAST, toAdd.Name);
-//                        toAdd.Lay.putConstraint(SpringLayout.NORTH, newInput, 3, SpringLayout.NORTH, toAdd);
-//                        toAdd.Lay.putConstraint(SpringLayout.SOUTH, newInput, -3, SpringLayout.SOUTH, toAdd);
-//                        toAdd.Lay.putConstraint(SpringLayout.EAST, newInput, -3, SpringLayout.WEST, toAdd.Help);
-//                        toAdd.add(newInput);
-//                        toAdd.Input = newInput;
-//
-//                        if (anno.strict()) {
-//                            newInput.setEditable(false);
-//                        }
-//                        newInput.setSelectedItem(entry);
-//                    }
-//
-//                    JButton removeButton = new JButton("-");
-//
-//                    toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0, SpringLayout.VERTICAL_CENTER,
-//                            toAdd);
-//                    toAdd.Lay.putConstraint(SpringLayout.WEST, toAdd.Input, 3, SpringLayout.EAST, removeButton);
-//
-//                    toAdd.add(removeButton);
-//                    removeButton.addActionListener(ac -> {
-//                        HashMapInnerPane.remove(toAdd);
-//                        HashMapInnerPane.repaint();
-//                        HashMapInnerPane.revalidate();
-//                    });
-//
-//                    HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-//                    HashMapInnerPane.add(toAdd);
-//                }
-//            } catch (Exception e) {
-//                ErrorShower.exception(parentFrame, e);
-//            }
-//        }
-//        else if (Map.class.isAssignableFrom(InputType)) {
-//            try {
-//                for (Map.Entry<Object, Object> entry : ((HashMap<Object, Object>) value).entrySet()) {
-//                    RElementMapValue ToAdd = new RElementMapValue(parentFrame,
-//                            RMapElement.LookupMap.get(entry.getKey().toString()));
-//                    ToAdd.setVal(entry.getValue());
-//
-//                    HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-//                    HashMapInnerPane.add(ToAdd);
-//                }
-//            } catch (Exception e) {
-//                RLogUtils.exception("Exception thrown", e);
-//                ErrorShower.showError(parentFrame, e.getMessage(), e);
-//            }
-//        }
-//       else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType == float.class
-//                || InputType == Float.class) { // int, float
-//            // fn10.bedrockr.Launcher.LOG.info("this is an int, or float, and its
-//            // getting set to a " +
-//            // value.getClass().getSimpleName());
-//            ((JSpinner) Input).setValue(value);
-//        } else if (Input instanceof JTextField) {
-//            ((JTextField) Input).setText(String.valueOf(value));
-//        } else if (Input instanceof JComboBox<?> jcb) // if it's a dropdown
-//        {
-//            jcb.setSelectedItem(value);
-//        } else if (!InputType.isAssignableFrom(value.getClass())) {
-//            throw new ClassNotFoundException("This ElementValue isn't the class of the object. ("
-//                    + InputType.getCanonicalName() + " != " + value.getClass().getCanonicalName() + ")");
-//        }
-//    }
     public T getValue() {
         return getValue(true);
     }
@@ -647,281 +505,13 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     protected abstract T getValueInternal(boolean shouldLog);
-//    {
-//        // fn10.bedrockr.Launcher.LOG.info(InputType.getName());
-//        if (valid(true, log)) {
-//            try {
-//                //if (BlockTexture.class.isAssignableFrom(InputType)) {
 
-    /// /                    return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
-    /// /                        case BlockTexture.ALL_FACES_MODE -> new BlockTexture((UUID) BlockTexturesTop.getValue(log));
-    /// /                        case BlockTexture.PILLAR_MODE -> new BlockTexture(
-    /// /                                (UUID) BlockTexturesTop.getValue(log),
-    /// /                                (UUID) BlockTexturesBottom.getValue(log),
-    /// /                                (UUID) BlockTexturesNorth.getValue(log));
-    /// /                        //perface
-    /// /                        default -> new BlockTexture(
-    /// /                                (UUID) BlockTexturesTop.getValue(log),
-    /// /                                (UUID) BlockTexturesBottom.getValue(log),
-    /// /                                (UUID) BlockTexturesNorth.getValue(log),
-    /// /                                (UUID) BlockTexturesSouth.getValue(log),
-    /// /                                (UUID) BlockTexturesEast.getValue(log),
-    /// /                                (UUID) BlockTexturesWest.getValue(log));
-    /// /                    };
-//                //} else
-//                if (Path.class.isAssignableFrom(InputType)) {
-//                    return Path.of(((JButton) Input).getText());
-//                } else if (Boolean.class.isAssignableFrom(InputType) || InputType.equals(boolean.class)) {
-//                    return (((JComboBox<String>) Input).getSelectedIndex() == 0);
-//                } else if (Map.class.isAssignableFrom(InputType)) {
-//                    HashMap<RMapElement, Object> mapToBuild = new HashMap<RMapElement, Object>();
-//                    for (Component comp : HashMapInnerPane.getComponents()) {
-//                        if (comp instanceof RElementMapValue remv) {
-//                            RElementMapValue mapElement = remv;
-//                            mapToBuild.put(mapElement.rMapElement, mapElement.getKeyAndVal().getValue());
-//                        }
-//                    }
-//                    return mapToBuild;
-//                } else if (List.class.isAssignableFrom(InputType)) {
-//                    List<Object> listToBuild = new ArrayList<Object>();
-//                    for (Component comp : HashMapInnerPane.getComponents()) {
-//                        if (comp instanceof RElementValue rev) {
-//                            listToBuild.add(rev.getValue());
-//                        }
-//                    }
-//                    if (InputType.isArray())
-//                        return listToBuild.toArray();
-//                    else
-//                        return listToBuild;
-//                } else if (UUID.class.isAssignableFrom(InputType)) {
-//                    return UUID.fromString(Input.getName());
-//                } else if (Integer.class.isAssignableFrom(InputType) || InputType.equals(int.class)) { // int
-//                    if (((JSpinner) Input).getValue() instanceof Double doubleVal)
-//                        return doubleVal.intValue();
-//                    else
-//                        return ((JSpinner) Input).getValue();
-//                } else if (float.class.isAssignableFrom(InputType) || Float.class.isAssignableFrom(InputType)) {
-//                    if (((JSpinner) Input).getValue() instanceof Double doubleVal)
-//                        return doubleVal.floatValue();
-//                    else
-//                        return ((JSpinner) Input).getValue();
-//                } else {
-//                    try {
-//                        if (Input instanceof JComboBox<?> jcb) // if its a drop down
-//                        {
-//                            // JOptionPane.showMessageDialog(jcb, jcb.getSelectedItem());
-//                            return jcb.getSelectedItem();
-//                        }
-//
-//                        if (Input instanceof JTextField) {
-//                            String text = ((JTextField) Input).getText();
-//                            if (InputType.equals(Float.class) || InputType.equals(float.class)) { // float
-//                                return Float.parseFloat(text);
-//                            } else if (InputType.equals(String.class)) { // string
-//                                if (Filter != null && !Filter.getValid(text))
-//                                    Problem = "String is not valid.";
-//                                return text;
-//                            } else {
-//                                return null;
-//                            }
-//                        } else {
-//                            // just ignore unsupported fields
-//                            return null;
-//                        }
-//
-//                    } catch (Exception ex) {
-//                        RLogUtils.exception("Exception thrown",
-//                                ex);
-//                        ErrorShower.showError(parentFrame, "There was a problem getting a field.", "Error", ex);
-//                        return null;
-//                    }
-//                }
-//            } catch (IllegalArgumentException
-//                     | SecurityException e) {
-//                RLogUtils.exception("Exception thrown", e);
-//                return null;
-//            }
-//        } else {
-//            RFileOperations.LOG.info("Not valid, not getting");
-//            return null;
-//        }
-//    }
     public boolean valid(boolean strict) {
         return valid(strict, true);
     }
 
     public abstract boolean valid(boolean strict, boolean log0);
-//    {
-//        var log = RFileOperations.LOG;
-//        if (log0)
-//            log.info("================== Checking field " + this.Target + "... ==================");
-//
-//        if (!strict) {
-//            Field field;
-//            try {
-//                field = SourceFileClass.getField(Target);
-//            } catch (Exception e1) {
-//                if (log0)
-//                    log.log(Level.SEVERE, "Exception thrown", e1);
-//                if (log0)
-//                    log.info(Target + ": failed to get field; so it fails");
-//
-//                return false;
-//            }
-//            if (field.getAnnotation(VeryImportant.class) == null) {
-//                if (log0)
-//                    log.info(Target + ": its not important, and drafting; so it passes");
-//
-//                return true; // if its not strict (drafing) and not important (not like ElementName)
-//            }
-//        }
-//
-//        if (!getOptionallyEnabled()) {
-//            if (log0)
-//                log.info(Target + ": Not Enabled, so it passes");
-//            return true;// if its disabled, true, because it wont get written anyways
-//        }
-//
-//        try {
-//            if (BlockTexture.class.isAssignableFrom(InputType)) {
-//                // 0 is one texture
-//                // 1 is log
-//                // 2 is perface
-//                switch (BlockTexturesModeDropdown.getSelectedIndex()) {
-//                    case 0:
-//                        if (log0)
-//                            log.info(Target + ": Block texture mode is single...");
-//                        if (BlockTexturesTop.valid(strict)) {
-//                            if (log0)
-//                                log.info(Target + ": Texture is valid, so this passes");
-//                            return true;
-//                        } else {
-//                            if (log0)
-//                                log.info(Target + ": Texture isn't valid, so this fails");
-//                            return false;
-//                        }
-//                    case 1:
-//                        if (log0)
-//                            log.info(Target + ": Block texture mode is pillar mode...");
-//                        if (BlockTexturesTop.valid(strict) && BlockTexturesBottom.valid(strict) && BlockTexturesNorth.valid(strict)) {
-//                            if (log0)
-//                                log.info(Target + ": Textures are valid, so this passes");
-//                            return true;
-//                        } else {
-//                            if (log0)
-//                                log.info(Target + ": Textures aren't valid, so this fails");
-//                            return false;
-//                        }
-//                    default:
-//                        if (log0)
-//                            log.info(Target + ": Block texture mode is pillar mode...");
-//                        if (BlockTexturesTop.valid(strict)
-//                                && BlockTexturesBottom.valid(strict)
-//                                && BlockTexturesNorth.valid(strict)
-//                                && BlockTexturesSouth.valid(strict)
-//                                && BlockTexturesEast.valid(strict)
-//                                && BlockTexturesWest.valid(strict)) {
-//                            if (log0)
-//                                log.info(Target + ": Textures are valid, so this passes");
-//                            return true;
-//                        } else {
-//                            if (log0)
-//                                log.info(Target + ": Textures aren't valid, so this fails");
-//                            return false;
-//                        }
-//                }
-//            } else if (Path.class.isAssignableFrom(InputType)) {
-//                if (((JButton) Input).getText().equalsIgnoreCase(No_Path_Chosen_Text)) {
-//                    if (log0)
-//                        log.info(Target + ": Path not chosen, so it doesn't pass");
-//                    return false;
-//                } else {
-//                    if (log0)
-//                        log.info(Target + ": Path chosen, so it passes");
-//                    return true;
-//                }
-//            } else if (List.class.isAssignableFrom(InputType)) {
-//                if (log0)
-//                    log.info(Target + ": Arrays cannot be wrong, so it passes");
-//
-//                return true;
-//            } else if (InputType.equals(Boolean.class) || InputType.equals(boolean.class)) {
-//                if (log0)
-//                    log.info(Target + ": Bool cannot be wrong, so it passes");
-//
-//                return true;
-//            } else if (InputType.equals(Integer.class) || InputType.equals(int.class) || InputType.equals(Float.class)
-//                    || InputType.equals(float.class)) { // numbers
-//                if (log0)
-//                    log.info(Target + ": All numbers cannot be wrong, so it passes");
-//
-//                return true;
-//            } else if (InputType.equals(UUID.class)) {
-//
-//                if (Input.getName().equals("null")) {
-//                    Problem = "No Texture Selected";
-//                    if (log0)
-//                        log.info(Target + ": No UUID can be read, so it fails");
-//
-//                    return false;
-//                } else {
-//                    if (log0)
-//                        log.info(Target + ": Texture is selected, and cannot be wrong. it passes");
-//                    return true;
-//                }
-//            } else if (File.class.isAssignableFrom(InputType)) {
-//                if (log0)
-//                    log.info(Target + ": File cannot be wrong. it passes");
-//
-//                return true;
-//            } else if (Map.class.isAssignableFrom(InputType)) {
-//                if (log0)
-//                    log.info(Target + ": Map cannot be wrong. it passes");
-//
-//                return true;
-//            } else {
-//                try {
-//                    if (log0)
-//                        log.info(Target + ": Scary!");
-//
-//                    if (Input instanceof JComboBox<?> jcb) { // for a string drop down
-//                        Problem = "String is not valid.";
-//                        if (Filter != null)
-//                            if (!Filter.getValid(((String) jcb.getSelectedItem()))) {
-//                                Problem = "String is not valid.";
-//                                if (log0)
-//                                    log.info(Target + ": Dropdown didn't pass filter, " + Filter.getClass().getName()
-//                                            + "it doesnt pass");
-//
-//                                return false;
-//                            }
-//                        return !(Objects.equals(jcb.getSelectedItem(), "(Select a value)"));
-//                    }
-//                    if (Input instanceof JTextField) {
-//                        String text = ((JTextField) Input).getText(); // get the text if its not specilized
-//                        if (InputType.equals(String.class)) { // string
-//
-//                            Problem = "String is not valid.";
-//                            if (log0)
-//                                log.info(Target + ": String is checking if vaild");
-//                            // no filter, it doesn't matter
-//                            // this might be unsafe however
-//                            if (Filter == null)
-//                                return true;
-//                            return Filter.getValid(text);
-//                        }
-//                    } else {
-//                        return true;
-//                    }
-//                } catch (Exception e) {
-//                    RLogUtils.exception("Exception thrown", e);
-//                }
-//            }
-//        } catch (Exception e) {
-//            return false;
-//        }
-//        return false;
-//    }
+
 
     @Override
     public String getProblemMessage() {
