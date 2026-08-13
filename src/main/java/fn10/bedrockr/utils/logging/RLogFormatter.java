@@ -40,7 +40,7 @@ public class RLogFormatter extends Formatter {
 
         builder.append(format.format(cal.getTime()));
         builder.append(") : ");
-        if (level < Level.INFO.intValue())
+        if (level <= Level.INFO.intValue())
             builder.append(ANSI_RESET);
         builder.append(record.getMessage());
 
