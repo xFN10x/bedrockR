@@ -16,6 +16,10 @@ public class ImageUtilities {
 
     public final static DefaultImageHandler ImgHandler = new DefaultImageHandler();
 
+    public static ImageIcon getIcon(String path, int width, int height) {
+        return ImageUtilities.ResizeIcon(new ImageIcon(RFileOperations.readAllOfResource(path)), width, height, Image.SCALE_SMOOTH);
+    }
+    
     public static ImageIcon ResizeIcon(ImageIcon OG, int width, int height, int scalingMode) {
         return new ImageIcon(OG.getImage().getScaledInstance(width, height, scalingMode));
     }

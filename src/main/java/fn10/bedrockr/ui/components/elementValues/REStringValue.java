@@ -28,7 +28,7 @@ public class REStringValue extends RElementValue<String, JTextField> {
     }
 
     @Override
-    public JTextField createInput() {
+    public @NonNull JTextField createInput() {
         return new JTextField("");
     }
 

@@ -8,9 +8,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -27,11 +25,9 @@ public class RFrame extends JFrame {
 
     public static final JLabel verText = new JLabel(RFileOperations.VERSION);
 
-    public final JButton websiteButton = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/website.png")));
-    public final JButton ghButton = new JButton(
-            ImageUtilities.ResizeIcon(new ImageIcon(RFileOperations.readAllOfResource("/gh.png")), 32, 32));
-    public final JButton ftButton = new JButton(
-            ImageUtilities.ResizeIcon(new ImageIcon(RFileOperations.readAllOfResource("/gh.png")), 32, 32));
+    public final JButton websiteButton = new JButton(ImageUtilities.getIcon("/website.png",32,32));
+    public final JButton ghButton = new JButton(ImageUtilities.getIcon("/gh.png",32,32));
+    public final JButton sdButton = new JButton(ImageUtilities.getIcon("/sd.png",32,32));
 
     public final JLabel titleImg = new JLabel(ImageUtilities
             .ResizeImageByURL(RFrame.class.getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH,
@@ -62,35 +58,31 @@ public class RFrame extends JFrame {
         Lay2.putConstraint(SpringLayout.WEST, titleImg, 5, SpringLayout.WEST, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, titleImg, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, ghButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
-        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, ftButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
+        Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, sdButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
         Lay2.putConstraint(SpringLayout.VERTICAL_CENTER, websiteButton, 0, SpringLayout.VERTICAL_CENTER, BottomBar);
 
         Lay2.putConstraint(SpringLayout.EAST, websiteButton, -5, SpringLayout.EAST, BottomBar);
         Lay2.putConstraint(SpringLayout.EAST, ghButton, -5, SpringLayout.WEST, websiteButton);
-        Lay2.putConstraint(SpringLayout.EAST, ftButton, -5, SpringLayout.WEST, ghButton);
+        Lay2.putConstraint(SpringLayout.EAST, sdButton, -5, SpringLayout.WEST, ghButton);
 
         Lay2.putConstraint(SpringLayout.SOUTH, verText, 0, SpringLayout.SOUTH, titleImg);
-        Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, ftButton);
+        Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, sdButton);
 
         websiteButton.setMaximumSize(new Dimension(32, 32));
         ghButton.setMaximumSize(new Dimension(32, 32));
-        ftButton.setMaximumSize(new Dimension(32, 32));
-
-        websiteButton.setBackground(Color.white);
-        ghButton.setBackground(Color.white);
-        ftButton.setBackground(Color.white);
+        sdButton.setMaximumSize(new Dimension(32, 32));
 
         websiteButton.setToolTipText("bedrockR's Website");
         ghButton.setToolTipText("bedrockR's Github Repository");
-        ftButton.setToolTipText("bedrockR's Flavourtown Page");
+        sdButton.setToolTipText("bedrockR's Flavourtown Page");
 
         websiteButton.addActionListener(openLink("https://bedrockr.xplate.dev"));
         ghButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR"));
-        ftButton.addActionListener(openLink("https://flavortown.hackclub.com/projects/3844"));
+        sdButton.addActionListener(openLink("https://stardance.hackclub.com/projects/336"));
 
         websiteButton.setBorder(new LineBorder(Color.green.darker(), 3));
         ghButton.setBorder(new LineBorder(Color.green.darker(), 3));
-        ftButton.setBorder(new LineBorder(Color.green.darker(), 3));
+        sdButton.setBorder(new LineBorder(Color.green.darker(), 3));
 
         verText.setForeground(Color.white);
 
@@ -99,7 +91,7 @@ public class RFrame extends JFrame {
 
         BottomBar.add(websiteButton);
         BottomBar.add(ghButton);
-        BottomBar.add(ftButton);
+        BottomBar.add(sdButton);
         BottomBar.add(verText);
 
         setLayout(Lay);
