@@ -1,23 +1,26 @@
 package fn10.bedrockr.ui.util;
 
+import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-
-import javax.swing.*;
-
-import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.utils.RFileOperations;
-import org.jspecify.annotations.NonNull;
 
 @SuppressWarnings("unused")
 public class ImageUtilities {
 
     public final static DefaultImageHandler ImgHandler = new DefaultImageHandler();
 
+    public static ImageIcon getIcon(String path) {
+        return new ImageIcon(RFileOperations.readAllOfResource(path));
+    }
+
     public static ImageIcon getIcon(String path, int width, int height) {
-        return ImageUtilities.ResizeIcon(new ImageIcon(RFileOperations.readAllOfResource(path)), width, height, Image.SCALE_SMOOTH);
+        return ImageUtilities.ResizeIcon(getIcon(path), width, height, Image.SCALE_SMOOTH);
     }
     
     public static ImageIcon ResizeIcon(ImageIcon OG, int width, int height, int scalingMode) {
@@ -35,12 +38,12 @@ public class ImageUtilities {
     public static Image ResizeImage(Image OG, Dimension size, int resizeMode) {
         return OG.getScaledInstance((int) size.getWidth(), (int) size.getHeight(), resizeMode);
     }
-    
+
 
     public static Image ResizeImage(Image OG, int width, int height) {
         return OG.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
-    
+
 
     public static Image ResizeImage(Image OG, int width, int height, int resizeMode) {
         return OG.getScaledInstance(width, height, resizeMode);
@@ -63,18 +66,18 @@ public class ImageUtilities {
     public static Point getScreenCenter(Component target) {
         GraphicsDevice mouseScreen = MouseInfo.getPointerInfo().getDevice();
         GraphicsConfiguration config = mouseScreen.getDefaultConfiguration();
-        
+
         Rectangle bounds = config.getBounds();
         Dimension size = bounds.getSize();
-        
+
         return new Point(
-                (int) ((size.getWidth() - target.getWidth()) /2) + bounds.x,
-                (int) ((size.getHeight() - target.getHeight()) /2) + bounds.y
+                (int) ((size.getWidth() - target.getWidth()) / 2) + bounds.x,
+                (int) ((size.getHeight() - target.getHeight()) / 2) + bounds.y
         );
     }
 
     /// totally didn't steal this from {@link Color#brighter()}
-    ///<p>also factor is .7 by default
+    /// <p>also factor is .7 by default
     public static Color brighter(Color colour, float FACTOR) {
         int r = colour.getRed();
         int g = colour.getGreen();
@@ -86,26 +89,26 @@ public class ImageUtilities {
          * 2. applying brighter to blue will always return blue, brighter
          * 3. non pure color (non zero rgb) will eventually return white
          */
-        int i = (int)(1.0/(1.0-FACTOR));
-        if ( r == 0 && g == 0 && b == 0) {
+        int i = (int) (1.0 / (1.0 - FACTOR));
+        if (r == 0 && g == 0 && b == 0) {
             return new Color(i, i, i, alpha);
         }
-        if ( r > 0 && r < i ) r = i;
-        if ( g > 0 && g < i ) g = i;
-        if ( b > 0 && b < i ) b = i;
+        if (r > 0 && r < i) r = i;
+        if (g > 0 && g < i) g = i;
+        if (b > 0 && b < i) b = i;
 
-        return new Color(Math.min((int)(r/FACTOR), 255),
-                Math.min((int)(g/FACTOR), 255),
-                Math.min((int)(b/FACTOR), 255),
+        return new Color(Math.min((int) (r / FACTOR), 255),
+                Math.min((int) (g / FACTOR), 255),
+                Math.min((int) (b / FACTOR), 255),
                 alpha);
     }
 
     /// totally didn't steal this from Color$darker()
-    ///<p>also factor is .7 by default
+    /// <p>also factor is .7 by default
     public static Color darker(Color colour, float FACTOR) {
-        return new Color(Math.max((int)(colour.getRed()  *FACTOR), 0),
-                Math.max((int)(colour.getGreen()*FACTOR), 0),
-                Math.max((int)(colour.getBlue() *FACTOR), 0),
+        return new Color(Math.max((int) (colour.getRed() * FACTOR), 0),
+                Math.max((int) (colour.getGreen() * FACTOR), 0),
+                Math.max((int) (colour.getBlue() * FACTOR), 0),
                 colour.getAlpha());
     }
 
@@ -145,7 +148,7 @@ public class ImageUtilities {
 
     public static BufferedImage toBuffered(Image image) {
         BufferedImage img = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        img.createGraphics().drawImage(image, 0,0, null);
+        img.createGraphics().drawImage(image, 0, 0, null);
         return img;
     }
 }

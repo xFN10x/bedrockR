@@ -615,6 +615,10 @@ public class RFileOperations {
         return RFileOperations.readAllOfResource("/addons/element/" + source.getDetails().Icon + ".png");
     }
 
+    public static WorkspaceResources getWorkspaceResources(String workspaceName) throws WorkspaceResources.WorkspaceUnsupportedException, IOException {
+        return WorkspaceResources.load(workspaceName);
+    }
+
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,
                                                         @Nullable String workspaceName) implements Comparable<ElementMade<T>> {
 
