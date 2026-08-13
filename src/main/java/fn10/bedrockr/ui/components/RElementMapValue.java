@@ -14,6 +14,8 @@ import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDamage;
 import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDestructibleByMining;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.components.elementValues.REDropdownStringValue;
+import fn10.bedrockr.ui.components.elementValues.REListValue;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
@@ -33,7 +35,7 @@ import java.util.Map.Entry;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings({"FieldCanBeLocal", "unchecked"})
 public class RElementMapValue extends JPanel {
 
     private final Dimension Size = new Dimension(240, 80);
@@ -137,7 +139,7 @@ public class RElementMapValue extends JPanel {
             JPanel foliagePanel = new JPanel();
             foliagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
             JButton foliageColour = new JButton("Select Colour");
-            foliageColour.addActionListener(ac -> {
+            foliageColour.addActionListener(_ -> {
                 foliageColour
                         .setForeground(JColorChooser.showDialog(foliageColour, "Select Foliage Colour", Color.green));
             });
@@ -240,12 +242,12 @@ public class RElementMapValue extends JPanel {
             Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         } else if (RME.Type == Tags.class) {
             Size.setSize(600, 500);
-            InputField = null;
-//                    new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "tags",
-//                    "Tags", false,
-//                    Tags.class, null, true, null);
-
-            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+            try {
+                InputField = new REListValue<>(Tags.class.getField("tags"), (Class<List<String>>) (Class<?>)List.class, String.class, null,null,null);
+                Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
         }
         // set input field to whatever is nessesary
         else if (RME.Type == String.class) { // string
@@ -432,7 +434,7 @@ public class RElementMapValue extends JPanel {
         if (!(InputField instanceof JLabel))
             try {
 
-                RFileOperations.LOG.info(rMapElement.Type.getName());
+                //RFileOperations.LOG.info(rMapElement.Type.getName());
                 if (rMapElement instanceof RStringDropdownMapElement) {
                     val = ((JComboBox<String>) InputField).getSelectedItem();
                 }
@@ -506,17 +508,17 @@ public class RElementMapValue extends JPanel {
                         builder.sea_material = ((RItemValue) MultipleInputs.get("seaMaterialVal")).getItems().get(0).item;
 
                         builder.sea_floor_material = ((RItemValue) MultipleInputs.get("seaFloorMaterialVal")).getItems()
-                                .get(0).item;
+                                .getFirst().item;
 
                         builder.top_material = ((RItemValue) MultipleInputs.get("surfaceMaterialVal")).getItems()
-                                .get(0).item;
+                                .getFirst().item;
 
                         ((SurfaceBuilder) val).builder = builder;
 
                     } else if (rMapElement.Type == Tags.class) {
 
                         val = new Tags();
-                        ((Tags) val).tags = (List<String>) ((RElementValue<?, ?>) InputField).getValue();
+                        ((Tags) val).tags = ((REListValue<String>) InputField).getValue();
 
                     } else if (rMapElement.Type == minecraftDamage.class) { // minecraft:damage
                         val = new minecraftDamage();
