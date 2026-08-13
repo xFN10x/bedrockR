@@ -25,7 +25,7 @@ public class RENumberScrollValue extends RElementValue<Float, JSpinner> {
      }
 
     @Override
-    public JSpinner createInput() {
+    public @NonNull JSpinner createInput() {
         if (isInt) {
             return new JSpinner(new SpinnerNumberModel(0, min.intValue(), max.intValue(), step.intValue()));
         } else {

@@ -1,5 +1,6 @@
 package fn10.bedrockr.ui.components.elementValues;
 
+import fn10.bedrockr.addons.element.FieldFilters;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
@@ -11,16 +12,17 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPane> {
     private JComboBox<String> BlockTexturesModeDropdown;
-    private RElementValue<ResourcePointer<BlockTextureResource>, ?>
-            BlockTexturesTop, 
-            BlockTexturesBottom, 
-            BlockTexturesNorth, 
-            BlockTexturesSouth, 
-            BlockTexturesEast, 
+    private REResourceValue<BlockTextureResource>
+            BlockTexturesTop,
+            BlockTexturesBottom,
+            BlockTexturesNorth,
+            BlockTexturesSouth,
+            BlockTexturesEast,
             BlockTexturesWest;
 
     public REBlockTexturesValue(@Nullable Field TargetField, @NonNull Class<BlockTexture> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
@@ -28,7 +30,7 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
     }
 
     @Override
-    public JScrollPane createInput() {
+    public @NonNull JScrollPane createInput() {
         //the input will be a scroll pane with a panel that has a dropdown for what mode, and 6 other elementvalues.
         JPanel inner = new JPanel();
         BlockTexturesModeDropdown = new JComboBox<>(new String[]{
@@ -45,13 +47,16 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
         input.getVerticalScrollBar().setUnitIncrement(12);
 
         inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
+
+
         Dimension sizes = new Dimension(500, 80);
-//                    BlockTexturesTop = new RElementValue(null, UUID.class, null, "_blocktexture", "Top Texture/All Sides", false, null, WorkspaceName);
-//                    BlockTexturesBottom = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "Bottom Texture", false, null, WorkspaceName);
-//                    BlockTexturesNorth = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "North Texture/Side Texture", false, null, WorkspaceName);
-//                    BlockTexturesSouth = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "South Texture", false, null, WorkspaceName);
-//                    BlockTexturesEast = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "East Texture", false, null, WorkspaceName);
-//                    BlockTexturesWest = new RElementValue(parentFrame, UUID.class, null, "_blocktexture", "West Texture", false, null, WorkspaceName);
+
+        BlockTexturesTop = makeBlockTexVal("Top / All");
+        BlockTexturesBottom = makeBlockTexVal("Bottom");
+        BlockTexturesNorth = makeBlockTexVal("North / Side");
+        BlockTexturesSouth = makeBlockTexVal("South");
+        BlockTexturesEast = makeBlockTexVal("East");
+        BlockTexturesWest = makeBlockTexVal("West");
 
 
         BlockTexturesModeDropdown.addActionListener(_ -> {
@@ -119,6 +124,34 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
 
         BlockTexturesModeDropdown.setSelectedIndex(0);
         return input;
+    }
+
+    private static @NonNull REResourceValue<BlockTextureResource> makeBlockTexVal(String name) {
+        return new REResourceValue<>(BlockTextureResource.class,
+                null,
+                (Class<ResourcePointer<BlockTextureResource>>) ((Class<?>) ResourcePointer.class),
+                null, null, new RAnnotation.FieldDetails() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return RAnnotation.FieldDetails.class;
+            }
+
+            @Override
+            public boolean Optional() {
+                return false;
+            }
+
+            @Override
+            public Class<? extends FieldFilters.FieldFilter> Filter() {
+                return null;
+            }
+
+            @Override
+            public @Nullable String displayName() {
+                return name;
+            }
+        });
     }
 
     @Override

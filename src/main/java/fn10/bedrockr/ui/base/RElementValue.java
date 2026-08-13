@@ -3,17 +3,18 @@ package fn10.bedrockr.ui.base;
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
+import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.elementValues.*;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
-import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.Theme;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -96,6 +97,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         }
     }
 
+    @Nonnull
     public abstract I createInput();
 
     protected boolean problem(boolean check, String fals, String tru) {
@@ -175,6 +177,8 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
                     range = prop;
             }
             returning = (RElementValue<T, ?>) new RENumberScrollValue(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
+        } else if (are(type, BlockTexture.class)) {
+            returning = (RElementValue<T, ?>) new REBlockTexturesValue(field, ((Class<BlockTexture>) type), TargetFile, WorkspaceName, anno);
         }
         if (returning == null)
             returning = empty(field == null ? "" : field.getName(), type);
@@ -195,7 +199,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     private static <T> RElementValue<T, JLabel> empty(String name, Class<T> type) {
         return new RElementValue<>(null, type, name, false, null, null) {
             @Override
-            public JLabel createInput() {
+            public @NonNull JLabel createInput() {
                 return new JLabel("Unsupported type: " + super.type.getName());
             }
 

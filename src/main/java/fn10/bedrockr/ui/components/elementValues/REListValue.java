@@ -7,6 +7,7 @@ import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
 import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
     }
 
     @Override
-    public JScrollPane createInput() {
+    public @NonNull JScrollPane createInput() {
         /*
          * I'm just stealing most of the hash map stuff, since it is basicly already a
          * list view.

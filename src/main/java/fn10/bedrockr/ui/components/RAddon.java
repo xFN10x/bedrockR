@@ -100,18 +100,18 @@ public class RAddon extends JPanel implements MouseListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 GradientPaint gp = new GradientPaint(
-                        0, 0, 
+                        0, 0,
                         new Color(0, 0, 0, 0), // top color
-                        0, getHeight(), 
+                        0, getHeight(),
                         new Color(60, 60, 60) // bottom color
                 );
 
                 g2.setPaint(gp);
-                
+
                 Rectangle2D oldClip = g2.getClip().getBounds();
-                g2.setClip(new Rectangle2D.Double(oldClip.getX()-10, oldClip.getY(), oldClip.getWidth() + 20, oldClip.getHeight()));
-                g2.fillRoundRect(-4, 0, getWidth() + 9, getHeight()-1, 15, 15);
-                
+                g2.setClip(new Rectangle2D.Double(oldClip.getX() - 10, oldClip.getY(), oldClip.getWidth() + 20, oldClip.getHeight()));
+                g2.fillRoundRect(-4, 0, getWidth() + 9, getHeight() - 1, 15, 15);
+
                 super.paintComponent(g2);
             }
         };
@@ -153,7 +153,7 @@ public class RAddon extends JPanel implements MouseListener {
         add(LoadText);
         Version.setVisible(false);
         LoadText.setVisible(false);
-        
+
         add(Icon);// have last
 
         addMouseListener(this);
@@ -184,18 +184,18 @@ public class RAddon extends JPanel implements MouseListener {
         if (arg0.getButton() == MouseEvent.BUTTON1)
             RWorkspace.openWorkspace(ancestor, WPF.getNewSource());
     }
-    
+
     private float currentSize = 0;
     private float targetSize = 90;
     private final Timer tweenTimer = new Timer(16, _ -> {
-
         currentSize = lerp(currentSize, targetSize, 0.2f);
         int intsize = Math.round(currentSize);
         setPreferredSize(new Dimension(intsize, intsize));
         revalidate();
         repaint();
     });
-///<https://www.sourcetrail.com/java/java-lerp/>
+
+    /// <https://www.sourcetrail.com/java/java-lerp/>
     public static float lerp(float point1, float point2, float fraction) {
         return (1 - fraction) * point1 + fraction * point2;
     }
@@ -220,7 +220,7 @@ public class RAddon extends JPanel implements MouseListener {
             targetSize = 90;
             revalidate();
             repaint();
-            
+
         });
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }

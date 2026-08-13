@@ -22,7 +22,7 @@ public class REPathValue extends RElementValue<Path, JButton> {
     }
 
     @Override
-    public JButton createInput() {
+    public @NonNull JButton createInput() {
         final JButton button = new JButton(No_Path_Chosen_Text);
         RAnnotation.PathType type;
         if (Target != null)

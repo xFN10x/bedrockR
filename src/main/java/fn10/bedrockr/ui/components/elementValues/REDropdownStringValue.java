@@ -17,7 +17,7 @@ public class REDropdownStringValue extends RElementValue<String, JComboBox<Strin
     }
 
     @Override
-    public JComboBox<String> createInput() {
+    public @NonNull JComboBox<String> createInput() {
         RAnnotation.StringDropdownField dropdownAnno = getAnno(RAnnotation.StringDropdownField.class);
         assert dropdownAnno != null;
         JComboBox<String> input = new JComboBox<>(substituteArray(dropdownAnno.value()));
