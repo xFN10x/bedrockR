@@ -3,7 +3,7 @@ package fn10.bedrockr.addons.element.supporting;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
-import fn10.bedrockr.addons.element.supporting.ItemComponents.minecraftDestructibleByMining;
+import fn10.bedrockr.addons.element.supporting.ItemComponents.BlockCanBeMined;
 
 public class BlockComponents implements RMapElementProvider {
 
@@ -30,7 +30,7 @@ public class BlockComponents implements RMapElementProvider {
                         boolean.class,
                         "Determines if the block can be\ndestroyed by explosions."),
                 new RMapElement("Hardness", "minecraft:destructible_by_mining",
-                        minecraftDestructibleByMining.class,
+                        BlockCanBeMined.class,
                         "Determines the length it takes to\ndestroy this block. If you use the\nright tool to destroy the block, it\ntakes less time to destroy\n\nFormula for calculating seconds to\nbreak with fist is: 1.5 x (hardness)"),
                 new RMapElement("Flammable", "minecraft:flammable", boolean.class,
                         "Determines if the block can be caught\non fire."),

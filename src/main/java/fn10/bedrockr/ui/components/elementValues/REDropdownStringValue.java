@@ -1,7 +1,7 @@
 package fn10.bedrockr.ui.components.elementValues;
 
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.utils.RAnnotation;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

@@ -12,16 +12,16 @@ import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
  */
 public class ItemComponents implements RMapElementProvider {
 
-    public static class minecraftDamage {
+    public static class ToolDamage {
         @SerializedName("minecraft:damage")
         public int damage;
     }
 
-    public static class minecraftDestructibleByMining {
+    public static class BlockCanBeMined {
         public float seconds_to_destroy;
     }
 
-    public static class minecraftBlockPlacer {
+    public static class ItemBlockPlacer {
         /**
          * The block that this item places
          */
@@ -86,7 +86,7 @@ public class ItemComponents implements RMapElementProvider {
                 new RStringDropdownMapElement("Rarity", "minecraft:rarity",
                         "Basicly \"Name Colour\", but the colour\nchanges if its enchanted\n<b>(uncommon/common -> rare,\nrare -> epic)</b>\n\nThis is overwritten if Name Colour is\nspecified.",
                         "common", "uncommon", "rare", "epic"),
-                new RMapElement("Block Placer", "minecraft:block_placer", minecraftBlockPlacer.class,
+                new RMapElement("Block Placer", "minecraft:block_placer", ItemBlockPlacer.class,
                         "Specifes if this item places a block\nwhen used on another. Like a bucket;\nbut its infinite use."),
         };
     }

@@ -14,7 +14,7 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.RItemValue;
 import fn10.bedrockr.ui.components.RItemValue.ShapedOutput;

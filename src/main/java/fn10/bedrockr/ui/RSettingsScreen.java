@@ -1,11 +1,10 @@
 package fn10.bedrockr.ui;
 
 import fn10.bedrockr.utils.RAnnotation;
-import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.ui.base.RDialog;
-import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.util.WrapLayout;
 
 import javax.swing.*;
@@ -15,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 public class RSettingsScreen extends RDialog {
 

@@ -8,20 +8,22 @@ import java.util.Map;
 import fn10.bedrockr.addons.element.supporting.BiomeComponents;
 import fn10.bedrockr.addons.element.supporting.BlockComponents;
 import fn10.bedrockr.addons.element.supporting.ItemComponents;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class RMapElement {
     public String ID;
-    public Class<?> Type;
+    public @Nonnull Class<?> Type;
     public String DisplayName;
     public String HelpDescription;
-    public List<MapValueFilter> Filters = new ArrayList<MapValueFilter>();
+    public List<MapValueFilter> Filters = new ArrayList<>();
 
     public enum MapValueFilter {
         NotNegative, Between0And1
     }
 
-    public static Map<String, RMapElement> LookupMap = new HashMap<String, RMapElement>();
+    public static Map<String, RMapElement> LookupMap = new HashMap<>();
     static {
         for (RMapElement element : new ItemComponents().getPickable()) {
             LookupMap.put(element.ID, element);
@@ -54,20 +56,20 @@ public class RMapElement {
         this(ID, ID, Type, Help);
     }
 
-    public RMapElement(String Name, String ID, Class<?> Type, String Help) {
+    public RMapElement(String Name, String ID, @NonNull Class<?> Type, String Help) {
         this.Type = Type;
         this.ID = ID;
 
         this.DisplayName = Name;
 
         if (!Help.startsWith("<html>")) {
-            Help = Help.replaceAll("\n", "<br/>");
+            Help = Help.replace("\n", "<br/>");
             Help = "<html>" + Help + "</html>";
         }
         this.HelpDescription = Help;
     }
 
-    public RMapElement(String Name, String ID, Class<?> Type, String Help, @Nullable MapValueFilter... filters) {
+    public RMapElement(String Name, String ID, @NonNull Class<?> Type, String Help, @Nullable MapValueFilter... filters) {
         this.Type = Type;
         this.ID = ID;
 

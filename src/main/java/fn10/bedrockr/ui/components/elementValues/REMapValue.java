@@ -3,8 +3,8 @@ package fn10.bedrockr.ui.components.elementValues;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.ui.RMapValueAddingSelector;
-import fn10.bedrockr.ui.base.RElementValue;
-import fn10.bedrockr.ui.components.RElementMapValue;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
+import fn10.bedrockr.ui.base.validValues.RMapValue;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RAnnotation;
@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class REMapValue<K, V> extends RElementValue<Map<K, V>, JScrollPane> {
+public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
     protected final JPanel HashMapInnerPane;
     protected final JButton HashMapAdd;
 
-    public REMapValue(Class<K> keyType, Class<V> valueType, @Nullable Field TargetField, @NonNull Class<Map<K, V>> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
+    public REMapValue(Class<V> valueType, @Nullable Field TargetField, @NonNull Class<Map<String, V>> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
         HashMapInnerPane = new JPanel();
         HashMapAdd = new JButton(ImageUtilities.getIcon("/addons/workspace/New.png"));
         super(TargetField, type, TargetFile, WorkspaceName, details);
@@ -57,7 +57,7 @@ public class REMapValue<K, V> extends RElementValue<Map<K, V>, JScrollPane> {
                             picked);
                     if (select == null)
                         return;
-                    var toAdd = new RElementMapValue(null, select);
+                    var toAdd = RMapValue.ofElement(null, select);
                     toAdd.setSize(HashMapInnerPane.getWidth() - 5,
                             Double.valueOf(toAdd.getSize().getHeight()).intValue());
                     toAdd.setAlignmentX(0.5f);
@@ -85,12 +85,11 @@ public class REMapValue<K, V> extends RElementValue<Map<K, V>, JScrollPane> {
     }
 
     @Override
-    public void setValueInternal(Map<K, V> value) {
+    public void setValueInternal(Map<String, V> value) {
         try {
-                for (Map.Entry<K, V> entry : value.entrySet()) {
-                    RElementMapValue ToAdd = new RElementMapValue(null,
-                            RMapElement.LookupMap.get(entry.getKey().toString()));
-                    ToAdd.setVal(entry.getValue());
+                for (Map.Entry<String, V> entry : value.entrySet()) {
+                    RMapValue<V, ?> ToAdd = (RMapValue<V, ?>) RMapValue.ofElement(null, RMapElement.LookupMap.get(entry.getKey()));
+                    ToAdd.setValue(entry.getValue());
 
                     addREMV(ToAdd);
                 }
@@ -99,18 +98,18 @@ public class REMapValue<K, V> extends RElementValue<Map<K, V>, JScrollPane> {
             }
     }
 
-    private void addREMV(RElementMapValue ToAdd) {
+    private void addREMV(RMapValue<?,?> ToAdd) {
         HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
         HashMapInnerPane.add(ToAdd);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Map<K, V> getValueInternal(boolean shouldLog) {
-        HashMap<K, V> building = new HashMap<>();
+    protected Map<String, V> getValueInternal(boolean shouldLog) {
+        HashMap<String, V> building = new HashMap<>();
         for (Component component : HashMapInnerPane.getComponents()) {
-            if (component instanceof RElementMapValue remv) {
-                Map.Entry<K, V> entry = (Map.Entry<K, V>) remv.getKeyAndVal();
+            if (component instanceof RMapValue<?,?> remv) {
+                Map.Entry<String, V> entry = (Map.Entry<String, V>) remv.getKeyAndVal();
                 building.put(entry.getKey(), entry.getValue());
             }
         }
