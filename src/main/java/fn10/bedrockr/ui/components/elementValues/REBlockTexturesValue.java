@@ -5,7 +5,7 @@ import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
 import fn10.bedrockr.addons.resource.ResourcePointer;
-import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import org.jspecify.annotations.NonNull;

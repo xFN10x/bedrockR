@@ -2,7 +2,7 @@ package fn10.bedrockr.ui.components.elementValues;
 
 import com.formdev.flatlaf.util.SystemFileChooser;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.ui.base.RElementValue;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import org.apache.commons.io.FileUtils;

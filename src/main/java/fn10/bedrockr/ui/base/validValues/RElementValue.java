@@ -1,4 +1,4 @@
-package fn10.bedrockr.ui.base;
+package fn10.bedrockr.ui.base.validValues;
 
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementSources.SourceBiomeElement;
@@ -58,15 +58,6 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
     protected final Class<T> type;
 
-    //components for selecting block textures
-//    private JComboBox<String> BlockTexturesModeDropdown;
-//    private RElementValue BlockTexturesTop;
-//    private RElementValue BlockTexturesBottom;
-//    private RElementValue BlockTexturesNorth;
-//    private RElementValue BlockTexturesSouth;
-//    private RElementValue BlockTexturesEast;
-//    private RElementValue BlockTexturesWest;
-
     private T initValue;
 
     public boolean Required;
@@ -117,12 +108,12 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         return are(field.getType(), cls);
     }
 
-    protected static boolean are(Class<?> cls0, Class<?> cls1) {
+    protected static boolean are(@Nonnull Class<?> cls0, @Nonnull Class<?> cls1) {
         return cls1.isAssignableFrom(cls0);
     }
 
-    public static RElementValue<?, ?> ofClass(
-            @Nonnull Class<?> type) {
+    public static <Y> RElementValue<Y, ?> ofClass(
+            @Nonnull Class<Y> type) {
         return ofField(null, type, null, null);
     }
 
@@ -193,7 +184,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             returning = (RElementValue<T, ?>) new REBooleanValue(field, ((Class<Boolean>) type), TargetFile, WorkspaceName, anno);
         } else if (are(type, Map.class)) {
             if (typeArgs != null)
-                returning = (RElementValue<T, ?>) new REMapValue<>(((Class<L>) typeArgs[0]), ((Class<V>) typeArgs[1]), field, (Class<Map<L, V>>) type, TargetFile, WorkspaceName, anno);
+                returning = (RElementValue<T, ?>) new REMapValue<>(((Class<V>) typeArgs[1]), field, (Class<Map<String, V>>) type, TargetFile, WorkspaceName, anno);
         } else if (are(type, ResourcePointer.class)) {
             if (typeArgs != null)
                 returning = (RElementValue<T, ?>) new REResourceValue<>((Class<R>) typeArgs[0], field, ((Class<ResourcePointer<R>>) type), TargetFile, WorkspaceName, anno);
