@@ -130,12 +130,12 @@ public class RenderHandler {
     }
 
     public static BufferedImage render6SideBlock(String name, BufferedImage t, BufferedImage d, BufferedImage e, BufferedImage w, BufferedImage n, BufferedImage s) throws IOException {
-        var top = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(t, missing()), 50, 50, Image.SCALE_AREA_AVERAGING));
-        //var down = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
-        //var east = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
+        var top = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(t, missing()), 60, 60, Image.SCALE_AREA_AVERAGING));
+        var down = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(d, missing()), 50, 50));
+        var east = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(e, missing()), 50, 50));
         var west = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(w, missing()), 50, 50, Image.SCALE_AREA_AVERAGING));
         var north = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(n, missing()), 50, 50, Image.SCALE_AREA_AVERAGING));
-        //var south = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(s, missing()), 50, 50));
+        var south = toBuffered(ImageUtilities.ResizeImage(Objects.requireNonNullElse(s, missing()), 50, 50));
         final int width = 100;
         final int height = 100;
         final BufferedImage main = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

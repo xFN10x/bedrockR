@@ -26,7 +26,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -92,29 +96,39 @@ public class BlockTextures {
             loading.setVisible(true);
         });
         final boolean[] stop = {false};
+        int maxThreads = 10;
+        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
         SwingUtilities.invokeLater(() -> {
             downloaded = 0;
             Thread downloadThread = new Thread(() -> {
                 for (BlockJsonEntry block : ReturnItemInfo.vanillaBlocks) {
-                    String name = block.name.split(":")[1];
-                    try {
-                        loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (stop[0]) {
+                    executorService.submit(() -> {
+                        String name = block.name.split(":")[1];
+                        try {
+                            loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (stop[0]) {
+                            latch.countDown();
+                            return;
+                        }
+                        renderBlock(name);
+                        downloaded++;
                         latch.countDown();
-                        continue;
-                    }
-                    renderBlock(name);
-                    downloaded++;
-                    latch.countDown();
+                    });
+                }
+
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
                 SettingsFile settings = SettingsFile.load();
                 HttpRequest latestVerReq = HttpRequest.newBuilder()
                         .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
                         .version(HttpClient.Version.HTTP_2).GET().build();
-                HttpResponse<String> response = null;
+                HttpResponse<String> response;
                 try {
                     response = client.send(latestVerReq, BodyHandlers.ofString());
                 } catch (IOException | InterruptedException e) {
@@ -123,8 +137,7 @@ public class BlockTextures {
                 settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Number) gson
                         .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
 
-                settings.save();
-                SwingUtilities.invokeLater(() -> {
+                settings.save();SwingUtilities.invokeLater(() -> {
                     loading.setVisible(false);
                 });
             });
@@ -148,6 +161,7 @@ public class BlockTextures {
                 }
             });
         });
+        
         return latch;
     }
 
@@ -213,13 +227,13 @@ public class BlockTextures {
                             .get(((LinkedTreeMap<String, String>) textures).get("side")).get("textures");
                     if (List.class.isAssignableFrom(texIdSide.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdSide);
-                        texIdSide = list.get(0);
+                        texIdSide = list.getFirst();
                     }
                     Object texIdDown = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("down")).get("textures");
                     if (List.class.isAssignableFrom(texIdDown.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdDown);
-                        texIdDown = list.get(0);
+                        texIdDown = list.getFirst();
                     }
 
                     RenderHandler.renderLogBlock(blockId, downloadTexture(texIdTop.toString()),
