@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RMStringDropdownValue extends RMapValue<String, JComboBox<String>> {
-    public RMStringDropdownValue(Window Ancestor, RMapElement RME) {
+    public RMStringDropdownValue(Window Ancestor, RStringDropdownMapElement RME) {
         super(Ancestor, RME);
     }
 

@@ -1,9 +1,11 @@
 package fn10.bedrockr.ui.base.validValues;
 
 import fn10.bedrockr.addons.element.RMapElement;
+import fn10.bedrockr.addons.element.RStringDropdownMapElement;
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.ui.components.RItemValue;
 import fn10.bedrockr.ui.components.mapValues.RMAutoValue;
+import fn10.bedrockr.ui.components.mapValues.RMStringDropdownValue;
 import fn10.bedrockr.ui.util.RFonts;
 import jakarta.annotation.Nonnull;
 
@@ -12,6 +14,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 /**
@@ -42,7 +45,14 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
     }
     
     public static RMapValue<?,?> ofElement(Window Ancestor, RMapElement rMapElement) {
+        if (rMapElement instanceof RStringDropdownMapElement rsd) {
+            return new RMStringDropdownValue(Ancestor, rsd);
+        }
         return new RMAutoValue<>(Ancestor, rMapElement);
+    }
+    
+    protected boolean hasFilter(RMapElement.MapValueFilter filter) {
+        return rMapElement.Filters.contains(filter);
     }
 
     public RMapValue(Window Ancestor, RMapElement RME) {
@@ -58,9 +68,6 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
         IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - ((float) RME.DisplayName.length() / 10)));
 
         // check for custom ones first
-//        if (RME instanceof RStringDropdownMapElement) {
-//            String[] ars = ((RStringDropdownMapElement) RME).getChoices();
-//            InputField = new JComboBox<String>(ars);
 //        } else if (RME.Type == minecraftDamage.class) { // minecraft:damage
 //            InputField = new JSpinner();
 //        } else if (RME.Type == minecraftDestructibleByMining.class) { // minecraft:damage

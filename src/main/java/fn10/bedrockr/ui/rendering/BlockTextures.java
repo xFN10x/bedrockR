@@ -221,7 +221,7 @@ public class BlockTextures {
                     // System.out.println(texIdTop.getClass().getSimpleName());
                     if (List.class.isAssignableFrom(texIdTop.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdTop);
-                        texIdTop = list.get(0);
+                        texIdTop = list.getFirst();
                     }
                     Object texIdSide = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("side")).get("textures");
@@ -245,47 +245,48 @@ public class BlockTextures {
                     // System.out.println(texIdTop.getClass().getSimpleName());
                     if (List.class.isAssignableFrom(texIdTop.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdTop);
-                        texIdTop = list.get(0);
+                        texIdTop = list.getFirst();
                     }
                     Object texIdEast = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("east")).get("textures");
                     if (List.class.isAssignableFrom(texIdEast.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdEast);
-                        texIdEast = list.get(0);
+                        texIdEast = list.getFirst();
                     }
 
                     Object texIdWest = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("west")).get("textures");
                     if (List.class.isAssignableFrom(texIdWest.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdWest);
-                        texIdWest = list.get(0);
+                        texIdWest = list.getFirst();
                     }
 
                     Object texIdSouth = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("south")).get("textures");
                     if (List.class.isAssignableFrom(texIdSouth.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdSouth);
-                        texIdSouth = list.get(0);
+                        texIdSouth = list.getFirst();
                     }
 
                     Object texIdNorth = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("north")).get("textures");
                     if (List.class.isAssignableFrom(texIdNorth.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdNorth);
-                        texIdNorth = list.get(0);
+                        texIdNorth = list.getFirst();
                     }
 
                     Object texIdDown = terrianTextureJson.get("texture_data")
                             .get(((LinkedTreeMap<String, String>) textures).get("down")).get("textures");
                     if (List.class.isAssignableFrom(texIdDown.getClass())) {
                         List<String> list = ((ArrayList<String>) texIdDown);
-                        texIdDown = list.get(0);
+                        texIdDown = list.getFirst();
                     }
 
                     RenderHandler.render6SideBlock(blockId, downloadTexture(texIdTop.toString()),
-                            downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
-                            downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString()),
-                            downloadTexture(texIdSouth.toString()));
+                            //downloadTexture(texIdDown.toString()), downloadTexture(texIdEast.toString()),
+                            downloadTexture(texIdWest.toString()), downloadTexture(texIdNorth.toString())
+                            //,downloadTexture(texIdSouth.toString())
+                    );
 
                 }
             }

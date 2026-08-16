@@ -7,19 +7,18 @@ import fn10.bedrockr.addons.element.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.element.RStringDropdownMapElement;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
 
-/**
- * https://wiki.bedrock.dev/items/item-components
- */
+/// <https://wiki.bedrock.dev/items/item-components>
 public class ItemComponents implements RMapElementProvider {
 
     public static class ToolDamage {
         @SerializedName("minecraft:damage")
         public int damage;
+        
+        public ToolDamage(int damage) {
+            this.damage = damage;
+        }
     }
-
-    public static class BlockCanBeMined {
-        public float seconds_to_destroy;
-    }
+    
 
     public static class ItemBlockPlacer {
         /**
@@ -38,6 +37,7 @@ public class ItemComponents implements RMapElementProvider {
      * (seperate element) https://wiki.bedrock.dev/items/item-components#digger &
      * https://wiki.bedrock.dev/items/item-components#durability &
      * https://wiki.bedrock.dev/items/item-components#durability-sensor
+     * https://wiki.bedrock.dev/blocks/tool-based-destruction
      * 
      * https://wiki.bedrock.dev/items/item-components#dyeable
      * (seperate) https://wiki.bedrock.dev/items/item-components#enchantable
