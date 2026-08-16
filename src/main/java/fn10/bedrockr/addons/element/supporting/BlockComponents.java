@@ -1,12 +1,17 @@
 package fn10.bedrockr.addons.element.supporting;
 
+import com.google.gson.annotations.SerializedName;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.RMapElement.MapValueFilter;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
-import fn10.bedrockr.addons.element.supporting.ItemComponents.BlockCanBeMined;
 
 public class BlockComponents implements RMapElementProvider {
 
+    public static class BlockCanBeMined {
+        @SerializedName("seconds_to_destroy")
+        public float hardness;
+    }
+    
     /*
      * TODO: add;
      * https://wiki.bedrock.dev/blocks/block-components#crafting-table

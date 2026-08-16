@@ -124,7 +124,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, L, V, R extends Resource> RElementValue<T, ?> ofField(@Nullable Field field,
+    public static <T, L, V, R extends Resource, N extends Number> RElementValue<T, ?> ofField(@Nullable Field field,
                                                                             @Nonnull Class<T> type,
                                                                             @Nullable SourcelessElementFile TargetFile,
                                                                             @Nullable String WorkspaceName) {
@@ -138,6 +138,34 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         }
         RElementValue<T, ?> returning = null;
 
+        RAnnotation.NumberRange range = new RAnnotation.NumberRange() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return RAnnotation.NumberRange.class;
+            }
+
+            @Override
+            public float max() {
+                return Integer.MAX_VALUE;
+            }
+
+            @Override
+            public float min() {
+                return Integer.MIN_VALUE;
+            }
+
+            @Override
+            public float step() {
+                return 0.1f;
+            }
+        };
+        if (field != null) {
+            RAnnotation.NumberRange prop = field.getAnnotation(RAnnotation.NumberRange.class);
+            if (prop != null)
+                range = prop;
+        }
+        
         if (are(type, String.class)) {
             if (field != null && field.getAnnotation(RAnnotation.StringDropdownField.class) != null) {
                 returning = (RElementValue<T, ?>) new REDropdownStringValue(field, ((Class<String>) type), TargetFile, WorkspaceName, anno);
@@ -146,38 +174,13 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         } else if (are(type, Path.class)) {
             returning = (RElementValue<T, ?>) new REPathValue(field, ((Class<Path>) type), TargetFile, WorkspaceName, anno);
         } else if (are(type, List.class)) {
-            if (field != null) {
+            if (typeArgs != null) {
                 returning = (RElementValue<T, ?>) new REListValue<>(field, (Class<List<L>>) type, ((Class<L>) typeArgs[0]), TargetFile, WorkspaceName, anno);
             }
-        } else if (are(type, Integer.class) || are(type, Float.class)) {
-            RAnnotation.NumberRange range = new RAnnotation.NumberRange() {
-
-                @Override
-                public Class<? extends Annotation> annotationType() {
-                    return RAnnotation.NumberRange.class;
-                }
-
-                @Override
-                public float max() {
-                    return Float.MAX_VALUE;
-                }
-
-                @Override
-                public float min() {
-                    return Float.MIN_VALUE;
-                }
-
-                @Override
-                public float step() {
-                    return 0.1f;
-                }
-            };
-            if (field != null) {
-                RAnnotation.NumberRange prop = field.getAnnotation(RAnnotation.NumberRange.class);
-                if (prop != null)
-                    range = prop;
-            }
-            returning = (RElementValue<T, ?>) new RENumberScrollValue(field, ((Class<Float>) type), TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step(), are(type, Integer.class));
+        } else if (are(type, Integer.class)) {
+            returning = (RElementValue<T, ?>) new REIntScrollValue(field, (Class<Integer>) type, TargetFile, WorkspaceName, anno, (int) range.min(), (int) range.max(), (int) Math.ceil(range.step()));
+        } else if (are(type, Float.class)) {
+            returning = (RElementValue<T, ?>) new REFloatScrollValue(field, (Class<Float>) type, TargetFile, WorkspaceName, anno, range.min(), range.max(), range.step());
         } else if (are(type, BlockTexture.class)) {
             returning = (RElementValue<T, ?>) new REBlockTexturesValue(field, ((Class<BlockTexture>) type), TargetFile, WorkspaceName, anno);
         } else if (are(type, Boolean.class) || are(type, boolean.class)) {
@@ -209,7 +212,10 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         return new RElementValue<>(null, type, name, false, null, null) {
             @Override
             public @NonNull JLabel createInput() {
-                return new JLabel("Unsupported type: " + super.type.getName());
+                String text = "Unsupported type: " + super.type.getName();
+                JLabel returning = new JLabel(text);
+                returning.setToolTipText(text);
+                return returning;
             }
 
             @Override
