@@ -16,7 +16,7 @@ public class BlockComponents implements RMapElementProvider {
      * TODO: add;
      * https://wiki.bedrock.dev/blocks/block-components#crafting-table
      * https://wiki.bedrock.dev/blocks/block-components#destruction-particles
-     * https://wiki.bedrock.dev/blocks/block-components#flower-pottable
+     * https://wiki.bedrock.dev/blocks/block-components#flower-pottablep
      * (add with custom models)
      * https://wiki.bedrock.dev/blocks/block-components#geometry
      * https://wiki.bedrock.dev/blocks/block-components#item-visual
