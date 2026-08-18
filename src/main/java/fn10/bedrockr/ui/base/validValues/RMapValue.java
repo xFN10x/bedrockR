@@ -3,6 +3,7 @@ package fn10.bedrockr.ui.base.validValues;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.RStringDropdownMapElement;
 import fn10.bedrockr.addons.element.ValidatableValue;
+import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.RItemValue;
 import fn10.bedrockr.ui.components.mapValues.RMAutoValue;
 import fn10.bedrockr.ui.components.mapValues.RMStringDropdownValue;
@@ -24,10 +25,7 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
 
     private final Dimension Size = new Dimension(240, 80);
 
-    protected final JButton HelpButton = new JButton();
-    {
-        HelpButton.putClientProperty("JButton.buttonType", "help");
-    }
+    protected final RHelpButton HelpButton = new RHelpButton();
     protected final JButton removeButton = new JButton("-");
 
     protected final JLabel DisplayNameLabel = new JLabel();
@@ -43,7 +41,7 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
     protected static boolean are(Class<?> cls0, Class<?> cls1) {
         return cls1.isAssignableFrom(cls0);
     }
-    
+     
     public static RMapValue<?,?> ofElement(Window Ancestor, RMapElement rMapElement) {
         if (rMapElement instanceof RStringDropdownMapElement rsd) {
             return new RMStringDropdownValue(Ancestor, rsd);
@@ -278,6 +276,7 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
             Lay.putConstraint(SpringLayout.WEST, InputField, 5, SpringLayout.WEST, this);
             Lay.putConstraint(SpringLayout.EAST, InputField, -5, SpringLayout.EAST, this);
             Lay.putConstraint(SpringLayout.SOUTH, InputField, -5, SpringLayout.SOUTH, this);
+            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
         }
 //
 //        for (Entry<String, Component> entry : MultipleInputs.entrySet()) {
@@ -290,16 +289,16 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
 //                }
 //            }
 //        }
-
-        HelpButton.addActionListener(
-                _ -> JOptionPane.showMessageDialog(this, RME.HelpDescription, "Help for: " + RME.DisplayName,
-                        JOptionPane.INFORMATION_MESSAGE));
+        HelpButton.setMessage(RME.HelpDescription);
+        HelpButton.setTitle("Help for: " + RME.DisplayName);
 
         Lay.putConstraint(SpringLayout.NORTH, DisplayNameLabel, 5, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.WEST, DisplayNameLabel, 5, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.EAST, DisplayNameLabel, 0, SpringLayout.WEST, HelpButton);
 
         Lay.putConstraint(SpringLayout.NORTH, IDNameLabel, 5, SpringLayout.SOUTH, DisplayNameLabel);
         Lay.putConstraint(SpringLayout.WEST, IDNameLabel, 5, SpringLayout.WEST, this);
+        Lay.putConstraint(SpringLayout.EAST, IDNameLabel, 5, SpringLayout.WEST, HelpButton);
 
         Lay.putConstraint(SpringLayout.NORTH, HelpButton, 5, SpringLayout.NORTH, this);
         Lay.putConstraint(SpringLayout.EAST, HelpButton, -5, SpringLayout.EAST, this);
