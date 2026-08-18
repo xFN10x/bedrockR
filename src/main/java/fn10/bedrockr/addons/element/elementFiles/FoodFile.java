@@ -12,7 +12,7 @@ import java.util.Map;
 import fn10.bedrockr.addons.element.elementSources.SourceFoodElement;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.resource.ItemTextureResource;
-import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import org.apache.commons.io.FileUtils;

@@ -1,6 +1,5 @@
-package fn10.bedrockr.addons.resource;
+package fn10.bedrockr.addons.resource.interfaces;
 
-import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.ImageHandler;
 
 import java.io.File;
@@ -28,12 +27,12 @@ public abstract class TextureResource extends Resource {
     }
 
     @Override
-    public String resourceDataExtension() {
+    public String getDataExtension() {
         return "png";
     }
 
     @Override
-    public String resourceTypeName() {
+    public String getResourceTypeFolder() {
         return "texture/" + type.toString() ;
     }
 

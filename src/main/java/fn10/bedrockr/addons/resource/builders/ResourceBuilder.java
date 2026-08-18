@@ -1,6 +1,6 @@
 package fn10.bedrockr.addons.resource.builders;
 
-import fn10.bedrockr.addons.resource.Resource;
+import fn10.bedrockr.addons.resource.interfaces.Resource;
 
 import java.nio.file.Path;
 

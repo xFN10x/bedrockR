@@ -3,6 +3,7 @@ package fn10.bedrockr.addons.resource;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
+import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
 import org.jspecify.annotations.NonNull;
@@ -69,8 +70,8 @@ public class WorkspaceResources {
         Path resFolder = getResourcesPath(wpf.WorkspaceName).resolve(path);
         Path jsonPath = resFolder.resolve("resource.json");
         T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
-        Path dataFile = resFolder.resolve("data." + resource.resourceDataExtension());
-        resource.data = Files.readAllBytes(dataFile);
+        Path dataFile = resFolder.resolve("data." + resource.getDataExtension());
+        resource.setData( Files.readAllBytes(dataFile));
         addNewResource(resource, false);
         RFileOperations.LOG.info("Loaded resource: " + path);
         save();

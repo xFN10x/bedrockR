@@ -2,8 +2,7 @@ package fn10.bedrockr.ui.rendering;
 
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
-import fn10.bedrockr.addons.resource.Resource;
-import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.util.ImageUtilities;

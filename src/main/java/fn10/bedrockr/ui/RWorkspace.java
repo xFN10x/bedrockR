@@ -13,7 +13,7 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
 import fn10.bedrockr.addons.resource.ItemTextureResource;
-import fn10.bedrockr.addons.resource.Resource;
+import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RElementFileButton;
@@ -42,6 +42,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
@@ -333,6 +334,25 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     }
 
     public void refreshResources() {
+        try {
+            WorkspaceResources reses = WorkspaceResources.load(SWPF.workspaceName());
+
+            HashMap<String, JPanel> panels = new HashMap<>();
+            
+            for (Resource res : reses.resources) {
+                String cate = res.getResourceCategory();
+                if (!panels.containsKey(cate)) {
+                    panels.put(cate, new JPanel());
+                }
+
+                JPanel panel = panels.get(cate);
+                
+            }
+            
+        } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
 //        SwingUtilities.invokeLater(() -> {
 //            SourceResourceElement resFile = RFileOperations.getResources(SWPF.workspaceName());
 //            ResourceInnerPanelView.removeAll();
