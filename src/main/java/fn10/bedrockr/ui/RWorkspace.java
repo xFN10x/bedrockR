@@ -17,6 +17,7 @@ import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RElementFileButton;
+import fn10.bedrockr.ui.components.RResourceButton;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.RFileOperations;
@@ -34,6 +35,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -41,8 +43,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
@@ -335,18 +336,34 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     public void refreshResources() {
         try {
-            WorkspaceResources reses = WorkspaceResources.load(SWPF.workspaceName());
+            WorkspaceResources res = WorkspaceResources.load(SWPF.workspaceName());
 
-            HashMap<String, JPanel> panels = new HashMap<>();
+            HashMap<String, ArrayList<RResourceButton>> panels = new HashMap<>();
+            ResourceInnerPanelView.removeAll();
+            BoxLayout lay = new BoxLayout(ResourceInnerPanelView, BoxLayout.Y_AXIS);
+            ResourceInnerPanelView.setLayout(lay);
             
-            for (Resource res : reses.resources) {
-                String cate = res.getResourceCategory();
+            ArrayList<Resource> resources = res.resources;
+            if (resources.isEmpty()) {
+                ResourceInnerPanelView.add(new JLabel("No resources here!"));
+            }
+            for (Resource resource : resources) {
+                String cate = resource.getResourceCategory();
                 if (!panels.containsKey(cate)) {
-                    panels.put(cate, new JPanel());
+                    panels.put(cate, new ArrayList<>());
                 }
 
-                JPanel panel = panels.get(cate);
+                ArrayList<RResourceButton> buttons = panels.get(cate);
+                buttons.add(new RResourceButton(resource));
+            }
+            
+
+            for (Map.Entry<String, ArrayList<RResourceButton>> entry : panels.entrySet()) {
+                ResourceInnerPanelView.add(new JLabel(entry.getKey()));
+                WrapLayout panelLay = new WrapLayout();
+                JPanel catPanel = new JPanel(panelLay);
                 
+                entry.getValue().forEach(catPanel::add);
             }
             
         } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
