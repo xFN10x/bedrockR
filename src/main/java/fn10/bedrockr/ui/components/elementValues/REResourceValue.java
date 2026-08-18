@@ -1,8 +1,8 @@
 package fn10.bedrockr.ui.components.elementValues;
 
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.addons.resource.Resource;
-import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.interfaces.Resource;
+import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.utils.RAnnotation;
 import org.jspecify.annotations.NonNull;

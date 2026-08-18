@@ -2,7 +2,7 @@ package fn10.bedrockr.addons.element.supporting.block;
 
 import fn10.bedrockr.addons.mcjson.resource.BlockJSONEntry;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
-import fn10.bedrockr.addons.resource.ResourcePointer;
+import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 
 import java.io.FileNotFoundException;
 import java.util.Objects;

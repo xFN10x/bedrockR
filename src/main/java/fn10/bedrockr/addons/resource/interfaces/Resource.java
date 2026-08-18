@@ -1,5 +1,6 @@
-package fn10.bedrockr.addons.resource;
+package fn10.bedrockr.addons.resource.interfaces;
 
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
 
@@ -8,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.logging.Level;
 
 public abstract class Resource {
 
@@ -51,15 +51,25 @@ public abstract class Resource {
     }
 
     public String getFolderPath() {
-        return resourceTypeName() + "/" + ID;
+        return getResourceTypeFolder() + "/" + ID;
     }
 
     /// Do not start this with a / or it tries to save absolutely.
     public String getDataName() {
-        return "data." + resourceDataExtension();
+        return "data." + getDataExtension();
     }
 
-    public abstract String resourceDataExtension();
+    public abstract String getDataExtension();
 
-    public abstract String resourceTypeName();
+    public abstract String getResourceTypeFolder();
+    
+    public abstract String getResourceCategory();
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
 }

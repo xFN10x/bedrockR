@@ -1,4 +1,6 @@
-package fn10.bedrockr.addons.resource;
+package fn10.bedrockr.addons.resource.interfaces;
+
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 
 public class ResourcePointer<T extends Resource> {
     private final String id;
