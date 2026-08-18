@@ -23,14 +23,17 @@ public class RDetailedButton extends JPanel implements MouseListener {
     public RDetailedButton(Color borderColour) {
         this(borderColour, true);
     }
+    public RDetailedButton() {
+        this(BedrockrDark.BEDROCKR_GREEN);
+    }
 
     public RDetailedButton(Runnable selectedFunction, boolean hasIcon) {
         this(selectedFunction, BedrockrDark.BEDROCKR_GREEN, hasIcon);
     }
     public RDetailedButton(Color borderColour, boolean hasIcon) {
-        this(null, borderColour, hasIcon);
+        this(() -> {}, borderColour, hasIcon);
     }
-
+ 
     public RDetailedButton(Runnable selectedFunction, Color borderColour, boolean hasIcon) {
         super();
         this.func = selectedFunction;
