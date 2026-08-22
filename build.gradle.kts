@@ -16,7 +16,7 @@ val strVersion = "a3.0"
 val winver = "0.9.0"
 
 dependencies {
-    implementation("com.google.guava:guava:33.6.0-jre")
+    implementation("com.google.guava:guava:33.7.1-jre")
 
     api("com.google.code.gson:gson:2.14.0")
     implementation("com.formdev:flatlaf:3.7.2")
