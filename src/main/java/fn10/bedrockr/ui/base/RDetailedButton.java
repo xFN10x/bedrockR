@@ -83,6 +83,14 @@ public class RDetailedButton extends JPanel implements MouseListener {
         Icon.setIcon(ImageUtilities.ResizeIcon(ico, 64, 64));
     }
 
+    public void setIcon(ImageIcon ico, boolean resize) {
+        if (resize) setIcon(ico);
+        else {
+            float aspect = (float)ico.getIconWidth() / (float)ico.getIconHeight();
+            Icon.setIcon(ImageUtilities.ResizeIcon(ico, (int) (64 * aspect), 64));
+        }
+    }
+
     public boolean getSelected() {
         return this.selected;
     }

@@ -72,4 +72,10 @@ public abstract class Resource {
     public void setData(byte[] data) {
         this.data = data;
     }
+    
+    public byte[] getResourceIcon() {
+        return RFileOperations.readAllOfResource("/resource/"+ getResourceIconName() + ".png");
+    }
+    
+    public abstract String getResourceIconName();
 }

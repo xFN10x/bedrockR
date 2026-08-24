@@ -119,7 +119,7 @@ public class WorkspaceResources {
                 Class<?> clas;
                 if (entry.getValue() instanceof String str) {
                     clas = Class.forName(str);
-                    if (!clas.isAssignableFrom(Resource.class)) continue;
+                    if (!Resource.class.isAssignableFrom(clas)) continue;
                 } else if (entry.getValue() instanceof Class cls) {
                     clas = cls;
                 } else continue;
@@ -132,7 +132,7 @@ public class WorkspaceResources {
     }
 
     private static @NonNull Path getResourcesJsonPath(String wpName) throws IOException {
-        return getResourcesPath(wpName).resolve("resources.json");
+        return getResourcesPath(wpName).resolve("resPaths.json");
     }
 
     public static Path getResourcesPath(String wpName) throws IOException {

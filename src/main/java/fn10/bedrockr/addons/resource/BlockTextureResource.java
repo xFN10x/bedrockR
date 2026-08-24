@@ -13,4 +13,9 @@ public class BlockTextureResource extends TextureResource {
     public String getResourceCategory() {
         return "Block Textures";
     }
+
+    @Override
+    public String getResourceIconName() {
+        return "blocktex";
+    }
 }

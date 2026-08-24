@@ -13,4 +13,9 @@ public class ItemTextureResource extends TextureResource {
     public String getResourceCategory() {
         return "Item Textures";
     }
+
+    @Override
+    public String getResourceIconName() {
+        return "itemtex";
+    }
 }

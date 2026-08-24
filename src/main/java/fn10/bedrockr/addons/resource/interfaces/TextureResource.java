@@ -36,6 +36,12 @@ public abstract class TextureResource extends Resource {
         return "texture/" + type.toString() ;
     }
 
+    @Override
+    public byte[] getResourceIcon() {
+        if (data != null) return data;
+        else return super.getResourceIcon();
+    }
+
     public enum TextureType {
         Item,
         Block

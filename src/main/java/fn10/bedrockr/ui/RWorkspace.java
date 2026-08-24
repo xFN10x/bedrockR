@@ -16,6 +16,7 @@ import fn10.bedrockr.addons.resource.ItemTextureResource;
 import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RFrame;
+import fn10.bedrockr.ui.components.LineFiller;
 import fn10.bedrockr.ui.components.RElementFileButton;
 import fn10.bedrockr.ui.components.RResourceButton;
 import fn10.bedrockr.ui.util.ErrorShower;
@@ -27,6 +28,7 @@ import fn10.bedrockr.utils.SettingsFile;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
@@ -46,6 +48,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.List;
 
+import static fn10.bedrockr.utils.RFileOperations.CURRENT_WORKSPACE_FORMAT;
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -257,9 +260,21 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 dispose();
             }
         });
-
+        
         pack();
 
+        JPopupMenu resPanelPopup = new JPopupMenu();
+        resPanelPopup.add("Refresh").addActionListener(_ -> {
+            refreshResources();
+        });
+        ResourceInnerPanelView.setComponentPopupMenu(resPanelPopup);
+
+        JPopupMenu elePanelPopup = new JPopupMenu();
+        elePanelPopup.add("Refresh").addActionListener(_ -> {
+            refreshElements();
+        });
+        ElementInnerPanelView.setComponentPopupMenu(elePanelPopup);
+        
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
         refreshAll();
     }
@@ -356,14 +371,17 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 ArrayList<RResourceButton> buttons = panels.get(cate);
                 buttons.add(new RResourceButton(resource));
             }
-            
 
             for (Map.Entry<String, ArrayList<RResourceButton>> entry : panels.entrySet()) {
-                ResourceInnerPanelView.add(new JLabel(entry.getKey()));
                 WrapLayout panelLay = new WrapLayout();
                 JPanel catPanel = new JPanel(panelLay);
-                
+                TitledBorder border = new TitledBorder(entry.getKey());
+                border.setTitleJustification(TitledBorder.CENTER);
+                catPanel.setBorder(border);
+
                 entry.getValue().forEach(catPanel::add);
+
+                ResourceInnerPanelView.add(catPanel);
             }
             
         } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
