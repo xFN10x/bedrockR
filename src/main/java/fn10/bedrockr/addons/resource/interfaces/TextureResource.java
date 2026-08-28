@@ -18,7 +18,7 @@ public abstract class TextureResource extends Resource {
     }
 
     public <T> void resizeImage(int w, int h, ImageHandler<T> handler) throws IOException {
-        handler.resizeImage(w,h, loadImage(handler));
+        data = handler.getBytesFromImage(handler.resizeImage(w,h, loadImage(handler)));
     }
     
     public <T> void readImage(ImageHandler<T> handler, T image) throws IOException {
