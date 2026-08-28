@@ -1,5 +1,8 @@
 package fn10.bedrockr.ui.base;
 
+import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.HiDPIUtils;
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.ui.util.ImageUtilities;
@@ -25,9 +28,9 @@ public class RFrame extends JFrame {
 
     public static final JLabel verText = new JLabel(RFileOperations.VERSION);
 
-    public final JButton websiteButton = new JButton(ImageUtilities.getIcon("/website.png",32,32));
-    public final JButton ghButton = new JButton(ImageUtilities.getIcon("/gh.png",32,32));
-    public final JButton sdButton = new JButton(ImageUtilities.getIcon("/sd.png",32,32));
+    public final JButton websiteButton = new JButton(new ScaledImageIcon(ImageUtilities.getIcon("/website.png")));
+    public final JButton ghButton = new JButton(new ScaledImageIcon(ImageUtilities.getIcon("/gh.png")));
+    public final JButton sdButton = new JButton(new ScaledImageIcon(ImageUtilities.getIcon("/sd.png")));
 
     public final JLabel titleImg = new JLabel(ImageUtilities
             .ResizeImageByURL(RFrame.class.getResource("/ui/BrandingFullWShadow.png"), titleImgW, titleImageH,
@@ -39,9 +42,8 @@ public class RFrame extends JFrame {
 
     public RFrame(int CloseOperation, String WindowTitle, Dimension Size, boolean Resizeable, boolean hasBottomBar) {
         super(WindowTitle + " - bedrockR " + RFileOperations.VERSION);
-
         setIconImage(Launcher.ICON);
-
+        
         BottomBar.setBackground(Color.GREEN);
         BottomBar.setPreferredSize(new Dimension(0, 40));
 
@@ -68,9 +70,9 @@ public class RFrame extends JFrame {
         Lay2.putConstraint(SpringLayout.SOUTH, verText, 0, SpringLayout.SOUTH, titleImg);
         Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, sdButton);
 
-        websiteButton.setMaximumSize(new Dimension(32, 32));
-        ghButton.setMaximumSize(new Dimension(32, 32));
-        sdButton.setMaximumSize(new Dimension(32, 32));
+        websiteButton.setPreferredSize(new Dimension(32, 32));
+        ghButton.setPreferredSize(new Dimension(32, 32));
+        sdButton.setPreferredSize(new Dimension(32, 32));
 
         websiteButton.setToolTipText("bedrockR's Website");
         ghButton.setToolTipText("bedrockR's Github Repository");
@@ -79,10 +81,6 @@ public class RFrame extends JFrame {
         websiteButton.addActionListener(openLink("https://bedrockr.xplate.dev"));
         ghButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR"));
         sdButton.addActionListener(openLink("https://stardance.hackclub.com/projects/336"));
-
-        websiteButton.setBorder(new LineBorder(Color.green.darker(), 3));
-        ghButton.setBorder(new LineBorder(Color.green.darker(), 3));
-        sdButton.setBorder(new LineBorder(Color.green.darker(), 3));
 
         verText.setForeground(Color.white);
 

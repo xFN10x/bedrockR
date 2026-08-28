@@ -5,6 +5,7 @@ import fn10.bedrockr.Launcher;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RAddon;
 import fn10.bedrockr.ui.rendering.BlockTextures;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
 import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.Greetings;
@@ -153,7 +154,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     public void refresh() {
         new Thread(() -> {
             ProjectsPart.removeAll();
-            JButton ToAdd = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
+            JButton ToAdd = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
             ToAdd.setActionCommand("New Addon");
             ToAdd.addActionListener(this);
             ProjectsPart.add(ToAdd);

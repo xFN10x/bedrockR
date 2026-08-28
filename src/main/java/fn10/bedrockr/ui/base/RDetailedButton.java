@@ -1,6 +1,7 @@
 package fn10.bedrockr.ui.base;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.ui.laf.BedrockrDark;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
@@ -79,15 +80,23 @@ public class RDetailedButton extends JPanel implements MouseListener {
         addMouseListener(this);
     }
 
-    public void setIcon(ImageIcon ico) {
-        Icon.setIcon(ImageUtilities.ResizeIcon(ico, 64, 64));
+    public void setIcon(Image ico) {
+        Icon.setIcon(ImageUtilities.toScaled(ico, 64, 64));
     }
 
-    public void setIcon(ImageIcon ico, boolean resize) {
+    public void setIcon(Icon ico) {
+        Icon.setIcon(ico);
+    }
+    public void setIcon(byte[] ico) {
+        Icon.setIcon(ImageUtilities.toScaled(ico, 64, 64));
+    }
+
+    public void setIcon(byte[] ico, boolean resize) {
         if (resize) setIcon(ico);
         else {
-            float aspect = (float)ico.getIconWidth() / (float)ico.getIconHeight();
-            Icon.setIcon(ImageUtilities.ResizeIcon(ico, (int) (64 * aspect), 64));
+            ScaledImageIcon icon = ImageUtilities.toScaled(ico);
+            float aspect = (float)icon.getIconWidth() / (float)icon.getIconHeight();
+            Icon.setIcon(ImageUtilities.toScaled(ico, (int) (64 * aspect), 64));
         }
     }
 

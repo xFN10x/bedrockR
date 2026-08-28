@@ -1,8 +1,10 @@
 package fn10.bedrockr.ui.rendering;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo.BlockJsonEntry;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.ui.RLoadingScreen;
@@ -36,7 +38,7 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class BlockTextures {
     private static final HttpClient client = HttpClient.newBuilder().build();
-    private static final Map<String, ImageIcon> preloadedIcons = new HashMap<String, ImageIcon>();
+    private static final Map<String, ScaledImageIcon> preloadedIcons = new HashMap<String, ScaledImageIcon>();
     private static Map<String, Map<String, Object>> blocksJson = null;
     private static Map<String, Map<String, Map<String, Object>>> terrianTextureJson = null;
     private static final URI blocksJsonUrl = URI.create(
@@ -68,7 +70,7 @@ public class BlockTextures {
         return terrianTextureJson;
     }
 
-    public static ImageIcon getBlockTexture(Window doingThis, String name) throws IOException {
+    public static ScaledImageIcon getBlockTexture(Window doingThis, String name) throws IOException {
         if (preloadedIcons.containsKey(name))
             return preloadedIcons.get(name);
 
@@ -77,7 +79,7 @@ public class BlockTextures {
                         name + ".png")
                 .toFile();
         if (proposedRender.exists()) {
-            preloadedIcons.put(name, new ImageIcon(ImageIO.read(proposedRender).getScaledInstance(45, 45,
+            preloadedIcons.put(name, ImageUtilities.toScaled(ImageIO.read(proposedRender).getScaledInstance(45, 45,
                     BufferedImage.SCALE_AREA_AVERAGING)));
             return getBlockTexture(doingThis, name);
         } else {

@@ -3,6 +3,7 @@ package fn10.bedrockr.ui.base;
 import java.awt.*;
 import javax.swing.*;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 
@@ -28,7 +29,7 @@ public class RDialog extends JDialog {
 
         int titleImgW = 187;
         int titleImageH = 40;
-        ImageIcon titleImgIcon = ImageUtilities.ResizeImageByURL(getClass().getResource("/ui/BrandingFullWShadow.png"),
+        ScaledImageIcon titleImgIcon = ImageUtilities.toScaled("/ui/BrandingFullWShadow.png",
                 titleImgW, titleImageH); // Full Icon
         JLabel titleImg = new JLabel(titleImgIcon);
         titleImg.setSize(new Dimension(titleImgW, titleImageH));

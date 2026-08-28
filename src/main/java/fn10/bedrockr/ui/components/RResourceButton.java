@@ -22,7 +22,7 @@ public class RResourceButton extends RDetailedButton {
         super();
         this.resources = resources;
         Name.setText(res.Name);
-        setIcon(new ImageIcon(res.getResourceIcon()), false);
+        setIcon(res.getResourceIcon(), false);
 
         JPopupMenu menu = new JPopupMenu();
         menu.add("Delete").addActionListener(_ -> {

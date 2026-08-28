@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.time.LocalTime;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SpringLayout;
@@ -37,11 +36,11 @@ public class RSplashScreen extends JFrame {
 
         if (compareSunSet > 0 && compareSunRise < 0) // if its after sun set, but before sun rise
         {
-            image.setIcon(new ImageIcon(getClass().getResource("/splash_night.png")));
+            image.setIcon(ImageUtilities.toScaled("/splash_night.png"));
 
         } else {
 
-            image.setIcon(new ImageIcon(getClass().getResource("/splash.png")));
+            image.setIcon(ImageUtilities.toScaled("/splash.png"));
         }
 
         lay.putConstraint(SpringLayout.WEST, ProgressText, 18, SpringLayout.WEST, getContentPane());

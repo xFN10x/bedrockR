@@ -88,7 +88,7 @@ public class RAddon extends JPanel implements MouseListener {
         setBackground(BGC);
         setBorder(new FlatLineBorder(new Insets(1, 1, 1, 1), Color.WHITE, 1, 16));
 
-        Icon.setIcon(new ImageIcon(ImageUtilities.makeRoundedCorner(resizedImage, 16)));
+        Icon.setIcon(ImageUtilities.toScaled(ImageUtilities.makeRoundedCorner(resizedImage, 16)));
         Icon.setAlignmentX(CENTER_ALIGNMENT);
         Icon.setAlignmentY(CENTER_ALIGNMENT);
         Icon.setPreferredSize(new Dimension(88, 88));

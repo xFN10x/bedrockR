@@ -86,7 +86,7 @@ public class RTextureAddingSelector extends RDialog {
      */
     public Map.Entry<String, ImageIcon> getSelected() {
         if (selected != null)
-            return new Map.Entry<String, ImageIcon>() {
+            return new Map.Entry<>() {
 
                 @Override
                 public String getKey() {
