@@ -369,7 +369,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 }
 
                 ArrayList<RResourceButton> buttons = panels.get(cate);
-                buttons.add(new RResourceButton(resource));
+                buttons.add(new RResourceButton(resource, res));
             }
 
             for (Map.Entry<String, ArrayList<RResourceButton>> entry : panels.entrySet()) {

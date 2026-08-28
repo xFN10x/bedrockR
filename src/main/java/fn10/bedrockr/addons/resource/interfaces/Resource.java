@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 
 public abstract class Resource {
 
@@ -78,4 +79,7 @@ public abstract class Resource {
     }
     
     public abstract String getResourceIconName();
+    
+    public void getTasks(HashMap<String, ResourceTask> map) {
+    }
 }

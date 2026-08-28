@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.NonNull;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +47,7 @@ public class RFileOperations {
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
     private static File BASE_DIRECTORY = new File(BASE_PATH);
     private static WorkspaceFile CURRENT_WORKSPACE = null;
+    private static ImageHandler<?> CURRENT_IMG_HANDLER;
     public static final Map<String, Path> MC_SYNC_OPTIONS = Map.of(
             "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"), "Minecraft Bedrock", "Users", "Shared", "games", "com.mojang"),
             "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local", "share", "mcpelauncher", "games", "com.mojang")
@@ -55,15 +57,16 @@ public class RFileOperations {
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
     // element 0 must be latest
     public final static String[] PICKABLE_VERSIONS = {
+            "1.26.40",
             "1.26.30",
-            "1.26.20",
     };
 
-    public static void init() {
+    public static void init(ImageHandler<?> imgHandler) {
         SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
         ReturnItemInfo.downloadVanillaItems();
         ReturnItemInfo.downloadVanillaBlocks();
+        CURRENT_IMG_HANDLER = imgHandler;
     }
 
     /// taken from [this](https://stackoverflow.com/a/31976060)
@@ -617,6 +620,10 @@ public class RFileOperations {
 
     public static WorkspaceResources getWorkspaceResources(String workspaceName) throws WorkspaceResources.WorkspaceUnsupportedException, IOException {
         return WorkspaceResources.load(workspaceName);
+    }
+    
+    public static ImageHandler<?> getCurrentImgHandler() {
+        return CURRENT_IMG_HANDLER;
     }
 
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,

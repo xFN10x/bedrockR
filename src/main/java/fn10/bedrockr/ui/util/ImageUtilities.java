@@ -151,4 +151,8 @@ public class ImageUtilities {
         img.createGraphics().drawImage(image, 0, 0, null);
         return img;
     }
+
+    public static boolean confirm(Component parent, String message, String title) {
+        return JOptionPane.showConfirmDialog(parent,message,title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+    }
 }
