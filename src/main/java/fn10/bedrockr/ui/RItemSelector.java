@@ -5,7 +5,6 @@ import java.awt.Insets;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.IOException;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -16,6 +15,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import org.apache.commons.lang3.ArrayUtils;
@@ -69,7 +69,7 @@ public class RItemSelector extends RDialog {
                     ErrorShower.exception(this, e);
                 }
                 if (!ArrayUtils.isEmpty(texRef.texData)) {
-                    ImageIcon icon = new ImageIcon(texRef.texData);
+                    ScaledImageIcon icon = ImageUtilities.toScaled(texRef.texData);
                     ToAdd.setIcon(icon);
                 }
                 else
@@ -104,7 +104,7 @@ public class RItemSelector extends RDialog {
                     ToAdd.setMinimumSize(size);
                     ToAdd.setPreferredSize(size);
                     ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                    ImageIcon icon = BlockTextures.getBlockTexture(parent, item.name.split(":")[1]);
+                    ScaledImageIcon icon = BlockTextures.getBlockTexture(parent, item.name.split(":")[1]);
                     if (icon != null)
                         ToAdd.setIcon(icon);
                     ToAdd.setText(item.displayName);

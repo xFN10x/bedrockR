@@ -1,5 +1,6 @@
 package fn10.bedrockr.ui;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.addons.element.elementFiles.BlockFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
@@ -56,7 +57,7 @@ public class RBlockSelector extends RDialog {
                 } catch (IOException e) {
                     ErrorShower.exception(this, e);
                 }
-                ImageIcon icon = new ImageIcon(ref.image);
+                ScaledImageIcon icon = ImageUtilities.toScaled(ref.image);
                 if (!ArrayUtils.isEmpty(ref.image))
                     ToAdd.setIcon(icon);
                 else
@@ -90,7 +91,7 @@ public class RBlockSelector extends RDialog {
                     ToAdd.setMinimumSize(size);
                     ToAdd.setPreferredSize(size);
                     ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                    ImageIcon icon = BlockTextures.getBlockTexture(parent, item.name.split(":")[1]);
+                    ScaledImageIcon icon = BlockTextures.getBlockTexture(parent, item.name.split(":")[1]);
                     if (icon != null)
                         ToAdd.setIcon(icon);
                     ToAdd.setText(item.displayName);

@@ -1,6 +1,7 @@
 package fn10.bedrockr.ui.components;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.addons.element.ValidatableValue;
 import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
@@ -115,7 +116,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
     private static final Dimension SIZE = new Dimension(200, 200);
     private static final Dimension SIZE_SINGLE = new Dimension(69, 69);
-    private static final ImageIcon bg = new ImageIcon(RFileOperations.readAllOfResource("/ui/CraftingGrid.png"));
+    private static final ScaledImageIcon bg = ImageUtilities.toScaled(RFileOperations.readAllOfResource("/ui/CraftingGrid.png"));
 
     public final JLabel Background = new JLabel(bg);
 
@@ -130,7 +131,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
     public final JScrollPane ListScroll = new JScrollPane(ListInnerScroll, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     public final JButton ListAddButton = new JButton(
-            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
+            ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
 
     public final Vector<JButton> buttons = new Vector<>(9);
 
@@ -241,8 +242,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
         if (item.Texture != null) {
             button.setFont(button.getFont().deriveFont(16f));
-            button.setIcon(new ImageIcon(
-                    new ImageIcon(ArrayUtils.toPrimitive(item.Texture)).getImage().getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH)));
+            button.setIcon(ImageUtilities.toScaled(ArrayUtils.toPrimitive(item.Texture),48,48));
             button.setText("");
         } else {
             button.setFont(button.getFont().deriveFont(8f));

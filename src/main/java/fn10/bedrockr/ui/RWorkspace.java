@@ -20,6 +20,7 @@ import fn10.bedrockr.ui.components.LineFiller;
 import fn10.bedrockr.ui.components.RElementFileButton;
 import fn10.bedrockr.ui.components.RResourceButton;
 import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RFileOperations.ElementMade;
@@ -69,16 +70,16 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
     private final JScrollPane ResourceView = new JScrollPane(ResourceInnerPanelView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private final JButton AddElement = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/NewElement.png")));
+    private final JButton AddElement = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/NewElement.png")));
     private final JButton AddTextureResource = new JButton(
-            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/NewResource.png")));
-    private final JButton LaunchMC = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/LaunchMC.png")));
-    private final JButton BuildLaunch = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/Build&Play.png")));
-    private final JButton BuildElements = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/Build.png")));
+            ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/NewResource.png")));
+    private final JButton LaunchMC = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/LaunchMC.png")));
+    private final JButton BuildLaunch = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/Build&Play.png")));
+    private final JButton BuildElements = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/Build.png")));
     private final JButton ReBuildElements = new JButton(
-            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/ReBuild.png")));
+            ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/ReBuild.png")));
     private final JButton HelpWikiButton = new JButton(
-            new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/Help.png")));
+            ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/Help.png")));
 
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("File");
@@ -337,7 +338,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
             } catch (Exception e) {
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                ErrorShower.showError(this, "Failed to build element.", "Building Error", e);
+                ErrorShower.showError(progress, "Failed to build element.", "Building Error", e);
             } finally {
                 SwingUtilities.invokeLater(progress::dispose);
             }

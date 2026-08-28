@@ -1,5 +1,6 @@
 package fn10.bedrockr.ui.util;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.utils.RFileOperations;
 import org.jspecify.annotations.NonNull;
@@ -15,6 +16,18 @@ public class ImageUtilities {
 
     public final static DefaultImageHandler ImgHandler = new DefaultImageHandler();
 
+    public static ScaledImageIcon toScaled(Image img) {
+        return new ScaledImageIcon(new ImageIcon(img));
+    }
+
+    public static ScaledImageIcon toScaled(byte[] img) {
+        return new ScaledImageIcon(new ImageIcon(img));
+    }
+
+    public static ScaledImageIcon toScaled(String path) {
+        return new ScaledImageIcon(new ImageIcon(RFileOperations.readAllOfResource(path)));
+    }
+    
     public static ImageIcon getIcon(String path) {
         return new ImageIcon(RFileOperations.readAllOfResource(path));
     }
@@ -154,5 +167,17 @@ public class ImageUtilities {
 
     public static boolean confirm(Component parent, String message, String title) {
         return JOptionPane.showConfirmDialog(parent,message,title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+    }
+
+    public static ScaledImageIcon toScaled(byte[] primitive, int w, int h) {
+        return new ScaledImageIcon(ResizeIcon(new ImageIcon(primitive),w,h));
+    }
+
+    public static ScaledImageIcon toScaled(Image primitive, int w, int h) {
+        return new ScaledImageIcon(ResizeIcon(new ImageIcon(primitive),w,h));
+    }
+
+    public static ScaledImageIcon toScaled(String primitive, int w, int h) {
+        return new ScaledImageIcon(ResizeIcon(new ImageIcon(primitive),w,h));
     }
 }

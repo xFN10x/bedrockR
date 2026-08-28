@@ -354,7 +354,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     TypeDropdown.setSelectedItem(serialized.recipeType);
                 }
 
-                JLabel arrow = new JLabel(new ImageIcon(RFileOperations.readAllOfResource("/ui/Arrow.png")));
+                JLabel arrow = new JLabel(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/ui/Arrow.png")));
 
                 JPanel lowerFields = new JPanel();
                 BoxLayout lowerLayout = new BoxLayout(lowerFields, BoxLayout.X_AXIS);
@@ -513,7 +513,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                     switch (TypeDropdown.getSelectedItem()) {
                         case RecipeType.Shaped:
-                            arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/Arrow.png")));
+                            arrow.setIcon(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/ui/Arrow.png")));
                             extraResults.setVisible(true);
                             try {
                                 grid.empty();
@@ -530,7 +530,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             break;
 
                         case RecipeType.Shapeless:
-                            arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
+                            arrow.setIcon(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
                             extraResults.setVisible(false);
                             try {
                                 grid.empty();
@@ -552,7 +552,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                         case null:
                         default:
-                            arrow.setIcon(new ImageIcon(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
+                            arrow.setIcon(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/ui/ArrowShapless.png")));
                             extraResults.setVisible(false);
                             break;
                     }

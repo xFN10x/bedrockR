@@ -46,8 +46,8 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
 
         try {
             setIcon(
-                    new ImageIcon(File.getNewSource()
-                            .getIcon(Workspace.SWPF.getSerialized().getRes(), ImageUtilities.ImgHandler))
+                    File.getNewSource()
+                            .getIcon(Workspace.SWPF.getSerialized().getRes(), ImageUtilities.ImgHandler)
             );
         } catch (IOException e) {
             RLogUtils.exception("Failed to get Element icon.", e);

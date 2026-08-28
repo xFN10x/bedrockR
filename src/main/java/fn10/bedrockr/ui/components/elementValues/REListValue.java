@@ -3,6 +3,7 @@ package fn10.bedrockr.ui.components.elementValues;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
     protected JPanel InnerPane = new JPanel();
-    protected JButton AddButton = new JButton(new ImageIcon(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
+    protected JButton AddButton = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
     private final Class<L> listType;
 
     public REListValue(@Nullable Field TargetField, Class<List<L>> type, @Nonnull Class<L> listType, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.FieldDetails details) {

@@ -7,7 +7,6 @@ import java.io.File;
 import java.nio.file.Files;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -68,7 +67,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
         AddonIcon.setHorizontalAlignment(SwingConstants.CENTER);
         AddonIcon.setVerticalAlignment(SwingConstants.CENTER);
         AddonIcon.setBorder(BorderFactory.createLineBorder(getForeground(), 3));
-        AddonIcon.setIcon(ImageUtilities.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
+        AddonIcon.setIcon(ImageUtilities.toScaled(ArrayUtils.toPrimitive(ChosenIcon), 250, 250));
 
         var NameInputText = new JLabel("Addon Name");
 
@@ -167,7 +166,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                     File file = fileChooser.getSelectedFile();
                     ChosenIcon = ArrayUtils.toObject(Files.readAllBytes(file.toPath()));
                     AddonIcon.setIcon(
-                            ImageUtilities.ResizeIcon(new ImageIcon(ArrayUtils.toPrimitive(ChosenIcon)), 250, 250));
+                            ImageUtilities.toScaled(ArrayUtils.toPrimitive(ChosenIcon), 250, 250));
                     imageExtension = file.getName().split("\\.")[1];
                 } catch (Exception e1) {
                     RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
