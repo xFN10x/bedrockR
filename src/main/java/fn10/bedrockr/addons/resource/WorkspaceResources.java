@@ -17,15 +17,17 @@ import java.util.List;
 import java.util.Map;
 
 public class WorkspaceResources {
+
     public enum ResourceType {
         ITEM_TEXTURE("Item Texture", "textures/item"),
         BLOCK_TEXTURE("Block Texture", "textures/item"),
         ;
 
         ResourceType(String name, String folder) {
-            
+
         }
     }
+
     public final WorkspaceFile wpf;
     public final HashMap<String, Class<? extends Resource>> resourcePaths = new HashMap<>();
     public final ArrayList<Resource> resources = new ArrayList<>();
@@ -71,7 +73,7 @@ public class WorkspaceResources {
         Path jsonPath = resFolder.resolve("resource.json");
         T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
         Path dataFile = resFolder.resolve("data." + resource.getDataExtension());
-        resource.setData( Files.readAllBytes(dataFile));
+        resource.setData(Files.readAllBytes(dataFile));
         addNewResource(resource, false);
         RFileOperations.LOG.info("Loaded resource: " + path);
         save();
@@ -94,7 +96,7 @@ public class WorkspaceResources {
         res.save();
         return res;
     }
-    
+
     public void save() {
         try {
             String json = RFileOperations.gson.toJson(resourcePaths);
@@ -112,7 +114,7 @@ public class WorkspaceResources {
     private static @NonNull HashMap<String, Class<? extends Resource>> getResourcesJson(String workspace) throws IOException {
         Path prop = getResourcesJsonPath(workspace);
         if (!Files.exists(prop)) return new HashMap<>();
-        HashMap<String,?> map = RFileOperations.gson.fromJson(Files.readString(prop), HashMap.class);
+        HashMap<String, ?> map = RFileOperations.gson.fromJson(Files.readString(prop), HashMap.class);
         HashMap<String, Class<? extends Resource>> actualMap = new HashMap<>();
         for (Map.Entry<String, ?> entry : map.entrySet()) {
             try {
@@ -137,6 +139,17 @@ public class WorkspaceResources {
 
     public static Path getResourcesPath(String wpName) throws IOException {
         return RFileOperations.getFileFromWorkspace(wpName, "resources").toPath();
+    }
+
+    public void remove(Resource res) throws IOException {
+        resources.remove(res);
+        try {
+            Path savingPath = Files.createDirectories(getResourcesPath(wpf.WorkspaceName).resolve(res.getFolderPath()));
+            Path resPath = savingPath.resolve(res.getDataName());
+            Files.deleteIfExists(resPath);
+        } catch (IOException e) {
+            throw new IOException("Removed resource from listing, but failed to delete folder.");
+        }
     }
 
     public void build(String resourceRootPath) {

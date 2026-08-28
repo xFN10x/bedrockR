@@ -8,6 +8,7 @@ import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.ui.rendering.BlockTextures;
+import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -52,7 +53,7 @@ public class Launcher {
     public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
     public static void main(String[] args) {
-        RFileOperations.init();
+        RFileOperations.init(ImageUtilities.ImgHandler);
         try (final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png")) {
             if (stream != null)
                 ICON = ImageIO.read(stream);

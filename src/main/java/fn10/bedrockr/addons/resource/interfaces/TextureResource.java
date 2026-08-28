@@ -1,9 +1,12 @@
 package fn10.bedrockr.addons.resource.interfaces;
 
 import fn10.bedrockr.utils.ImageHandler;
+import fn10.bedrockr.utils.RFileOperations;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 public abstract class TextureResource extends Resource {
     
@@ -40,6 +43,21 @@ public abstract class TextureResource extends Resource {
     public byte[] getResourceIcon() {
         if (data != null) return data;
         else return super.getResourceIcon();
+    }
+
+    @Override
+    public void getTasks(HashMap<String, ResourceTask> map) {
+        map.put("Resize 16x16", getResizeTask(16));
+        map.put("Resize 32x32", getResizeTask(32));
+        map.put("Resize 64x64", getResizeTask(64));
+        map.put("Resize 128x128", getResizeTask(128));
+    }
+
+    private static @NonNull ResourceTask getResizeTask(int s) {
+        return res -> {
+            if (res instanceof TextureResource tres)
+                tres.resizeImage(s, s, RFileOperations.getCurrentImgHandler());
+        };
     }
 
     public enum TextureType {
