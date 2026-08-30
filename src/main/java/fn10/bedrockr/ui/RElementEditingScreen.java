@@ -13,6 +13,7 @@ import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.components.RHelpButton;
@@ -320,8 +321,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             try {
                                 grid.setButtonToItem(serialized.ShapelessIngredients.indexOf(item),
                                         ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
-                            } catch (WrongItemValueTypeException | NameNotFoundException |
-                                     IncorrectWorkspaceException | IOException e1) {
+                            } catch (WrongItemValueTypeException | NameNotFoundException | IncorrectWorkspaceException |
+                                     IOException | WorkspaceResources.WorkspaceUnsupportedException e1) {
                                 RFileOperations.LOG.log(Level.SEVERE,
                                         "Exception thrown", e1);
                             }
@@ -543,7 +544,8 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                                     grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
                                             ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
                                 } catch (WrongItemValueTypeException | NameNotFoundException |
-                                         IncorrectWorkspaceException | IOException e1) {
+                                         IncorrectWorkspaceException | IOException |
+                                         WorkspaceResources.WorkspaceUnsupportedException e1) {
                                     RFileOperations.LOG.log(Level.SEVERE,
                                             "Exception thrown", e1);
                                 }

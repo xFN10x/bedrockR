@@ -30,6 +30,7 @@ public class WorkspaceResources {
 
     public final WorkspaceFile wpf;
     public final HashMap<String, Class<? extends Resource>> resourcePaths = new HashMap<>();
+
     public final ArrayList<Resource> resources = new ArrayList<>();
     public final HashMap<Class<? extends Resource>, ResourceBuilder<? extends Resource>> builders = new HashMap<>(Map.of(
             ItemTextureResource.class, new ItemTextureBuilder()

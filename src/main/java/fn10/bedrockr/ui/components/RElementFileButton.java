@@ -49,7 +49,7 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                     File.getNewSource()
                             .getIcon(Workspace.SWPF.getSerialized().getRes(), ImageUtilities.ImgHandler)
             );
-        } catch (IOException e) {
+        } catch (Exception e) {
             RLogUtils.exception("Failed to get Element icon.", e);
         }
 

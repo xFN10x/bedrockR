@@ -3,19 +3,17 @@ package fn10.bedrockr.ui;
 import java.awt.*;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 
+import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.addons.resource.interfaces.Resource;
+import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 import fn10.bedrockr.ui.base.RDialog;
+import fn10.bedrockr.ui.components.RResourceButton;
 import fn10.bedrockr.utils.RFileOperations;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class RTextureAddingSelector extends RDialog {
+public class RResourceSelector<R extends Resource> extends RDialog {
 
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -23,7 +21,7 @@ public class RTextureAddingSelector extends RDialog {
     private final JButton addButton = new JButton("Add");
     private final JButton cancelButton = new JButton("Cancel");
 
-    protected JButton selected = null;
+    protected RResourceButton<R> selected = null;
 
     public static final int OK_CHOICE = 1;
     public static final int CANCEL_CHOICE = 0;
@@ -32,26 +30,33 @@ public class RTextureAddingSelector extends RDialog {
 
     protected Integer choice = CANCEL_CHOICE;
 
-    protected RTextureAddingSelector(Window parent, Integer TextureType, String Workspace) {
+    protected RResourceSelector(Window parent, Class<R> type, WorkspaceResources res) {
         super(
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
-                "Texture Selection",
-                new Dimension(500, 400));
+                Resource.SelectionTypes.get(type) + " Selection",
+                new Dimension(400, 500));
 
-        addButton.addActionListener(e -> {
-            if (selected == null) {
-                JOptionPane.showMessageDialog(parent, "You must select a texture, or cancel.", "Selection Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        addButton.addActionListener(_ -> {
             choice = OK_CHOICE;
             dispose();
         });
-        cancelButton.addActionListener(e -> {
+        cancelButton.addActionListener(_ -> {
             choice = CANCEL_CHOICE;
             dispose();
         });
+
+        for (Resource re : res.resources) {
+            if (type.isAssignableFrom(re.getClass()))
+                InnerPanel.add(new RResourceButton<>(re, res, This -> {
+                    for (Component comp : InnerPanel.getComponents()) {
+                        if (comp instanceof RResourceButton<?> rrb) {
+                            rrb.unselect();
+                            selected = (RResourceButton<R>) This;
+                        }
+                    }
+                }));
+        }
 
         // south
         Lay.putConstraint(SpringLayout.SOUTH, addButton, -10, SpringLayout.SOUTH, getContentPane());
@@ -65,9 +70,8 @@ public class RTextureAddingSelector extends RDialog {
         Lay.putConstraint(SpringLayout.SOUTH, selector, -5, SpringLayout.NORTH, addButton);
         Lay.putConstraint(SpringLayout.NORTH, selector, 5, SpringLayout.NORTH, getContentPane());
 
-        InnerPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        InnerPanel.setLayout(new BoxLayout(InnerPanel, BoxLayout.Y_AXIS));
         selector.getVerticalScrollBar().setUnitIncrement(18);
-        
         
         setLayout(Lay);
 
@@ -84,41 +88,19 @@ public class RTextureAddingSelector extends RDialog {
      * @return A map entry, in of which, the key is the UUID, and the value is the
      *         image to be displayed.
      */
-    public Map.Entry<String, ImageIcon> getSelected() {
-        if (selected != null)
-            return new Map.Entry<>() {
-
-                @Override
-                public String getKey() {
-                    return selected.getName();
-                }
-
-                @Override
-                public ImageIcon getValue() {
-                    return (ImageIcon) selected.getIcon();
-                }
-
-                @Override
-                public ImageIcon setValue(ImageIcon value) {
-                    return null;
-                }
-
-            };
-        else
-            return null;
+    public ResourcePointer<R> getSelected() {
+        return selected.get();
     }
 
-    public static Map.Entry<String, ImageIcon> openSelector(Window parent, Integer TextureType, String Workspace)
-            throws InterruptedException {
-        var thiS = new RTextureAddingSelector(parent, TextureType, Workspace);
+    public static <T extends Resource> ResourcePointer<T> openSelector(Window parent, Class<T> resType, WorkspaceResources res) {
+        var selec = new RResourceSelector<>(parent, resType, res);
 
-        thiS.setVisible(true);
+        selec.setVisible(true);
 
-        if (thiS.choice == CANCEL_CHOICE) {
-            RFileOperations.LOG.info("canceled");
+        if (selec.choice == CANCEL_CHOICE) {
             return null;
         } else
-            return thiS.getSelected();
+            return selec.getSelected();
 
     }
 }

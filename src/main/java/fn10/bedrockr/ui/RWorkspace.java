@@ -354,7 +354,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         try {
             WorkspaceResources res = WorkspaceResources.load(SWPF.workspaceName());
 
-            HashMap<String, ArrayList<RResourceButton>> panels = new HashMap<>();
+            HashMap<String, ArrayList<RResourceButton<?>>> panels = new HashMap<>();
             ResourceInnerPanelView.removeAll();
             BoxLayout lay = new BoxLayout(ResourceInnerPanelView, BoxLayout.Y_AXIS);
             ResourceInnerPanelView.setLayout(lay);
@@ -369,11 +369,11 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     panels.put(cate, new ArrayList<>());
                 }
 
-                ArrayList<RResourceButton> buttons = panels.get(cate);
-                buttons.add(new RResourceButton(resource, res));
+                ArrayList<RResourceButton<?>> buttons = panels.get(cate);
+                buttons.add(new RResourceButton<>(resource, res));
             }
 
-            for (Map.Entry<String, ArrayList<RResourceButton>> entry : panels.entrySet()) {
+            for (Map.Entry<String, ArrayList<RResourceButton<?>>> entry : panels.entrySet()) {
                 WrapLayout panelLay = new WrapLayout();
                 JPanel catPanel = new JPanel(panelLay);
                 TitledBorder border = new TitledBorder(entry.getKey());
@@ -517,62 +517,65 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        var ac = arg0.getActionCommand();
-        switch (ac) {
-            case "add" -> SwingUtilities.invokeLater(() -> {
-                var addFrame = new RNewElement(this, SWPF.getSerialized().WorkspaceName);
-                addFrame.setVisible(true);
-            });
-            case "texture" -> {
-                String[] options = new String[]{"Cancel", "Item Texture", "Block Texture"};
-                int choice = JOptionPane.showOptionDialog(
-                        this,
-                        "What kind of texture would you like you add?",
-                        "Add New Texture Resource",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        options,
-                        options[0]);
+        try { 
+            var ac = arg0.getActionCommand();
+            switch (ac) {
+                case "add" -> SwingUtilities.invokeLater(() -> {
+                    var addFrame = new RNewElement(this, SWPF.getSerialized().WorkspaceName);
+                    addFrame.setVisible(true);
+                });
+                case "texture" -> {
+                    String[] options = new String[]{"Cancel", "Item Texture", "Block Texture"};
+                    int choice = JOptionPane.showOptionDialog(
+                            this,
+                            "What kind of texture would you like you add?",
+                            "Add New Texture Resource",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[0]);
 
-                if (choice == 0) return;
+                    if (choice == 0) return;
 
-                SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
-                file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
-                file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+                    SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
+                    file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+                    file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
 
-                if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
-                    return;
-                String input = JOptionPane.showInputDialog(this,
-                        "What do you want to name this texture? (" + file.getSelectedFile().getName().replace(".png", "")
-                                + ")",
-                        "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
-                        file.getSelectedFile().getName()).toString();
-                if (!new FieldFilters.FileNameLikeStringFilter().getValid(input)) {
-                    JOptionPane.showMessageDialog(this, "Invaild name.");
-                    return;
+                    if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
+                        return;
+                    String input = JOptionPane.showInputDialog(this,
+                            "What do you want to name this texture? (" + file.getSelectedFile().getName().replace(".png", "")
+                                    + ")",
+                            "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
+                            file.getSelectedFile().getName()).toString();
+                    if (!new FieldFilters.FileNameLikeStringFilter().getValid(input)) {
+                        JOptionPane.showMessageDialog(this, "Invaild name.");
+                        return;
+                    }
+                    Resource adding = null;
+                    if (choice == 1) {
+                        //Item
+                        adding = new ItemTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                    } else if (choice == 2) {
+                        //Item
+                        adding = new BlockTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                    }
+                    WorkspaceResources res = SWPF.getSerialized().getRes();
+                    if (adding != null && res != null) res.addNewResource(adding);
+
                 }
-                Resource adding = null;
-                if (choice == 1) {
-                    //Item
-                    adding = new ItemTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
-                } else if (choice == 2) {
-                    //Item
-                    adding = new BlockTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                case "build" -> buildElements(false);
+                case "rebuild" -> buildElements(true);
+                case "launch" -> play();
+                case "launchbuild" -> {
+                    buildElements(false);
+                    play();
                 }
-                WorkspaceResources res = SWPF.getSerialized().getRes();
-                if (adding != null && res != null) res.addNewResource(adding);
-
             }
-            case "build" -> buildElements(false);
-            case "rebuild" -> buildElements(true);
-            case "launch" -> play();
-            case "launchbuild" -> {
-                buildElements(false);
-                play();
-            }
+        } catch (Exception e) {
+            ErrorShower.exception(this, "Failed to do action", e);
         }
-
     }
 
     private void play() {
