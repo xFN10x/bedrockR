@@ -271,8 +271,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         this.WorkspaceName = WorkspaceName;
         boolean FromEmpty = TargetFile == null;
         this.type = type;
-        final Dimension Size;
-        Size = new Dimension(350, 40);
+        final Dimension Size = new Dimension(350, 40);
 
         setMaximumSize(Size);
         setPreferredSize(Size);
@@ -317,111 +316,6 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Help, 0, SpringLayout.VERTICAL_CENTER, this);
         Lay.putConstraint(SpringLayout.EAST, EnableCheckbox, -3, SpringLayout.WEST, Help);
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, EnableCheckbox, 0, SpringLayout.VERTICAL_CENTER, this);
-
-//        // don't do this if its set manually
-//        if (Input == null)
-//            // do corrisponding actions depending on the type
-//            try {
-//               
-//                
-//               
-//                
-//                
-//                else if (Map.class.isAssignableFrom(InputType)) {
-//                    Input = new JScrollPane(HashMapInnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-//                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//                    ((JScrollPane) Input).getVerticalScrollBar().setUnitIncrement(18);
-//                    /*
-//                     * HashMapInnerScroll is the pane that is inside input, IT IS A JPANEL, NOT A
-//                     * JSCROLLPANE!!!!
-//                     */
-//
-//                    // do things to the panels
-//                    HashMapInnerPane.setLayout(new BoxLayout(HashMapInnerPane, BoxLayout.Y_AXIS));
-//                    Input.setBorder(new LineBorder(Color.DARK_GRAY));
-//                    Input.setBackground(getBackground().brighter());
-//                    // get the RMapProvider
-//
-//                    // finally, get the annotation after getting the field
-//                    final MapFieldSelectables anno;
-//                    if (field != null) {
-//                        anno = field.getAnnotation(MapFieldSelectables.class);
-//                    } else {
-//                        anno = null;
-//                    }
-//                    List<RMapElement> picked = new ArrayList<RMapElement>();
-//                    if (!FromEmpty && field != null) {
-//                        try {
-//                            for (Map.Entry<String, Object> entry : ((Map<String, Object>) field.get(TargetFile))
-//                                    .entrySet()) {
-//                                RElementMapValue ToAdd = new RElementMapValue(parentFrame,
-//                                        RMapElement.LookupMap.get(entry.getKey()));
-//                                ToAdd.setVal(entry.getValue());
-//
-//                                picked.add(RMapElement.LookupMap.get(entry.getKey()));
-//
-//                                HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-//                                HashMapInnerPane.add(ToAdd);
-//                            }
-//                        } catch (Exception e) {
-//                            RLogUtils.exception("Exception thrown",
-//                                    e);
-//                            ErrorShower.showError(parentFrame, e.getMessage(), WorkspaceName, e);
-//                        }
-//                    }
-//
-//                    // add the button
-//                    HashMapAdd.addActionListener((e) -> {
-//                        if (field != null && anno != null)
-//                            try {
-//                                RMapElement select = RMapValueAddingSelector.openSelector(parentFrame,
-//                                        ((RMapElement[]) anno.value().getMethod("getPickable")
-//                                                .invoke(anno.value().getConstructor().newInstance())),
-//                                        picked);
-//                                if (select == null)
-//                                    return;
-//                                var toAdd = new RElementMapValue(parentFrame, select);
-//                                toAdd.setSize(HashMapInnerPane.getWidth() - 5,
-//                                        Double.valueOf(toAdd.getSize().getHeight()).intValue());
-//                                toAdd.setAlignmentX(0.5f);
-//
-//                                picked.add(select);
-//
-//                                HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-//                                HashMapInnerPane.add(toAdd);
-//
-//                                // finish, and why this wasnt working before
-//                                HashMapInnerPane.revalidate();
-//                                HashMapInnerPane.repaint();
-//
-//                            } catch (Exception e1) {
-//                                RFileOperations.LOG.log(Level.SEVERE,
-//                                        "Exception thrown", e1);
-//                                ErrorShower.showError(parentFrame, "Failed to add a map element.", e1.getMessage(), e1);
-//                            }
-//                    });
-//                    add(HashMapAdd);
-//
-//                    Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, Input);
-//                    Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-//                } 
-//                
-//            } catch (Exception e) {
-//                RLogUtils.exception("Exception thrown", e);
-//            }
-
-//        if (Optional) // stop the enable check affecting non-optional things
-//            EnableCheckbox.addItemListener(new ItemListener() {
-//                {
-//                    Input.setEnabled(EnableCheckbox.isSelected());
-//                }
-//
-//                @Override
-//                public void itemStateChanged(ItemEvent e) {
-//                    Input.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-//                }
-//
-//            });
 
         //Name.setText(DisplayName);
         Lay.putConstraint(SpringLayout.VERTICAL_CENTER, Name, 0, SpringLayout.VERTICAL_CENTER, this);

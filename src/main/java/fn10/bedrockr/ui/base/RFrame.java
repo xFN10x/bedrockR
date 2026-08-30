@@ -70,9 +70,10 @@ public class RFrame extends JFrame {
         Lay2.putConstraint(SpringLayout.SOUTH, verText, 0, SpringLayout.SOUTH, titleImg);
         Lay2.putConstraint(SpringLayout.EAST, verText, -5, SpringLayout.WEST, sdButton);
 
-        websiteButton.setPreferredSize(new Dimension(32, 32));
-        ghButton.setPreferredSize(new Dimension(32, 32));
-        sdButton.setPreferredSize(new Dimension(32, 32));
+        Dimension buttonsizes = new Dimension(36, 36);
+        websiteButton.setPreferredSize(buttonsizes);
+        ghButton.setPreferredSize(buttonsizes);
+        sdButton.setPreferredSize(buttonsizes);
 
         websiteButton.setToolTipText("bedrockR's Website");
         ghButton.setToolTipText("bedrockR's Github Repository");

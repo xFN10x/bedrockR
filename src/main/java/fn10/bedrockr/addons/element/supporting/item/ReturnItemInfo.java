@@ -18,6 +18,7 @@ import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
@@ -118,7 +119,7 @@ public class ReturnItemInfo {
      * @throws NameNotFoundException       if the item isnt found
      */
     public static ReturnItemInfo getBlockById(String fullID, String workspaceName, ImageHandler<?> handler)
-            throws IncorrectWorkspaceException, NameNotFoundException, IOException {
+            throws IncorrectWorkspaceException, NameNotFoundException, IOException, WorkspaceResources.WorkspaceUnsupportedException {
         // check the non-vanilla items
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
             if (element instanceof ItemLikeElement ile) {
@@ -211,7 +212,8 @@ public class ReturnItemInfo {
     public static ReturnItemInfo fromUnlockCondition(UnlockCondition con, String workspace, ImageHandler<?> handler) {
         try {
             return ReturnItemInfo.getItemById(con.item, workspace, handler);
-        } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
+        } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
+                 WorkspaceResources.WorkspaceUnsupportedException e) {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
@@ -233,7 +235,8 @@ public class ReturnItemInfo {
     public static ReturnItemInfo fromRecipeItem(Item con, String workspace, ImageHandler<?> handler) {
         try {
             return ReturnItemInfo.getItemById(con.item, workspace, handler);
-        } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
+        } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
+                 WorkspaceResources.WorkspaceUnsupportedException e) {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             return null;
         }
@@ -245,7 +248,8 @@ public class ReturnItemInfo {
         for (Item item : list) {
             try {
                 building.add(ReturnItemInfo.getItemById(item.item, workspace, handler));
-            } catch (NameNotFoundException | IncorrectWorkspaceException | IOException e) {
+            } catch (NameNotFoundException | IncorrectWorkspaceException | IOException |
+                     WorkspaceResources.WorkspaceUnsupportedException e) {
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
@@ -263,7 +267,7 @@ public class ReturnItemInfo {
      * @throws NameNotFoundException       if the item isnt found
      */
     public static ReturnItemInfo getItemById(String fullID, String workspaceName, ImageHandler<?> handler)
-            throws IncorrectWorkspaceException, NameNotFoundException, IOException {
+            throws IncorrectWorkspaceException, NameNotFoundException, IOException, WorkspaceResources.WorkspaceUnsupportedException {
         // check the non-vanilla items
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
             if (element instanceof ItemLikeElement ile) {
@@ -272,7 +276,6 @@ public class ReturnItemInfo {
                 if (fullID.equals(Prefix + ":" + Id)) {
                     String Name = ile.getDisplayName();
                 byte[] img = ile.getTexture(RFileOperations.getWorkspaceFile(workspaceName).getRes(), handler);
-
                     return new ReturnItemInfo(Id, Name, Prefix, ArrayUtils.toObject(img));
                 }
             }

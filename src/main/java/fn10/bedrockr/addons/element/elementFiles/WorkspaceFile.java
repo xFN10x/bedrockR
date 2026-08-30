@@ -60,13 +60,11 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
 
     public Map<UUID, String> Scripts = new HashMap<>();
     
-    @Nullable
-    public WorkspaceResources getRes() {
+    public WorkspaceResources getRes() throws WorkspaceResources.WorkspaceUnsupportedException {
         try {
             return WorkspaceResources.load(WorkspaceName);
         } catch (Exception e) {
-            RLogUtils.exception("Failed to get resources from workspace: " + WorkspaceName, e);
-            return null;
+            throw new WorkspaceResources.WorkspaceUnsupportedException(2, Format);
         }
     }
 

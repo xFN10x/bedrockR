@@ -20,8 +20,14 @@ public class ImageUtilities {
         return new ScaledImageIcon(new ImageIcon(img));
     }
 
-    public static ScaledImageIcon toScaled(byte[] img) {
-        return new ScaledImageIcon(new ImageIcon(img));
+    public static ScaledImageIcon toScaled(byte[] bytes, int h) {
+        Image img = Toolkit.getDefaultToolkit().createImage(bytes);
+        int aspect = img.getWidth(null) /img.getHeight(null);
+        return new ScaledImageIcon(new ImageIcon(ResizeImage(img, h * aspect, h)));
+    }
+
+    public static ScaledImageIcon toScaled(byte[] bytes) {
+        return new ScaledImageIcon(new ImageIcon(bytes));
     }
 
     public static ScaledImageIcon toScaled(String path) {
@@ -178,6 +184,6 @@ public class ImageUtilities {
     }
 
     public static ScaledImageIcon toScaled(String primitive, int w, int h) {
-        return new ScaledImageIcon(ResizeIcon(new ImageIcon(primitive),w,h));
+        return toScaled(RFileOperations.readAllOfResource(primitive),w,h);
     }
 }

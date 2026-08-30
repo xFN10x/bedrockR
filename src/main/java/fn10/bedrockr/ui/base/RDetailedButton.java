@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class RDetailedButton extends JPanel implements MouseListener {
-    protected final Runnable func;
+    protected Runnable func;
     public JLabel Icon = new JLabel();
     public JLabel Name = new JLabel();
     public JLabel Desc = new JLabel();
@@ -31,6 +31,11 @@ public class RDetailedButton extends JPanel implements MouseListener {
     public RDetailedButton(Runnable selectedFunction, boolean hasIcon) {
         this(selectedFunction, BedrockrDark.BEDROCKR_GREEN, hasIcon);
     }
+
+    public RDetailedButton(Runnable selectedFunction) {
+        this(selectedFunction, BedrockrDark.BEDROCKR_GREEN, true);
+    }
+    
     public RDetailedButton(Color borderColour, boolean hasIcon) {
         this(() -> {}, borderColour, hasIcon);
     }

@@ -54,7 +54,7 @@ public class RBlockSelector extends RDialog {
                 };
                 try {
                     ref.image = bf.getTexture(RFileOperations.getWorkspaceFile(Workspace).getRes(), ImageUtilities.ImgHandler);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     ErrorShower.exception(this, e);
                 }
                 ScaledImageIcon icon = ImageUtilities.toScaled(ref.image);

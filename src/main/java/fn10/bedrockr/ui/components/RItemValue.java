@@ -7,6 +7,7 @@ import fn10.bedrockr.addons.element.elementFiles.RecipeFile;
 import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
 import fn10.bedrockr.addons.mcjson.behav.Recipe;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.RBlockSelector;
 import fn10.bedrockr.ui.RItemSelector;
 import fn10.bedrockr.ui.laf.BedrockrDark;
@@ -275,7 +276,8 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     try {
                         item = ReturnItemInfo.getItemById(
                                 value.key.get(itemString), workspace, ImageUtilities.ImgHandler);
-                    } catch (IncorrectWorkspaceException | NameNotFoundException | IOException e) {
+                    } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
+                             WorkspaceResources.WorkspaceUnsupportedException e) {
                         ErrorShower.exception(parent, e);
                         continue;
                     }

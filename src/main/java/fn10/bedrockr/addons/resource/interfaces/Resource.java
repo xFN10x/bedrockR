@@ -1,5 +1,7 @@
 package fn10.bedrockr.addons.resource.interfaces;
 
+import fn10.bedrockr.addons.resource.BlockTextureResource;
+import fn10.bedrockr.addons.resource.ItemTextureResource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
@@ -10,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Resource {
 
@@ -18,6 +21,12 @@ public abstract class Resource {
     public final String Name;
     public final String ID;
     protected transient byte[] data;
+    
+    public static final HashMap<Class<? extends Resource>, String> SelectionTypes = new HashMap<>(Map.of(
+            BlockTextureResource.class, "Block Texture",
+            ItemTextureResource.class, "Item Texture"
+            
+    ));
 
     public Resource(String name, String id, byte[] data) {
         this.Name = name;

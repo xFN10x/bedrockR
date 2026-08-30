@@ -65,7 +65,7 @@ public class RItemSelector extends RDialog {
                 try {
                     texRef.texData = bf.getTexture(RFileOperations.getWorkspaceFile(Workspace).getRes(),
                             ImageUtilities.ImgHandler);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     ErrorShower.exception(this, e);
                 }
                 if (!ArrayUtils.isEmpty(texRef.texData)) {

@@ -2,6 +2,7 @@ package fn10.bedrockr.ui.components;
 
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.addons.resource.interfaces.Resource;
+import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 import fn10.bedrockr.addons.resource.interfaces.ResourceTask;
 import fn10.bedrockr.ui.base.RDetailedButton;
 import fn10.bedrockr.ui.util.ImageUtilities;
@@ -11,16 +12,22 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
-public class RResourceButton extends RDetailedButton {
-    public final Runnable onClick = () -> {
-    };
+public class RResourceButton<R extends Resource> extends RDetailedButton {
     
     private final WorkspaceResources resources;
+    private final R resource;
 
-    public RResourceButton(Resource res, WorkspaceResources resources) {
+    public RResourceButton(R res, WorkspaceResources resources) {
+        this(res, resources,_ -> {});
+    }
+    
+    public RResourceButton(R res, WorkspaceResources resources, Consumer<RResourceButton<R>> onClick) {
         super();
+        this.func = () -> onClick.accept(this);
         this.resources = resources;
+        this.resource = res;
         Name.setText(res.Name);
         setIcon(res.getResourceIcon(), false);
 
@@ -52,5 +59,9 @@ public class RResourceButton extends RDetailedButton {
         }
 
         setComponentPopupMenu(menu);
+    }
+    
+    public ResourcePointer<R> get() {
+        return (ResourcePointer<R>) ResourcePointer.pointerOf(resource);
     }
 }
