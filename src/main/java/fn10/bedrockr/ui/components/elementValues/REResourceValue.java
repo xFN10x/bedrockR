@@ -16,7 +16,9 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentListener;
 import java.awt.font.FontRenderContext;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
@@ -26,6 +28,8 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
     private ResourcePointer<R> val = null;
     private final JLabel icon;
     private final JLabel resName;
+    private final JButton selectButton;
+    private final String typeName;
 
     public REResourceValue(Class<R> resClass, @Nullable Field TargetField, @NonNull Class<ResourcePointer<R>> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
         this.resClass = resClass;
@@ -40,6 +44,9 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
                 setFont(resNameFont);
             }
         };
+        String tname = Resource.SelectionTypes.get(resClass);
+        this.typeName = tname;
+        this.selectButton = new JButton("Select " + tname);
         this.icon = new JLabel();
         
         super(TargetField, type, TargetFile, WorkspaceName, details);
@@ -50,7 +57,6 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
 
     @Override
     public @NonNull JPanel createInput() {
-        String typeName = Resource.SelectionTypes.get(resClass);
         SpringLayout lay = new SpringLayout();
         JPanel building = new JPanel(lay);
         building.setBorder(new FlatLineBorder(new Insets(3,3,3,3), Color.LIGHT_GRAY));
@@ -60,11 +66,14 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
         icon.setPreferredSize(new Dimension(64,64));
         
         JLabel resTypeName = new JLabel(typeName);
+        Color resTypeNameBefColour = resTypeName.getForeground();
+        resTypeName.setForeground(ImageUtilities.darker(resTypeNameBefColour, 0.5f));
+        
 
         lay.putConstraint(SpringLayout.WEST, icon, 0, SpringLayout.WEST, building);
         lay.putConstraint(SpringLayout.VERTICAL_CENTER, icon, 0, SpringLayout.VERTICAL_CENTER, building);
 
-        JButton selectButton = new JButton("Select " + typeName);
+        if (WorkspaceName == null) selectButton.setEnabled(false);
         selectButton.addActionListener(_ -> {
             try {
                 ResourcePointer<R> selected = RResourceSelector.openSelector(null, resClass, WorkspaceResources.load(WorkspaceName));
@@ -90,6 +99,10 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
         building.add(selectButton);
         building.add(resName);
         building.add(resTypeName);
+        
+        addPropertyChangeListener("enabled", e -> {
+            System.out.println(e.getNewValue());
+        });
 
         return building;
     }
@@ -115,5 +128,13 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
     @Override
     public boolean valid(boolean strict, boolean log0) {
         return val != null;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        selectButton.setEnabled(enabled);
+        resName.setEnabled(enabled);
+        icon.setEnabled(enabled);
     }
 }

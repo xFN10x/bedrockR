@@ -66,32 +66,32 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
             switch (selected) {
                 // one tex
                 case 0:
-                    BlockTexturesTop.Input.setEnabled(true);
-                    BlockTexturesBottom.Input.setEnabled(false);
-                    BlockTexturesNorth.Input.setEnabled(false);
-                    BlockTexturesSouth.Input.setEnabled(false);
-                    BlockTexturesEast.Input.setEnabled(false);
-                    BlockTexturesWest.Input.setEnabled(false);
+                    BlockTexturesTop.setEnabled(true);
+                    BlockTexturesBottom.setEnabled(false);
+                    BlockTexturesNorth.setEnabled(false);
+                    BlockTexturesSouth.setEnabled(false);
+                    BlockTexturesEast.setEnabled(false);
+                    BlockTexturesWest.setEnabled(false);
                     break;
 
                 // log
                 case 1:
-                    BlockTexturesTop.Input.setEnabled(true);
-                    BlockTexturesBottom.Input.setEnabled(true);
-                    BlockTexturesNorth.Input.setEnabled(true);
-                    BlockTexturesSouth.Input.setEnabled(false);
-                    BlockTexturesEast.Input.setEnabled(false);
-                    BlockTexturesWest.Input.setEnabled(false);
+                    BlockTexturesTop.setEnabled(true);
+                    BlockTexturesBottom.setEnabled(true);
+                    BlockTexturesNorth.setEnabled(true);
+                    BlockTexturesSouth.setEnabled(false);
+                    BlockTexturesEast.setEnabled(false);
+                    BlockTexturesWest.setEnabled(false);
                     break;
 
                 // all
                 default:
-                    BlockTexturesTop.Input.setEnabled(true);
-                    BlockTexturesBottom.Input.setEnabled(true);
-                    BlockTexturesNorth.Input.setEnabled(true);
-                    BlockTexturesSouth.Input.setEnabled(true);
-                    BlockTexturesEast.Input.setEnabled(true);
-                    BlockTexturesWest.Input.setEnabled(true);
+                    BlockTexturesTop.setEnabled(true);
+                    BlockTexturesBottom.setEnabled(true);
+                    BlockTexturesNorth.setEnabled(true);
+                    BlockTexturesSouth.setEnabled(true);
+                    BlockTexturesEast.setEnabled(true);
+                    BlockTexturesWest.setEnabled(true);
                     break;
             }
         });
@@ -127,11 +127,11 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
         return input;
     }
 
-    private static @NonNull REResourceValue<BlockTextureResource> makeBlockTexVal(String name) {
+    private @NonNull REResourceValue<BlockTextureResource> makeBlockTexVal(String name) {
         return new REResourceValue<>(BlockTextureResource.class,
                 null,
                 (Class<ResourcePointer<BlockTextureResource>>) ((Class<?>) ResourcePointer.class),
-                null, null, new RAnnotation.FieldDetails() {
+                null, WorkspaceName, new RAnnotation.FieldDetails() {
 
             @Override
             public Class<? extends Annotation> annotationType() {
