@@ -8,7 +8,7 @@ on:
     
 env:
   vector_ver: '0.9.0'
-  string_ver: 'a3.0'
+  string_ver: 'a3.0PRE'
 
 jobs:
   build:

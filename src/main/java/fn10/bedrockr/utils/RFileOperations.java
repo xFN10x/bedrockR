@@ -41,7 +41,7 @@ public class RFileOperations {
             .create();
     public static final String SEM_VERSION = "0.9.0";
     public static final int NUM_VERSION = 10;
-    public static final String VERSION = "a3.0";
+    public static final String VERSION = "a3.0PRE";
     private static final String USER_DIR = System.getProperty("user.home");
     public static Logger LOG = Logger.getLogger("bedrockR");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;

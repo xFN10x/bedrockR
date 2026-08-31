@@ -91,4 +91,8 @@ public abstract class Resource {
     
     public void getTasks(HashMap<String, ResourceTask> map) {
     }
+    
+    public String getBuiltName(WorkspaceResources res) {
+        return res.wpf.WorkspaceName + "__" + ID;
+    }
 }

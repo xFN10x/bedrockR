@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 
-val strVersion = "a3.0"
+val strVersion = "a3.0PRE"
 val winver = "0.9.0"
 
 dependencies {
