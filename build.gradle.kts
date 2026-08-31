@@ -51,7 +51,10 @@ tasks.jpackage {
     mainJar.set("bedrockR-$strVersion.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
-    fileAssociations = project.files("fileAsso.properties")
+    fileAssociations = project.files(
+        "wpf.properties",
+        "bp1.properties"
+    )
 
     windows {
         type.set(org.panteleyev.jpackage.ImageType.MSI)
@@ -60,6 +63,7 @@ tasks.jpackage {
         winShortcutPrompt = true
         winPerUserInstall = true
         winDirChooser = true
+        winHelpUrl = "https://github.com/xFN10x/bedrockR"
         icon = layout.projectDirectory.file("iconWin.ico")
     }
 
@@ -68,7 +72,11 @@ tasks.jpackage {
         type.set(org.panteleyev.jpackage.ImageType.DEB)
         linuxPackageName = "bedrockr"
         linuxShortcut = true
+        linuxAppCategory = "Development"
+        linuxMenuGroup = "bedrockR"
     }
+    
+    //why would you want this on mac? you dont even GET mc bedrock
 }
 
 
