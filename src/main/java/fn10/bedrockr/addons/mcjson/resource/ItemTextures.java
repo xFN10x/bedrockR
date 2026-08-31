@@ -21,5 +21,5 @@ public class ItemTextures {
 
     public String resource_pack_name;
     public String texture_name;
-    public Map<String, TextureData> texture_data = new HashMap<String, TextureData>();
+    public Map<String, TextureData> texture_data = new HashMap<>();
 }

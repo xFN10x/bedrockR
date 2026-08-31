@@ -101,9 +101,12 @@ public class Launcher {
                 }
             });
             // log stuff
+            if (RFileOperations.isPrereleaseVersion())
+                RFileOperations.LOG.warning("----PRE-RELEASE VERSION, EXPECT ISSUES----");
             RFileOperations.LOG.info("Logging to " + logloc);
             RFileOperations.LOG.info("Base Path: " + RFileOperations.getBaseDirectory().getAbsolutePath());
-            RFileOperations.LOG.info("Launch Args: " + String.join(",", args));
+            if (args.length != 0)
+                RFileOperations.LOG.info("Launch Args: " + String.join(",", args));
             RFileOperations.LOG.info(MessageFormat.format("bedrockR version: {0} ({1}), Java version: {2}, JVM: {3}, OS: {4}",
                     RFileOperations.VERSION,
                     RFileOperations.SEM_VERSION,
@@ -277,5 +280,10 @@ public class Launcher {
             settings.shareExtraData = input == 0;
         }
         settings.save();
+
+        if (RFileOperations.isPrereleaseVersion())
+            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/> And if you can, please report bugs on Github.</html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
     }
+
+    
 }

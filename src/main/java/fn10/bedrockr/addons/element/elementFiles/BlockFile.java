@@ -31,7 +31,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     }
 
     @HelpMessage("The name of the block. e.g. \"Diamond\", \"Coal\"...")
-    @FieldDetails(Optional = false, displayName = "Block Name", Filter = FieldFilters.RegularStringFilter.class)
+    @FieldDetails(Optional = false, displayName = "Block Name")
     @Order(1)
     public String Name;
 
@@ -41,7 +41,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     public String ID;
 
     @HelpMessage("Specfies if this block hidden in commands.")
-    @FieldDetails(Optional = false, displayName = "Hidden in Commands", Filter = FieldFilters.RegularStringFilter.class)
+    @FieldDetails(Optional = false, displayName = "Hidden in Commands")
     @Order(3)
     public boolean Hidden;
 

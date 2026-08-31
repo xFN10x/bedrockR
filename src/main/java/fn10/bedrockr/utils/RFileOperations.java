@@ -621,6 +621,10 @@ public class RFileOperations {
     public static WorkspaceResources getWorkspaceResources(String workspaceName) throws WorkspaceResources.WorkspaceUnsupportedException, IOException {
         return WorkspaceResources.load(workspaceName);
     }
+    @SuppressWarnings("ConstantValue")
+    public static boolean isPrereleaseVersion() {
+        return VERSION.endsWith("PRE");
+    }
     
     public static ImageHandler<?> getCurrentImgHandler() {
         return CURRENT_IMG_HANDLER;
