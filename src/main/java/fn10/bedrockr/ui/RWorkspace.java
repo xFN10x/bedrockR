@@ -27,6 +27,7 @@ import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.SettingsFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -549,17 +550,18 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                                     + ")",
                             "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
                             file.getSelectedFile().getName()).toString();
-                    if (!new FieldFilters.FileNameLikeStringFilter().getValid(input)) {
+                    String inputIDized = RFileOperations.getFileSafeName(input).toLowerCase();
+                    if (!new FieldFilters.FileNameLikeStringFilter().getValid(inputIDized)) {
                         JOptionPane.showMessageDialog(this, "Invaild name.");
                         return;
                     }
                     Resource adding = null;
                     if (choice == 1) {
                         //Item
-                        adding = new ItemTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                        adding = new ItemTextureResource(input, inputIDized, file.getSelectedFile());
                     } else if (choice == 2) {
                         //Item
-                        adding = new BlockTextureResource(input, RFileOperations.getFileSafeName(input).toLowerCase(), file.getSelectedFile());
+                        adding = new BlockTextureResource(input, inputIDized, file.getSelectedFile());
                     }
                     WorkspaceResources res = SWPF.getSerialized().getRes();
                     if (adding != null && res != null) res.addNewResource(adding);
