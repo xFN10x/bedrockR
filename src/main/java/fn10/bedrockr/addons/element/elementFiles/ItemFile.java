@@ -131,7 +131,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
 
         inner.components = Components;
         try {
-            inner.components.put("minecraft:icon", Texture.get(workspaceFile.getRes()).Name);
+            inner.components.put("minecraft:icon", Texture.get(workspaceFile.getRes()).getBuiltName(workspaceFile.getRes()));
         } catch (WorkspaceResources.WorkspaceUnsupportedException e) {
             throw new RuntimeException(e);
         }

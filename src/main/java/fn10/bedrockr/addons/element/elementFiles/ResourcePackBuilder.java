@@ -24,7 +24,10 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
 /**
  * This is an ElementFile, meant to be passed to other Element Files, that holds
  * things like language texts, and textures. This should ALWAYS be built last, and it should not persist through builds.
+ * 
+ * @deprecated This will later be replaced with {@link WorkspaceResources} entirly.
  */
+@Deprecated(since = "a3.0")
 public class ResourcePackBuilder extends SourcelessElementFile {
 
     public final Map<String, String> EnglishTexts = new HashMap<>();

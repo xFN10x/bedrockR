@@ -172,17 +172,15 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        //if (arg0.getActionCommand().equals("New Addon")) {
+        if (arg0.getActionCommand().equals("New Addon")) {
         SwingUtilities.invokeLater(() -> {
             RNewAddon newAddonPage = new RNewAddon(this);
             newAddonPage.setVisible(true);
         });
-        //}
+        }
     }
 
     @Override
-    public void itemStateChanged(ItemEvent e) {
-        throw new UnsupportedOperationException("Unimplemented method 'itemStateChanged'");
-    }
+    public void itemStateChanged(ItemEvent e) {}
 
 }
