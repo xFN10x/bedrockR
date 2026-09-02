@@ -1,159 +1,115 @@
 package fn10.bedrockr.ui;
 
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.io.IOException;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import com.formdev.flatlaf.util.ScaledImageIcon;
-import fn10.bedrockr.ui.util.ErrorShower;
-import fn10.bedrockr.ui.util.ImageUtilities;
-import org.apache.commons.lang3.ArrayUtils;
-
 import fn10.bedrockr.addons.element.elementFiles.BlockFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
+import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ItemJsonEntry;
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.ui.rendering.BlockTextures;
-import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RDialog;
+import fn10.bedrockr.ui.components.RItemButton;
+import fn10.bedrockr.ui.util.ImageUtilities;
+import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
+import org.intellij.lang.annotations.MagicConstant;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class RItemSelector extends RDialog {
+public class RItemSelector extends RDialog implements ActionListener {
+    public static final int FILTER_BLOCKS = 0b1100;
+    public static final int FILTER_ITEMS = 0b0100;
+    public static final int FILTER_BLOCKS_WP = 0b1110;
+    public static final int FILTER_ITEMS_WP = 0b0110;
+    private static final int FILTER_WP_ONLY_BIT = 0b0010;
+    private static final int FILTER_BLOCKS_BIT = 0b1000;
+
+    public static final int CANCEL_CHOICE = 0;
+    public static final int OK_CHOICE = 1;
+
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    private final JButton addButton = new JButton("Add");
     private final JButton cancelButton = new JButton("Cancel");
     private final JTextField searchBox = new JTextField();
 
-    protected ReturnItemInfo selected = null;
-
-    public static final int OK_CHOICE = 1;
-    public static final int CANCEL_CHOICE = 0;
+    private Integer choice = CANCEL_CHOICE;
+    private ItemInfo selected = null;
+    @MagicConstant(intValues = {
+            FILTER_BLOCKS, FILTER_BLOCKS_WP, FILTER_ITEMS, FILTER_ITEMS_WP
+    })
+    private final int filter;
 
     public final SpringLayout Lay = new SpringLayout();
 
-    protected Integer choice = CANCEL_CHOICE;
 
-    public void showBlocksWithTerm(String searchTerm, Frame parent, String Workspace) {
+    public void showItemsWithTerm(String searchTerm, Frame parent, String Workspace) {
         InnerPanel.removeAll();
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(Workspace)) {
-            if (element instanceof BlockFile bf) {
-                if (!searchTerm.isEmpty())
-                    if (!bf.Name.toLowerCase().contains(searchTerm))
+            try {
+                if (element instanceof ItemLikeElement bf && !element.getDraft()) {
+                    if (hasBit(filter, FILTER_BLOCKS_BIT) && bf instanceof BlockFile) continue;
+                    ItemInfo info = bf.getItemInfo(Workspace, WorkspaceResources.load(Workspace), ImageUtilities.ImgHandler);
+                    if (!info.Name.toLowerCase().contains(searchTerm))
                         continue;
-                JButton ToAdd = new JButton();
-                ToAdd.setMargin(new Insets(2, 1, 2, 1));
-                Dimension size = new Dimension(48, 48);
-                ToAdd.setMinimumSize(size);
-                ToAdd.setPreferredSize(size);
-                ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                var texRef = new Object() {
-                    byte[] texData = new byte[0];
-                };
-                try {
-                    texRef.texData = bf.getTexture(RFileOperations.getWorkspaceFile(Workspace).getRes(),
-                            ImageUtilities.ImgHandler);
-                } catch (Exception e) {
-                    ErrorShower.exception(this, e);
+
+                    InnerPanel.add(new RItemButton(info, this, this));
                 }
-                if (!ArrayUtils.isEmpty(texRef.texData)) {
-                    ScaledImageIcon icon = ImageUtilities.toScaled(texRef.texData);
-                    ToAdd.setIcon(icon);
-                }
-                else
-                    ToAdd.setText(bf.getDisplayName());
-                ToAdd.setToolTipText(
-                        bf.getDisplayName() + " (" + bf.getItemId() +
-                                ")");
-                ToAdd.addActionListener(e -> {
-                    ReturnItemInfo building = new ReturnItemInfo();
-                    building.Id = bf.getItemId();
-                    building.Name = bf.getDisplayName();
-                    try {
-                        building.Prefix = RFileOperations.getWorkspaceFile(Workspace).Prefix;
-                    } catch (IOException e1) {
-                        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown",
-                                e1);
-                        building.Prefix = "error";
-                    }
-                    building.Texture = ArrayUtils.toObject(texRef.texData);
-                    selected = building;
-                });
-                InnerPanel.add(ToAdd);
+            } catch (Exception e) {
+                RLogUtils.warnException(e);
             }
         }
-
-        for (ItemJsonEntry item : ReturnItemInfo.vanillaItems) {
-            if (item.displayName.toLowerCase().contains(searchTerm))
+        if (!hasBit(filter, FILTER_WP_ONLY_BIT))
+            for (ItemJsonEntry item : ItemInfo.vanillaItems) {
                 try {
-                    JButton ToAdd = new JButton();
-                    ToAdd.setMargin(new Insets(2, 1, 2, 1));
-                    Dimension size = new Dimension(48, 48);
-                    ToAdd.setMinimumSize(size);
-                    ToAdd.setPreferredSize(size);
-                    ToAdd.setFont(ToAdd.getFont().deriveFont(8f));
-                    ScaledImageIcon icon = BlockTextures.getBlockTexture(parent, item.name.split(":")[1]);
-                    if (icon != null)
-                        ToAdd.setIcon(icon);
-                    ToAdd.setText(item.displayName);
-                    ToAdd.setToolTipText(item.displayName + " (" + item.name +
-                            ")");
-                    ToAdd.addActionListener(e -> {
-                        selected = item.toReturnItemInfo();
-                    });
-                    InnerPanel.add(ToAdd);
+                    if (
+                            item.displayName.toLowerCase().contains(searchTerm)
+                                    || item.name.toLowerCase().contains(searchTerm)
+                    )
+                        InnerPanel.add(new RItemButton(item.toReturnItemInfo(), this, this));
 
                 } catch (Exception e1) {
                     RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
-        }
+            }
         InnerPanel.revalidate();
         InnerPanel.repaint();
     }
 
-    protected RItemSelector(Frame parent, String Workspace) {
+    public static boolean hasBit(int subject, int bit) {
+        return (subject & bit) == bit;
+    }
+
+    protected RItemSelector(Frame parent,
+                            String Workspace,
+                            @MagicConstant(intValues = {
+                                    FILTER_BLOCKS, FILTER_BLOCKS_WP, FILTER_ITEMS, FILTER_ITEMS_WP
+                            }) int filter) {
         super(
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
-                "Item Selection",
+                (hasBit(filter, FILTER_BLOCKS_BIT) ? "Block" : "Item") + " Selection",
                 new Dimension(500, 400));
+        this.filter = filter;
 
-        addButton.addActionListener(e -> {
-            if (selected == null) {
-                JOptionPane.showMessageDialog(parent, "You must select an item, or cancel.", "Selection Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            choice = OK_CHOICE;
-            dispose();
-        });
         cancelButton.addActionListener(e -> {
             choice = CANCEL_CHOICE;
             dispose();
         });
 
         // south
-        Lay.putConstraint(SpringLayout.SOUTH, addButton, -10, SpringLayout.SOUTH, getContentPane());
         Lay.putConstraint(SpringLayout.SOUTH, cancelButton, -10, SpringLayout.SOUTH, getContentPane());
         // sides
-        Lay.putConstraint(SpringLayout.EAST, addButton, -10, SpringLayout.EAST, getContentPane());
         Lay.putConstraint(SpringLayout.WEST, cancelButton, 10, SpringLayout.WEST, getContentPane());
         // selector
         Lay.putConstraint(SpringLayout.WEST, selector, 5, SpringLayout.WEST, getContentPane());
         Lay.putConstraint(SpringLayout.EAST, selector, -5, SpringLayout.EAST, getContentPane());
-        Lay.putConstraint(SpringLayout.SOUTH, selector, -5, SpringLayout.NORTH, addButton);
+        Lay.putConstraint(SpringLayout.SOUTH, selector, -5, SpringLayout.NORTH, cancelButton);
         Lay.putConstraint(SpringLayout.NORTH, selector, 3, SpringLayout.SOUTH, searchBox);
         // search
         Lay.putConstraint(SpringLayout.WEST, searchBox, 5, SpringLayout.WEST, getContentPane());
@@ -174,7 +130,7 @@ public class RItemSelector extends RDialog {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                showBlocksWithTerm(searchBox.getText(), parent, Workspace);
+                showItemsWithTerm(searchBox.getText(), parent, Workspace);
             }
 
         });
@@ -182,12 +138,11 @@ public class RItemSelector extends RDialog {
         InnerPanel.setLayout(new GridLayout(0, 4, 3, 3));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
-        showBlocksWithTerm("", parent, Workspace);
+        showItemsWithTerm("", parent, Workspace);
 
         setLayout(Lay);
 
         // selector.add(InnerPanel);
-        add(addButton);
         add(cancelButton);
         add(selector);
         add(searchBox);
@@ -195,26 +150,24 @@ public class RItemSelector extends RDialog {
         setModal(true);
     }
 
-    /**
-     * 
-     * @return A map entry, in of which, the key is the UUID, and the value is the
-     *         image to be displayed.
-     */
-    public ReturnItemInfo getSelected() {
+    public ItemInfo getSelected() {
         return selected;
     }
 
-    public static ReturnItemInfo openSelector(Frame parent, String Workspace)
+    public static ItemInfo openSelector(Frame parent, String Workspace, @MagicConstant(intValues = {FILTER_BLOCKS, FILTER_BLOCKS_WP, FILTER_ITEMS, FILTER_ITEMS_WP}) int filter)
             throws InterruptedException {
-        var thiS = new RItemSelector(parent, Workspace);
-
+        var thiS = new RItemSelector(parent, Workspace, filter);
         thiS.setVisible(true);
 
-        if (thiS.choice == CANCEL_CHOICE) {
-            RFileOperations.LOG.info("canceled");
-            return null;
-        } else
-            return thiS.getSelected();
+        return thiS.getSelected();
+    }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof RItemButton rib) {
+            //hey i just had ribs for dinner!
+            selected = rib.get();
+            setVisible(false);
+        }
     }
 }

@@ -9,7 +9,7 @@ import fn10.bedrockr.addons.element.elementSources.*;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.typeAdapters.ClassSerializer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
@@ -19,7 +19,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.NonNull;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,8 +63,8 @@ public class RFileOperations {
     public static void init(ImageHandler<?> imgHandler) {
         SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
-        ReturnItemInfo.downloadVanillaItems();
-        ReturnItemInfo.downloadVanillaBlocks();
+        ItemInfo.downloadVanillaItems();
+        ItemInfo.downloadVanillaBlocks();
         CURRENT_IMG_HANDLER = imgHandler;
     }
 

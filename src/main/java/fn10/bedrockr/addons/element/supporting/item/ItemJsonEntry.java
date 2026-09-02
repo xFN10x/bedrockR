@@ -6,9 +6,9 @@ public class ItemJsonEntry implements Comparable<ItemJsonEntry> {
     public String name;
     public String displayName;
 
-    public ReturnItemInfo toReturnItemInfo() {
+    public ItemInfo toReturnItemInfo() {
         String[] splitId = name.split(":");
-        return new ReturnItemInfo(splitId[1], displayName, splitId[0]);
+        return new ItemInfo(splitId[1], displayName, splitId[0]);
     }
 
     @Override

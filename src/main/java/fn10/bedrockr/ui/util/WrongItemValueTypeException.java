@@ -1,12 +1,10 @@
 package fn10.bedrockr.ui.util;
 
-import fn10.bedrockr.ui.components.RItemValue.Type;
-
 public class WrongItemValueTypeException extends Exception {
 
-    public WrongItemValueTypeException(String msg, Type expected, Type actually) {
-        super(msg + 
-        "\nThis operation is only on: " + expected.toString() + 
-        "\nThis grid is actually: " + actually.toString());
+    public WrongItemValueTypeException(String msg, int expected, int actually) {
+        super(msg + "\n" +
+        "\nThis operation is only on: " + expected + 
+        "\nThis grid is actually: " + actually);
     }
 }

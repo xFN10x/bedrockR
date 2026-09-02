@@ -85,7 +85,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
     @HelpMessage("The texture for the item.")
     @FieldDetails(Optional = false, displayName = "Item Texture")
     @Order(7)
-    public ResourcePointer<ItemTextureResource> Texture;
+    public ResourcePointer<ItemTextureResource> Texture = ResourcePointer.empty(ItemTextureResource.class);
 
     @Override
     public Class<SourceItemElement> getSourceClass() {
@@ -147,6 +147,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
     }
 
     public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
+        if (Texture == null) return new byte[0];
         return handler.getBytesFromImage(Texture.get(res).loadImage(handler));
     }
 
