@@ -92,7 +92,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     @FieldDetails(Optional = false, displayName = "Block Texture")
     @RAnnotation.CreationMenuTab("Textures")
     @Order(7)
-    public BlockTexture Textures;
+    public BlockTexture Textures = new BlockTexture();
 
     @HelpMessage("The sounds that the block makes. This defines the step, break, and hit sounds for the block.")
     @FieldDetails(displayName = "Block Sounds", Filter = FieldFilters.CommonFilter1.class)
@@ -175,6 +175,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     }
 
     public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
+        if (Textures == null) return new byte[0];
         return handler.getBytesFromImage(handler.renderBlock(ID, Textures, res));
     }
 

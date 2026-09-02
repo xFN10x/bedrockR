@@ -10,13 +10,12 @@ import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
 import fn10.bedrockr.addons.resource.ItemTextureResource;
 import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RFrame;
-import fn10.bedrockr.ui.components.LineFiller;
 import fn10.bedrockr.ui.components.RElementFileButton;
 import fn10.bedrockr.ui.components.RResourceButton;
 import fn10.bedrockr.ui.util.ErrorShower;
@@ -27,7 +26,6 @@ import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.SettingsFile;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -39,7 +37,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -50,7 +47,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.List;
 
-import static fn10.bedrockr.utils.RFileOperations.CURRENT_WORKSPACE_FORMAT;
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -701,8 +697,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     loading.setAlwaysOnTop(true);
                     SwingUtilities.invokeLater(() -> loading.setVisible(true));
 
-                    ReturnItemInfo.downloadVanillaItems();
-                    ReturnItemInfo.downloadVanillaBlocks();
+                    ItemInfo.downloadVanillaItems();
+                    ItemInfo.downloadVanillaBlocks();
 
                     // get items ready for use
                     SwingUtilities.invokeLater(() -> {

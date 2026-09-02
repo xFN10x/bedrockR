@@ -11,7 +11,7 @@ import fn10.bedrockr.addons.element.elementSources.SourceScriptElement;
 import fn10.bedrockr.addons.element.interfaces.CreationScreenSeparator;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RDialog;
@@ -308,7 +308,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 JPanel patternPane = frame.getScrollPane("Pattern");
                 patternPane.setLayout(PatternLay);
-                RItemValue grid = new RItemValue("Pattern", Workspace, RItemValue.Type.CraftingTable, true);
+                RItemValue grid = new RItemValue("Pattern", Workspace, RItemValue.TYPE_CRAFTING_TABLE, true);
 
                 switch (serialized.recipeType) {
                     case RecipeType.Shaped:
@@ -320,7 +320,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         serialized.ShapelessIngredients.forEach(item -> {
                             try {
                                 grid.setButtonToItem(serialized.ShapelessIngredients.indexOf(item),
-                                        ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                        ItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
                             } catch (WrongItemValueTypeException | NameNotFoundException | IncorrectWorkspaceException |
                                      IOException | WorkspaceResources.WorkspaceUnsupportedException e1) {
                                 RFileOperations.LOG.log(Level.SEVERE,
@@ -331,22 +331,22 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                 }
                 grid.setShapedRecipe(Parent, new ShapedOutput(serialized), Workspace);
 
-                RItemValue outputSlot = new RItemValue("Recipe Output", Workspace, RItemValue.Type.Single, true);
+                RItemValue outputSlot = new RItemValue("Recipe Output", Workspace, RItemValue.TYPE_SINGLE, true);
                 if (serialized.Result != null) {
-                    outputSlot.setButtonToItem(0, ReturnItemInfo.getItemById(serialized.Result.item, Workspace, ImageUtilities.ImgHandler));
+                    outputSlot.setButtonToItem(0, ItemInfo.getItemById(serialized.Result.item, Workspace, ImageUtilities.ImgHandler));
                 }
 
-                RItemValue unlockItems = new RItemValue("Unlock Items", Workspace, RItemValue.Type.ListOfItems, true);
+                RItemValue unlockItems = new RItemValue("Unlock Items", Workspace, RItemValue.TYPE_LIST, true);
                 if (serialized.UnlockConditions != null) {
-                    unlockItems.addListElements(Workspace, ReturnItemInfo
-                            .fromUnlockCondition(serialized.UnlockConditions, Workspace, ImageUtilities.ImgHandler).toArray(new ReturnItemInfo[0]));
+                    unlockItems.addListElements(Workspace, ItemInfo
+                            .fromUnlockCondition(serialized.UnlockConditions, Workspace, ImageUtilities.ImgHandler).toArray(new ItemInfo[0]));
                 }
 
-                RItemValue extraResults = new RItemValue("Extra Results", Workspace, RItemValue.Type.ListOfItems, false);
+                RItemValue extraResults = new RItemValue("Extra Results", Workspace, RItemValue.TYPE_LIST, false);
                 if (serialized.ExtraResults != null) {
                     extraResults.addListElements(Workspace,
-                            ReturnItemInfo.fromRecipeItem(serialized.ExtraResults, Workspace, ImageUtilities.ImgHandler)
-                                    .toArray(new ReturnItemInfo[0]));
+                            ItemInfo.fromRecipeItem(serialized.ExtraResults, Workspace, ImageUtilities.ImgHandler)
+                                    .toArray(new ItemInfo[0]));
                 }
 
                 JLabel TypeDropdownText = new JLabel("Recipe Type");
@@ -542,7 +542,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             Serilized.ShapelessIngredients.forEach(item -> {
                                 try {
                                     grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
-                                            ReturnItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                            ItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
                                 } catch (WrongItemValueTypeException | NameNotFoundException |
                                          IncorrectWorkspaceException | IOException |
                                          WorkspaceResources.WorkspaceUnsupportedException e1) {

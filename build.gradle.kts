@@ -25,7 +25,8 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.20.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
-    implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    compileOnly("org.jetbrains:annotations:24.1.0")
 }
 
 java {

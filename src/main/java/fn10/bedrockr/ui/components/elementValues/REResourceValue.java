@@ -11,6 +11,7 @@ import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -116,7 +117,7 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
             icon.setIcon(ImageUtilities.toScaled(res.getResourceIcon(), 64));
             resName.setText(res.Name);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            RLogUtils.warnException(e);
         }
     }
 

@@ -2,8 +2,8 @@ package fn10.bedrockr.ui.rendering;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
 import com.google.gson.internal.LinkedTreeMap;
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo.BlockJsonEntry;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo.BlockJsonEntry;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -28,11 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
@@ -88,10 +86,10 @@ public class BlockTextures {
     }
 
     public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
-        if (ReturnItemInfo.vanillaBlocks == null)
-            ReturnItemInfo.downloadVanillaBlocks();
+        if (ItemInfo.vanillaBlocks == null)
+            ItemInfo.downloadVanillaBlocks();
         RLoadingScreen loading = new RLoadingScreen(doingThis);
-        final int blocks = ReturnItemInfo.vanillaBlocks.length;
+        final int blocks = ItemInfo.vanillaBlocks.length;
         loading.Steps = blocks;
         CountDownLatch latch = new CountDownLatch(blocks);
         SwingUtilities.invokeLater(() -> {
@@ -99,70 +97,71 @@ public class BlockTextures {
         });
         final boolean[] stop = {false};
         int maxThreads = 10;
-        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-        SwingUtilities.invokeLater(() -> {
-            downloaded = 0;
-            Thread downloadThread = new Thread(() -> {
-                for (BlockJsonEntry block : ReturnItemInfo.vanillaBlocks) {
-                    executorService.submit(() -> {
-                        String name = block.name.split(":")[1];
-                        try {
-                            loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
-                        if (stop[0]) {
+        try (ExecutorService executorService = Executors.newFixedThreadPool(maxThreads)) {
+            SwingUtilities.invokeLater(() -> {
+                downloaded = 0;
+                Thread downloadThread = new Thread(() -> {
+                    for (BlockJsonEntry block : ItemInfo.vanillaBlocks) {
+                        executorService.submit(() -> {
+                            String name = block.name.split(":")[1];
+                            try {
+                                loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (stop[0]) {
+                                latch.countDown();
+                                return;
+                            }
+                            renderBlock(name);
+                            downloaded++;
                             latch.countDown();
-                            return;
-                        }
-                        renderBlock(name);
-                        downloaded++;
-                        latch.countDown();
+                        });
+                    }
+
+                    try {
+                        latch.await();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    SettingsFile settings = SettingsFile.load();
+                    HttpRequest latestVerReq = HttpRequest.newBuilder()
+                            .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
+                            .version(HttpClient.Version.HTTP_2).GET().build();
+                    HttpResponse<String> response;
+                    try {
+                        response = client.send(latestVerReq, BodyHandlers.ofString());
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Number) gson
+                            .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
+
+                    settings.save();SwingUtilities.invokeLater(() -> {
+                        loading.setVisible(false);
                     });
-                }
-
-                try {
-                    latch.await();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                SettingsFile settings = SettingsFile.load();
-                HttpRequest latestVerReq = HttpRequest.newBuilder()
-                        .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
-                        .version(HttpClient.Version.HTTP_2).GET().build();
-                HttpResponse<String> response;
-                try {
-                    response = client.send(latestVerReq, BodyHandlers.ofString());
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Number) gson
-                        .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
-
-                settings.save();SwingUtilities.invokeLater(() -> {
-                    loading.setVisible(false);
+                });
+                downloadThread.setName("Downloading-Thread");
+                downloadThread.setUncaughtExceptionHandler((t, e) -> {
+                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                    for (int i = 0; i < latch.getCount(); i++) {
+                        latch.countDown();
+                    }
+                });
+                downloadThread.start();
+                loading.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                        int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
+                                        + (blocks - downloaded) + " blocks left!",
+                                "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
+                        if (op == JOptionPane.YES_OPTION) {
+                            stop[0] = true;
+                            SwingUtilities.invokeLater(() -> loading.setVisible(false));
+                        }
+                    }
                 });
             });
-            downloadThread.setName("Downloading-Thread");
-            downloadThread.setUncaughtExceptionHandler((t, e) -> {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                for (int i = 0; i < latch.getCount(); i++) {
-                    latch.countDown();
-                }
-            });
-            downloadThread.start();
-            loading.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
-                                    + (blocks - downloaded) + " blocks left!",
-                            "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
-                    if (op == JOptionPane.YES_OPTION) {
-                        stop[0] = true;
-                        SwingUtilities.invokeLater(() -> loading.setVisible(false));
-                    }
-                }
-            });
-        });
+        }
         
         return latch;
     }

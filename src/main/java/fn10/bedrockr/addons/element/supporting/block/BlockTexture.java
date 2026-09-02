@@ -24,6 +24,9 @@ public class BlockTexture {
         return null;
     }
 
+    public BlockTexture() {
+        this(ResourcePointer.empty(BlockTextureResource.class));
+    }
     public BlockTexture(ResourcePointer<BlockTextureResource> allFace) {
         mode = 0;
         this.upTex = allFace;

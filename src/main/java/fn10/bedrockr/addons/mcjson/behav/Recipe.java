@@ -7,13 +7,13 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
-import fn10.bedrockr.addons.element.supporting.item.ReturnItemInfo;
+import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 
 public class Recipe {
 
     public static final Item NULL_ITEM = new Item(
             "you_should_never_see_this:report-a-github-bug-if-you-see-this");
-    public static final ReturnItemInfo NULL_RETURN_ITEM = new ReturnItemInfo(
+    public static final ItemInfo NULL_RETURN_ITEM = new ItemInfo(
             "report-a-github-bug-if-you-see-this", "NULL", "you_should_never_see_this");
 
     // classes
