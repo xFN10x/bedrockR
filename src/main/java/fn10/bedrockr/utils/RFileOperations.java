@@ -589,6 +589,13 @@ public class RFileOperations {
         }
         return building.toArray(new ElementFile[0]);
     }
+    
+    public static Path make(Path to) throws IOException {
+        FileUtils.createParentDirectories(to.toFile());
+        if (!Files.exists(to))
+            Files.createFile(to);
+        return to;
+    }
 
     /**
      * Wrapper around {@link Files#write(Path, byte[], OpenOption...)}
@@ -599,8 +606,7 @@ public class RFileOperations {
      * @param data The data to write.
      */
     public static void write(Path to, byte[] data) throws IOException {
-        FileUtils.createParentDirectories(to.toFile());
-        Files.write(to, data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        Files.write(make(to), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     }
 
     /**
