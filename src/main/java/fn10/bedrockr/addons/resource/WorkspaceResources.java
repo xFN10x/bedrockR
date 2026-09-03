@@ -11,10 +11,7 @@ import org.jspecify.annotations.NonNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WorkspaceResources {
 
@@ -23,7 +20,7 @@ public class WorkspaceResources {
 
     public final ArrayList<Resource> resources = new ArrayList<>();
     public final HashMap<Class<? extends Resource>, ResourceBuilder<? extends Resource>> builders = new HashMap<>(Map.of(
-            ItemTextureResource.class, new ItemTextureBuilder()
+            ItemTextureResource.class, new ItemTextureBuilder(this)
     ));
 
     private WorkspaceResources(WorkspaceFile wpf) {
@@ -144,7 +141,18 @@ public class WorkspaceResources {
     }
 
     public void build(String resourceRootPath) {
-
+        for (Class<? extends Resource> resClass : builders.keySet()) {
+            try {
+                if (!builders.containsKey(resClass)) {
+                    continue;
+                }
+                List<? extends Resource> res = getResourcesOfType(resClass);
+                ResourceBuilder<? extends Resource> builder = builders.get(resClass);
+                builder.build(Path.of(resourceRootPath), res);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static class WorkspaceUnsupportedException extends Exception {
