@@ -104,6 +104,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         helpMenu.add(helpButton);
         helpMenu.add(gitButton);
         helpMenu.add(ftButton);
+        helpMenu.add(sdButton);
         //helpMenu.add(somButton);
         //helpMenu.add(siegeButton);
 

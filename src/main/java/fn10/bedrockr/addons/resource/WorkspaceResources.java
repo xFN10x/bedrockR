@@ -1,6 +1,7 @@
 package fn10.bedrockr.addons.resource;
 
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.resource.builders.BlockTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
 import fn10.bedrockr.addons.resource.interfaces.Resource;
@@ -20,7 +21,8 @@ public class WorkspaceResources {
 
     public final ArrayList<Resource> resources = new ArrayList<>();
     public final HashMap<Class<? extends Resource>, ResourceBuilder<? extends Resource>> builders = new HashMap<>(Map.of(
-            ItemTextureResource.class, new ItemTextureBuilder(this)
+            ItemTextureResource.class, new ItemTextureBuilder(this),
+            BlockTextureResource.class, new BlockTextureBuilder(this)
     ));
 
     private WorkspaceResources(WorkspaceFile wpf) {
@@ -60,6 +62,9 @@ public class WorkspaceResources {
         Path resFolder = getResourcesPath(wpf.WorkspaceName).resolve(path);
         Path jsonPath = resFolder.resolve("resource.json");
         T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
+        if (resource == null) {
+            throw new IOException("Resource is null! Tried to read resource: " + jsonPath);
+        }
         Path dataFile = resFolder.resolve("data." + resource.getDataExtension());
         resource.setData(Files.readAllBytes(dataFile));
         addNewResource(resource, false);
@@ -157,7 +162,10 @@ public class WorkspaceResources {
 
     public static class WorkspaceUnsupportedException extends Exception {
         public WorkspaceUnsupportedException(int expectedFormat, int gotFormat) {
-            super("Expected workspace format: " + expectedFormat + ", got format: " + gotFormat);
+            this(expectedFormat,gotFormat, null);
+        }
+        public WorkspaceUnsupportedException(int expectedFormat, int gotFormat, Exception cause) {
+            super("Expected workspace format: " + expectedFormat + ", got format: " + gotFormat,cause);
         }
     }
 }

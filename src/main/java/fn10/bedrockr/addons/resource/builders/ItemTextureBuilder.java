@@ -37,7 +37,7 @@ public class ItemTextureBuilder extends ResourceBuilder<ItemTextureResource> {
             ItemTextures.TextureData tdata = new ItemTextures.TextureData(res.ID);
             data.put(res.getBuiltName(wres), tdata);
             
-            RFileOperations.write(f("textures/item/" + res.ID + ".png"), res.getData());
+            RFileOperations.write(f("textures/items/" + res.ID + ".png"), res.getData());
         }
         
         RFileOperations.write(itemTexture, RFileOperations.gson.toJson(itemTextureJObj));

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -268,6 +269,7 @@ public class RFileOperations {
         }
         // update version things
         serilized.LatestBedrockRVersion = SEM_VERSION;
+        serilized.lastOpened = Instant.now();
         if (serilized.ModifiedWithBedrockRVersions == null) {
             serilized.ModifiedWithBedrockRVersions = new ArrayList<>();
         }
@@ -617,6 +619,11 @@ public class RFileOperations {
      */
     public static void write(Path to, String data) throws IOException {
         write(to, data.getBytes());
+    }
+    
+    public static void copyRes(String res, Path destFolder) throws IOException {
+        String fileName = res.substring(res.lastIndexOf('/') + 1);
+        RFileOperations.write(destFolder.resolve(fileName), RFileOperations.readAllOfResource(res));
     }
 
     public static byte @NonNull [] getElementIconData(@NonNull ElementSource<?> source) {

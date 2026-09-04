@@ -1,0 +1,10 @@
+This addon was built with bedrockR. <https://bedrockr.xplate.dev>
+
+bedrockR is a Minecraft Addon builder, created by xFN10x. <https://github.com/xFN10x>
+
+Thank you for using bedrockR, and (on behalf of the author,) thanks for downloading this addon.
+
+bedrockR © Copyright 2025-26 xFN10x (Damien K.)
+
+bedrockR is not assocaited with Mojang AB, or Microsoft Corp.
+"Minecraft" and the Minecraft Logo are trademarks of Mojang AB.

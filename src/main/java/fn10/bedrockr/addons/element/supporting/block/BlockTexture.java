@@ -2,6 +2,7 @@ package fn10.bedrockr.addons.element.supporting.block;
 
 import fn10.bedrockr.addons.mcjson.resource.BlockJSONEntry;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
+import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 
 import java.io.FileNotFoundException;
@@ -20,8 +21,19 @@ public class BlockTexture {
     public ResourcePointer<BlockTextureResource> northTex;
     public ResourcePointer<BlockTextureResource> southTex;
 
-    public BlockJSONEntry.Textures convertToBlockJsonTextures() throws FileNotFoundException {
-        return null;
+    public BlockJSONEntry.Textures convertToBlockJsonTextures(WorkspaceResources res) throws FileNotFoundException {
+        return switch (mode) {
+            case PILLAR_MODE -> new BlockJSONEntry.Textures(upTex.get(res).getBuiltName(res), downTex.get(res).getBuiltName(res), upTex.get(res).getBuiltName(res));
+            case PER_FACE_MODE -> new BlockJSONEntry.Textures(
+                    upTex.get(res).getBuiltName(res),
+                    downTex.get(res).getBuiltName(res),
+                    eastTex.get(res).getBuiltName(res),
+                    westTex.get(res).getBuiltName(res),
+                    northTex.get(res).getBuiltName(res),
+                    southTex.get(res).getBuiltName(res)
+            );
+            default -> new BlockJSONEntry.Textures(upTex.get(res).getBuiltName(res));
+        };
     }
 
     public BlockTexture() {

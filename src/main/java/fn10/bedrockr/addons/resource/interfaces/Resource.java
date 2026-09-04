@@ -93,6 +93,6 @@ public abstract class Resource {
     }
     
     public String getBuiltName(WorkspaceResources res) {
-        return res.wpf.WorkspaceName + "__" + ID;
+        return RFileOperations.getFileSafeName(res.wpf.WorkspaceName) + "__" + ID;
     }
 }
