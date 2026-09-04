@@ -41,9 +41,9 @@ public class ResourcePackBuilder extends SourcelessElementFile {
 
     public void addBlockResources(String id, String sounds, BlockTexture texture) {
         try {
-            BlockJSONEntry entry = new BlockJSONEntry(sounds, texture.convertToBlockJsonTextures(), null, null);
+            BlockJSONEntry entry = new BlockJSONEntry(sounds, texture.convertToBlockJsonTextures(WPF.getRes()), null, null);
             BlockRPEntries.put(WPF.Prefix + ":" + id, entry);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | WorkspaceResources.WorkspaceUnsupportedException e) {
             throw new RuntimeException(e);
         }
     }

@@ -64,7 +64,7 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         try {
             return WorkspaceResources.load(WorkspaceName);
         } catch (Exception e) {
-            throw new WorkspaceResources.WorkspaceUnsupportedException(2, Format);
+            throw new WorkspaceResources.WorkspaceUnsupportedException(2, Format, e);
         }
     }
 
@@ -129,16 +129,16 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
      *                 {@code scripts/folder/script.js}
      * @return the path the file can be written to.
      */
-    public Path addScript(String rootPath, String name) {
-        if (Scripts == null) {
-            Scripts = new HashMap<UUID, String>();
-        }
-        if (Scripts.containsValue(name)) // return if its already here
-            return java.nio.file.Paths.get(rootPath, "scripts", name);
-
-        Scripts.put(UUID.randomUUID(), "scripts/" + name);
-        return java.nio.file.Paths.get(rootPath, "scripts", name);
-    }
+//    public Path addScript(String rootPath, String name) {
+//        if (Scripts == null) {
+//            Scripts = new HashMap<UUID, String>();
+//        }
+//        if (Scripts.containsValue(name)) // return if its already here
+//            return java.nio.file.Paths.get(rootPath, "scripts", name);
+//
+//        Scripts.put(UUID.randomUUID(), "scripts/" + name);
+//        return java.nio.file.Paths.get(rootPath, "scripts", name);
+//    }
 
     @Override
     public void build(String rootPath, WorkspaceFile workspaceFile, String rootResPackPath,
@@ -147,6 +147,9 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         GeneratedWith generatedWithBedrockR = new GeneratedWith();
         generatedWithBedrockR.bedrockR = ModifiedWithBedrockRVersions;
         metadata.generated_with = generatedWithBedrockR;
+        
+        RFileOperations.copyRes("/addons/bedrockRInfo.txt", Path.of(rootPath));
+        
         //region build BP manifest
         Manifest manifest = new Manifest();
         manifest.formatVersion = 2;
