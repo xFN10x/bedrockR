@@ -26,7 +26,7 @@ dependencies {
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
-    compileOnly("org.jetbrains:annotations:24.1.0")
+    compileOnly("org.jetbrains:annotations:26.1.0")
 }
 
 java {
