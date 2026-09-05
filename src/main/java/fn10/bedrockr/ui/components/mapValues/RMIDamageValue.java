@@ -8,8 +8,8 @@ import org.jspecify.annotations.NonNull;
 import javax.swing.*;
 import java.awt.*;
 
-public class RMDamageValue extends RMapValue<ItemComponents.ToolDamage, JSpinner> {
-    public RMDamageValue(Window Ancestor, RMapElement RME) {
+public class RMIDamageValue extends RMapValue<ItemComponents.ToolDamage, JSpinner> {
+    public RMIDamageValue(Window Ancestor, RMapElement RME) {
         super(Ancestor, RME);
     }
 

@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  */
 public abstract class RMapValue<V,I extends JComponent> extends JPanel implements ValidatableValue {
 
-    private final Dimension Size = new Dimension(240, 80);
+    protected Dimension Size = new Dimension(240, 80);
 
     protected final RHelpButton HelpButton = new RHelpButton();
     protected final JButton removeButton = new JButton("-");
@@ -66,180 +66,12 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
         IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - ((float) RME.DisplayName.length() / 10)));
 
         // check for custom ones first
-//        } else if (RME.Type == minecraftDamage.class) { // minecraft:damage
-//            InputField = new JSpinner();
-//        } else if (RME.Type == minecraftDestructibleByMining.class) { // minecraft:damage
-//            if (RME.Filters.contains(MapValueFilter.Between0And1))
-//                InputField = new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.1));
-//            else
-//                InputField = new JSpinner(new SpinnerNumberModel(0, -2147483648f, 2147483647f, 0.1));
-//        } else if (RME.Type == minecraftBlockPlacer.class) {
-//            InputField = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName, Type.SingleBlock, true);
-//            Lay.putConstraint(SpringLayout.VERTICAL_CENTER, InputField, 0, SpringLayout.VERTICAL_CENTER, this);
-//            Lay.putConstraint(SpringLayout.EAST, InputField, -4, SpringLayout.EAST, this);
-//        } else if (RME.Type == Climate.class) {
-//            Size.setSize(400, 150);
-//            InputField = new JPanel();
-//            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
-//
-//            JPanel downfallPanel = new JPanel();
-//            downfallPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-//            JSpinner downfallVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-//            downfallPanel.add(new JLabel("Downfall"));
-//            downfallPanel.add(downfallVal);
-//            MultipleInputs.put("downfallVal", downfallVal);
-//            ((JPanel) InputField).add(downfallPanel);
-//
-//            JPanel snowfallPanel = new JPanel();
-//            snowfallPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-//            JSpinner snowfallMax = new JSpinner(new SpinnerNumberModel(2, 0, 8, 1));
-//            JSpinner snowfallMin = new JSpinner(new SpinnerNumberModel(0, 0, 8, 1));
-//            snowfallPanel.add(new JLabel("Snowfall Accumulation"));
-//            snowfallPanel.add(new JLabel("<html><i>Max</i></html>"));
-//            snowfallPanel.add(snowfallMax);
-//            snowfallPanel.add(new JLabel("<html><i>Min</i></html>"));
-//            snowfallPanel.add(snowfallMin);
-//            MultipleInputs.put("snowfallMax", snowfallMax);
-//            MultipleInputs.put("snowfallMin", snowfallMin);
-//            ((JPanel) InputField).add(snowfallPanel);
-//
-//            snowfallMax.getModel().addChangeListener(cl -> {
-//                ((SpinnerNumberModel) snowfallMin.getModel())
-//                        .setMaximum((((Number) snowfallMax.getValue()).intValue()));
-//            });
-//            snowfallMin.getModel().addChangeListener(cl -> {
-//                ((SpinnerNumberModel) snowfallMax.getModel())
-//                        .setMinimum((((Number) snowfallMin.getValue()).intValue()));
-//            });
-//
-//            JPanel tempPanel = new JPanel();
-//            tempPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-//            JSpinner tempVal = new JSpinner(new SpinnerNumberModel(0.8f, 0f, 2f, 0.1f));
-//            tempPanel.add(new JLabel("Temperature"));
-//            tempPanel.add(tempVal);
-//            MultipleInputs.put("tempVal", tempVal);
-//            ((JPanel) InputField).add(tempPanel);
-//
-//            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
-//        } else if (RME.Type == CreatureSpawnProbablity.class) {
-//            InputField = new JSpinner(new SpinnerNumberModel(0.1f, 0f, 0.75f, 0.01f));
-//        } else if (RME.Type == Humidity.class) {
-//            String[] ars = {"true", "false"};
-//            InputField = new JComboBox<>(ars);
-//        } else if (RME.Type == MapTints.class) {
-//            Size.setSize(400, 150);
-//            InputField = new JPanel();
-//            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
-//
-//            JPanel foliagePanel = new JPanel();
-//            foliagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-//            JButton foliageColour = new JButton("Select Colour");
-//            foliageColour.addActionListener(_ -> {
-//                foliageColour
-//                        .setForeground(JColorChooser.showDialog(foliageColour, "Select Foliage Colour", Color.green));
-//            });
-//            foliagePanel.add(new JLabel("Foliage Colour"));
-//            foliagePanel.add(foliageColour);
-//            MultipleInputs.put("foliageColour", foliageColour);
-//            ((JPanel) InputField).add(foliagePanel);
-//
-//            JPanel grassPanel = new JPanel();
-//            grassPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-//            JButton grassColour = new JButton("Select Colour");
-//            grassColour.addActionListener(ac -> {
-//                grassColour.setForeground(JColorChooser.showDialog(grassColour, "Select Grass Colour", Color.green));
-//            });
-//            grassPanel.add(new JLabel("Grass Colour"));
-//            grassPanel.add(grassColour);
-//            MultipleInputs.put("grassColour", grassColour);
-//            ((JPanel) InputField).add(grassPanel);
-//
-//            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
-//        } else if (RME.Type == ReplaceBiomes.class) {
-//            Size.setSize(400, 250);
-//            InputField = new JPanel();
-//            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
-//
-//            JPanel replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            JSpinner replacementVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-//            replacementPercentPanel.add(new JLabel("Replacement %"));
-//            replacementPercentPanel.add(replacementVal);
-//            MultipleInputs.put("replacementVal", replacementVal);
-//            ((JPanel) InputField).add(replacementPercentPanel);
-//
-//            JPanel noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            JSpinner noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-//            noisePanel.add(new JLabel("Noise Frequency Scale"));
-//            noisePanel.add(noiseVal);
-//            MultipleInputs.put("noiseVal", noiseVal);
-//            ((JPanel) InputField).add(noisePanel);
-//
-//            RElementValue<?,?> targetsVal = null;
-////            new RElementValue(Ancestor, new ArrayList<String>().getClass(), null, "targets",
-////                    "Replace Biomes", false,
-////                    Replacement.class, null, true, null);
-//            MultipleInputs.put("targetsVal", targetsVal);
-//            ((JPanel) InputField).add(targetsVal);
-//
-//            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
-//        } else if (RME.Type == SurfaceBuilder.class) {
-//            Size.setSize(400, 500);
-//            InputField = new JPanel();
-//            ((JPanel) InputField).setLayout(new BoxLayout((JPanel) InputField, BoxLayout.Y_AXIS));
-//
-//            JPanel seaFloorDepthPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            JSpinner seaDepthVal = new JSpinner(new SpinnerNumberModel(1, 0, 127, 1));
-//            seaFloorDepthPanel.add(new JLabel("Sea Floor Depth"));
-//            seaFloorDepthPanel.add(seaDepthVal);
-//            ((JPanel) InputField).add(seaFloorDepthPanel);
-//
-//            JPanel seaMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            RItemValue seaMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-//                    Type.SingleBlock);
-//            seaMaterialPanel.add(new JLabel("Sea Block"));
-//            seaMaterialPanel.add(seaMaterialVal);
-//            ((JPanel) InputField).add(seaMaterialPanel);
-//
-//            JPanel seaFloorMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            RItemValue seaFloorMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-//                    Type.SingleBlock);
-//            seaFloorMaterialPanel.add(new JLabel("Sea Floor Block"));
-//            seaFloorMaterialPanel.add(seaFloorMaterialVal);
-//            ((JPanel) InputField).add(seaFloorMaterialPanel);
-//
-//            JPanel foundationMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            RItemValue foundationMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-//                    Type.SingleBlock);
-//            foundationMaterialPanel.add(new JLabel("Underground Block"));
-//            foundationMaterialPanel.add(foundationMaterialVal);
-//            ((JPanel) InputField).add(foundationMaterialPanel);
-//
-//            JPanel midMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            RItemValue midMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-//                    Type.SingleBlock);
-//            midMaterialPanel.add(new JLabel("Ground Block"));
-//            midMaterialPanel.add(midMaterialVal);
-//            ((JPanel) InputField).add(midMaterialPanel);
-//
-//            JPanel surfaceMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//            RItemValue surfaceMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-//                    Type.SingleBlock);
-//            surfaceMaterialPanel.add(new JLabel("Surface Block"));
-//            surfaceMaterialPanel.add(surfaceMaterialVal);
-//            MultipleInputs.put("midMaterialVal", midMaterialVal);
-//            MultipleInputs.put("foundationMaterialVal", foundationMaterialVal);
-//            MultipleInputs.put("seaDepthVal", seaDepthVal);
-//            MultipleInputs.put("seaMaterialVal", seaMaterialVal);
-//            MultipleInputs.put("seaFloorMaterialVal", seaFloorMaterialVal);
-//            MultipleInputs.put("surfaceMaterialVal", surfaceMaterialVal);
-//            ((JPanel) InputField).add(surfaceMaterialPanel);
-//
-//            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+        
+
 //        } else if (RME.Type == Tags.class) {
 //            Size.setSize(600, 500);
 //            try {
-//                InputField = new REListValue<>(Tags.class.getField("tags"), (Class<List<String>>) (Class<?>)List.class, String.class, null,null,null);
-//                Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+
 //            } catch (NoSuchFieldException e) {
 //                throw new RuntimeException(e);
 //            }
@@ -356,10 +188,7 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
 //
 //            } else if (rMapElement.Type == ReplaceBiomes.class && val instanceof ReplaceBiomes replaceBiomes) {
 //
-//                ((JSpinner) MultipleInputs.get("replacementVal")).setValue(replaceBiomes.replacements[0].amount);
-//                ((JSpinner) MultipleInputs.get("noiseVal"))
-//                        .setValue(replaceBiomes.replacements[0].noise_frequency_scale);
-//                ((RElementValue) MultipleInputs.get("targetsVal")).setValue(replaceBiomes.replacements[0].targets);
+//                
 //
 //            } else if (rMapElement.Type == SurfaceBuilder.class && val instanceof SurfaceBuilder surfaceBuilder) {
 //                ((JSpinner) MultipleInputs.get("seaDepthVal")).setValue(surfaceBuilder.builder.sea_floor_depth);
