@@ -4,6 +4,7 @@ import com.formdev.flatlaf.util.ScaledImageIcon;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo.BlockJsonEntry;
+import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -162,7 +163,6 @@ public class BlockTextures {
                 });
             });
         }
-        
         return latch;
     }
 
