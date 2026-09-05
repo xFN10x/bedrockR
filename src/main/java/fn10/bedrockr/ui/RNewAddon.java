@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Objects;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -157,7 +158,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() == "changeIcon") {
+        if (Objects.equals(e.getActionCommand(), "changeIcon")) {
             try {
                 fileChooser.setDialogTitle("Choose Addon's Icon");
                 fileChooser.addChoosableFileFilter(new SystemFileChooser.FileNameExtensionFilter("Image files", "png"));
@@ -222,7 +223,7 @@ public class RNewAddon extends RDialog implements ActionListener, DocumentListen
                         + NameInput.getText());
 
         SwingUtilities.invokeLater(() -> {
-            if (text == "") {
+            if (Objects.equals(text, "")) {
                 CreateButton.setToolTipText("You can't name your addon nothing... ");
                 CreateButton.setEnabled(false);
             } else if (proposedDir.exists()) {

@@ -223,17 +223,16 @@ public class Launcher {
                     .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
                     .version(HttpClient.Version.HTTP_2).GET().build();
             HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+               throw new IOException("Failed to get PrismarineJS release.");
+            }
             if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                     || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
                     .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
-                try {
                     BlockTextures.downloadAllBlockTextures(loading).await();
-                } catch (InterruptedException e) {
-                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                }
             }
         } catch (IOException | InterruptedException e) {
-            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            ErrorShower.exception(loading, "Block texture download error.", e);
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
