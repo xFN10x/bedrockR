@@ -176,12 +176,12 @@ public class RFileOperations {
      * @return a bool declaring if the string can be used
      */
     public static boolean validFolderName(String proposed) {
-        return proposed.equals(getFileSafeName(proposed));
+        return proposed.replaceAll("[^a-zA-Z0-9+(\\-){1,}]+", "-").equals(getFileSafeName(proposed));
     }
 
     public static String getFileSafeName(String input) {
         //found some random regex from regex101
-        String s = input.trim().substring(0, Math.min(100, input.length())).replaceAll("[^a-zA-Z0-9+(\\-){1,}]+", "-");
+        String s = input.trim().substring(0, Math.min(100, input.trim().length())).replaceAll("[^a-zA-Z0-9+(\\-){1,}]+", "-");
         ArrayList<Character> chars = new ArrayList<>();
         for (char c : s.toCharArray()) {
             char adding = c;
