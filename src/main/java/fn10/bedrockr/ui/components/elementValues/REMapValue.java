@@ -118,7 +118,13 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        Problem = "This is valid";
+        for (Component component : HashMapInnerPane.getComponents()) {
+            if (component instanceof RMapValue<?,?> remv) {
+                Problem = "REMV " + remv.rMapElement.DisplayName + " isn't valid.";
+                if (!remv.valid(strict)) return false;
+            }
+        }
+        Problem = "No problem here!";
         return true;
     }
 }

@@ -548,7 +548,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
     @Override
     public boolean valid(boolean strict) {
-        if (!typeList()) {
+        if (typeList()) {
             if (needsItems && strict) {
                 try {
                     if (getListElements().isEmpty())

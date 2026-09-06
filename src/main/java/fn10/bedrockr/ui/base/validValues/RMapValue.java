@@ -68,6 +68,7 @@ public abstract class RMapValue<V, I extends JComponent> extends JPanel implemen
             return new RMIDamageValue(Ancestor, rMapElement);
         }
         return new RMAutoValue<>(Ancestor, rMapElement);
+        
     }
 
     protected boolean hasFilter(RMapElement.MapValueFilter filter) {

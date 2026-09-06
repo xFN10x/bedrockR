@@ -13,11 +13,11 @@ import java.awt.*;
 import java.util.List;
 
 public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, JPanel> {
-    JPanel replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JSpinner replacementVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-    JPanel noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JSpinner noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-    REListValue<String> targetsVal = null;
+    private JPanel replacementPercentPanel;
+    private JSpinner replacementVal;
+    private JPanel noisePanel;
+    private JSpinner noiseVal;
+    private  REListValue<String> targetsVal = null;
 
     public RMBiReplaceBiomes(Window Ancestor, RMapElement RME) {
         super(Ancestor, RME);
@@ -26,6 +26,11 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
 
     @Override
     protected @NonNull JPanel createInput() {
+        replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        replacementVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
+        noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
+        
         var input = new JPanel();
         input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
 

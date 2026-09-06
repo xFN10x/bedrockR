@@ -63,7 +63,7 @@ public class WorkspaceResources {
         Path jsonPath = resFolder.resolve("resource.json");
         T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
         if (resource == null) {
-            throw new IOException("Resource is null! Tried to read resource: " + jsonPath);
+            throw new IOException("Resource is null! Tried to read resource: " + jsonPath  + " (" + resClass.getName() + ")");
         }
         Path dataFile = resFolder.resolve("data." + resource.getDataExtension());
         resource.setData(Files.readAllBytes(dataFile));
