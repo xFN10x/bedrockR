@@ -112,6 +112,11 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
     public void setValueInternal(ResourcePointer<R> value) {
         try {
             val = value;
+            if (val == null) return;
+            if (!val.exists(WorkspaceResources.load(WorkspaceName))) {
+                resName.setText(val.getID());
+                return;
+            }
             WorkspaceResources wres = WorkspaceResources.load(WorkspaceName);
             R res = value.get(wres);
             icon.setIcon(ImageUtilities.toScaled(res.getResourceIcon(), 64));
@@ -128,7 +133,11 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        return val != null;
+        try {
+            return problem(val != null, "Resource not selected!") && problem(val.exists(WorkspaceResources.load(WorkspaceName)), "Resource not found");
+        } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -9,10 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RMBiMapTints extends RMapValue<BiomeComponents.MapTints, JPanel> {
-    private final JPanel foliagePanel = new JPanel();
-    private final JButton foliageColour = new JButton("Select Colour");
-    private final JPanel grassPanel = new JPanel();
-    private final JButton grassColour = new JButton("Select Colour");
+    private JPanel foliagePanel;
+    private JButton foliageColour;
+    private JPanel grassPanel;
+    private JButton grassColour;
 
     public RMBiMapTints(Window Ancestor, RMapElement RME) {
         super(Ancestor, RME);
@@ -21,6 +21,11 @@ public class RMBiMapTints extends RMapValue<BiomeComponents.MapTints, JPanel> {
 
     @Override
     protected @NonNull JPanel createInput() {
+        foliagePanel = new JPanel();
+        foliageColour = new JButton("Select Colour");
+        grassPanel = new JPanel();
+        grassColour = new JButton("Select Colour");
+        
         var input = new JPanel();
         input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
 

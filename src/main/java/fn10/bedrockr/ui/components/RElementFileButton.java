@@ -124,7 +124,6 @@ public class RElementFileButton extends RDetailedButton implements ActionListene
                 try {
                     if (RFileOperations.getFileFromElementFile(wksp.SWPF.workspaceName(), file).toFile().delete()) {
                         wksp.refreshElements();
-                        wksp.buildElements(true);
                     } else {
                         RFileOperations.LOG.warning("Couldn't delete element.");
                     }

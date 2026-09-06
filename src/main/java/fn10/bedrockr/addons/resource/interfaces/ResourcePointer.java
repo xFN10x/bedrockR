@@ -23,4 +23,12 @@ public class ResourcePointer<T extends Resource> {
     public static <T extends Resource> ResourcePointer<? extends Resource> pointerOf(T res) {
         return new ResourcePointer<>(res.ID, res.getClass());
     }
+
+    public boolean exists(WorkspaceResources wres) {
+        return get(wres) != null;
+    }
+
+    public String getID() {
+        return id;
+    }
 }
