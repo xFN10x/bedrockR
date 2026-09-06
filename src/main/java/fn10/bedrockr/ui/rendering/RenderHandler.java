@@ -67,16 +67,13 @@ public class RenderHandler {
         if (res == null) return null;
         return tex.get(res).loadImage(ImageUtilities.ImgHandler);
     }
-    
+
     public static BufferedImage renderBlock(String name, BlockTexture btex, WorkspaceResources res) throws IOException {
-        return render6SideBlock(name,
-                resToBuf(btex.upTex, res),
-                //resToBuf(btex.downTex, res),
-               // resToBuf(btex.eastTex, res),
-                resToBuf(btex.westTex, res),
-                resToBuf(btex.northTex, res)
-                //,resToBuf(btex.southTex, res)
-        );
+        return switch (btex.getMode()) {
+            case BlockTexture.PILLAR_MODE -> renderLogBlock(name,  resToBuf(btex.upTex,res), resToBuf(btex.downTex,res), resToBuf(btex.northTex,res));
+            case BlockTexture.PER_FACE_MODE -> render6SideBlock(name,  resToBuf(btex.upTex,res), resToBuf(btex.westTex,res), resToBuf(btex.northTex,res));
+            default -> renderAllSideBlock(name, resToBuf(btex.upTex,res));
+        };
     }
 
     public record BrightnessFilter(float mul) implements BufferedImageOp {

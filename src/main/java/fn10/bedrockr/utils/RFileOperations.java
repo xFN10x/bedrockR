@@ -64,8 +64,12 @@ public class RFileOperations {
     public static void init(ImageHandler<?> imgHandler) {
         SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
-        ItemInfo.downloadVanillaItems();
-        ItemInfo.downloadVanillaBlocks();
+        try {
+            ItemInfo.downloadVanillaItems();
+            ItemInfo.downloadVanillaBlocks();
+        } catch (Exception e) {
+            RLogUtils.exception("Failed to download items and/or blocks!", e);
+        }
         CURRENT_IMG_HANDLER = imgHandler;
     }
 

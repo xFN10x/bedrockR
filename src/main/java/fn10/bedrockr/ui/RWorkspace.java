@@ -697,8 +697,12 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     loading.setAlwaysOnTop(true);
                     SwingUtilities.invokeLater(() -> loading.setVisible(true));
 
-                    ItemInfo.downloadVanillaItems();
-                    ItemInfo.downloadVanillaBlocks();
+                    try {
+                        ItemInfo.downloadVanillaItems();
+                        ItemInfo.downloadVanillaBlocks();
+                    } catch (Exception e) {
+                        RLogUtils.warnException(e);
+                    }
 
                     // get items ready for use
                     SwingUtilities.invokeLater(() -> {

@@ -5,6 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo.BlockJsonEntry;
 import fn10.bedrockr.ui.RLoadingScreen;
+import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -86,8 +87,12 @@ public class BlockTextures {
     }
 
     public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
-        if (ItemInfo.vanillaBlocks == null)
-            ItemInfo.downloadVanillaBlocks();
+        try {
+            if (ItemInfo.vanillaBlocks == null)
+                ItemInfo.downloadVanillaBlocks();
+        } catch (Exception e) {
+            ErrorShower.exception(doingThis, "Failed to download vanilla blocks!", e);
+        }
         RLoadingScreen loading = new RLoadingScreen(doingThis);
         final int blocks = ItemInfo.vanillaBlocks.length;
         loading.Steps = blocks;

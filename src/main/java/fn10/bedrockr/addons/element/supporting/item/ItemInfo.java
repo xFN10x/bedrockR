@@ -2,10 +2,12 @@ package fn10.bedrockr.addons.element.supporting.item;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,8 +37,8 @@ public class ItemInfo {
 
     public static ItemJsonEntry[] vanillaItems;
 
-    public static void downloadVanillaItems() {
-        try (HttpClient client = HttpClient.newBuilder().build()) {
+    public static void downloadVanillaItems() throws URISyntaxException, IOException, InterruptedException {
+        try (HttpClient client = newDownloadingClient()) {
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
                     .uri(new URI(
                             "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
@@ -67,9 +69,11 @@ public class ItemInfo {
             }
             vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
             Arrays.sort(vanillaItems);
-        } catch (Exception e) {
-            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
+    }
+
+    private static HttpClient newDownloadingClient() {
+        return HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
     }
 
     public static class BlockJsonEntry implements Comparable<BlockJsonEntry> {
@@ -148,9 +152,9 @@ public class ItemInfo {
     }
 
     @SuppressWarnings("unchecked")
-    public static void downloadVanillaBlocks() {
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
+    public static void downloadVanillaBlocks() throws IOException, InterruptedException, URISyntaxException {
+        try (HttpClient client = newDownloadingClient()) {
+            
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
                     .uri(new URI(
                             "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
@@ -180,8 +184,6 @@ public class ItemInfo {
             }
             vanillaBlocks = parsedEntrys.toArray(new BlockJsonEntry[0]);
             Arrays.sort(vanillaBlocks);
-        } catch (Exception e) {
-            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
     }
 

@@ -50,10 +50,9 @@ public class Launcher {
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     private static boolean setuplogging = false;
-    public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
+    public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
 
     public static void main(String[] args) {
-        RFileOperations.init(ImageUtilities.ImgHandler);
         try (final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png")) {
             if (stream != null)
                 ICON = ImageIO.read(stream);
@@ -61,6 +60,9 @@ public class Launcher {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         RSplashScreen loading = new RSplashScreen();
+        loading.ProgressText.setText("Initalizing...");
+        RFileOperations.init(ImageUtilities.ImgHandler);
+        
         loading.ProgressText.setText("Loading settings...");
 
         SettingsFile settings = SettingsFile
