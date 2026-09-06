@@ -114,10 +114,15 @@ public class WorkspaceResources {
                 Class<?> clas;
                 if (entry.getValue() instanceof String str) {
                     clas = Class.forName(str);
-                    if (!Resource.class.isAssignableFrom(clas)) continue;
+                    if (!Resource.class.isAssignableFrom(clas)) {
+                        RFileOperations.LOG.severe("Class: " + str + " is not a resource!");
+                        continue;
+                    }
                 } else if (entry.getValue() instanceof Class cls) {
                     clas = cls;
-                } else continue;
+                } else {
+                    continue;
+                }
                 actualMap.put(entry.getKey(), (Class<? extends Resource>) clas);
             } catch (Exception e) {
                 RLogUtils.exception(e);

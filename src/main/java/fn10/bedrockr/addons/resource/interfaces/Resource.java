@@ -57,7 +57,7 @@ public abstract class Resource {
 
         Files.writeString(serializedPath, json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         Files.write(dataPath, data);
-        RFileOperations.LOG.info("Saved resource: " + Name);
+        //RFileOperations.LOG.info("Saved resource: " + Name);
     }
 
     public String getFolderPath() {
