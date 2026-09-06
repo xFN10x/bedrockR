@@ -415,15 +415,15 @@ public class RFileOperations {
     public static void mcSync() {
         SettingsFile settings = SettingsFile.load();
         try {
-            Path bpPath = getBaseDirectory().toPath().resolve("build","BP");
-            Path rpPath = getBaseDirectory().toPath().resolve("build","RP");
+            Path bpPath = getBaseDirectory().toPath().resolve("build", "BP");
+            Path rpPath = getBaseDirectory().toPath().resolve("build", "RP");
             if (!COMMOJANG.toFile().exists()) {
                 return;
             }
 
             Path comBpPath = COMMOJANG.resolve("development_behavior_packs");
             Path comRpPath = COMMOJANG.resolve("development_resource_packs");
-           
+
             if (!Files.exists(comBpPath)) {
                 LOG.info("Making dev BP folder...");
                 Files.createDirectories(comBpPath);
@@ -432,10 +432,10 @@ public class RFileOperations {
                 LOG.info("Making dev RP folder...");
                 Files.createDirectories(comRpPath);
             }
-            
+
             File[] bpFiles = bpPath.toFile().listFiles();
             File[] rpFiles = rpPath.toFile().listFiles();
-            
+
             if (bpFiles == null || rpFiles == null) return;
             //region Sync BP
             // clear currently synced
@@ -500,7 +500,7 @@ public class RFileOperations {
         };
 
         Path base = getBaseDirectory().toPath();
-        
+
         File wsFolder = base.resolve("workspace", wpf.WorkspaceName).toFile();
 
         if (wsFolder.exists()) { // throw if folder is already here
@@ -545,11 +545,9 @@ public class RFileOperations {
      * @return The path of this element file on disk.
      */
     public static Path getFileFromElementFile(String workspace, ElementFile<?> elementFile) throws IOException {
-        Path proposed = java.nio.file.Paths.get(RFileOperations
-                        .getFileFromWorkspace(workspace,
-                                File.separator + "elements" + File.separator)
-                        .getAbsolutePath(),
-                elementFile.getElementName() + "."
+        Path proposed = RFileOperations
+                .getFileFromWorkspace(workspace,
+                        "elements").toPath().resolve(elementFile.getElementName() + "."
                         + MapUtilities.getKeyFromValue(ELEMENT_EXTENSION_CLASSES, elementFile.getSourceClass()));
         LOG.info("Found ElementFile on disk: " + proposed);
         return proposed;
@@ -591,7 +589,7 @@ public class RFileOperations {
         }
         return building.toArray(new ElementFile[0]);
     }
-    
+
     public static Path make(Path to) throws IOException {
         FileUtils.createParentDirectories(to.toFile());
         if (!Files.exists(to))
@@ -620,7 +618,7 @@ public class RFileOperations {
     public static void write(Path to, String data) throws IOException {
         write(to, data.getBytes());
     }
-    
+
     public static void copyRes(String res, Path destFolder) throws IOException {
         String fileName = res.substring(res.lastIndexOf('/') + 1);
         RFileOperations.write(destFolder.resolve(fileName), RFileOperations.readAllOfResource(res));
@@ -633,11 +631,12 @@ public class RFileOperations {
     public static WorkspaceResources getWorkspaceResources(String workspaceName) throws WorkspaceResources.WorkspaceUnsupportedException, IOException {
         return WorkspaceResources.load(workspaceName);
     }
+
     @SuppressWarnings("ConstantValue")
     public static boolean isPrereleaseVersion() {
         return VERSION.endsWith("PRE");
     }
-    
+
     public static ImageHandler<?> getCurrentImgHandler() {
         return CURRENT_IMG_HANDLER;
     }
