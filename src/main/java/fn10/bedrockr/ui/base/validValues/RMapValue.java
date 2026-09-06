@@ -3,10 +3,12 @@ package fn10.bedrockr.ui.base.validValues;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.RStringDropdownMapElement;
 import fn10.bedrockr.addons.element.ValidatableValue;
+import fn10.bedrockr.addons.element.supporting.BiomeComponents;
+import fn10.bedrockr.addons.element.supporting.BlockComponents;
+import fn10.bedrockr.addons.element.supporting.ItemComponents;
 import fn10.bedrockr.ui.components.RHelpButton;
 import fn10.bedrockr.ui.components.RItemValue;
-import fn10.bedrockr.ui.components.mapValues.RMAutoValue;
-import fn10.bedrockr.ui.components.mapValues.RMStringDropdownValue;
+import fn10.bedrockr.ui.components.mapValues.*;
 import fn10.bedrockr.ui.util.RFonts;
 import jakarta.annotation.Nonnull;
 
@@ -15,13 +17,12 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 /**
  * Repersants a value used in an {@link fn10.bedrockr.ui.components.elementValues.REMapValue}, with the key always being String because json.
  */
-public abstract class RMapValue<V,I extends JComponent> extends JPanel implements ValidatableValue {
+public abstract class RMapValue<V, I extends JComponent> extends JPanel implements ValidatableValue {
 
     protected Dimension Size = new Dimension(240, 80);
 
@@ -37,18 +38,38 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
     protected final Window Ancestor;
 
     protected final SpringLayout Lay = new SpringLayout();
-    
-    protected static boolean are(Class<?> cls0, Class<?> cls1) {
-        return cls1.isAssignableFrom(cls0);
+
+    protected static boolean are(RMapElement cls0, Class<?> cls1) {
+        return cls1.isAssignableFrom(cls0.Type);
     }
-     
-    public static RMapValue<?,?> ofElement(Window Ancestor, RMapElement rMapElement) {
+
+    public static RMapValue<?, ?> ofElement(Window Ancestor, RMapElement rMapElement) {
         if (rMapElement instanceof RStringDropdownMapElement rsd) {
             return new RMStringDropdownValue(Ancestor, rsd);
+        } else if (are(rMapElement, BlockComponents.BlockCanBeMined.class)) {
+            return new RMBDestructibleByMining(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.Climate.class)) {
+            return new RMBiClimate(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.CreatureSpawnProbablity.class)) {
+            return new RMBiCreatureSpawnChance(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.Humidity.class)) {
+            return new RMBiHumidity(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.MapTints.class)) {
+            return new RMBiMapTints(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.ReplaceBiomes.class)) {
+            return new RMBiReplaceBiomes(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.SurfaceBuilder.class)) {
+            return new RMBiSurfaceBuilder(Ancestor, rMapElement);
+        } else if (are(rMapElement, BiomeComponents.Tags.class)) {
+            return new RMBiTags(Ancestor, rMapElement);
+        } else if (are(rMapElement, ItemComponents.ItemBlockPlacer.class)) {
+            return new RMIBlockPlacer(Ancestor, rMapElement);
+        } else if (are(rMapElement, ItemComponents.ToolDamage.class)) {
+            return new RMIDamageValue(Ancestor, rMapElement);
         }
         return new RMAutoValue<>(Ancestor, rMapElement);
     }
-    
+
     protected boolean hasFilter(RMapElement.MapValueFilter filter) {
         return rMapElement.Filters.contains(filter);
     }
@@ -66,7 +87,7 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
         IDNameLabel.setFont(RFonts.RegMinecraftFont.deriveFont(Font.ITALIC, 12 - ((float) RME.DisplayName.length() / 10)));
 
         // check for custom ones first
-        
+
 
 //        } else if (RME.Type == Tags.class) {
 //            Size.setSize(600, 500);
@@ -152,7 +173,8 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
 
         validate();
     }
-@Nonnull
+
+    @Nonnull
     protected abstract I createInput();
 
 //    @SuppressWarnings("unchecked")
@@ -383,13 +405,15 @@ public abstract class RMapValue<V,I extends JComponent> extends JPanel implement
 //            RFileOperations.LOG.warning("Map value input is a label: " + ((JLabel) InputField).getText());
 //        }
 //        return new AbstractMap.SimpleEntry<>(rMapElement.ID, val);
-return new AbstractMap.SimpleEntry<>(getKey(), getValue());
+        return new AbstractMap.SimpleEntry<>(getKey(), getValue());
     }
 
     public String getKey() {
         return rMapElement.ID;
     }
+
     public abstract V getValue();
+
     public abstract void setValue(V val);
 
     @Override
