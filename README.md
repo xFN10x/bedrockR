@@ -1,47 +1,58 @@
-# ![bedrockR](https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/src/main/resources/ui/BrandingFullWShadow.png)
 
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xFN10x/bedrockR/gradle.yml)
-![Hackatime](https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR)
-![Dependabot](https://img.shields.io/badge/dependabot-025E8C?logo=dependabot&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white)
-[![JitPack](https://jitpack.io/v/xFN10x/bedrockR.svg)](https://jitpack.io/#xFN10x/bedrockR)
+<p align="center">
+<img alt="bedrockR" src="https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/src/main/resources/ui/BrandingFullWShadow.png" height=""/>
+<br/>
+<img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/xFN10x/bedrockR/gradle.yml"/>
+<img alt="Hackatime" src="https://hackatime-badge.hackclub.com/U0923KXMGUR/bedrockR"/>
+<img alt="Dependabot" src="https://img.shields.io/badge/dependabot-025E8C?logo=dependabot&amp;logoColor=white"/>
+<img alt="Java" src="https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&amp;logoColor=white"/>
+<a href="https://jitpack.io/#xFN10x/bedrockR"><img alt="JitPack" src="https://jitpack.io/v/xFN10x/bedrockR.svg"/></a>
+<a href="https://hackclub.com/"><img alt="HackClub" height="20" src="https://assets.hackclub.com/flag-standalone.svg"/></a>
 
-A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Mobile.
-
-[bedrockR Youtube Channel](https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA) | [bedrockR Website](https://bedrockr.xplate.dev)
-
-(Mobile repository is here: <https://github.com/xFN10x/bedrockR-Mobile>, but most of the info is on this repo.)
+</p>
+<p align="center">
+A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Mobile.<br/><br/>
+<a href="https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA">bedrockR YouTube Channel</a> | <a href="https://bedrockr.xplate.dev">bedrockR Website</a>
+</p>
 
 ## Why?
 
-Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate those challenges with a useful user interface, and regular updates. This project is heavily inspired by MCreator, and how it doesn't have the best Bedrock modding in it.
+Minecraft Bedrock Addons can be confusing, tedious, and annoying sometimes. bedrockR is what I'm hoping can eliminate
+those challenges with a useful user interface, and regular updates. This project is heavily inspired by MCreator, and
+how it doesn't have the best Bedrock modding in it.
 
-**bedrockR is still in alpha, things can change and feedback is greatly appreciated!**
+> [!IMPORTANT]
+> bedrockR is **still in alpha**, things can & will probably change and feedback is greatly appreciated!
 
 **(A bedrockR tutorial is [on the wiki](https://github.com/xFN10x/bedrockR/wiki))**
 
 ## Installing
 
-Since bedrockR is made in Java, it is available for any computer that can run Java 25. If you want an easy installation, you can download one of the installers, or portable version in the [releases section](https://github.com/xFN10x/bedrockR/releases).
+Since bedrockR is made in Java, it is available for any computer that can run Java 25.
 
-Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.xplate.dev/download) to download the latest version
+If you are on Debian or Windows, you can download one of the installers, or portable version in
+the [releases section](https://github.com/xFN10x/bedrockR/releases).
 
-### Mobile
+Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.xplate.dev/download) to download the
+latest version
 
-bedrockR Mobile for Android is stopped development for the foreseeable future.
+If there are no builds included in
 
-### Using the JAR (Other Platforms)
+### Using the JAR
 
-If none of these builds are for your platform, you can use the universal JAR file, which you can download along side the other version.
+If none of these builds are for your platform, you can use the universal JAR file, which
 
 ## Source Code
 
-bedrockR is made with Java 25, and it is tested and known to work with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-25) (it's what I use for testing).
+bedrockR is made with Java 25, and developed with [OpenJDK](https://openjdk.org/). If you don't know which OpenJDK
+distro to use, use [Microsoft's](https://learn.microsoft.com/en-ca/java/openjdk/download#openjdk-25) (it's what I use.).
 
-bedrockR was made in VSCode with the built in Java extension, and it uses Gradle (with kotlin DSL) for dependency management.
+bedrockR (versions a1.0 - a1.5) were made in VSCode with the built-in Java extension, and it uses Gradle (with kotlin
+DSL) for dependency management.
 
 > [!IMPORTANT]
-> bedrockR Mobile is a seperate program, read its source code instructions on [its repository](https://github.com/xFN10x/bedrockR-Mobile)
+> bedrockR Mobile is a _seperate program,_ read its source code instructions
+on [its repository](https://github.com/xFN10x/bedrockR-Mobile)
 
 ### Maven
 
@@ -65,16 +76,9 @@ Click the badge above to go to the Jitpack page where it will tell you on how to
 
 Building a JAR can be done with one command.
 
-(Make sure you are cd'd into the source code directory)
+- Run the command: `./gradlew shadowJar`
 
-- Run the command;
-
-  ```powershell
-  ./gradlew shadowJar (powershell)
-    gradlew shadowJar (cmd prompt)
-  ```
-
-- Now you should be able to find the JAR in `app/build/builtJars`
+- Now you should be able to find the JAR in `build/builtJars`
 
 #### Distribution copies
 
@@ -84,16 +88,19 @@ The following commands can be used to make certain builds of bedrockR.
 
 `./gradlew jpackagePORTABLE` - Make a portable copy of bedrockR for your platform.
 
-Now check `build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE DISTRO AT A TIME)
+Now check `build/builtDist`, and you should see your platform's distribution. (NOTE: THIS DIRECTORY CAN ONLY HOLD ONE
+DISTRO AT A TIME)
 
 #### Libraries
 
-Since, a2.0, bedrockR is now made to be used in other programs as well. With the following command, you can make a JAR that doesn't include and UI related stuff. This means that you can port bedrockR to any device that can run Java 25.
+Since a2.0, bedrockR's codebase was reworked to be fully cross-platform. With the following command, you can make a JAR
+with only the backend code. This means that you can port bedrockR to any device that can run Java 25.
 
 Use `./gradlew mavenJar` to make this jar. It will be found in `build/mavenLibs`.
 
 **This isn't the recommended way to use this jar. You should use the Maven library from Jitpack instead.**
 
->_bedrockR is not assocaited with Mojang AB, or Microsoft Corp._
+> _bedrockR is not assocaited with Mojang AB, or Microsoft Corp._ <br/>
+> _"Minecraft" and the Minecraft Logo are trademarks of Mojang AB._
 >
->_"Minecraft" and the Minecraft Logo are trademarks of Mojang AB._
+>***bedrockR © Copyright 2025-26 xFN10x (Damien K.)***
