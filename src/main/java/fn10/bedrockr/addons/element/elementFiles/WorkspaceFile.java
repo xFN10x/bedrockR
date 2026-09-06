@@ -118,19 +118,9 @@ public class WorkspaceFile extends ElementFile<SourceWorkspaceFile> {
         Scripts.clear();
     }
 
-    /**
-     * Adds a javascript script to the addon
-     * 
-     * @param rootPath - the root of the building BP
-     * 
-     * @param name     - the name of the script. {@code name = "script.js"} would be
-     *                 located in {@code scripts/script.js}, and
-     *                 {@code name = "folder/script.js"} would be located in
-     *                 {@code scripts/folder/script.js}
-     * @return the path the file can be written to.
-     */
+
 //    public Path addScript(String rootPath, String name) {
-//        if (Scripts == null) {
+//        if (Scripts = null) {
 //            Scripts = new HashMap<UUID, String>();
 //        }
 //        if (Scripts.containsValue(name)) // return if its already here
