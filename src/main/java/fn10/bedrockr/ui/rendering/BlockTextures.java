@@ -4,11 +4,10 @@ import com.formdev.flatlaf.util.ScaledImageIcon;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo.BlockJsonEntry;
-import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.ui.RLoadingScreen;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
-import fn10.bedrockr.ui.RLoadingScreen;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -98,71 +97,72 @@ public class BlockTextures {
         });
         final boolean[] stop = {false};
         int maxThreads = 10;
-        try (ExecutorService executorService = Executors.newFixedThreadPool(maxThreads)) {
-            SwingUtilities.invokeLater(() -> {
-                downloaded = 0;
-                Thread downloadThread = new Thread(() -> {
-                    for (BlockJsonEntry block : ItemInfo.vanillaBlocks) {
-                        executorService.submit(() -> {
-                            String name = block.name.split(":")[1];
-                            try {
-                                loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                            if (stop[0]) {
-                                latch.countDown();
-                                return;
-                            }
-                            renderBlock(name);
-                            downloaded++;
-                            latch.countDown();
-                        });
-                    }
-
-                    try {
-                        latch.await();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    SettingsFile settings = SettingsFile.load();
-                    HttpRequest latestVerReq = HttpRequest.newBuilder()
-                            .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
-                            .version(HttpClient.Version.HTTP_2).GET().build();
-                    HttpResponse<String> response;
-                    try {
-                        response = client.send(latestVerReq, BodyHandlers.ofString());
-                    } catch (IOException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Number) gson
-                            .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
-
-                    settings.save();SwingUtilities.invokeLater(() -> {
-                        loading.setVisible(false);
-                    });
-                });
-                downloadThread.setName("Downloading-Thread");
-                downloadThread.setUncaughtExceptionHandler((t, e) -> {
-                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                    for (int i = 0; i < latch.getCount(); i++) {
-                        latch.countDown();
-                    }
-                });
-                downloadThread.start();
-                loading.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
-                                        + (blocks - downloaded) + " blocks left!",
-                                "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
-                        if (op == JOptionPane.YES_OPTION) {
-                            stop[0] = true;
-                            SwingUtilities.invokeLater(() -> loading.setVisible(false));
+        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
+        SwingUtilities.invokeLater(() -> {
+            downloaded = 0;
+            Thread downloadThread = new Thread(() -> {
+                for (BlockJsonEntry block : ItemInfo.vanillaBlocks) {
+                    executorService.submit(() -> {
+                        String name = block.name.split(":")[1];
+                        try {
+                            loading.increaseProgressBySteps("Downloading " + name + "'s textures...");
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
                         }
-                    }
+                        if (stop[0]) {
+                            latch.countDown();
+                            return;
+                        }
+                        renderBlock(name);
+                        downloaded++;
+                        latch.countDown();
+                    });
+                }
+
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                executorService.shutdown();
+                SettingsFile settings = SettingsFile.load();
+                HttpRequest latestVerReq = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
+                        .version(HttpClient.Version.HTTP_2).GET().build();
+                HttpResponse<String> response;
+                try {
+                    response = client.send(latestVerReq, BodyHandlers.ofString());
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = ((Number) gson
+                        .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue();
+
+                settings.save();
+                SwingUtilities.invokeLater(() -> {
+                    loading.setVisible(false);
                 });
             });
-        }
+            downloadThread.setName("Downloading-Thread");
+            downloadThread.setUncaughtExceptionHandler((t, e) -> {
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+                for (int i = 0; i < latch.getCount(); i++) {
+                    latch.countDown();
+                }
+            });
+            downloadThread.start();
+            loading.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    int op = JOptionPane.showConfirmDialog(loading, "Are you sure you want to cancel? There are "
+                                    + (blocks - downloaded) + " blocks left!",
+                            "Cancel Confirmation", JOptionPane.YES_NO_OPTION);
+                    if (op == JOptionPane.YES_OPTION) {
+                        stop[0] = true;
+                        SwingUtilities.invokeLater(() -> loading.setVisible(false));
+                    }
+                }
+            });
+        });
         return latch;
     }
 
