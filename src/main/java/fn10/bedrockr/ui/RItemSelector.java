@@ -26,6 +26,7 @@ public class RItemSelector extends RDialog implements ActionListener {
     public static final int FILTER_ITEMS = 0b0100;
     public static final int FILTER_BLOCKS_WP = 0b1110;
     public static final int FILTER_ITEMS_WP = 0b0110;
+    
     private static final int FILTER_WP_ONLY_BIT = 0b0010;
     private static final int FILTER_BLOCKS_BIT = 0b1000;
 
@@ -38,7 +39,6 @@ public class RItemSelector extends RDialog implements ActionListener {
     private final JButton cancelButton = new JButton("Cancel");
     private final JTextField searchBox = new JTextField();
 
-    private Integer choice = CANCEL_CHOICE;
     private ItemInfo selected = null;
     @MagicConstant(intValues = {
             FILTER_BLOCKS, FILTER_BLOCKS_WP, FILTER_ITEMS, FILTER_ITEMS_WP
@@ -98,7 +98,6 @@ public class RItemSelector extends RDialog implements ActionListener {
         this.filter = filter;
 
         cancelButton.addActionListener(e -> {
-            choice = CANCEL_CHOICE;
             dispose();
         });
 

@@ -1,5 +1,7 @@
 package fn10.bedrockr.ui.components.elementValues;
 
+import com.google.gson.JsonElement;
+import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
 import fn10.bedrockr.ui.RMapValueAddingSelector;
@@ -8,6 +10,7 @@ import fn10.bedrockr.ui.base.validValues.RMapValue;
 import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RFileOperations;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -86,10 +89,19 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
 
     @Override
     public void setValueInternal(Map<String, V> value) {
+        HashMapInnerPane.removeAll();
         try {
                 for (Map.Entry<String, V> entry : value.entrySet()) {
-                    RMapValue<V, ?> ToAdd = (RMapValue<V, ?>) RMapValue.ofElement(null, RMapElement.LookupMap.get(entry.getKey()));
-                    ToAdd.setValue(entry.getValue());
+                    RMapElement rme = RMapElement.LookupMap.get(entry.getKey());
+                    V val;
+                    if (entry.getValue() instanceof LinkedTreeMap<?,?> ltm) {
+                        JsonElement jsonTree = RFileOperations.gson.toJsonTree(ltm);
+                        val = (V) RFileOperations.gson.fromJson(jsonTree, rme.Type);
+                    } else {
+                        val = entry.getValue();
+                    }
+                    RMapValue<V, ?> ToAdd = (RMapValue<V, ?>) RMapValue.ofElement(null, rme);
+                    ToAdd.setValue(val);
 
                     addREMV(ToAdd);
                 }

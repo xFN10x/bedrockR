@@ -53,6 +53,7 @@ public class Launcher {
     public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
 
     public static void main(String[] args) {
+        RFileOperations.LOG.info("Initalizing bedrockR...");
         try (final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png")) {
             if (stream != null)
                 ICON = ImageIO.read(stream);

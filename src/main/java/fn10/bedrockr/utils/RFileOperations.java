@@ -369,7 +369,7 @@ public class RFileOperations {
         try {
             return getWorkspaceFile(wpName).Prefix;
         } catch (IOException e) {
-            return "error";
+            return "failedtogetprefix";
         }
     }
 
