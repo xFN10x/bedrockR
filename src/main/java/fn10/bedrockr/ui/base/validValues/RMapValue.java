@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 /**
@@ -43,31 +44,31 @@ public abstract class RMapValue<V, I extends JComponent> extends JPanel implemen
         return cls1.isAssignableFrom(cls0.Type);
     }
 
-    public static RMapValue<?, ?> ofElement(Window Ancestor, RMapElement rMapElement) {
+    public static RMapValue<?, ?> ofElement(Window Ancestor, RMapElement rMapElement, Consumer<RMapValue<?,?>> onRemove) {
         if (rMapElement instanceof RStringDropdownMapElement rsd) {
-            return new RMStringDropdownValue(Ancestor, rsd);
+            return new RMStringDropdownValue(Ancestor, rsd, onRemove);
         } else if (are(rMapElement, BlockComponents.BlockCanBeMined.class)) {
-            return new RMBDestructibleByMining(Ancestor, rMapElement);
+            return new RMBDestructibleByMining(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.Climate.class)) {
-            return new RMBiClimate(Ancestor, rMapElement);
+            return new RMBiClimate(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.CreatureSpawnProbablity.class)) {
-            return new RMBiCreatureSpawnChance(Ancestor, rMapElement);
+            return new RMBiCreatureSpawnChance(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.Humidity.class)) {
-            return new RMBiHumidity(Ancestor, rMapElement);
+            return new RMBiHumidity(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.MapTints.class)) {
-            return new RMBiMapTints(Ancestor, rMapElement);
+            return new RMBiMapTints(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.ReplaceBiomes.class)) {
-            return new RMBiReplaceBiomes(Ancestor, rMapElement);
+            return new RMBiReplaceBiomes(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.SurfaceBuilder.class)) {
-            return new RMBiSurfaceBuilder(Ancestor, rMapElement);
+            return new RMBiSurfaceBuilder(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, BiomeComponents.Tags.class)) {
-            return new RMBiTags(Ancestor, rMapElement);
+            return new RMBiTags(Ancestor, rMapElement, onRemove);
         } else if (are(rMapElement, ItemComponents.ItemBlockPlacer.class)) {
             return new RMIBlockPlacer(Ancestor, rMapElement);
         } else if (are(rMapElement, ItemComponents.ToolDamage.class)) {
-            return new RMIDamageValue(Ancestor, rMapElement);
+            return new RMIDamageValue(Ancestor, rMapElement, onRemove);
         }
-        return new RMAutoValue<>(Ancestor, rMapElement);
+        return new RMAutoValue<>(Ancestor, rMapElement, onRemove);
         
     }
 
@@ -75,7 +76,7 @@ public abstract class RMapValue<V, I extends JComponent> extends JPanel implemen
         return rMapElement.Filters.contains(filter);
     }
 
-    public RMapValue(Window Ancestor, RMapElement RME) {
+    public RMapValue(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
 
         this.rMapElement = RME;
         this.Ancestor = Ancestor;
