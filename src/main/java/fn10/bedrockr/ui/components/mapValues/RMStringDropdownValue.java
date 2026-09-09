@@ -7,10 +7,11 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMStringDropdownValue extends RMapValue<String, JComboBox<String>> {
-    public RMStringDropdownValue(Window Ancestor, RStringDropdownMapElement RME) {
-        super(Ancestor, RME);
+    public RMStringDropdownValue(Window Ancestor, RStringDropdownMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 //TODO: remove this, and code it straight into the creation screen
 public class RMBiClimate extends RMapValue<BiomeComponents.Climate, JPanel> {
@@ -19,8 +20,8 @@ public class RMBiClimate extends RMapValue<BiomeComponents.Climate, JPanel> {
     private JSpinner tempVal;
     private final static float snowFactor = 1f / 8f;
 
-    public RMBiClimate(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiClimate(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
         Size.setSize(400, 150);
     }
 

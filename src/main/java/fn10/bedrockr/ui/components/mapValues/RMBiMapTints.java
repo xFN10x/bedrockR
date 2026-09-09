@@ -7,6 +7,7 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMBiMapTints extends RMapValue<BiomeComponents.MapTints, JPanel> {
     private JPanel foliagePanel;
@@ -14,8 +15,8 @@ public class RMBiMapTints extends RMapValue<BiomeComponents.MapTints, JPanel> {
     private JPanel grassPanel;
     private JButton grassColour;
 
-    public RMBiMapTints(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiMapTints(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
         Size.setSize(400, 150);
     }
 

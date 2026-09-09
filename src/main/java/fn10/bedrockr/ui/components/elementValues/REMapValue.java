@@ -26,9 +26,13 @@ import java.util.Map;
 public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
     protected final JPanel HashMapInnerPane;
     protected final JButton HashMapAdd;
+    protected final HashMap<String, JPanel> addedMapValuePanels;
+    protected final HashMap<String, RMapValue<?, ?>> addedMapValues;
 
     public REMapValue(Class<V> valueType, @Nullable Field TargetField, @NonNull Class<Map<String, V>> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
         HashMapInnerPane = new JPanel();
+        addedMapValuePanels = new HashMap<>();
+        addedMapValues = new HashMap<>();
         HashMapAdd = new JButton(ImageUtilities.getIcon("/addons/workspace/New.png"));
         super(TargetField, type, TargetFile, WorkspaceName, details);
     }
@@ -60,7 +64,7 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
                             picked);
                     if (select == null)
                         return;
-                    var toAdd = RMapValue.ofElement(null, select);
+                    var toAdd = RMapValue.ofElement(null, select, thi -> removeREMV(thi.getKey()));
                     toAdd.setSize(HashMapInnerPane.getWidth() - 5,
                             Double.valueOf(toAdd.getSize().getHeight()).intValue());
                     toAdd.setAlignmentX(0.5f);
@@ -81,7 +85,7 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
 
         Lay.putConstraint(SpringLayout.EAST, HashMapAdd, -5, SpringLayout.WEST, input);
         Lay.putConstraint(SpringLayout.NORTH, HashMapAdd, 5, SpringLayout.SOUTH, Name);
-        
+
         revalidate();
         repaint();
         return input;
@@ -91,50 +95,57 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
     public void setValueInternal(Map<String, V> value) {
         HashMapInnerPane.removeAll();
         try {
-                for (Map.Entry<String, V> entry : value.entrySet()) {
-                    RMapElement rme = RMapElement.LookupMap.get(entry.getKey());
-                    V val;
-                    if (entry.getValue() instanceof LinkedTreeMap<?,?> ltm) {
-                        JsonElement jsonTree = RFileOperations.gson.toJsonTree(ltm);
-                        val = (V) RFileOperations.gson.fromJson(jsonTree, rme.Type);
-                    } else {
-                        val = entry.getValue();
-                    }
-                    RMapValue<V, ?> ToAdd = (RMapValue<V, ?>) RMapValue.ofElement(null, rme);
-                    ToAdd.setValue(val);
-
-                    addREMV(ToAdd);
+            for (Map.Entry<String, V> entry : value.entrySet()) {
+                RMapElement rme = RMapElement.LookupMap.get(entry.getKey());
+                V val;
+                if (entry.getValue() instanceof LinkedTreeMap<?, ?> ltm) {
+                    JsonElement jsonTree = RFileOperations.gson.toJsonTree(ltm);
+                    val = (V) RFileOperations.gson.fromJson(jsonTree, rme.Type);
+                } else {
+                    val = entry.getValue();
                 }
-            } catch (Exception e) {
-                ErrorShower.exception(null, e.getMessage(), e);
+                RMapValue<V, ?> ToAdd = (RMapValue<V, ?>) RMapValue.ofElement(null, rme, thi -> removeREMV(thi.getKey()));
+                ToAdd.setValue(val);
+
+                addREMV(ToAdd);
             }
+        } catch (Exception e) {
+            ErrorShower.exception(null, e.getMessage(), e);
+        }
+    }
+    
+    private void removeREMV(String key) {
+        HashMapInnerPane.remove(addedMapValuePanels.get(key));
+        addedMapValuePanels.remove(key);
+        addedMapValues.remove(key);
     }
 
-    private void addREMV(RMapValue<?,?> ToAdd) {
-        HashMapInnerPane.add(Box.createRigidArea(new Dimension(100, 10)));
-        HashMapInnerPane.add(ToAdd);
+    private void addREMV(RMapValue<?, ?> ToAdd) {
+        JPanel panel = new JPanel();
+        panel.add(Box.createRigidArea(new Dimension(100, 10)));
+        panel.add(ToAdd);
+        HashMapInnerPane.add(panel);
+        addedMapValuePanels.put(ToAdd.getKey(), panel);
+        addedMapValues.put(ToAdd.getKey(), ToAdd);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected Map<String, V> getValueInternal(boolean shouldLog) {
         HashMap<String, V> building = new HashMap<>();
-        for (Component component : HashMapInnerPane.getComponents()) {
-            if (component instanceof RMapValue<?,?> remv) {
-                Map.Entry<String, V> entry = (Map.Entry<String, V>) remv.getKeyAndVal();
-                building.put(entry.getKey(), entry.getValue());
-            }
+        for (Map.Entry<String, RMapValue<?, ?>> entry : addedMapValues.entrySet()) {
+            Map.Entry<String, V> entr = (Map.Entry<String, V>) entry.getValue().getKeyAndVal();
+            building.put(entr.getKey(), entr.getValue());
         }
         return building;
     }
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        for (Component component : HashMapInnerPane.getComponents()) {
-            if (component instanceof RMapValue<?,?> remv) {
-                Problem = "REMV " + remv.rMapElement.DisplayName + " isn't valid.";
-                if (!remv.valid(strict)) return false;
-            }
+        for (Map.Entry<String, RMapValue<?, ?>> entry : addedMapValues.entrySet()) {
+            RMapValue<?, ?> remv = entry.getValue();
+            Problem = "REMV " + remv.rMapElement.DisplayName + " isn't valid.";
+            if (!remv.valid(strict)) return false;
         }
         Problem = "No problem here!";
         return true;

@@ -7,10 +7,11 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMBiHumidity extends RMapValue<BiomeComponents.Humidity, JComboBox<Boolean>> {
-    public RMBiHumidity(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiHumidity(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
     }
 
     @Override
