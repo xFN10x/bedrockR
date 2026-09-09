@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -234,7 +235,7 @@ public class Launcher {
                     .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
                     BlockTextures.downloadAllBlockTextures(loading).await();
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | URISyntaxException e) {
             ErrorShower.exception(loading, "Block texture download error.", e);
         }
 

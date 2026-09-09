@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class REResourceValue<R extends Resource> extends RElementValue<ResourcePointer<R>, JPanel> {
-    
+
     private final Class<R> resClass;
     private ResourcePointer<R> val = null;
     private final JLabel icon;
@@ -41,7 +41,7 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
                 Font defFont = getFont();
                 if (defFont == null) return;
                 int width = getFontMetrics(defFont).stringWidth(getText());
-                Font resNameFont = defFont.deriveFont(12f - width/100f);
+                Font resNameFont = defFont.deriveFont(12f - width / 100f);
                 setFont(resNameFont);
             }
         };
@@ -49,9 +49,9 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
         this.typeName = tname;
         this.selectButton = new JButton("Select " + tname);
         this.icon = new JLabel();
-        
+
         super(TargetField, type, TargetFile, WorkspaceName, details);
-        Dimension sz = new Dimension(350,80);
+        Dimension sz = new Dimension(350, 80);
         setMaximumSize(sz);
         setPreferredSize(sz);
     }
@@ -60,16 +60,15 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
     public @NonNull JPanel createInput() {
         SpringLayout lay = new SpringLayout();
         JPanel building = new JPanel(lay);
-        building.setBorder(new FlatLineBorder(new Insets(3,3,3,3), Color.LIGHT_GRAY));
+        building.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), Color.LIGHT_GRAY));
 
-        icon.setIcon(ImageUtilities.toScaled("/addons/DefaultItemTexture.png",64,64));
-        icon.setBorder(new FlatLineBorder(new Insets(0,0,0,0), Color.LIGHT_GRAY.darker()));
-        icon.setPreferredSize(new Dimension(64,64));
-        
+        icon.setIcon(ImageUtilities.toScaled("/addons/DefaultItemTexture.png", 64, 64));
+        icon.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0), Color.LIGHT_GRAY.darker()));
+        icon.setPreferredSize(new Dimension(64, 64));
+
         JLabel resTypeName = new JLabel(typeName);
         Color resTypeNameBefColour = resTypeName.getForeground();
         resTypeName.setForeground(ImageUtilities.darker(resTypeNameBefColour, 0.5f));
-        
 
         lay.putConstraint(SpringLayout.WEST, icon, 0, SpringLayout.WEST, building);
         lay.putConstraint(SpringLayout.VERTICAL_CENTER, icon, 0, SpringLayout.VERTICAL_CENTER, building);
@@ -87,20 +86,20 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
 
         lay.putConstraint(SpringLayout.WEST, selectButton, 3, SpringLayout.EAST, icon);
         lay.putConstraint(SpringLayout.EAST, selectButton, -3, SpringLayout.EAST, building);
-        lay.putConstraint(SpringLayout.SOUTH, selectButton , -3, SpringLayout.SOUTH, building);
+        lay.putConstraint(SpringLayout.SOUTH, selectButton, -3, SpringLayout.SOUTH, building);
 
         lay.putConstraint(SpringLayout.WEST, resName, 3, SpringLayout.EAST, icon);
         lay.putConstraint(SpringLayout.EAST, resName, -3, SpringLayout.EAST, building);
-        lay.putConstraint(SpringLayout.NORTH, resName , 3, SpringLayout.NORTH, building);
+        lay.putConstraint(SpringLayout.NORTH, resName, 3, SpringLayout.NORTH, building);
 
         lay.putConstraint(SpringLayout.WEST, resTypeName, 3, SpringLayout.EAST, icon);
-        lay.putConstraint(SpringLayout.NORTH, resTypeName , 4, SpringLayout.SOUTH, resName);
+        lay.putConstraint(SpringLayout.NORTH, resTypeName, 4, SpringLayout.SOUTH, resName);
 
         building.add(icon);
         building.add(selectButton);
         building.add(resName);
         building.add(resTypeName);
-        
+
         addPropertyChangeListener("enabled", e -> {
             System.out.println(e.getNewValue());
         });
@@ -112,7 +111,7 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
     public void setValueInternal(ResourcePointer<R> value) {
         try {
             val = value;
-            if (val == null) return;
+            if (val == null || val.getID().equalsIgnoreCase("empty")) return;
             if (!val.exists(WorkspaceResources.load(WorkspaceName))) {
                 resName.setText(val.getID());
                 return;
@@ -133,11 +132,13 @@ public class REResourceValue<R extends Resource> extends RElementValue<ResourceP
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        try {
-            return problem(val != null, "Resource not selected!") && problem(val.exists(WorkspaceResources.load(WorkspaceName)), "Resource not found");
-        } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (strict)
+            try {
+                return problem(!(val == null || val.getID().equalsIgnoreCase("empty")), "Resource not selected!") && problem(val.exists(WorkspaceResources.load(WorkspaceName)), "Resource not found");
+            } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        else return true;
     }
 
     @Override

@@ -32,14 +32,14 @@ public class BlockComponents implements RMapElementProvider {
     public RMapElement[] getPickable() {
         return new RMapElement[] {
                 new RMapElement("Broken from Explosions", "minecraft:destructible_by_explosion",
-                        boolean.class,
+                        Boolean.class,
                         "Determines if the block can be\ndestroyed by explosions."),
                 new RMapElement("Hardness", "minecraft:destructible_by_mining",
                         BlockCanBeMined.class,
                         "Determines the length it takes to\ndestroy this block. If you use the\nright tool to destroy the block, it\ntakes less time to destroy\n\nFormula for calculating seconds to\nbreak with fist is: 1.5 x (hardness)"),
-                new RMapElement("Flammable", "minecraft:flammable", boolean.class,
+                new RMapElement("Flammable", "minecraft:flammable", Boolean.class,
                         "Determines if the block can be caught\non fire."),
-                new RMapElement("Friction ", "minecraft:friction", float.class,
+                new RMapElement("Friction ", "minecraft:friction", Float.class,
                         "Determines how much things slow down\nby walking on this block. This is what makes soul sand so slow to walk on.\n\nDefault friction is 0.4",
                         MapValueFilter.Between0And1),
         };
