@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -86,13 +87,9 @@ public class BlockTextures {
         }
     }
 
-    public static CountDownLatch downloadAllBlockTextures(Window doingThis) {
-        try {
-            if (ItemInfo.vanillaBlocks == null)
-                ItemInfo.downloadVanillaBlocks();
-        } catch (Exception e) {
-            ErrorShower.exception(doingThis, "Failed to download vanilla blocks!", e);
-        }
+    public static CountDownLatch downloadAllBlockTextures(Window doingThis) throws IOException, URISyntaxException, InterruptedException {
+        if (ItemInfo.vanillaBlocks == null)
+            ItemInfo.downloadVanillaBlocks();
         RLoadingScreen loading = new RLoadingScreen(doingThis);
         final int blocks = ItemInfo.vanillaBlocks.length;
         loading.Steps = blocks;

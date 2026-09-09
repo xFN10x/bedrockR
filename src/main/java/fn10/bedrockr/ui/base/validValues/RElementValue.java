@@ -390,7 +390,6 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         if (valid(true, shouldLog)) {
             return getValueInternal(shouldLog);
         } else {
-
             return null;
         }
     }
