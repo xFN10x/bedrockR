@@ -21,13 +21,13 @@ public class RMBDestructibleByMining extends RMapValue<BlockComponents.BlockCanB
     @Override
     public BlockComponents.BlockCanBeMined getValue() {
         BlockComponents.BlockCanBeMined blockCanBeMined = new BlockComponents.BlockCanBeMined();
-        blockCanBeMined.hardness = (float) InputField.getValue();
+        blockCanBeMined.hardness = ((Double) InputField.getValue()).floatValue();
         return blockCanBeMined;
     }
 
     @Override
     public void setValue(BlockComponents.BlockCanBeMined val) {
-        InputField.setValue(val.hardness);
+        InputField.setValue((double) val.hardness);
     }
 
     @Override
