@@ -33,6 +33,6 @@ InputField.setSelectedItem(val);
 
     @Override
     public boolean valid(boolean strict) {
-        return getValue().isBlank();
+        return !getValue().isBlank();
     }
 }

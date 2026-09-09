@@ -522,46 +522,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     addFrame.setVisible(true);
                 });
                 case "texture" -> {
-                    String[] options = new String[]{"Cancel", "Item Texture", "Block Texture"};
-                    int choice = JOptionPane.showOptionDialog(
-                            this,
-                            "What kind of texture would you like you add?",
-                            "Add New Texture Resource",
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            options,
-                            options[0]);
-
-                    if (choice == 0) return;
-
-                    SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
-                    file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
-                    file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
-
-                    if (file.showOpenDialog(this) != SystemFileChooser.APPROVE_OPTION)
-                        return;
-                    String input = JOptionPane.showInputDialog(this,
-                            "What do you want to name this texture? (" + file.getSelectedFile().getName().replace(".png", "")
-                                    + ")",
-                            "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
-                            file.getSelectedFile().getName()).toString();
-                    String inputIDized = RFileOperations.getFileSafeName(input).toLowerCase();
-                    if (!new FieldFilters.FileNameLikeStringFilter().getValid(inputIDized)) {
-                        JOptionPane.showMessageDialog(this, "Invaild name.");
-                        return;
-                    }
-                    Resource adding = null;
-                    if (choice == 1) {
-                        //Item
-                        adding = new ItemTextureResource(input, inputIDized, file.getSelectedFile());
-                    } else if (choice == 2) {
-                        //Item
-                        adding = new BlockTextureResource(input, inputIDized, file.getSelectedFile());
-                    }
-                    WorkspaceResources res = SWPF.getSerialized().getRes();
-                    if (adding != null && res != null) res.addNewResource(adding);
-
+                    addTexture(this, SWPF);
                 }
                 case "build" -> buildElements(false);
                 case "rebuild" -> buildElements(true);
@@ -574,6 +535,49 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         } catch (Exception e) {
             ErrorShower.exception(this, "Failed to do action", e);
         }
+    }
+
+    public static void addTexture(Component win, SourceWorkspaceFile SWPF) throws WorkspaceResources.WorkspaceUnsupportedException {
+        String[] options = new String[]{"Cancel", "Item Texture", "Block Texture"};
+        int choice = JOptionPane.showOptionDialog(
+                win,
+                "What kind of texture would you like you add?",
+                "Add New Texture Resource",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+        if (choice == 0) return;
+
+        SystemFileChooser file = new SystemFileChooser(RFileOperations.getFileChooserDefaultPath());
+        file.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+        file.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("PNG Image Files (*.png)", "png"));
+
+        if (file.showOpenDialog(win) != SystemFileChooser.APPROVE_OPTION)
+            return;
+        String defaultName = file.getSelectedFile().getName().replace(".png", "");
+        String input = JOptionPane.showInputDialog(win,
+                "What do you want to name this texture? (" + defaultName
+                        + ")",
+                "Name Texture", JOptionPane.INFORMATION_MESSAGE, null, null,
+                defaultName).toString();
+        String inputIDized = RFileOperations.getFileSafeName(input).toLowerCase();
+        if (!new FieldFilters.FileNameLikeStringFilter().getValid(inputIDized)) {
+            JOptionPane.showMessageDialog(win, "Invaild name.");
+            return;
+        }
+        Resource adding = null;
+        if (choice == 1) {
+            //Item
+            adding = new ItemTextureResource(input, inputIDized, file.getSelectedFile());
+        } else if (choice == 2) {
+            //Item
+            adding = new BlockTextureResource(input, inputIDized, file.getSelectedFile());
+        }
+        WorkspaceResources res = SWPF.getSerialized().getRes();
+        if (adding != null && res != null) res.addNewResource(adding);
     }
 
     private void play() {
@@ -676,6 +680,8 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
         SettingsFile settings = SettingsFile.load();
         String selected = platforms[platformSelection];
         settings.comMojangPath = RFileOperations.MC_SYNC_OPTIONS.get(selected);
+        JOptionPane.showMessageDialog(doingThis, "<html>MC Sync is enabled! <br/><br/> Syncing to: " + settings.comMojangPath + "</html>");
+        settings.save();
     }
 
     /**

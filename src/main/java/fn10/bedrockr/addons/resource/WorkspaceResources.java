@@ -1,6 +1,7 @@
 package fn10.bedrockr.addons.resource;
 
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
+import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.resource.builders.BlockTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ItemTextureBuilder;
 import fn10.bedrockr.addons.resource.builders.ResourceBuilder;
@@ -163,6 +164,10 @@ public class WorkspaceResources {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public SourceWorkspaceFile getWorkspace() {
+        return wpf.getNewSource();
     }
 
     public static class WorkspaceUnsupportedException extends Exception {
