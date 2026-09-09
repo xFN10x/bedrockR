@@ -20,6 +20,7 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +109,13 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         //helpMenu.add(somButton);
         //helpMenu.add(siegeButton);
 
-        fileMenu.add("Render Blocks").addActionListener(_ -> BlockTextures.downloadAllBlockTextures(this));
+        fileMenu.add("Render Blocks").addActionListener(_ -> {
+            try {
+                BlockTextures.downloadAllBlockTextures(this);
+            } catch (IOException | URISyntaxException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         fileMenu.add("Settings").addActionListener(_ -> new RSettingsScreen(this).setVisible(true));
         fileMenu.add("Restart").addActionListener(_ -> {
