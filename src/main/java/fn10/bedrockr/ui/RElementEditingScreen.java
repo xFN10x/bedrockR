@@ -336,7 +336,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                     outputSlot.setButtonToItem(0, ItemInfo.getItemById(serialized.Result.item, Workspace, ImageUtilities.ImgHandler));
                 }
 
-                RItemValue unlockItems = new RItemValue("Unlock Items", Workspace, RItemValue.TYPE_LIST, true);
+                RItemValue unlockItems = new RItemValue("Unlock Items", Workspace, RItemValue.TYPE_LIST, false);
                 if (serialized.UnlockConditions != null) {
                     unlockItems.addListElements(Workspace, ItemInfo
                             .fromUnlockCondition(serialized.UnlockConditions, Workspace, ImageUtilities.ImgHandler).toArray(new ItemInfo[0]));

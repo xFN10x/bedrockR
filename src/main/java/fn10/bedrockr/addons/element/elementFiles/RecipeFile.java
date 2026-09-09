@@ -35,7 +35,7 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
  */
 public class RecipeFile extends ElementFile<SourceRecipeElement> {
 
-    @HelpMessage("The ID of the recipe. Only used internally, and for debugging.")
+    @HelpMessage("The ID of the recipe. Only used internally, and for debugging. Follows the normal ID format; 'diamond_block', 'coal', etc.")
     @RAnnotation.FieldDetails(displayName = "Recipe ID", Optional = false, Filter = FieldFilters.IDStringFilter.class)
     public String RecipeID;
 
@@ -82,11 +82,10 @@ public class RecipeFile extends ElementFile<SourceRecipeElement> {
             case RecipeType.Shapeless:
                 RecipeShapeless shapeless = new RecipeShapeless();
                 shapeless.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
-                shapeless.unlock = UnlockConditions.toArray(new UnlockCondition[0]);
+                shapeless.unlock = getUnlockConditions();
                 shapeless.result = Result;
                 shapeless.ingredients = ShapelessIngredients.toArray(new Item[0]);
                 recipe.mcRecipeShapeless = shapeless;
-
                 break;
 
             case RecipeType.Shaped:
@@ -94,7 +93,7 @@ public class RecipeFile extends ElementFile<SourceRecipeElement> {
                 shaped.description = new InnerDiscription(workspaceFile.Prefix + ":" + RecipeID);
                 shaped.key = ShapedKey;
                 shaped.pattern = ShapedPattern;
-                shaped.unlock = UnlockConditions.toArray(new UnlockCondition[0]);
+                shaped.unlock = getUnlockConditions();
                 List<Item> fullResults = new ArrayList<Item>();
                 fullResults.add(Result);
                 if (!ExtraResults.isEmpty())
@@ -110,5 +109,11 @@ public class RecipeFile extends ElementFile<SourceRecipeElement> {
         FileUtils.createParentDirectories(path.toFile());
         Files.write(path, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE);
+    }
+
+    private UnlockCondition[] getUnlockConditions() {
+        ArrayList<UnlockCondition> list = new ArrayList<>(UnlockConditions);
+        list.add(new UnlockCondition(Result.item));
+        return list.toArray(new UnlockCondition[0]);
     }
 }

@@ -46,6 +46,9 @@ public class RNewElement extends RDialog {
             try {
                 ElementSource<?> obj = class1.getConstructor().newInstance();
                 RNewElementButton relement = new RNewElementButton(obj, () -> createNewElement(obj));
+                if (obj instanceof SourceScriptElement) {
+                    relement.setEnabled(false);
+                }
                 MainPane.add(relement);
             } catch (Exception e) {
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
