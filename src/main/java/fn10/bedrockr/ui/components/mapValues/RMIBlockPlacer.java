@@ -16,10 +16,11 @@ import javax.naming.NameNotFoundException;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class RMIBlockPlacer extends RMapValue<ItemComponents.ItemBlockPlacer, RItemValue> {
-    public RMIBlockPlacer(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMIBlockPlacer(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
     }
 
     @Override

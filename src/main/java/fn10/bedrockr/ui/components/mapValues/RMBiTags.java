@@ -8,10 +8,11 @@ import org.jspecify.annotations.NonNull;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMBiTags extends RMapValue<BiomeComponents.Tags, REListValue<String>> {
-    public RMBiTags(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiTags(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
     }
 
     @Override

@@ -2,15 +2,17 @@ package fn10.bedrockr.ui.components.mapValues;
 
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.supporting.ItemComponents;
+import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.base.validValues.RMapValue;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMIDamageValue extends RMapValue<ItemComponents.ToolDamage, JSpinner> {
-    public RMIDamageValue(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMIDamageValue(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
     }
 
     @Override

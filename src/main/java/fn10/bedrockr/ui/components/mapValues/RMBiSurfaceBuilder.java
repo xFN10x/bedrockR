@@ -12,6 +12,7 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder, JPanel> {
     private JPanel surfaceMaterialPanel;
@@ -27,8 +28,8 @@ public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder
     private JPanel midMaterialPanel;
     private RItemValue midMaterialVal;
 
-    public RMBiSurfaceBuilder(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiSurfaceBuilder(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
         Size.setSize(400, 500);
     }
 

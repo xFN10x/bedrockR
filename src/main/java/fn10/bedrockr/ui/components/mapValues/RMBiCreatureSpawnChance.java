@@ -7,10 +7,11 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMBiCreatureSpawnChance extends RMapValue<BiomeComponents.CreatureSpawnProbablity, JSpinner> {
-    public RMBiCreatureSpawnChance(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiCreatureSpawnChance(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
     }
 
     @Override

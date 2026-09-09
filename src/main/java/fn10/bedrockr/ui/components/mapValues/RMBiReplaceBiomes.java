@@ -11,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, JPanel> {
     private JPanel replacementPercentPanel;
@@ -19,8 +20,8 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
     private JSpinner noiseVal;
     private  REListValue<String> targetsVal = null;
 
-    public RMBiReplaceBiomes(Window Ancestor, RMapElement RME) {
-        super(Ancestor, RME);
+    public RMBiReplaceBiomes(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+        super(Ancestor, RME, onRemove);
         Size.setSize(400, 250);
     }
 

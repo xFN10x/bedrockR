@@ -8,12 +8,13 @@ import jakarta.annotation.Nonnull;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class RMAutoValue<V> extends RMapValue<V, RElementValue<V, ?>> {
     private final Class<V> valClass;
-    public RMAutoValue(Window Ancestor, RMapElement RME) {
+    public RMAutoValue(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
         valClass = (Class<V>) RME.Type;
-        super(Ancestor, RME);
+        super(Ancestor, RME, onRemove);
     }
 
     @Override
