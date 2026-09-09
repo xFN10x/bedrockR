@@ -85,6 +85,21 @@ public class RDetailedButton extends JPanel implements MouseListener {
         addMouseListener(this);
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        
+        if (enabled) {
+            setBackground(UIManager.getColor("Panel.background"));
+            Name.setForeground(UIManager.getColor("Label.foreground"));
+            Desc.setForeground(UIManager.getColor("Label.foreground"));
+        } else {
+            setBackground(UIManager.getColor("Panel.background").brighter());
+            Name.setForeground(UIManager.getColor("Label.foreground").darker());
+            Desc.setForeground(UIManager.getColor("Label.foreground").darker());
+        }
+    }
+
     public void setIcon(Image ico) {
         Icon.setIcon(ImageUtilities.toScaled(ico, 64, 64));
     }
@@ -116,6 +131,7 @@ public class RDetailedButton extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
+        if (!isEnabled()) return;
         if (!CanBeSelected)
             return;
         if (func != null)
@@ -126,6 +142,7 @@ public class RDetailedButton extends JPanel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent arg0) {
+        if (!isEnabled()) return;
         if (!selected) {
             this.setBorder(new FlatLineBorder(new Insets(3, 3, 3, 3), outlineColour, 1, 16));
         } else
@@ -134,6 +151,7 @@ public class RDetailedButton extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent arg0) {
+        if (!isEnabled()) return;
         if (!selected) {
             unselect();
         } else {

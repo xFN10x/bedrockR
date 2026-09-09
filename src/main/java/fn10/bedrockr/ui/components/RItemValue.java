@@ -80,7 +80,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
 
         public ListElement(JComponent parent, String workspace) {
 
-            this.ItemVal = new RItemValue(workspace, type, true);
+            this.ItemVal = new RItemValue(workspace, type & BIT_BLOCK, true);
 
             setMinimumSize(size);
             setPreferredSize(size);
