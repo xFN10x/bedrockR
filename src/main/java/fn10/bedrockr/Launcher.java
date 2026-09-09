@@ -285,7 +285,7 @@ public class Launcher {
         settings.save();
 
         if (RFileOperations.isPrereleaseVersion())
-            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/> And if you can, please report bugs on Github.</html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/><br/> And if you can, please report bugs on Github. <i>(a3.0PRE REV2)</i></html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
     }
 
     
