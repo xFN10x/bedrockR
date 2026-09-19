@@ -395,7 +395,11 @@ public class RFileOperations {
         // fn10.bedrockr.Launcher.LOG.warning("This file should start with the
         // file seperator, or not
         // at all! not '/'!");
-        File proposedFile = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName, ToCreate).toFile();
+        Path pathUnres = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName);
+        for (String folder : ToCreate) {
+            pathUnres = pathUnres.resolve(folder);
+        }
+        File proposedFile = pathUnres.toFile();
         if (proposedFile.exists() || strict) {
             return proposedFile;
         } else
