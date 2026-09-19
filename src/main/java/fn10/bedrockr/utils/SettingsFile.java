@@ -77,7 +77,7 @@ public class SettingsFile extends SourcelessElementFile {
                 new SettingsFile().save();
             }
 
-            final SettingsFile sf = gson.fromJson(Files.readString(SavePath), SettingsFile.class);
+            final SettingsFile sf = gson.fromJson(RFileOperations.readStr(SavePath), SettingsFile.class);
             CACHE = sf;
             return sf;
         } catch (JsonSyntaxException | IOException e) {

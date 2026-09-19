@@ -581,7 +581,7 @@ public class RFileOperations {
                 ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
                 if (source == null) continue;
-                String jsonString = Files.readString(file.toPath());
+                String jsonString = RFileOperations.readStr(file.toPath());
                 JsonObject element = JsonParser.parseString(jsonString).getAsJsonObject();
                 SourcelessElementFile sef = SourcelessElementFile.upToDate(workspace, element, source.getSerilizedClass());
                 if (sef instanceof ElementFile<?> ef) {
@@ -621,6 +621,15 @@ public class RFileOperations {
      */
     public static void write(Path to, String data) throws IOException {
         write(to, data.getBytes());
+    }
+
+    public static byte[] read(Path f) throws IOException {
+        return Files.readAllBytes(f);
+    }
+
+    public static String readStr(Path f) throws IOException {
+        //don't use Files.readString because android.
+        return new String(read(f));
     }
 
     public static void copyRes(String res, Path destFolder) throws IOException {

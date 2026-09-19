@@ -245,7 +245,7 @@ public class Launcher {
             if ((file = Paths.get(args[0]).toFile()).exists()) {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
-                        RWorkspace.openWorkspace(loading, ElementSource.getSourceFromJSON(Files.readString(file.toPath()), SourceWorkspaceFile.class, WorkspaceFile.class));
+                        RWorkspace.openWorkspace(loading, ElementSource.getSourceFromJSON(RFileOperations.readStr(file.toPath()), SourceWorkspaceFile.class, WorkspaceFile.class));
                         return;
                     } catch (IOException e) {
                         RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
