@@ -419,8 +419,8 @@ public class RFileOperations {
     public static void mcSync() {
         SettingsFile settings = SettingsFile.load();
         try {
-            Path bpPath = getBaseDirectory().toPath().resolve("build", "BP");
-            Path rpPath = getBaseDirectory().toPath().resolve("build", "RP");
+            Path bpPath = getBaseDirectory().toPath().resolve("build").resolve("BP");
+            Path rpPath = getBaseDirectory().toPath().resolve("build").resolve("RP");
             if (!COMMOJANG.toFile().exists()) {
                 return;
             }
@@ -505,7 +505,7 @@ public class RFileOperations {
 
         Path base = getBaseDirectory().toPath();
 
-        File wsFolder = base.resolve("workspace", wpf.WorkspaceName).toFile();
+        File wsFolder = base.resolve("workspace").resolve(wpf.WorkspaceName).toFile();
 
         if (wsFolder.exists()) { // throw if folder is already here
             throw new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
