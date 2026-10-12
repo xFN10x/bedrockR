@@ -3,10 +3,7 @@ package fn10.bedrockr.addons.element.supporting.item;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
