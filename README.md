@@ -12,7 +12,7 @@
 </p>
 <p align="center">
 A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Mobile.<br/><br/>
-<a href="https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA">bedrockR YouTube Channel</a> | <a href="https://bedrockr.xplate.dev">bedrockR Website</a> | <b><a href="https://discord.gg/R2mrKxyGGB">*New* bedrockR Discord</a></b>
+<a href="https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA">bedrockR YouTube Channel</a> | <a href="https://bedrockr.xplate.dev">bedrockR Website</a> | <b><a href="https://discord.gg/R2mrKxyGGB">*New* bedrockR Discord</a></b> | <a href="https://github.com/xFN10x/bedrockR-Mobile">bedrockR Mobile</a>
 </p>
 
 ## Why?
