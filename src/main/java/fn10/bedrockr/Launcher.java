@@ -47,7 +47,6 @@ public class Launcher {
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     private static boolean setuplogging = false;
-    public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
 
     public static void main(String[] args) {
         RFileOperations.LOG.info("Initalizing bedrockR...");
@@ -155,7 +154,6 @@ public class Launcher {
                     System.exit(0);
                 }
             }
-
         } catch (Exception e) {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
