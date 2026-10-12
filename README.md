@@ -37,13 +37,9 @@ If you are on Debian or Windows, you can download one of the installers, or port
 the [releases section](https://github.com/xFN10x/bedrockR/releases).
 
 Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.xplate.dev/download) to download the
-latest version
+latest version.
 
-If there are no builds included in
-
-### Using the JAR
-
-If none of these builds are for your platform, you can use the universal JAR file, which
+**If none of these builds are for your platform,** you can use the JAR file. You run the jar by opening it with your Java 25 JDK.
 
 ## Source Code
 
