@@ -1,11 +1,12 @@
 package fn10.bedrockr;
 
-import fn10.bedrockr.utils.NetworkHandler;
+import fn10.bedrockr.utils.net.NetworkHandler;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 public class JavaHTTPNetworkHandler extends NetworkHandler {
+
     @Override
     public String getJSON(URI url) throws Exception {
         return "";
@@ -24,10 +25,5 @@ public class JavaHTTPNetworkHandler extends NetworkHandler {
     @Override
     public CompletableFuture<byte[]> getBytesAsync(URI url) throws Exception {
         return null;
-    }
-
-    @Override
-    public boolean upToDate() {
-        return false;
     }
 }
