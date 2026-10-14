@@ -6,14 +6,13 @@ import fn10.bedrockr.ui.rendering.RenderHandler;
 import fn10.bedrockr.utils.ImageHandler;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class DefaultImageHandler extends ImageHandler<BufferedImage> {
+public class AWTImageHandler extends ImageHandler<BufferedImage> {
     @Override
     public BufferedImage getImageFromBytes(byte[] data) throws IOException {
         return ImageIO.read(new ByteArrayInputStream(data));

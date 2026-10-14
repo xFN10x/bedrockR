@@ -21,103 +21,37 @@ import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import fn10.bedrockr.utils.net.PrismarineBlockInfo;
 import org.apache.commons.lang3.ArrayUtils;
 
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
+/**
+ * A class repersenting an Item in bedrockR, this could be vanilla, or a custom item. This is different from a {@link fn10.bedrockr.utils.net.PrismarineItemInfo}/{@link fn10.bedrockr.utils.net.PrismarineBlockInfo}, as this is more simple and shouold be used in favour of them.
+ * 
+ * @see fn10.bedrockr.utils.net.PrismarineItemInfo
+ * @see fn10.bedrockr.utils.net.PrismarineBlockInfo
+ */
 @SuppressWarnings({"unused", "unchecked"})
 public class ItemInfo {
+    ///The ID of the item, excluding the namespace. e.g, diamond_sword
     public String Id;
+    ///The display name of the item, e.g, "Diamond Sword"
     public String Name;
+    ///The texture in raw bytes.
     public Byte[] Texture;
+    //The namespace of the item, e.g, "minecraft", or a workspace id.
     public String Prefix;
 
-    public static ItemJsonEntry[] vanillaItems;
-
-    public static void downloadVanillaItems() throws URISyntaxException, IOException, InterruptedException {
-        try (HttpClient client = newDownloadingClient()) {
-            HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
-
-            Map<String, String> versionPaths = (Map<String, String>) ((Map<String, Object>) gson
-                    .fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
-                    .get(RFileOperations.PICKABLE_VERSIONS[0]);
-
-            String path = versionPaths.get("items");
-
-            HttpRequest itemJsonReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                    + path
-                                    + "/items.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-
-            HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
-            ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
-            ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
-            for (ItemJsonEntry building : itemEntrys) {
-                if (!building.name.startsWith("minecraft"))
-                    building.name = "minecraft:" + building.name;
-
-                parsedEntrys.add(building);
-            }
-            vanillaItems = parsedEntrys.toArray(new ItemJsonEntry[0]);
-            Arrays.sort(vanillaItems);
-        }
-    }
-
-    private static HttpClient newDownloadingClient() {
-        return HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-    }
-
-    public static class BlockJsonEntry implements Comparable<BlockJsonEntry> {
-        public int id;
-        public String name;
-        public String displayName;
-        public float hardness;
-        public float resistance;
-        public int stackSize;
-        public boolean diggable;
-        public String material;
-        public boolean transparent;
-        public int emitLight;
-        public int filterLight;
-        public int defaultState;
-        public int minStateId;
-        public int maxStateId;
-        public Map<String, Boolean> harvestTools;
-        public int[] drops;
-        public String boundingBox;
-
-        public ItemInfo toReturnItemInfo() {
-            if (name.contains(":")) {
-                String[] splitId = name.split(":");
-                return new ItemInfo(splitId[1], displayName, splitId[0]);
-            } else {
-                return new ItemInfo(name, displayName, "");
-            }
-        }
-
-        @Override
-        public int compareTo(BlockJsonEntry o) {
-            return displayName.compareToIgnoreCase(o.displayName);
-        }
-    }
-
-    public static BlockJsonEntry[] vanillaBlocks;
-
     /**
-     * 
+     * Searches for an item using the id of it.
      * @param fullID        the id of the item. 'prefix':'id'
      * @param workspaceName the name of the workspace.
-     * @return a ReturnItemInfo with the info of the item found, or null if it
-     *         wasent found.
-     * @throws IncorrectWorkspaceException if the prefix of the fullID isnt used in
+     * @return an ItemInfo with the info of the item found, or {@code null} if it
+     *         wasn't found.
+     * @throws IncorrectWorkspaceException if the prefix of the fullID isn't used in
      *                                     the workspace
-     * @throws NameNotFoundException       if the item isnt found
+     * @throws NameNotFoundException       if the item isn't found
      */
     public static ItemInfo getBlockById(String fullID, String workspaceName, ImageHandler<?> handler)
             throws IncorrectWorkspaceException, NameNotFoundException, IOException, WorkspaceResources.WorkspaceUnsupportedException {
@@ -136,9 +70,9 @@ public class ItemInfo {
         }
 
         if (fullID.startsWith("minecraft")) {
-            for (BlockJsonEntry item : vanillaBlocks) {
+            for (PrismarineBlockInfo item : RFileOperations.getCurrentNetHandler().getVanillaBlocks()) {
                 if (item.name.equals(fullID)) {
-                    return item.toReturnItemInfo();
+                    return item.toItemInfo();
                 }
             }
         } else {

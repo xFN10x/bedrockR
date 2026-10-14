@@ -4,7 +4,6 @@ import fn10.bedrockr.addons.element.elementFiles.BlockFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
-import fn10.bedrockr.addons.element.supporting.item.ItemJsonEntry;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.components.RItemButton;
