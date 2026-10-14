@@ -47,6 +47,7 @@ public class Launcher {
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     private static boolean setuplogging = false;
+    public final static JavaHTTPNetworkHandler NETWORK_HANDLER = new JavaHTTPNetworkHandler();
 
     public static void main(String[] args) {
         RFileOperations.LOG.info("Initalizing bedrockR...");
@@ -57,8 +58,8 @@ public class Launcher {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         RSplashScreen loading = new RSplashScreen();
-        loading.ProgressText.setText("Initalizing...");
-        RFileOperations.init(ImageUtilities.ImgHandler);
+        loading.ProgressText.setText("Initializing...");
+        RFileOperations.init(ImageUtilities.ImgHandler,NETWORK_HANDLER);
         
         loading.ProgressText.setText("Loading settings...");
 
@@ -136,14 +137,7 @@ public class Launcher {
         // try to see if this version is out of date
         loading.ProgressText.setText("Checking for updates...");
         try {
-            HttpRequest req = HttpRequest.newBuilder()
-                    .uri(new URI("https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/latest.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-
-            HttpResponse<String> response = client.send(req, BodyHandlers.ofString());
-
-            Format1Latest serilized = new Gson().fromJson(response.body(), Format1Latest.class);
-
+            NETWORK_HANDLER
             if (serilized.LatestVersion > RFileOperations.NUM_VERSION && serilized.ShouldUse) {
                 int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
                         "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION
