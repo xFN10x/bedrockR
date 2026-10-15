@@ -8,6 +8,11 @@ import java.util.concurrent.CompletableFuture;
 public class JavaHTTPNetworkHandler extends NetworkHandler {
 
     @Override
+    public boolean isOnline() {
+        return false;
+    }
+
+    @Override
     public String getJSON(URI url) throws Exception {
         return "";
     }

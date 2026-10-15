@@ -8,7 +8,7 @@ public class PrismarineItemInfo implements Comparable<PrismarineItemInfo> {
     public String name;
     public String displayName;
 
-    public ItemInfo toReturnItemInfo() {
+    public ItemInfo toItemInfo() {
         String[] splitId = name.split(":");
         return new ItemInfo(splitId[1], displayName, splitId[0]);
     }
