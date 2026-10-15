@@ -8,6 +8,7 @@ import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.web.Format1Latest;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -39,16 +40,40 @@ public abstract class NetworkHandler {
     public void setup() {
     }
 
+    /// @return a bool declaring if the device this is running on is connected to the internet.
+    public abstract boolean isOnline();
+    
+    /// A helper function that wraps over {@code getJson()}
+    /// @return The JSON serialized as the class given, or {@code null} if the request fails.
+    public <T> T getJSON(String uri, Class<T> cls) throws Exception {
+        String str = getJSON(URI.create(uri));
+        return gson.fromJson(str, cls);
+    }
+
+    /// A helper function that wraps over {@code getJson()}
+    /// @return The JSON as a JsonObject, or {@code null} if the request fails.
+    public JsonObject getJSON(String uri) throws Exception {
+        String str = getJSON(URI.create(uri));
+        if (str == null) return null;
+        return JsonParser.parseString(str).getAsJsonObject();
+    }
+    
     /// Perform an HTTP GET request and return the body as JSON.
+    /// @return The JSON as a String, or {@code null} if the request fails.
+    @Nullable
     public abstract String getJSON(URI url) throws Exception;
 
     /// Perform an HTTP GET request and return the body as JSON.
+    @Nullable
     public abstract CompletableFuture<String> getJSONAsync(URI url) throws Exception;
 
     /// Perform an HTTP GET request and return the body as raw data.
+    /// @return The response as bytes, or {@code null} if the request fails.
+    @Nullable
     public abstract byte[] getBytes(URI url) throws Exception;
 
     /// Perform an HTTP GET request and return the body as raw data.
+    @Nullable
     public abstract CompletableFuture<byte[]> getBytesAsync(URI url) throws Exception;
 
     /// (Executed in {@link RFileOperations#init(ImageHandler, NetworkHandler)})

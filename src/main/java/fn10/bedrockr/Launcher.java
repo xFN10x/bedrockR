@@ -3,6 +3,7 @@ package fn10.bedrockr;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
@@ -21,6 +22,7 @@ import fn10.bedrockr.ui.RLaunchPage;
 import fn10.bedrockr.ui.RSplashScreen;
 import fn10.bedrockr.ui.RWorkspace;
 import fn10.bedrockr.ui.util.ErrorShower;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -137,10 +139,10 @@ public class Launcher {
         // try to see if this version is out of date
         loading.ProgressText.setText("Checking for updates...");
         try {
-            NETWORK_HANDLER
-            if (serilized.LatestVersion > RFileOperations.NUM_VERSION && serilized.ShouldUse) {
-                int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
-                        "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION
+            Triple<Boolean, String, String> upToDateInfo = NETWORK_HANDLER.upToDate();
+            if (!upToDateInfo.getLeft()) {
+                int op = JOptionPane.showConfirmDialog(loading, upToDateInfo.getMiddle(),
+                        "Version out of date (" + upToDateInfo.getRight() + " > " + RFileOperations.VERSION
                                 + ")",
                         JOptionPane.YES_NO_OPTION);
                 if (op == JOptionPane.YES_OPTION) {
@@ -211,19 +213,15 @@ public class Launcher {
 
         loading.ProgressText.setText("Downloading Block textures...");
         try {
-            HttpRequest latestMCDataVerReq = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
-            if (response.statusCode() != 200) {
+            JsonObject latestJson = NETWORK_HANDLER.getJSON("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest");
+            if (latestJson == null) {
                throw new IOException("Failed to get PrismarineJS release.");
             }
             if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
-                    || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
-                    .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
+                    || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
                     BlockTextures.downloadAllBlockTextures(loading).await();
             }
-        } catch (IOException | InterruptedException | URISyntaxException e) {
+        } catch (Exception e) {
             ErrorShower.exception(loading, "Block texture download error.", e);
         }
 

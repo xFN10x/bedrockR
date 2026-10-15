@@ -1,15 +1,10 @@
 package fn10.bedrockr.addons.element.supporting.item;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.NameNotFoundException;
 
@@ -22,9 +17,8 @@ import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import fn10.bedrockr.utils.net.PrismarineBlockInfo;
+import fn10.bedrockr.utils.net.PrismarineItemInfo;
 import org.apache.commons.lang3.ArrayUtils;
-
-import static fn10.bedrockr.utils.RFileOperations.gson;
 
 /**
  * A class repersenting an Item in bedrockR, this could be vanilla, or a custom item. This is different from a {@link fn10.bedrockr.utils.net.PrismarineItemInfo}/{@link fn10.bedrockr.utils.net.PrismarineBlockInfo}, as this is more simple and shouold be used in favour of them.
@@ -32,7 +26,7 @@ import static fn10.bedrockr.utils.RFileOperations.gson;
  * @see fn10.bedrockr.utils.net.PrismarineItemInfo
  * @see fn10.bedrockr.utils.net.PrismarineBlockInfo
  */
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings({"unused"})
 public class ItemInfo {
     ///The ID of the item, excluding the namespace. e.g, diamond_sword
     public String Id;
@@ -44,7 +38,7 @@ public class ItemInfo {
     public String Prefix;
 
     /**
-     * Searches for an item using the id of it.
+     * Searches for an item/block using the id of it.
      * @param fullID        the id of the item. 'prefix':'id'
      * @param workspaceName the name of the workspace.
      * @return an ItemInfo with the info of the item found, or {@code null} if it
@@ -53,7 +47,7 @@ public class ItemInfo {
      *                                     the workspace
      * @throws NameNotFoundException       if the item isn't found
      */
-    public static ItemInfo getBlockById(String fullID, String workspaceName, ImageHandler<?> handler)
+    public static ItemInfo getById(String fullID, String workspaceName, ImageHandler<?> handler)
             throws IncorrectWorkspaceException, NameNotFoundException, IOException, WorkspaceResources.WorkspaceUnsupportedException {
         // check the non-vanilla items
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
@@ -70,9 +64,14 @@ public class ItemInfo {
         }
 
         if (fullID.startsWith("minecraft")) {
-            for (PrismarineBlockInfo item : RFileOperations.getCurrentNetHandler().getVanillaBlocks()) {
+            for (PrismarineItemInfo item : RFileOperations.getCurrentNetHandler().getVanillaItems()) {
                 if (item.name.equals(fullID)) {
                     return item.toItemInfo();
+                }
+            }
+            for (PrismarineBlockInfo block : RFileOperations.getCurrentNetHandler().getVanillaBlocks()) {
+                if (block.name.equals(fullID)) {
+                    return block.toItemInfo();
                 }
             }
         } else {
@@ -81,43 +80,7 @@ public class ItemInfo {
         }
         throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist.");
     }
-
-    @SuppressWarnings("unchecked")
-    public static void downloadVanillaBlocks() throws IOException, InterruptedException, URISyntaxException {
-        try (HttpClient client = newDownloadingClient()) {
-            
-            HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
-
-            Map<String, String> versionPaths = (Map<String, String>) ((Map<String, Object>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
-                    .get(RFileOperations.PICKABLE_VERSIONS[0]);
-
-            String path = versionPaths.get("blocks");
-
-            HttpRequest itemJsonReq = HttpRequest.newBuilder()
-                    .uri(new URI(
-                            "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                    + path
-                                    + "/blocks.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-
-            HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
-            BlockJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), BlockJsonEntry[].class);
-            ArrayList<BlockJsonEntry> parsedEntrys = new ArrayList<BlockJsonEntry>();
-            for (BlockJsonEntry entry : itemEntrys) {
-                BlockJsonEntry building = entry;
-                if (!building.name.startsWith("minecraft"))
-                    building.name = "minecraft:" + entry.name;
-                parsedEntrys.add(building);
-            }
-            vanillaBlocks = parsedEntrys.toArray(new BlockJsonEntry[0]);
-            Arrays.sort(vanillaBlocks);
-        }
-    }
-
+    
     public ItemInfo() {
     }
 
@@ -144,7 +107,7 @@ public class ItemInfo {
 
     public static ItemInfo fromUnlockCondition(UnlockCondition con, String workspace, ImageHandler<?> handler) {
         try {
-            return ItemInfo.getItemById(con.item, workspace, handler);
+            return ItemInfo.getById(con.item, workspace, handler);
         } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
                  WorkspaceResources.WorkspaceUnsupportedException e) {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -167,7 +130,7 @@ public class ItemInfo {
 
     public static ItemInfo fromRecipeItem(Item con, String workspace, ImageHandler<?> handler) {
         try {
-            return ItemInfo.getItemById(con.item, workspace, handler);
+            return ItemInfo.getById(con.item, workspace, handler);
         } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
                  WorkspaceResources.WorkspaceUnsupportedException e) {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -180,61 +143,12 @@ public class ItemInfo {
         ArrayList<ItemInfo> building = new ArrayList<ItemInfo>();
         for (Item item : list) {
             try {
-                building.add(ItemInfo.getItemById(item.item, workspace, handler));
+                building.add(ItemInfo.getById(item.item, workspace, handler));
             } catch (NameNotFoundException | IncorrectWorkspaceException | IOException |
                      WorkspaceResources.WorkspaceUnsupportedException e) {
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
         }
         return building;
-    }
-
-    /**
-     * 
-     * @param fullID        the id of the item. 'prefix':'id'
-     * @param workspaceName the name of the workspace.
-     * @return a ReturnItemInfo with the info of the item found, or null if it
-     *         wasent found.
-     * @throws IncorrectWorkspaceException if the prefix of the fullID isnt used in
-     *                                     the workspace
-     * @throws NameNotFoundException       if the item isnt found
-     */
-    public static ItemInfo getItemById(String fullID, String workspaceName, ImageHandler<?> handler)
-            throws IncorrectWorkspaceException, NameNotFoundException, IOException, WorkspaceResources.WorkspaceUnsupportedException {
-        // check the non-vanilla items
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
-            if (element instanceof ItemLikeElement ile) {
-                String Id = ile.getItemId();
-                String Prefix = RFileOperations.getWorkspacePrefix(workspaceName);
-                if (fullID.equals(Prefix + ":" + Id)) {
-                    String Name = ile.getDisplayName();
-                byte[] img = ile.getTexture(RFileOperations.getWorkspaceFile(workspaceName).getRes(), handler);
-                    return new ItemInfo(Id, Name, Prefix, ArrayUtils.toObject(img));
-                }
-            }
-        }
-
-        if (fullID.startsWith("minecraft")) {
-            for (ItemJsonEntry item : vanillaItems) {
-                // fn10.bedrockr.Launcher.LOG.info("lets see if (" + item.name + ") equals (" + fullID + ")");
-                if (item.name.equals(fullID)) {
-                    return item.toReturnItemInfo();
-                }
-            }
-        } else {
-            throw new IncorrectWorkspaceException("The prefix: " + fullID.split(":")[0]
-                    + ", isnt vanilla, and it isnt used in the workspace: " + workspaceName);
-        }
-        RFileOperations.LOG.info("Vanilla items: ");
-        for (ItemJsonEntry vanillaItem : vanillaItems) {
-            RFileOperations.LOG.info(vanillaItem.name);
-        }
-        RFileOperations.LOG.info("Non-Vanilla items: " + String.join(", ",RFileOperations.getElementNamesFromWorkspace(workspaceName)));
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
-            if (element instanceof ItemLikeElement ile) {
-                RFileOperations.LOG.info(ile.getItemId());
-            }
-        }
-        throw new NameNotFoundException("The item by id: " + fullID + ", doesnt exist. Printed all items to log.");
     }
 }
