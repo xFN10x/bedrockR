@@ -613,7 +613,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             new Thread(() -> {
                 if (!alreadyExists && settings.shareElementAndWorkspaceData) {
                     // this is the first time
-                    try (HttpClient client = HttpClient.newBuilder().build()) {
+                    try {
                         final T elementData = settings.shareExtraData ? element.getSerialized() : null;
                         final ElementMade<T> src = new ElementMade<>(Date.from(Instant.now()),
                                 elementData,
