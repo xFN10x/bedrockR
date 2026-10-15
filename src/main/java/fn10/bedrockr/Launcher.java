@@ -61,8 +61,8 @@ public class Launcher {
         }
         RSplashScreen loading = new RSplashScreen();
         loading.ProgressText.setText("Initializing...");
-        RFileOperations.init(ImageUtilities.ImgHandler,NETWORK_HANDLER);
-        
+        RFileOperations.init(ImageUtilities.ImgHandler, NETWORK_HANDLER);
+
         loading.ProgressText.setText("Loading settings...");
 
         SettingsFile settings = SettingsFile
@@ -136,23 +136,7 @@ public class Launcher {
                     e);
         }
 
-        // try to see if this version is out of date
-        loading.ProgressText.setText("Checking for updates...");
-        try {
-            Triple<Boolean, String, String> upToDateInfo = NETWORK_HANDLER.upToDate();
-            if (!upToDateInfo.getLeft()) {
-                int op = JOptionPane.showConfirmDialog(loading, upToDateInfo.getMiddle(),
-                        "Version out of date (" + upToDateInfo.getRight() + " > " + RFileOperations.VERSION
-                                + ")",
-                        JOptionPane.YES_NO_OPTION);
-                if (op == JOptionPane.YES_OPTION) {
-                    Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev/download"));
-                    System.exit(0);
-                }
-            }
-        } catch (Exception e) {
-            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
+        
 
         /*loading.ProgressText.setText("Setting up Blockly...");
         try {
@@ -210,19 +194,36 @@ public class Launcher {
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
         }*/
-
-        loading.ProgressText.setText("Downloading Block textures...");
-        try {
-            JsonObject latestJson = NETWORK_HANDLER.getJSON("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest");
-            if (latestJson == null) {
-               throw new IOException("Failed to get PrismarineJS release.");
+        if (NETWORK_HANDLER.isOnline()) {        // try to see if this version is out of date
+            loading.ProgressText.setText("Checking for updates...");
+            try {
+                Triple<Boolean, String, String> upToDateInfo = NETWORK_HANDLER.upToDate();
+                if (!upToDateInfo.getLeft()) {
+                    int op = JOptionPane.showConfirmDialog(loading, upToDateInfo.getMiddle(),
+                            "Version out of date (" + upToDateInfo.getRight() + " > " + RFileOperations.VERSION
+                                    + ")",
+                            JOptionPane.YES_NO_OPTION);
+                    if (op == JOptionPane.YES_OPTION) {
+                        Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev/download"));
+                        System.exit(0);
+                    }
+                }
+            } catch (Exception e) {
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
-            if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
-                    || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
+            loading.ProgressText.setText("Downloading Block textures...");
+            try {
+                JsonObject latestJson = NETWORK_HANDLER.getJSON("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest");
+                if (latestJson == null) {
+                    throw new IOException("Failed to get PrismarineJS release.");
+                }
+                if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
+                        || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
                     BlockTextures.downloadAllBlockTextures(loading).await();
+                }
+            } catch (Exception e) {
+                ErrorShower.exception(loading, "Block texture download error.", e);
             }
-        } catch (Exception e) {
-            ErrorShower.exception(loading, "Block texture download error.", e);
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
@@ -274,5 +275,5 @@ public class Launcher {
             JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/><br/> And if you can, please report bugs on Github. <i>(a3.0PRE REV2)</i></html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
     }
 
-    
+
 }

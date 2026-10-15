@@ -3,9 +3,7 @@ package fn10.bedrockr.ui.rendering;
 import com.formdev.flatlaf.util.ScaledImageIcon;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
-import fn10.bedrockr.addons.element.supporting.item.ItemInfo.BlockJsonEntry;
 import fn10.bedrockr.ui.RLoadingScreen;
-import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
@@ -34,7 +32,6 @@ import java.util.concurrent.Executors;
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class BlockTextures {
-    private static final HttpClient client = HttpClient.newBuilder().build();
     private static final Map<String, ScaledImageIcon> preloadedIcons = new HashMap<String, ScaledImageIcon>();
     private static Map<String, Map<String, Object>> blocksJson = null;
     private static Map<String, Map<String, Map<String, Object>>> terrianTextureJson = null;

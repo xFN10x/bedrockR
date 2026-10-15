@@ -43,7 +43,7 @@ public class RMIBlockPlacer extends RMapValue<ItemComponents.ItemBlockPlacer, RI
     @Override
     public void setValue(ItemComponents.ItemBlockPlacer val) {
         try {
-            InputField.setItem(ItemInfo.getItemById(val.block, RFileOperations.getCurrentWorkspace().WorkspaceName, RFileOperations.getCurrentImgHandler()));
+            InputField.setItem(ItemInfo.getById(val.block, RFileOperations.getCurrentWorkspace().WorkspaceName, RFileOperations.getCurrentImgHandler()));
         } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
                  WorkspaceResources.WorkspaceUnsupportedException e) {
             RLogUtils.exception(e);

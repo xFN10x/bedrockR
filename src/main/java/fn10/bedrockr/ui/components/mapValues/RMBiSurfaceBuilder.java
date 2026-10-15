@@ -15,17 +15,11 @@ import java.awt.*;
 import java.util.function.Consumer;
 
 public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder, JPanel> {
-    private JPanel surfaceMaterialPanel;
     private RItemValue surfaceMaterialVal;
-    private JPanel seaFloorDepthPanel;
     private JSpinner seaDepthVal;
-    private JPanel seaMaterialPanel;
     private RItemValue seaMaterialVal;
-    private JPanel seaFloorMaterialPanel;
     private RItemValue seaFloorMaterialVal;
-    private JPanel foundationMaterialPanel;
     private RItemValue foundationMaterialVal;
-    private JPanel midMaterialPanel;
     private RItemValue midMaterialVal;
 
     public RMBiSurfaceBuilder(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
@@ -35,21 +29,21 @@ public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder
 
     @Override
     protected @NonNull JPanel createInput() {
-        surfaceMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel surfaceMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         surfaceMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
                 RItemValue.TYPE_SINGLE_BLOCK);
-        seaFloorDepthPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel seaFloorDepthPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         seaDepthVal = new JSpinner(new SpinnerNumberModel(1, 0, 127, 1));
-        seaMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel seaMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         seaMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
                 RItemValue.TYPE_SINGLE);
-        seaFloorMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel seaFloorMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         seaFloorMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
                 RItemValue.TYPE_SINGLE);
-        foundationMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel foundationMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         foundationMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
                 RItemValue.TYPE_SINGLE_BLOCK);
-        midMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel midMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         midMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
                 RItemValue.TYPE_SINGLE_BLOCK);
 
@@ -115,21 +109,21 @@ public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder
         try {
             seaDepthVal.setValue(val.builder.sea_floor_depth);
 
-            midMaterialVal.setItem(ItemInfo.getItemById(
+            midMaterialVal.setItem(ItemInfo.getById(
                     val.builder.mid_material, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
-            foundationMaterialVal.setItem(ItemInfo.getItemById(
+            foundationMaterialVal.setItem(ItemInfo.getById(
                     val.builder.foundation_material,
                     RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
-            seaMaterialVal.setItem(ItemInfo.getItemById(
+            seaMaterialVal.setItem(ItemInfo.getById(
                     val.builder.sea_material, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
-            seaFloorMaterialVal.setItem(ItemInfo.getItemById(
+            seaFloorMaterialVal.setItem(ItemInfo.getById(
                     val.builder.sea_floor_material,
                     RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
 
-            surfaceMaterialVal.setItem(ItemInfo.getItemById(
+            surfaceMaterialVal.setItem(ItemInfo.getById(
                     val.builder.top_material, RFileOperations.getCurrentWorkspace().WorkspaceName, ImageUtilities.ImgHandler));
         } catch (Exception e) {
             RLogUtils.exception("Failed to set value of RMBiSurfaceBuilder", e);
