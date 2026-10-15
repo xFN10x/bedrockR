@@ -1,72 +1,10 @@
 package fn10.bedrockr.addons.element.elementSources;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.internal.LinkedTreeMap;
-
 import fn10.bedrockr.addons.element.elementFiles.BiomeFile;
 import fn10.bedrockr.addons.element.interfaces.ElementDetails;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.utils.RFileOperations;
-
-import static fn10.bedrockr.utils.RFileOperations.gson;
 
 public class SourceBiomeElement extends ElementSource<BiomeFile> {
-
-    public static String[] vanillaBiomeNames = null;
-    public static String[] prefixedVanillaBiomeNames = null;
-
-    public static String[] getPrefixedVanillaBiomeNames() {
-        if (prefixedVanillaBiomeNames == null)
-            getVanillaBiomeNames();
-        return prefixedVanillaBiomeNames;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static String[] getVanillaBiomeNames() {
-        if (vanillaBiomeNames != null) {
-            return vanillaBiomeNames;
-        } else
-            try {
-                HttpClient client = HttpClient.newBuilder().build();
-                HttpRequest dataPathsReq = HttpRequest.newBuilder()
-                        .uri(new URI(
-                                "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/dataPaths.json"))
-                        .version(HttpClient.Version.HTTP_2).GET().build();
-                HttpResponse<String> dataPathsRes = client.send(dataPathsReq, BodyHandlers.ofString());
-
-                Map<String, String> versionPaths = ((Map<String,Map<String,String>>)gson.fromJson(dataPathsRes.body(), Map.class).get("bedrock"))
-                        .get(RFileOperations.PICKABLE_VERSIONS[0]);
-
-                String path = versionPaths.get("biomes");
-
-                HttpRequest biomesJsonReq = HttpRequest.newBuilder()
-                        .uri(new URI(
-                                "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
-                                        + path
-                                        + "/biomes.json"))
-                        .version(HttpClient.Version.HTTP_2).GET().build();
-
-                HttpResponse<String> biomesRes = client.send(biomesJsonReq, BodyHandlers.ofString());
-                List<String> biomeNames = new ArrayList<String>();
-                List<String> biomeNamesPrefix = new ArrayList<String>();
-                for (Map<String, Object> biomeEntry : (ArrayList<LinkedTreeMap<String, Object>>) gson
-                        .fromJson(biomesRes.body(), List.class)) {
-                    biomeNames.add(biomeEntry.get("name").toString());
-                    biomeNamesPrefix.add("minecraft:" + biomeEntry.get("name").toString());
-                }
-                vanillaBiomeNames = biomeNames.toArray(new String[0]);
-                prefixedVanillaBiomeNames = biomeNamesPrefix.toArray(vanillaBiomeNames);
-                return vanillaBiomeNames;
-            } catch (Exception e) {
-                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-                return new String[0];
-            }
-    }
-
 
     @Override
     public ElementDetails getDetails() {
@@ -75,7 +13,6 @@ public class SourceBiomeElement extends ElementSource<BiomeFile> {
 
     public SourceBiomeElement(BiomeFile obj) {
         super(obj);
-        getVanillaBiomeNames();
     }
 
     @Override

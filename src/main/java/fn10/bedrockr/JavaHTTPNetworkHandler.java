@@ -1,34 +1,39 @@
 package fn10.bedrockr;
 
 import fn10.bedrockr.utils.net.NetworkHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 public class JavaHTTPNetworkHandler extends NetworkHandler {
-
     @Override
     public boolean isOnline() {
         return false;
     }
 
     @Override
-    public String getJSON(URI url) throws Exception {
-        return "";
-    }
-
-    @Override
-    public CompletableFuture<String> getJSONAsync(URI url) throws Exception {
+    public Pair<Integer, String> postJSON(URI uri, Object obj) throws Exception {
         return null;
     }
 
     @Override
-    public byte[] getBytes(URI url) throws Exception {
-        return new byte[0];
+    public Pair<Integer, String> getJSON(URI url) throws Exception {
+        return null;
     }
 
     @Override
-    public CompletableFuture<byte[]> getBytesAsync(URI url) throws Exception {
+    public CompletableFuture<Pair<Integer, String>> getJSONAsync(URI url) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Pair<Integer, byte[]> getBytes(URI url) throws Exception {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<Pair<Integer, byte[]>> getBytesAsync(URI url) throws Exception {
         return null;
     }
 }
