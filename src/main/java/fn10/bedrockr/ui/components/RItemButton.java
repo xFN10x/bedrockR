@@ -4,7 +4,6 @@ package fn10.bedrockr.ui.components;
 import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.mcjson.behav.Item;
-import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.utils.RLogUtils;
 
 import javax.swing.*;
@@ -29,13 +28,13 @@ public class RItemButton extends JButton {
         setFont(getFont().deriveFont(8f));
         
         textureExecutor.execute(() -> {
-            try {
-                ScaledImageIcon icon = BlockTextures.getBlockTexture(ancestor, info.Id);
-                if (icon != null)
-                    setIcon(icon);
-            } catch (IOException e) {
-                RLogUtils.exception("Failed to load block texture", e);
-            }
+//            try {
+//                ScaledImageIcon icon = BlockTextures.getBlockTexture(ancestor, info.Id);
+//                if (icon != null)
+//                    setIcon(icon);
+//            } catch (IOException e) {
+//                RLogUtils.exception("Failed to load block texture", e);
+//            }
         });
         
         setText(info.Name);

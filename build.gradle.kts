@@ -10,10 +10,11 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
-val strVersion = "a3.0PRE"
-val winver = "0.9.1"
+val strVersion = "a3.0PRE2"
+val winver = "0.9.2"
 
 dependencies {
     implementation("com.google.guava:guava:33.7.1-jre")
@@ -22,11 +23,13 @@ dependencies {
     implementation("com.formdev:flatlaf:3.7.2")
 
     implementation("commons-io:commons-io:2.22.0")
-    implementation("org.apache.commons:commons-lang3:3.21.0")
+    api("org.apache.commons:commons-lang3:3.21.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jetbrains:annotations:26.1.0")
+
+    implementation("com.github.Querz:NBT:6.1")
 }
 
 java {
@@ -52,10 +55,7 @@ tasks.jpackage {
     mainJar.set("bedrockR-$strVersion.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
-    fileAssociations = project.files(
-        "wpf.properties",
-        "bp1.properties"
-    )
+    fileAssociations = files(fileTree("fileAsso"))
 
     windows {
         type.set(org.panteleyev.jpackage.ImageType.MSI)
