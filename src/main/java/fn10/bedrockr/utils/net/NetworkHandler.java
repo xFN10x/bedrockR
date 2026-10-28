@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.web.Format1Latest;
 import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,6 +18,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static fn10.bedrockr.utils.RFileOperations.LOG;
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 //Wrapper used to wrap around different 
@@ -110,7 +112,7 @@ public abstract class NetworkHandler {
                            + "/biomes.json", PrismarineBiomeInfo[].class);
            prisBiomes.addAll(List.of(biomeEntrys));
        } catch (Exception e) {
-           throw new RuntimeException(e);
+           RLogUtils.exception("Failed to download vanilla info!", e);
        }
     }
 

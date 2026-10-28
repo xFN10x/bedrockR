@@ -1,6 +1,5 @@
-package fn10.bedrockr;
+package fn10.bedrockr.utils.net;
 
-import fn10.bedrockr.utils.net.NetworkHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.net.URI;

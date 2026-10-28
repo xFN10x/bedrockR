@@ -2,19 +2,16 @@ package fn10.bedrockr;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.utils.Theme;
-import fn10.bedrockr.utils.web.Format1Latest;
+import fn10.bedrockr.utils.net.JavaHTTPNetworkHandler;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
@@ -22,6 +19,7 @@ import fn10.bedrockr.ui.RLaunchPage;
 import fn10.bedrockr.ui.RSplashScreen;
 import fn10.bedrockr.ui.RWorkspace;
 import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.utils.net.VanillaAtlases;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.imageio.ImageIO;
@@ -33,11 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.time.Duration;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -195,6 +190,7 @@ public class Launcher {
             // this throws if javafx is already started. idk how to check if it is
         }*/
         if (NETWORK_HANDLER.isOnline()) {        // try to see if this version is out of date
+            // Check for updates
             loading.ProgressText.setText("Checking for updates...");
             try {
                 Triple<Boolean, String, String> upToDateInfo = NETWORK_HANDLER.upToDate();
@@ -211,6 +207,7 @@ public class Launcher {
             } catch (Exception e) {
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
+            // region Download Block Textures
             loading.ProgressText.setText("Downloading Block textures...");
             try {
                 JsonObject latestJson = NETWORK_HANDLER.getJSON("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest");
@@ -219,11 +216,12 @@ public class Launcher {
                 }
                 if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                         || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
-                    BlockTextures.downloadAllBlockTextures(loading).await();
+                    VanillaAtlases.downloadAtlas("block");
                 }
             } catch (Exception e) {
                 ErrorShower.exception(loading, "Block texture download error.", e);
             }
+            // endregion
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
