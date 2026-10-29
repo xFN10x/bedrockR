@@ -10,16 +10,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
+//TODO: fix ui layout
 public class RMBiTags extends RMapValue<BiomeComponents.Tags, REListValue<String>> {
     public RMBiTags(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
         super(Ancestor, RME, onRemove);
+        Size.setSize(400, 250);
     }
 
     @Override
     protected @NonNull REListValue<String> createInput() {
         try {
             var input = new REListValue<>(BiomeComponents.Tags.class.getField("tags"), (Class<List<String>>)(Class<?>) List.class, String.class, null, null, null);
-            Lay.putConstraint(SpringLayout.NORTH, InputField, 5, SpringLayout.SOUTH, IDNameLabel);
+            Lay.putConstraint(SpringLayout.NORTH, input, 5, SpringLayout.SOUTH, IDNameLabel);
             return input;
         } catch (Exception e) {
             throw new RuntimeException(e);

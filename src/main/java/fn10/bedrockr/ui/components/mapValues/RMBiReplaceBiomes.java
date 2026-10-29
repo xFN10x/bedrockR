@@ -6,6 +6,7 @@ import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.base.validValues.RMapValue;
 import fn10.bedrockr.ui.components.elementValues.REListValue;
 import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RLogUtils;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
@@ -13,10 +14,9 @@ import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 
+//TODO: fix ui layout
 public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, JPanel> {
-    private JPanel replacementPercentPanel;
     private JSpinner replacementVal;
-    private JPanel noisePanel;
     private JSpinner noiseVal;
     private  REListValue<String> targetsVal = null;
 
@@ -27,9 +27,9 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
 
     @Override
     protected @NonNull JPanel createInput() {
-        replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         replacementVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-        noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
         
         var input = new JPanel();
@@ -44,7 +44,9 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
         input.add(noisePanel);
         try {
             targetsVal = new REListValue<>(null, (Class<List<String>>)(Class<?>)List.class, String.class, null,null,BiomeComponents.ReplaceBiomes.Replacement.class.getField("targets").getAnnotation(RAnnotation.FieldDetails.class));
+            targetsVal.setMinimumSize(new Dimension(0, 200));
         } catch (NoSuchFieldException e) {
+            RLogUtils.exception(e);
             throw new RuntimeException(e);
         }
 

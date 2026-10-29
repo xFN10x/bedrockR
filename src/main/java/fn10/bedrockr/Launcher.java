@@ -3,6 +3,7 @@ package fn10.bedrockr;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
@@ -40,6 +41,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -233,9 +235,10 @@ public class Launcher {
             if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                     || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
                     .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
-                    BlockTextures.downloadAllBlockTextures(loading).await();
+                CountDownLatch latch = BlockTextures.downloadAllBlockTextures(loading);
+                latch.await();
             }
-        } catch (IOException | InterruptedException | URISyntaxException e) {
+        } catch (IOException | InterruptedException | URISyntaxException | JsonSyntaxException e) {
             ErrorShower.exception(loading, "Block texture download error.", e);
         }
 
@@ -285,7 +288,7 @@ public class Launcher {
         settings.save();
 
         if (RFileOperations.isPrereleaseVersion())
-            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/><br/> And if you can, please report bugs on Github. <i>(a3.0PRE REV2)</i></html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/><br/> And if you can, please report bugs on Github. <i>(a3.0PRE REV3)</i></html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
     }
 
     

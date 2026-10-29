@@ -18,11 +18,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
-    protected JPanel InnerPane = new JPanel();
-    protected JButton AddButton = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
+    protected JPanel InnerPane;
+    protected JButton AddButton;
     private final Class<L> listType;
 
     public REListValue(@Nullable Field TargetField, Class<List<L>> type, @Nonnull Class<L> listType, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.FieldDetails details) {
+        InnerPane = new JPanel();
+        AddButton = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
         super(TargetField, type, TargetFile, WorkspaceName, details);
         this.listType = listType;
     }
