@@ -57,6 +57,7 @@ public class REPathValue extends RElementValue<Path, JButton> {
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
+        if (!strict && !important()) return true;
         File prop = new File(Input.getText());
         return problem(FileUtils.isDirectory(prop), "Directory isn't valid.");
     }

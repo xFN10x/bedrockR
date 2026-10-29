@@ -565,7 +565,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 defaultName).toString();
         String inputIDized = RFileOperations.getFileSafeName(input).toLowerCase();
         if (!new FieldFilters.FileNameLikeStringFilter().getValid(inputIDized)) {
-            JOptionPane.showMessageDialog(win, "Invaild name.");
+            JOptionPane.showMessageDialog(win, "Invalid name.");
             return;
         }
         Resource adding = null;
@@ -573,7 +573,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             //Item
             adding = new ItemTextureResource(input, inputIDized, file.getSelectedFile());
         } else if (choice == 2) {
-            //Item
+            //Block
             adding = new BlockTextureResource(input, inputIDized, file.getSelectedFile());
         }
         WorkspaceResources res = SWPF.getSerialized().getRes();

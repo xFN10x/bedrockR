@@ -146,6 +146,7 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
+        if (!strict && !important()) return true;
         for (Map.Entry<String, RMapValue<?, ?>> entry : addedMapValues.entrySet()) {
             RMapValue<?, ?> remv = entry.getValue();
             Problem = "REMV " + remv.rMapElement.DisplayName + " isn't valid.";
