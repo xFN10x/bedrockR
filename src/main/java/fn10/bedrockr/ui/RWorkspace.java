@@ -13,8 +13,8 @@ import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.resource.BlockTextureResource;
 import fn10.bedrockr.addons.resource.ItemTextureResource;
-import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.addons.resource.interfaces.Resource;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RElementFileButton;
 import fn10.bedrockr.ui.components.RResourceButton;
@@ -258,7 +258,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 dispose();
             }
         });
-        
+
         pack();
 
         JPopupMenu resPanelPopup = new JPopupMenu();
@@ -272,7 +272,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             refreshElements();
         });
         ElementInnerPanelView.setComponentPopupMenu(elePanelPopup);
-        
+
         setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
         refreshAll();
     }
@@ -355,7 +355,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             ResourceInnerPanelView.removeAll();
             BoxLayout lay = new BoxLayout(ResourceInnerPanelView, BoxLayout.Y_AXIS);
             ResourceInnerPanelView.setLayout(lay);
-            
+
             ArrayList<Resource> resources = res.resources;
             if (resources.isEmpty()) {
                 ResourceInnerPanelView.add(new JLabel("No resources here!"));
@@ -381,7 +381,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
                 ResourceInnerPanelView.add(catPanel);
             }
-            
+
         } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -514,7 +514,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        try { 
+        try {
             var ac = arg0.getActionCommand();
             switch (ac) {
                 case "add" -> SwingUtilities.invokeLater(() -> {
@@ -639,7 +639,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         if (resp.statusCode() != 200) {
                             RFileOperations.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
                         }
-                        
+
                     } catch (IOException | InterruptedException e) {
                         RLogUtils.exception("Failed to send data to API.", e);
                     }
@@ -676,7 +676,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                 null,
                 platforms,
                 "Windows");
-
+        if (platformSelection <= 0) return;
         SettingsFile settings = SettingsFile.load();
         String selected = platforms[platformSelection];
         settings.comMojangPath = RFileOperations.MC_SYNC_OPTIONS.get(selected);

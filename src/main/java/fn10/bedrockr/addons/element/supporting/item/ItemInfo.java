@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.naming.NameNotFoundException;
 
+import com.google.gson.JsonSyntaxException;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.UnlockCondition;
@@ -26,6 +27,7 @@ import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
 import org.apache.commons.lang3.ArrayUtils;
 
+import static fn10.bedrockr.utils.RFileOperations.LOG;
 import static fn10.bedrockr.utils.RFileOperations.gson;
 
 @SuppressWarnings({"unused", "unchecked"})
@@ -37,7 +39,7 @@ public class ItemInfo {
 
     public static ItemJsonEntry[] vanillaItems;
 
-    public static void downloadVanillaItems() throws URISyntaxException, IOException, InterruptedException {
+    public static void downloadVanillaItems() throws URISyntaxException, IOException, InterruptedException, JsonSyntaxException {
         try (HttpClient client = newDownloadingClient()) {
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
                     .uri(new URI(
@@ -59,6 +61,10 @@ public class ItemInfo {
                     .version(HttpClient.Version.HTTP_2).GET().build();
 
             HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
+            if (itemsjsonRes.statusCode() != 200) {
+                LOG.warning("Item json not OK! (" + itemsjsonRes.statusCode() + ")");
+                return;
+            }
             ItemJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), ItemJsonEntry[].class);
             ArrayList<ItemJsonEntry> parsedEntrys = new ArrayList<ItemJsonEntry>();
             for (ItemJsonEntry building : itemEntrys) {
@@ -152,7 +158,7 @@ public class ItemInfo {
     }
 
     @SuppressWarnings("unchecked")
-    public static void downloadVanillaBlocks() throws IOException, InterruptedException, URISyntaxException {
+    public static void downloadVanillaBlocks() throws IOException, InterruptedException, URISyntaxException, JsonSyntaxException {
         try (HttpClient client = newDownloadingClient()) {
             
             HttpRequest dataPathsReq = HttpRequest.newBuilder()
@@ -174,6 +180,10 @@ public class ItemInfo {
                     .version(HttpClient.Version.HTTP_2).GET().build();
 
             HttpResponse<String> itemsjsonRes = client.send(itemJsonReq, BodyHandlers.ofString());
+            if (itemsjsonRes.statusCode() != 200) {
+                LOG.warning("Block json not OK! (" + itemsjsonRes.statusCode() + ")");
+                return;
+            }
             BlockJsonEntry[] itemEntrys = gson.fromJson(itemsjsonRes.body(), BlockJsonEntry[].class);
             ArrayList<BlockJsonEntry> parsedEntrys = new ArrayList<BlockJsonEntry>();
             for (BlockJsonEntry entry : itemEntrys) {
