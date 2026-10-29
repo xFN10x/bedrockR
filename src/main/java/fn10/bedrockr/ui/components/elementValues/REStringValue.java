@@ -44,6 +44,7 @@ public class REStringValue extends RElementValue<String, JTextField> {
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
+        if (!strict && !important()) return true;
         return problem(filter.getValid(getValueInternal(log0)), "String not valid.");
     }
 }
