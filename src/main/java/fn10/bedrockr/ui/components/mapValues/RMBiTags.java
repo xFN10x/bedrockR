@@ -30,16 +30,18 @@ public class RMBiTags extends RMapValue<BiomeComponents.Tags, REListValue<String
 
     @Override
     public BiomeComponents.Tags getValue() {
-        return null;
+        BiomeComponents.Tags tags = new BiomeComponents.Tags();
+        tags.tags = InputField.getValue();
+        return tags;
     }
 
     @Override
     public void setValue(BiomeComponents.Tags val) {
-
+        InputField.setValue(val.tags);
     }
 
     @Override
     public boolean valid(boolean strict) {
-        return false;
+        return true;
     }
 }

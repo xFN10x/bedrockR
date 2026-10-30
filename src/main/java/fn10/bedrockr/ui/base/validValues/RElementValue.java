@@ -374,6 +374,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             } else {
                 Help.setMessage("No help provided.");
             }
+            if (TargetFile != null)
             try {
                 setValue((T) Target.get(TargetFile));
             } catch (Exception e) {
@@ -404,11 +405,11 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     public T getValue(boolean shouldLog) {
-        if (valid(true, shouldLog)) {
+        //if (valid(true, shouldLog)) {
             return getValueInternal(shouldLog);
-        } else {
-            return null;
-        }
+        //} else {
+        //    return null;
+        //}
     }
 
     protected abstract T getValueInternal(boolean shouldLog);
