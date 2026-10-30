@@ -70,8 +70,6 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
                             Double.valueOf(toAdd.getSize().getHeight()).intValue());
                     toAdd.setAlignmentX(0.5f);
 
-                    picked.add(select);
-
                     addREMV(toAdd);
 
                     // finish, and why this wasnt working before
@@ -128,6 +126,7 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
         JPanel panel = new JPanel();
         panel.add(Box.createRigidArea(new Dimension(100, 10)));
         panel.add(ToAdd);
+        picked.add(ToAdd.rMapElement);
         HashMapInnerPane.add(panel);
         addedMapValuePanels.put(ToAdd.getKey(), panel);
         addedMapValues.put(ToAdd.getKey(), ToAdd);
