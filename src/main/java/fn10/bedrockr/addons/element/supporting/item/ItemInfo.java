@@ -26,6 +26,7 @@ import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.exception.IncorrectWorkspaceException;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
 import static fn10.bedrockr.utils.RFileOperations.LOG;
@@ -279,8 +280,9 @@ public class ItemInfo {
      *                                     the workspace
      * @throws NameNotFoundException       if the item isnt found
      */
-    public static ItemInfo getItemById(String fullID, String workspaceName, ImageHandler<?> handler)
+    public static ItemInfo getItemById(@Nullable String fullID, String workspaceName, ImageHandler<?> handler)
             throws IncorrectWorkspaceException, NameNotFoundException, IOException, WorkspaceResources.WorkspaceUnsupportedException {
+        if (fullID == null) return null;
         // check the non-vanilla items
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(workspaceName)) {
             if (element instanceof ItemLikeElement ile) {

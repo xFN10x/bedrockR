@@ -12,6 +12,7 @@ import fn10.bedrockr.addons.resource.ItemTextureResource;
 import fn10.bedrockr.addons.resource.interfaces.ResourcePointer;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
+import fn10.bedrockr.utils.RFileOperations;
 import org.apache.commons.io.FileUtils;
 
 import fn10.bedrockr.addons.mcjson.behav.Item;
@@ -147,7 +148,7 @@ public class ItemFile extends ElementFile<SourceItemElement> implements ItemLike
     }
 
     public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
-        if (Texture == null) return new byte[0];
+        if (Texture == null || !Texture.exists(res)) return RFileOperations.getElementIconData(getNewSource());
         return handler.getBytesFromImage(Texture.get(res).loadImage(handler));
     }
 

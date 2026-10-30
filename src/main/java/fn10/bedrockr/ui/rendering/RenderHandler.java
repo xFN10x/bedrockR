@@ -64,7 +64,7 @@ public class RenderHandler {
     }
 
     private static BufferedImage resToBuf(ResourcePointer<BlockTextureResource> tex, WorkspaceResources res) throws IOException {
-        if (res == null) return null;
+        if (tex == null || !tex.exists(res)) return null;
         return tex.get(res).loadImage(ImageUtilities.ImgHandler);
     }
 
