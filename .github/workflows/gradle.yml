@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
     
 env:
-  vector_ver: '0.9.1'
+  vector_ver: '0.9.2'
   string_ver: 'a3.0PRE'
 
 jobs:
@@ -21,9 +21,9 @@ jobs:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Set up JDK 25
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v6
       with:
         java-version: '25'
         distribution: 'microsoft'
@@ -43,21 +43,21 @@ jobs:
     #upload portables
     - name: Upload Portable (linux, ARM) 
       if: matrix.os == 'ubuntu-24.04-arm' 
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: bedrockR-${{env.string_ver}}-linux-arm64-portable
         path: build/builtDist
 
     - name: Upload Portable (linux) 
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: bedrockR-${{env.string_ver}}-linux-amd64-portable
         path: build/builtDist
 
     - name: Upload Portable (windows) 
       if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: bedrockR-${{env.string_ver}}-windows-x64-portable
         path: build/builtDist
@@ -68,27 +68,27 @@ jobs:
     # upload normal
     - name: Upload Normal (linux, ARM) 
       if: matrix.os == 'ubuntu-24.04-arm' && contains(github.event.head_commit.message, 'BUILD:')
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: bedrockR-${{env.string_ver}}-linux-arm64.deb
         path: build/builtDist/bedrockr_${{env.vector_ver}}_arm64.deb
 
     - name: Upload Normal (linux) 
       if: matrix.os == 'ubuntu-latest' && contains(github.event.head_commit.message, 'BUILD:')
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: bedrockR-${{env.string_ver}}-linux-amd64.deb
         path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
 
     - name: Upload Normal (windows) 
       if: matrix.os == 'windows-latest' && contains(github.event.head_commit.message, 'BUILD:')
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: bedrockR-${{env.string_ver}}-windows-x64.msi
         path: build/builtDist/bedrockR-${{env.vector_ver}}.msi
 
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: matrix.os == 'ubuntu-latest'
       with:
         if-no-files-found: error
@@ -104,9 +104,9 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Set up JDK 25
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v6
       with:
         java-version: '25'
         distribution: 'microsoft'

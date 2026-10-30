@@ -13,7 +13,7 @@ repositories {
 }
 
 val strVersion = "a3.0PRE"
-val winver = "0.9.1"
+val winver = "0.9.2"
 
 dependencies {
     implementation("com.google.guava:guava:33.7.1-jre")
