@@ -195,7 +195,7 @@ public class FoodFile extends ElementFile<SourceFoodElement> implements ItemLike
         inner.description = desc;
 
         inner.components = new HashMap<>();
-        inner.components.put("minecraft:icon", Texture.get(res));
+        inner.components.put("minecraft:icon", Texture.get(res).getBuiltName(res));
         inner.components.put("minecraft:use_animation", EatAnimation);
 
         Map<String, String[]> TagsComp = new HashMap<String, String[]>();
