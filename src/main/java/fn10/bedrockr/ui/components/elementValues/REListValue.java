@@ -91,7 +91,7 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
         JButton removeButton = new JButton("-");
         innerList.add(toAdd);
         toAdd.Name.setText("");
-        toAdd.setMaximumSize(new Dimension(getSize().width - 20,toAdd.getMaximumSize().height));
+        //toAdd.setMaximumSize(new Dimension(getSize().width - 20,toAdd.getMaximumSize().height));
 
         toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0,
                 SpringLayout.VERTICAL_CENTER, toAdd);
@@ -121,6 +121,8 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
             toAad.setValue(l);
             addInnerValue(toAad);
         }
+        InnerPane.revalidate();
+        InnerPane.repaint();
     }
 
     @Override

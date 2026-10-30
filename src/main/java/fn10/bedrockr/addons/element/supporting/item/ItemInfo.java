@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.naming.NameNotFoundException;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.mcjson.behav.Recipe.Item;
@@ -98,7 +99,7 @@ public class ItemInfo {
         public int minStateId;
         public int maxStateId;
         public Map<String, Boolean> harvestTools;
-        public int[] drops;
+        public JsonElement drops;
         public String boundingBox;
 
         public ItemInfo toReturnItemInfo() {
