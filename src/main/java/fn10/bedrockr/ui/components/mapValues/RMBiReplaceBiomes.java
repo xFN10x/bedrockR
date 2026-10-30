@@ -11,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
 public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, JPanel> {
     private JSpinner replacementVal;
     private JSpinner noiseVal;
-    private  REListValue<String> targetsVal = null;
+    private REListValue<String> targetsVal;
 
     public RMBiReplaceBiomes(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
         super(Ancestor, RME, onRemove);
@@ -33,7 +34,7 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
         noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
         
         var input = new JPanel();
-        input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
+        //input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
 
         replacementPercentPanel.add(new JLabel("Replacement %"));
         replacementPercentPanel.add(replacementVal);
@@ -43,8 +44,11 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
         noisePanel.add(noiseVal);
         input.add(noisePanel);
         try {
-            targetsVal = new REListValue<>(null, (Class<List<String>>)(Class<?>)List.class, String.class, null,null,BiomeComponents.ReplaceBiomes.Replacement.class.getField("targets").getAnnotation(RAnnotation.FieldDetails.class));
-            targetsVal.setMinimumSize(new Dimension(0, 200));
+            Field field = BiomeComponents.ReplaceBiomes.Replacement.class.getField("targets");
+            targetsVal = new REListValue<>(field, (Class<List<String>>)(Class<?>)List.class, String.class, null,null, field.getAnnotation(RAnnotation.FieldDetails.class));
+            targetsVal.setPreferredSize(new Dimension(400, 150));
+            targetsVal.Name.setText("Targets");
+            
         } catch (NoSuchFieldException e) {
             RLogUtils.exception(e);
             throw new RuntimeException(e);
