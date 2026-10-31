@@ -34,11 +34,11 @@ jobs:
         gradle-version: '9.8.2'
         
     - name: Build project
-      run: ./gradlew build --info
+      run: gradlew build --info
 
     - name: Build Portable
       if: contains(github.event.head_commit.message, 'BUILD:')
-      run: ./gradlew jpackagePORTABLE --info
+      run: gradlew jpackagePORTABLE --info
     #upload portables
     - name: Upload Portable (linux, ARM) 
       if: matrix.os == 'ubuntu-24.04-arm' 
@@ -63,7 +63,7 @@ jobs:
 
     - name: Build Normal
       if: contains(github.event.head_commit.message, 'BUILD:')
-      run: ./gradlew jpackage --info
+      run: gradlew jpackage --info
     # upload normal
     - name: Upload Normal (linux, ARM) 
       if: matrix.os == 'ubuntu-24.04-arm' && contains(github.event.head_commit.message, 'BUILD:')
