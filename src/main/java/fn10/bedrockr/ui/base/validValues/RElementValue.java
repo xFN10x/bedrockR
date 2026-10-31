@@ -12,6 +12,7 @@ import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.CantEditAfter;
 import fn10.bedrockr.utils.RAnnotation.FieldDetails;
 import fn10.bedrockr.utils.RAnnotation.HelpMessage;
+import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.Theme;
 import jakarta.annotation.Nonnull;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.IntFunction;
 
 
 /**
@@ -462,10 +464,9 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
      * @param input The array of strings, if the first element matches a subsitution, well the whole array is overwritten.
      * @return The input if nothing matched.
      */
-    public String[] substituteArray(String[] input) {
+    public String[] substituteArray(String... input) {
         return switch (input[0]) {
-            case "_VANILLABIOMES" -> SourceBiomeElement.getVanillaBiomeNames();
-            case "_PREFIXEDVANILLABIOMES" -> SourceBiomeElement.getPrefixedVanillaBiomeNames();
+            case "_VANILLABIOMES" -> RFileOperations.getCurrentNetHandler().getVanillaBiomes().stream().map(info->info.name).toArray(String[]::new);
             case "_THEMENAMES" -> Theme.getNames();
             default -> input;
         };

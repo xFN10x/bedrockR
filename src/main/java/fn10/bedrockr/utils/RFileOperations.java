@@ -9,8 +9,8 @@ import fn10.bedrockr.addons.element.elementSources.*;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
 import fn10.bedrockr.addons.element.interfaces.SourcelessElementFile;
-import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
+import fn10.bedrockr.utils.net.NetworkHandler;
 import fn10.bedrockr.utils.typeAdapters.ClassSerializer;
 import fn10.bedrockr.utils.typeAdapters.PathSerializer;
 import fn10.bedrockr.utils.typeAdapters.StrictMapSerializer;
@@ -48,6 +48,7 @@ public class RFileOperations {
     private static File BASE_DIRECTORY = new File(BASE_PATH);
     private static WorkspaceFile CURRENT_WORKSPACE = null;
     private static ImageHandler<?> CURRENT_IMG_HANDLER;
+    private static NetworkHandler CURRENT_NET_HANDLER;
     public static final Map<String, Path> MC_SYNC_OPTIONS = Map.of(
             "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"), "Minecraft Bedrock", "Users", "Shared", "games", "com.mojang"),
             "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local", "share", "mcpelauncher", "games", "com.mojang")
@@ -57,20 +58,18 @@ public class RFileOperations {
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
     // element 0 must be latest
     public final static String[] PICKABLE_VERSIONS = {
-            "1.26.40",
-            "1.26.30",
+            "1.26.51",
+            "1.26.45",
     };
 
-    public static void init(ImageHandler<?> imgHandler) {
+    public static void init(ImageHandler<?> imgHandler, NetworkHandler netHandler) {
         SettingsFile settings = SettingsFile.load();
         COMMOJANG = settings.comMojangPath;
-        try {
-            ItemInfo.downloadVanillaItems();
-            ItemInfo.downloadVanillaBlocks();
-        } catch (Exception e) {
-            RLogUtils.exception("Failed to download items and/or blocks!", e);
-        }
+        
+        netHandler.setup();
+        netHandler.downloadVanillaInfo(PICKABLE_VERSIONS[0]);
         CURRENT_IMG_HANDLER = imgHandler;
+        CURRENT_NET_HANDLER = netHandler;
     }
 
     /// taken from [this](https://stackoverflow.com/a/31976060)
@@ -395,7 +394,11 @@ public class RFileOperations {
         // fn10.bedrockr.Launcher.LOG.warning("This file should start with the
         // file seperator, or not
         // at all! not '/'!");
-        File proposedFile = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName, ToCreate).toFile();
+        Path pathUnres = BASE_DIRECTORY.toPath().resolve("workspace").resolve(WorkspaceName);
+        for (String folder : ToCreate) {
+            pathUnres = pathUnres.resolve(folder);
+        }
+        File proposedFile = pathUnres.toFile();
         if (proposedFile.exists() || strict) {
             return proposedFile;
         } else
@@ -419,8 +422,8 @@ public class RFileOperations {
     public static void mcSync() {
         SettingsFile settings = SettingsFile.load();
         try {
-            Path bpPath = getBaseDirectory().toPath().resolve("build", "BP");
-            Path rpPath = getBaseDirectory().toPath().resolve("build", "RP");
+            Path bpPath = getBaseDirectory().toPath().resolve("build").resolve("BP");
+            Path rpPath = getBaseDirectory().toPath().resolve("build").resolve("RP");
             if (!COMMOJANG.toFile().exists()) {
                 return;
             }
@@ -505,7 +508,7 @@ public class RFileOperations {
 
         Path base = getBaseDirectory().toPath();
 
-        File wsFolder = base.resolve("workspace", wpf.WorkspaceName).toFile();
+        File wsFolder = base.resolve("workspace").resolve(wpf.WorkspaceName).toFile();
 
         if (wsFolder.exists()) { // throw if folder is already here
             throw new IOException("Folder " + wsFolder.getAbsolutePath() + " already exists.");
@@ -581,7 +584,7 @@ public class RFileOperations {
                 ElementSource<?> source = getElementSourceFromFileExtension(
                         file.getName().substring(file.getName().lastIndexOf('.') + 1));
                 if (source == null) continue;
-                String jsonString = Files.readString(file.toPath());
+                String jsonString = RFileOperations.readStr(file.toPath());
                 JsonObject element = JsonParser.parseString(jsonString).getAsJsonObject();
                 SourcelessElementFile sef = SourcelessElementFile.upToDate(workspace, element, source.getSerilizedClass());
                 if (sef instanceof ElementFile<?> ef) {
@@ -623,6 +626,15 @@ public class RFileOperations {
         write(to, data.getBytes());
     }
 
+    public static byte[] read(Path f) throws IOException {
+        return Files.readAllBytes(f);
+    }
+
+    public static String readStr(Path f) throws IOException {
+        //don't use Files.readString because android.
+        return new String(read(f));
+    }
+
     public static void copyRes(String res, Path destFolder) throws IOException {
         String fileName = res.substring(res.lastIndexOf('/') + 1);
         RFileOperations.write(destFolder.resolve(fileName), RFileOperations.readAllOfResource(res));
@@ -643,6 +655,9 @@ public class RFileOperations {
 
     public static ImageHandler<?> getCurrentImgHandler() {
         return CURRENT_IMG_HANDLER;
+    }
+    public static NetworkHandler getCurrentNetHandler() {
+        return CURRENT_NET_HANDLER;
     }
 
     public record ElementMade<T extends ElementFile<?>>(Date timeMade, @Nullable T elementData, int bedrockRVersion,

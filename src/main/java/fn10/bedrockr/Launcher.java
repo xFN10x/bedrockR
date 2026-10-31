@@ -2,19 +2,16 @@ package fn10.bedrockr;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.JsonObject;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
-import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.SettingsFile;
 import fn10.bedrockr.utils.Theme;
-import fn10.bedrockr.utils.web.Format1Latest;
+import fn10.bedrockr.utils.net.JavaHTTPNetworkHandler;
 import fn10.bedrockr.utils.logging.RLogFilter;
 import fn10.bedrockr.utils.logging.RLogFormatter;
 import fn10.bedrockr.utils.logging.RLogHandler;
@@ -22,6 +19,8 @@ import fn10.bedrockr.ui.RLaunchPage;
 import fn10.bedrockr.ui.RSplashScreen;
 import fn10.bedrockr.ui.RWorkspace;
 import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.utils.net.VanillaAtlases;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,16 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -53,7 +44,7 @@ public class Launcher {
 
     public static Dimension LAUNCH_WINDOW_SIZE = new Dimension(600, 400);
     private static boolean setuplogging = false;
-    public static HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
+    public final static JavaHTTPNetworkHandler NETWORK_HANDLER = new JavaHTTPNetworkHandler();
 
     public static void main(String[] args) {
         RFileOperations.LOG.info("Initalizing bedrockR...");
@@ -64,9 +55,9 @@ public class Launcher {
             RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
         }
         RSplashScreen loading = new RSplashScreen();
-        loading.ProgressText.setText("Initalizing...");
-        RFileOperations.init(ImageUtilities.ImgHandler);
-        
+        loading.ProgressText.setText("Initializing...");
+        RFileOperations.init(ImageUtilities.ImgHandler, NETWORK_HANDLER);
+
         loading.ProgressText.setText("Loading settings...");
 
         SettingsFile settings = SettingsFile
@@ -140,31 +131,7 @@ public class Launcher {
                     e);
         }
 
-        // try to see if this version is out of date
-        loading.ProgressText.setText("Checking for updates...");
-        try {
-            HttpRequest req = HttpRequest.newBuilder()
-                    .uri(new URI("https://raw.githubusercontent.com/xFN10x/bedrockR/refs/heads/master/latest.json"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-
-            HttpResponse<String> response = client.send(req, BodyHandlers.ofString());
-
-            Format1Latest serilized = new Gson().fromJson(response.body(), Format1Latest.class);
-
-            if (serilized.LatestVersion > RFileOperations.NUM_VERSION && serilized.ShouldUse) {
-                int op = JOptionPane.showConfirmDialog(loading, serilized.Message,
-                        "Version out of date (" + serilized.CurrentStringVersion + " > " + RFileOperations.VERSION
-                                + ")",
-                        JOptionPane.YES_NO_OPTION);
-                if (op == JOptionPane.YES_OPTION) {
-                    Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev/download"));
-                    System.exit(0);
-                }
-            }
-
-        } catch (Exception e) {
-            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
-        }
+        
 
         /*loading.ProgressText.setText("Setting up Blockly...");
         try {
@@ -222,24 +189,39 @@ public class Launcher {
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
         }*/
-
-        loading.ProgressText.setText("Downloading Block textures...");
-        try {
-            HttpRequest latestMCDataVerReq = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest"))
-                    .version(HttpClient.Version.HTTP_2).GET().build();
-            HttpResponse<String> response = client.send(latestMCDataVerReq, BodyHandlers.ofString());
-            if (response.statusCode() != 200) {
-               throw new IOException("Failed to get PrismarineJS release.");
+        if (NETWORK_HANDLER.isOnline()) {        // try to see if this version is out of date
+            // Check for updates
+            loading.ProgressText.setText("Checking for updates...");
+            try {
+                Triple<Boolean, String, String> upToDateInfo = NETWORK_HANDLER.upToDate();
+                if (!upToDateInfo.getLeft()) {
+                    int op = JOptionPane.showConfirmDialog(loading, upToDateInfo.getMiddle(),
+                            "Version out of date (" + upToDateInfo.getRight() + " > " + RFileOperations.VERSION
+                                    + ")",
+                            JOptionPane.YES_NO_OPTION);
+                    if (op == JOptionPane.YES_OPTION) {
+                        Desktop.getDesktop().browse(new URI("https://bedrockr.xplate.dev/download"));
+                        System.exit(0);
+                    }
+                }
+            } catch (Exception e) {
+                RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
-            if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
-                    || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != ((Double) new Gson()
-                    .fromJson(response.body(), LinkedTreeMap.class).get("id")).longValue()) {
-                CountDownLatch latch = BlockTextures.downloadAllBlockTextures(loading);
-                latch.await();
+            // region Download Block Textures
+            loading.ProgressText.setText("Downloading Block textures...");
+            try {
+                JsonObject latestJson = NETWORK_HANDLER.getJSON("https://api.github.com/repos/PrismarineJS/minecraft-data/releases/latest");
+                if (latestJson == null) {
+                    throw new IOException("Failed to get PrismarineJS release.");
+                }
+                if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
+                        || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
+                    VanillaAtlases.downloadAtlas("block");
+                }
+            } catch (Exception e) {
+                ErrorShower.exception(loading, "Block texture download error.", e);
             }
-        } catch (IOException | InterruptedException | URISyntaxException | JsonSyntaxException e) {
-            ErrorShower.exception(loading, "Block texture download error.", e);
+            // endregion
         }
 
         loading.ProgressText.setText("Checking if opening workspace...");
@@ -248,7 +230,7 @@ public class Launcher {
             if ((file = Paths.get(args[0]).toFile()).exists()) {
                 if (file.getPath().endsWith(RFileOperations.WPFFILENAME)) {
                     try {
-                        RWorkspace.openWorkspace(loading, ElementSource.getSourceFromJSON(Files.readString(file.toPath()), SourceWorkspaceFile.class, WorkspaceFile.class));
+                        RWorkspace.openWorkspace(loading, ElementSource.getSourceFromJSON(RFileOperations.readStr(file.toPath()), SourceWorkspaceFile.class, WorkspaceFile.class));
                         return;
                     } catch (IOException e) {
                         RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
@@ -288,8 +270,8 @@ public class Launcher {
         settings.save();
 
         if (RFileOperations.isPrereleaseVersion())
-            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/><br/> And if you can, please report bugs on Github. <i>(a3.0PRE REV3)</i></html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(launch, "<html>This version of bedrockR is a <b>pre-release</b> version, so expect issues. <br/><br/> And if you can, please report bugs on Github. <i>(a3.0PRE REV2)</i></html>", "Pre-release version warning", JOptionPane.WARNING_MESSAGE);
     }
 
-    
+
 }

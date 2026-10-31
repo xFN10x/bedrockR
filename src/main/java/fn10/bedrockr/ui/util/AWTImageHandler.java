@@ -2,18 +2,16 @@ package fn10.bedrockr.ui.util;
 
 import fn10.bedrockr.addons.element.supporting.block.BlockTexture;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
-import fn10.bedrockr.ui.rendering.RenderHandler;
 import fn10.bedrockr.utils.ImageHandler;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class DefaultImageHandler extends ImageHandler<BufferedImage> {
+public class AWTImageHandler extends ImageHandler<BufferedImage> {
     @Override
     public BufferedImage getImageFromBytes(byte[] data) throws IOException {
         return ImageIO.read(new ByteArrayInputStream(data));
@@ -36,8 +34,4 @@ public class DefaultImageHandler extends ImageHandler<BufferedImage> {
         return ImageUtilities.toBuffered(ImageUtilities.ResizeImage(img,w,h, Image.SCALE_AREA_AVERAGING));
     }
 
-    @Override
-    public BufferedImage renderBlock(String name, BlockTexture btex, WorkspaceResources res) throws IOException {
-        return RenderHandler.renderBlock(name, btex, res);
-    }
 }

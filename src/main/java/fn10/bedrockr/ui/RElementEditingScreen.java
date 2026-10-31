@@ -320,7 +320,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                         serialized.ShapelessIngredients.forEach(item -> {
                             try {
                                 grid.setButtonToItem(serialized.ShapelessIngredients.indexOf(item),
-                                        ItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                        ItemInfo.getById(item.item, Workspace, ImageUtilities.ImgHandler));
                             } catch (WrongItemValueTypeException | NameNotFoundException | IncorrectWorkspaceException |
                                      IOException | WorkspaceResources.WorkspaceUnsupportedException e1) {
                                 RFileOperations.LOG.log(Level.SEVERE,
@@ -333,7 +333,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
 
                 RItemValue outputSlot = new RItemValue("Recipe Output", Workspace, RItemValue.TYPE_SINGLE, true);
                 if (serialized.Result != null) {
-                    outputSlot.setButtonToItem(0, ItemInfo.getItemById(serialized.Result.item, Workspace, ImageUtilities.ImgHandler));
+                    outputSlot.setButtonToItem(0, ItemInfo.getById(serialized.Result.item, Workspace, ImageUtilities.ImgHandler));
                 }
 
                 RItemValue unlockItems = new RItemValue("Unlock Items", Workspace, RItemValue.TYPE_LIST, false);
@@ -542,7 +542,7 @@ public class RElementEditingScreen extends RDialog implements ActionListener {
                             Serilized.ShapelessIngredients.forEach(item -> {
                                 try {
                                     grid.setButtonToItem(Serilized.ShapelessIngredients.indexOf(item),
-                                            ItemInfo.getItemById(item.item, Workspace, ImageUtilities.ImgHandler));
+                                            ItemInfo.getById(item.item, Workspace, ImageUtilities.ImgHandler));
                                 } catch (WrongItemValueTypeException | NameNotFoundException |
                                          IncorrectWorkspaceException | IOException |
                                          WorkspaceResources.WorkspaceUnsupportedException e1) {

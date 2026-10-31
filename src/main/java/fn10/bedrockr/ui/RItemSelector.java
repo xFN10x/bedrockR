@@ -4,13 +4,13 @@ import fn10.bedrockr.addons.element.elementFiles.BlockFile;
 import fn10.bedrockr.addons.element.interfaces.ElementFile;
 import fn10.bedrockr.addons.element.interfaces.ItemLikeElement;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
-import fn10.bedrockr.addons.element.supporting.item.ItemJsonEntry;
 import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.ui.base.RDialog;
 import fn10.bedrockr.ui.components.RItemButton;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.RFileOperations;
 import fn10.bedrockr.utils.RLogUtils;
+import fn10.bedrockr.utils.net.PrismarineItemInfo;
 import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
@@ -65,13 +65,13 @@ public class RItemSelector extends RDialog implements ActionListener {
             }
         }
         if (!hasBit(filter, FILTER_WP_ONLY_BIT))
-            for (ItemJsonEntry item : ItemInfo.vanillaItems) {
+            for (PrismarineItemInfo item : RFileOperations.getCurrentNetHandler().getVanillaItems()) {
                 try {
                     if (
                             item.displayName.toLowerCase().contains(searchTerm)
                                     || item.name.toLowerCase().contains(searchTerm)
                     )
-                        InnerPanel.add(new RItemButton(item.toReturnItemInfo(), this, this));
+                        InnerPanel.add(new RItemButton(item.toItemInfo(), this, this));
 
                 } catch (Exception e1) {
                     RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);

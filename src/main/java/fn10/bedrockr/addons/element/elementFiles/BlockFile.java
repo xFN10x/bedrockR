@@ -175,8 +175,7 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     }
 
     public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
-        if (Textures == null) return new byte[0];
-        return handler.getBytesFromImage(handler.renderBlock(ID, Textures, res));
+        throw new UnsupportedOperationException("use block atlas");
     }
 
     @Override

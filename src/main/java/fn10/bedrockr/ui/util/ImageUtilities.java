@@ -14,7 +14,7 @@ import java.net.URL;
 @SuppressWarnings("unused")
 public class ImageUtilities {
 
-    public final static DefaultImageHandler ImgHandler = new DefaultImageHandler();
+    public final static AWTImageHandler ImgHandler = new AWTImageHandler();
 
     public static ScaledImageIcon toScaled(Image img) {
         return new ScaledImageIcon(new ImageIcon(img));

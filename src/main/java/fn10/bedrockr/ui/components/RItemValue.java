@@ -313,7 +313,7 @@ public class RItemValue extends JPanel implements ValidatableValue {
                     }
                     ItemInfo item;
                     try {
-                        item = ItemInfo.getItemById(
+                        item = ItemInfo.getById(
                                 value.key.get(itemString), workspace, ImageUtilities.ImgHandler);
                     } catch (IncorrectWorkspaceException | NameNotFoundException | IOException |
                              WorkspaceResources.WorkspaceUnsupportedException e) {
