@@ -4,7 +4,6 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RAddon;
-import fn10.bedrockr.ui.rendering.BlockTextures;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
 import fn10.bedrockr.ui.util.WrapLayout;
@@ -107,15 +106,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         helpMenu.add(ftButton);
         helpMenu.add(sdButton);
         //helpMenu.add(somButton);
-        //helpMenu.add(siegeButton);
-
-        fileMenu.add("Render Blocks").addActionListener(_ -> {
-            try {
-                BlockTextures.downloadAllBlockTextures(this);
-            } catch (IOException | URISyntaxException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        //helpMenu.add(siegeButton)
 
         fileMenu.add("Settings").addActionListener(_ -> new RSettingsScreen(this).setVisible(true));
         fileMenu.add("Restart").addActionListener(_ -> {

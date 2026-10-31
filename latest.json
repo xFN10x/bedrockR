@@ -3,5 +3,6 @@
     "format": 1,
     "currentVersion": 9,
     "message": "<html>Your version of bedrockR is out of date. <br> Latest version: <b>a2.1</b><br><br> Download latest version?</html>",
+    //THIS ELEMENT MUST BE IN ALL VERSIONS
     "currentStringVersion": "a2.1"
 }

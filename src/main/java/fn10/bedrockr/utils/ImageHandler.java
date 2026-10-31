@@ -18,6 +18,4 @@ public abstract class ImageHandler<T> {
     public abstract T resizeImage(int w, int h, T img);
 
     public abstract T resizeImageSharp(int w, int h, T img);
-
-    public abstract T renderBlock(String name, BlockTexture btex, WorkspaceResources res) throws IOException;
 }

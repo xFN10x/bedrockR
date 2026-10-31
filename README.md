@@ -12,7 +12,7 @@
 </p>
 <p align="center">
 A Minecraft Bedrock GUI-Based Addon maker, for Windows, Linux, and Mobile.<br/><br/>
-<a href="https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA">bedrockR YouTube Channel</a> | <a href="https://bedrockr.xplate.dev">bedrockR Website</a>
+<a href="https://www.youtube.com/channel/UCnEJG4HgBw91uNFuaZ2axyA">bedrockR YouTube Channel</a> | <a href="https://bedrockr.xplate.dev">bedrockR Website</a> | <b><a href="https://discord.gg/R2mrKxyGGB">*New* bedrockR Discord</a></b> | <a href="https://github.com/xFN10x/bedrockR-Mobile">bedrockR Mobile</a>
 </p>
 
 ## Why?
@@ -26,6 +26,9 @@ how it doesn't have the best Bedrock modding in it.
 
 **(A bedrockR tutorial is [on the wiki](https://github.com/xFN10x/bedrockR/wiki))**
 
+> [!TIP]
+> **Hey! I made a bedrockR discord server! Join [here](https://discord.gg/R2mrKxyGGB)**
+
 ## Installing
 
 Since bedrockR is made in Java, it is available for any computer that can run Java 25.
@@ -34,13 +37,9 @@ If you are on Debian or Windows, you can download one of the installers, or port
 the [releases section](https://github.com/xFN10x/bedrockR/releases).
 
 Or, for an even simpler download, go to [the bedrockR Website](https://bedrockr.xplate.dev/download) to download the
-latest version
+latest version.
 
-If there are no builds included in
-
-### Using the JAR
-
-If none of these builds are for your platform, you can use the universal JAR file, which
+**If none of these builds are for your platform,** you can use the JAR file. You run the jar by opening it with your Java 25 JDK.
 
 ## Source Code
 

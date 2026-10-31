@@ -62,7 +62,7 @@ public class WorkspaceResources {
     private <T extends Resource> T loadResource(String path, Class<T> resClass) throws IOException {
         Path resFolder = getResourcesPath(wpf.WorkspaceName).resolve(path);
         Path jsonPath = resFolder.resolve("resource.json");
-        T resource = RFileOperations.gson.fromJson(Files.readString(jsonPath), resClass);
+        T resource = RFileOperations.gson.fromJson(RFileOperations.readStr(jsonPath), resClass);
         if (resource == null) {
             throw new IOException("Resource is null! Tried to read resource: " + jsonPath  + " (" + resClass.getName() + ")");
         }
@@ -108,7 +108,7 @@ public class WorkspaceResources {
     private static @NonNull HashMap<String, Class<? extends Resource>> getResourcesJson(String workspace) throws IOException {
         Path prop = getResourcesJsonPath(workspace);
         if (!Files.exists(prop)) return new HashMap<>();
-        HashMap<String, ?> map = RFileOperations.gson.fromJson(Files.readString(prop), HashMap.class);
+        HashMap<String, ?> map = RFileOperations.gson.fromJson(RFileOperations.readStr(prop), HashMap.class);
         HashMap<String, Class<? extends Resource>> actualMap = new HashMap<>();
         for (Map.Entry<String, ?> entry : map.entrySet()) {
             try {

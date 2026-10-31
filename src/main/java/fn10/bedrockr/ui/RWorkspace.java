@@ -26,6 +26,7 @@ import fn10.bedrockr.utils.RFileOperations.ElementMade;
 import fn10.bedrockr.utils.RLogUtils;
 import fn10.bedrockr.utils.SettingsFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -38,11 +39,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -617,7 +614,7 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
             new Thread(() -> {
                 if (!alreadyExists && settings.shareElementAndWorkspaceData) {
                     // this is the first time
-                    try (HttpClient client = HttpClient.newBuilder().build()) {
+                    try {
                         final T elementData = settings.shareExtraData ? element.getSerialized() : null;
                         final ElementMade<T> src = new ElementMade<>(Date.from(Instant.now()),
                                 elementData,
@@ -625,23 +622,16 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                         final String body = gson.toJson(
                                 src);
 
-                        HttpRequest req = HttpRequest.newBuilder()
-                                .uri(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"))
-                                .version(HttpClient.Version.HTTP_2)
-                                .POST(BodyPublishers.ofString(
-                                        body))
-                                .setHeader("Content-Type", "application/json")
-                                .build();
-                        RFileOperations.LOG.info("Sending POST to " + req.uri() + " with JSON data:\n" +
-                                body);
-
-                        final HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
-                        if (resp.statusCode() != 200) {
-                            RFileOperations.LOG.warning("Got not-ok status from api: " + resp.statusCode() + ": " + resp.body());
+                        Pair<Integer, String> res = RFileOperations.getCurrentNetHandler().postJSON(URI.create("https://api.xplate.dev/bedrockr/v1/elementMade"), body);
+                        RFileOperations.LOG.info("Sending POST; element made.");
+                        if (res.getLeft() != 200) {
+                            RFileOperations.LOG.warning("Got not-ok status from api: " + res.getLeft() + ": " + res.getRight());
                         }
 
                     } catch (IOException | InterruptedException e) {
                         RLogUtils.exception("Failed to send data to API.", e);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }).start();
@@ -702,13 +692,6 @@ public class RWorkspace extends RFrame implements ActionListener, ElementCreatio
                     RLoadingScreen loading = new RLoadingScreen(doingThis);
                     loading.setAlwaysOnTop(true);
                     SwingUtilities.invokeLater(() -> loading.setVisible(true));
-
-                    try {
-                        ItemInfo.downloadVanillaItems();
-                        ItemInfo.downloadVanillaBlocks();
-                    } catch (Exception e) {
-                        RLogUtils.warnException(e);
-                    }
 
                     // get items ready for use
                     SwingUtilities.invokeLater(() -> {

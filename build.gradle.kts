@@ -10,23 +10,26 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
-val strVersion = "a3.0PRE"
-val winver = "0.9.2"
+val strVersion = "a3.0PRE2"
+val winver = "0.9.3"
 
 dependencies {
     implementation("com.google.guava:guava:33.7.1-jre")
 
-    api("com.google.code.gson:gson:2.14.0")
+    api("com.google.code.gson:gson:2.15.0")
     implementation("com.formdev:flatlaf:3.7.2")
 
     implementation("commons-io:commons-io:2.22.0")
-    implementation("org.apache.commons:commons-lang3:3.20.0")
+    api("org.apache.commons:commons-lang3:3.21.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jetbrains:annotations:26.1.0")
+
+    implementation("com.github.Querz:NBT:6.1")
 }
 
 java {
