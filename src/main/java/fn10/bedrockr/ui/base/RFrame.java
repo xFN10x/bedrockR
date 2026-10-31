@@ -77,7 +77,7 @@ public class RFrame extends JFrame {
 
         websiteButton.setToolTipText("bedrockR's Website");
         ghButton.setToolTipText("bedrockR's Github Repository");
-        sdButton.setToolTipText("bedrockR's Flavourtown Page");
+        sdButton.setToolTipText("bedrockR's Stardance Page");
 
         websiteButton.addActionListener(openLink("https://bedrockr.xplate.dev"));
         ghButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR"));

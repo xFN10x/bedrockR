@@ -1,6 +1,7 @@
 package fn10.bedrockr.ui;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RAddon;
@@ -56,6 +57,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
 
     private final Desktop desk = Desktop.getDesktop();
     private final JMenuItem newaddonButton = new JMenuItem("New Addon", KeyEvent.VK_N);
+    
     private final JMenuItem siegeButton = new JMenuItem("bedrockR on Siege", KeyEvent.VK_I);
     private final JMenuItem gitButton = new JMenuItem("bedrockR on Github", KeyEvent.VK_G);
     private final JMenuItem somButton = new JMenuItem("bedrockR on Summer Of Making", KeyEvent.VK_S);
@@ -63,6 +65,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     private final JMenuItem sdButton = new JMenuItem("bedrockR on Stardance", KeyEvent.VK_D);
     private final JMenuItem helpButton = new JMenuItem("bedrockR Wiki", KeyEvent.VK_W);
     private final JMenuItem websiteButton = new JMenuItem("bedrockR Website", KeyEvent.VK_E);
+    private final JMenuItem twButton = new JMenuItem("bedrockR on Twisted", KeyEvent.VK_T);
 
     public RLaunchPage(Dimension Size) {
         super(
@@ -92,6 +95,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         somButton.addActionListener(openLink("https://summer.hackclub.com/projects/703"));
         ftButton.addActionListener(openLink("https://flavortown.hackclub.com/projects/3844"));
         sdButton.addActionListener(openLink("https://stardance.hackclub.com/projects/336"));
+        twButton.addActionListener(openLink("https://twisted.hackclub.com/dashboard/?project=156&fullscreen_win=true"));
 
         gitButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR"));
         helpButton.addActionListener(openLink("https://github.com/xFN10x/bedrockR/wiki"));
@@ -100,13 +104,20 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         newaddonButton.setActionCommand("New Addon");
         addonsMenu.add(newaddonButton);
 
-        helpMenu.add(websiteButton);
+        ScaledImageIcon icon = new ScaledImageIcon(ImageUtilities.getIcon("/ui/flag-orpheus-left.png", 80, 32));
+        Component hackclubLabel = helpMenu.add(new JLabel(icon));
+        
         helpMenu.add(helpButton);
+        helpMenu.addSeparator();
         helpMenu.add(gitButton);
-        helpMenu.add(ftButton);
+        helpMenu.add(websiteButton);
+        helpMenu.addSeparator();
+        helpMenu.add(hackclubLabel);
+        helpMenu.add(twButton);
         helpMenu.add(sdButton);
-        //helpMenu.add(somButton);
-        //helpMenu.add(siegeButton)
+        helpMenu.add(ftButton);
+        helpMenu.add(siegeButton);
+        helpMenu.add(somButton);
 
         fileMenu.add("Settings").addActionListener(_ -> new RSettingsScreen(this).setVisible(true));
         fileMenu.add("Restart").addActionListener(_ -> {

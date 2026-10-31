@@ -39,9 +39,9 @@ public class RFileOperations {
             .registerTypeHierarchyAdapter(Path.class, new PathSerializer())
             .registerTypeAdapter(Class.class, new ClassSerializer())
             .create();
-    public static final String SEM_VERSION = "0.9.2";
+    public static final String SEM_VERSION = "0.9.3";
     public static final int NUM_VERSION = 10;
-    public static final String VERSION = "a3.0PRE";
+    public static final String VERSION = "a3.0PRE2";
     private static final String USER_DIR = System.getProperty("user.home");
     public static Logger LOG = Logger.getLogger("bedrockR");
     private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
@@ -58,8 +58,8 @@ public class RFileOperations {
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/dataPaths.json
     // element 0 must be latest
     public final static String[] PICKABLE_VERSIONS = {
+            "1.26.60",
             "1.26.51",
-            "1.26.45",
     };
 
     public static void init(ImageHandler<?> imgHandler, NetworkHandler netHandler) {
