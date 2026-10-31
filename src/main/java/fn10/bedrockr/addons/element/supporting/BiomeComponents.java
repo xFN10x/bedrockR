@@ -4,6 +4,7 @@ import java.util.List;
 
 import fn10.bedrockr.addons.element.RMapElement;
 import fn10.bedrockr.addons.element.interfaces.RMapElementProvider;
+import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.StringDropdownField;
 
 /**
@@ -145,6 +146,7 @@ public class BiomeComponents implements RMapElementProvider {
                 "swamp",
                 "taiga"
         }, strict = true)
+        @RAnnotation.FieldDetails(Optional = false, displayName = "Tags")
         public List<String> tags;
     }
 

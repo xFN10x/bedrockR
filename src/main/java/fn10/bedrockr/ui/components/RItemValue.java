@@ -197,12 +197,20 @@ public class RItemValue extends JPanel implements ValidatableValue {
         }
         return building;
     }
-    
+
     public Item getItem() throws WrongItemValueTypeException {
         ArrayList<Item> items = getItems();
         if (items.isEmpty()) return null;
-        else 
+        else
             return items.getFirst();
+    }
+
+    public String getItemAsString() throws WrongItemValueTypeException {
+        ArrayList<Item> items = getItems();
+        if (items.isEmpty()) return null;
+        else if (items.getFirst() !=  null)
+            return items.getFirst().item;
+        else return null;
     }
     
     public ArrayList<Item> getItems() throws WrongItemValueTypeException {

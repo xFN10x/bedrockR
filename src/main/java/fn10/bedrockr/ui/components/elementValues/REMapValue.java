@@ -28,12 +28,14 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
     protected final JButton HashMapAdd;
     protected final HashMap<String, JPanel> addedMapValuePanels;
     protected final HashMap<String, RMapValue<?, ?>> addedMapValues;
+    protected final List<RMapElement> picked;
 
     public REMapValue(Class<V> valueType, @Nullable Field TargetField, @NonNull Class<Map<String, V>> type, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.@Nullable FieldDetails details) {
         HashMapInnerPane = new JPanel();
         addedMapValuePanels = new HashMap<>();
         addedMapValues = new HashMap<>();
         HashMapAdd = new JButton(ImageUtilities.getIcon("/addons/workspace/New.png"));
+        picked = new ArrayList<>();
         super(TargetField, type, TargetFile, WorkspaceName, details);
     }
 
@@ -52,7 +54,6 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
         // finally, get the annotation after getting the field
         final RAnnotation.MapFieldSelectables anno = getAnno(RAnnotation.MapFieldSelectables.class);
 
-        List<RMapElement> picked = new ArrayList<>();
 
         // add the button
         HashMapAdd.addActionListener(_ -> {
@@ -68,8 +69,6 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
                     toAdd.setSize(HashMapInnerPane.getWidth() - 5,
                             Double.valueOf(toAdd.getSize().getHeight()).intValue());
                     toAdd.setAlignmentX(0.5f);
-
-                    picked.add(select);
 
                     addREMV(toAdd);
 
@@ -115,15 +114,19 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
     }
     
     private void removeREMV(String key) {
+        picked.remove(addedMapValues.get(key).rMapElement);
         HashMapInnerPane.remove(addedMapValuePanels.get(key));
         addedMapValuePanels.remove(key);
         addedMapValues.remove(key);
+        HashMapInnerPane.revalidate();
+        HashMapInnerPane.repaint();
     }
 
     private void addREMV(RMapValue<?, ?> ToAdd) {
         JPanel panel = new JPanel();
         panel.add(Box.createRigidArea(new Dimension(100, 10)));
         panel.add(ToAdd);
+        picked.add(ToAdd.rMapElement);
         HashMapInnerPane.add(panel);
         addedMapValuePanels.put(ToAdd.getKey(), panel);
         addedMapValues.put(ToAdd.getKey(), ToAdd);
@@ -142,6 +145,7 @@ public class REMapValue<V> extends RElementValue<Map<String, V>, JScrollPane> {
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
+        if (!strict && !important()) return true;
         for (Map.Entry<String, RMapValue<?, ?>> entry : addedMapValues.entrySet()) {
             RMapValue<?, ?> remv = entry.getValue();
             Problem = "REMV " + remv.rMapElement.DisplayName + " isn't valid.";

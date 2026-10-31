@@ -189,6 +189,7 @@ public class REBlockTexturesValue extends RElementValue<BlockTexture, JScrollPan
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
+        if (!strict && !important()) return true;
         var log = RFileOperations.LOG;
         return switch (BlockTexturesModeDropdown.getSelectedIndex()) {
             case 0 -> {

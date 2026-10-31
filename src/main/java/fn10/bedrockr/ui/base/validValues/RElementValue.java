@@ -49,7 +49,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
     //private final static String No_Path_Chosen_Text = "(Click to set path.)";
     public final SpringLayout Lay = new SpringLayout();
-    protected final JLabel Name = new JLabel();
+    public final JLabel Name = new JLabel();
     public RHelpButton Help = new RHelpButton();
     public I Input;
     protected final JCheckBox EnableCheckbox = new JCheckBox();
@@ -105,6 +105,14 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     protected boolean problem(boolean check, String fals) {
         return problem(check, fals, "Passed!");
     }
+    
+    protected boolean important() {
+        if (Target != null) {
+            RAnnotation.VeryImportant veryImp = Target.getAnnotation(RAnnotation.VeryImportant.class);
+            return veryImp != null;
+        }
+        return false;
+    }
 
     protected static boolean are(Field field, Class<?> cls) {
         return are(field.getType(), cls);
@@ -116,20 +124,28 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
 
     public static <Y> RElementValue<Y, ?> ofClass(
             @Nonnull Class<Y> type) {
-        return ofField(null, type, null, null);
+        return ofField(null, type, null, null, null);
     }
 
     public static RElementValue<?, ?> ofField(@Nonnull Field field,
                                               @Nullable SourcelessElementFile TargetFile,
                                               @Nullable String WorkspaceName) {
-        return ofField(field, field.getType(), TargetFile, WorkspaceName);
+        return ofField(field, field.getType(), TargetFile, WorkspaceName, null);
+    }
+
+    public static <T, L, V, R extends Resource, N extends Number> RElementValue<T, ?> ofField(@Nullable Field field,
+                                                                                              @Nonnull Class<T> type,
+                                                                                              @Nullable SourcelessElementFile TargetFile,
+                                                                                              @Nullable String WorkspaceName) {
+        return ofField(field, type, TargetFile, WorkspaceName, null);
     }
 
     @SuppressWarnings("unchecked")
     public static <T, L, V, R extends Resource, N extends Number> RElementValue<T, ?> ofField(@Nullable Field field,
-                                                                            @Nonnull Class<T> type,
-                                                                            @Nullable SourcelessElementFile TargetFile,
-                                                                            @Nullable String WorkspaceName) {
+                                                                                              @Nonnull Class<T> type,
+                                                                                              @Nullable SourcelessElementFile TargetFile,
+                                                                                              @Nullable String WorkspaceName,
+                                                                                              @Nullable FieldDetails details) {
         FieldDetails anno = null;
         Type[] typeArgs = null;
         if (field != null) {
@@ -138,6 +154,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             if (genericType instanceof ParameterizedType ptype)
                 typeArgs = ptype.getActualTypeArguments();
         }
+        if (details != null) anno = details;
         RElementValue<T, ?> returning = null;
 
         RAnnotation.NumberRange range = new RAnnotation.NumberRange() {
@@ -197,15 +214,15 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
         if (returning == null)
             returning = empty(field == null ? "" : field.getName(), type);
 
-        if (field != null)
-            try {
-                Object v = field.get(TargetFile);
-                if (v != null && returning.getType().isAssignableFrom(v.getClass())) {
-                    returning.setValue(returning.getType().cast(v));
-                }
-            } catch (IllegalAccessException e) {
-                RLogUtils.exception("This field doesn't belong to the target file.", e);
-            }
+//        if (field != null && TargetFile != null)
+//            try {
+//                Object v = field.get(TargetFile);
+//                if (v != null && returning.getType().isAssignableFrom(v.getClass())) {
+//                    returning.setValue(returning.getType().cast(v));
+//                }
+//            } catch (IllegalAccessException e) {
+//                RLogUtils.exception("This field doesn't belong to the target file.", e);
+//            }
 
         return returning;
     }
@@ -359,6 +376,7 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
             } else {
                 Help.setMessage("No help provided.");
             }
+            if (TargetFile != null)
             try {
                 setValue((T) Target.get(TargetFile));
             } catch (Exception e) {
@@ -389,11 +407,11 @@ public abstract class RElementValue<T, I extends JComponent> extends JPanel impl
     }
 
     public T getValue(boolean shouldLog) {
-        if (valid(true, shouldLog)) {
+        //if (valid(true, shouldLog)) {
             return getValueInternal(shouldLog);
-        } else {
-            return null;
-        }
+        //} else {
+        //    return null;
+        //}
     }
 
     protected abstract T getValueInternal(boolean shouldLog);

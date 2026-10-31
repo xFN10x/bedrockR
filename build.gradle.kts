@@ -14,7 +14,7 @@ repositories {
 }
 
 val strVersion = "a3.0PRE2"
-val winver = "0.9.2"
+val winver = "0.9.3"
 
 dependencies {
     implementation("com.google.guava:guava:33.7.1-jre")
@@ -55,7 +55,10 @@ tasks.jpackage {
     mainJar.set("bedrockR-$strVersion.jar")
     mainClass.set("fn10.bedrockr.Launcher")
 
-    fileAssociations = files(fileTree("fileAsso"))
+    fileAssociations = project.files(
+        "wpf.properties",
+        "bp1.properties"
+    )
 
     windows {
         type.set(org.panteleyev.jpackage.ImageType.MSI)
