@@ -2,114 +2,116 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "*" ]
   pull_request:
-    branches: [ "master" ]
-    
+    branches: [ "*" ]
+
 env:
-  vector_ver: '0.9.1'
-  string_ver: 'a3.0PRE'
+  vector_ver: '0.9.3'
+  string_ver: 'a3.0PRE2'
 
 jobs:
   build:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,	ubuntu-24.04-arm]
+        os: [ ubuntu-latest, windows-latest,    ubuntu-24.04-arm ]
     
     permissions:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 25
-      uses: actions/setup-java@v4
-      with:
-        java-version: '25'
-        distribution: 'microsoft'
+      - uses: actions/checkout@v7
 
-    - name: Change wrapper permissions
-      run: chmod +x ./gradlew
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-
-    - name: Build project
-      run: ./gradlew build --info
-
-    - name: Build Portable
-      if: contains(github.event.head_commit.message, 'BUILD:')
-      run: ./gradlew jpackagePORTABLE --info
-    #upload portables
-    - name: Upload Portable (linux, ARM) 
-      if: matrix.os == 'ubuntu-24.04-arm' 
-      uses: actions/upload-artifact@v4
-      with:
-        name: bedrockR-${{env.string_ver}}-linux-arm64-portable
-        path: build/builtDist
-
-    - name: Upload Portable (linux) 
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: bedrockR-${{env.string_ver}}-linux-amd64-portable
-        path: build/builtDist
-
-    - name: Upload Portable (windows) 
-      if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: bedrockR-${{env.string_ver}}-windows-x64-portable
-        path: build/builtDist
-
-    - name: Build Normal
-      if: contains(github.event.head_commit.message, 'BUILD:')
-      run: ./gradlew jpackage --info
-    # upload normal
-    - name: Upload Normal (linux, ARM) 
-      if: matrix.os == 'ubuntu-24.04-arm' && contains(github.event.head_commit.message, 'BUILD:')
-      uses: actions/upload-artifact@v4
-      with:
-        name: bedrockR-${{env.string_ver}}-linux-arm64.deb
-        path: build/builtDist/bedrockr_${{env.vector_ver}}_arm64.deb
-
-    - name: Upload Normal (linux) 
-      if: matrix.os == 'ubuntu-latest' && contains(github.event.head_commit.message, 'BUILD:')
-      uses: actions/upload-artifact@v4
-      with:
-        name: bedrockR-${{env.string_ver}}-linux-amd64.deb
-        path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
-
-    - name: Upload Normal (windows) 
-      if: matrix.os == 'windows-latest' && contains(github.event.head_commit.message, 'BUILD:')
-      uses: actions/upload-artifact@v4
-      with:
-        name: bedrockR-${{env.string_ver}}-windows-x64.msi
-        path: build/builtDist/bedrockR-${{env.vector_ver}}.msi
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
 
 
-    - uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
-      with:
-        if-no-files-found: error
-        name: bedrockR-${{env.string_ver}}.jar
-        path: build/builtJars/bedrockR-${{env.string_ver}}.jar
-      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build project
+        run: ./gradlew build --info
+
+      - name: Build Portable
+        if: contains(github.event.head_commit.message, 'BUILD:')
+        run: ./gradlew jpackagePORTABLE --info
+      #upload portables
+      - name: Upload Portable (linux, ARM)
+        if: matrix.os == 'ubuntu-24.04-arm'
+        uses: actions/upload-artifact@v7
+        with:
+          name: bedrockR-${{env.string_ver}}-linux-arm64-portable
+          path: build/builtDist
+
+      - name: Upload Portable (linux)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: bedrockR-${{env.string_ver}}-linux-amd64-portable
+          path: build/builtDist
+
+      - name: Upload Portable (windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: bedrockR-${{env.string_ver}}-windows-x64-portable
+          path: build/builtDist
+
+      - name: Build Normal
+        if: contains(github.event.head_commit.message, 'BUILD:')
+        run: ./gradlew jpackage --info
+      # upload normal
+      - name: Upload Normal (linux, ARM)
+        if: matrix.os == 'ubuntu-24.04-arm' && contains(github.event.head_commit.message, 'BUILD:')
+        uses: actions/upload-artifact@v7
+        with:
+          name: bedrockR-${{env.string_ver}}-linux-arm64.deb
+          path: build/builtDist/bedrockr_${{env.vector_ver}}_arm64.deb
+
+      - name: Upload Normal (linux)
+        if: matrix.os == 'ubuntu-latest' && contains(github.event.head_commit.message, 'BUILD:')
+        uses: actions/upload-artifact@v7
+        with:
+          name: bedrockR-${{env.string_ver}}-linux-amd64.deb
+          path: build/builtDist/bedrockr_${{env.vector_ver}}_amd64.deb
+
+      - name: Upload Normal (windows)
+        if: matrix.os == 'windows-latest' && contains(github.event.head_commit.message, 'BUILD:')
+        uses: actions/upload-artifact@v7
+        with:
+          name: bedrockR-${{env.string_ver}}-windows-x64.msi
+          path: build/builtDist/bedrockR-${{env.vector_ver}}.msi
 
 
-  dependency-submission: 
-
+      - uses: actions/upload-artifact@v7
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          if-no-files-found: error
+          name: bedrockR-${{env.string_ver}}.jar
+          path: build/builtJars/bedrockR-${{env.string_ver}}.jar
+  
+  
+  
+  dependency-submission:
+    
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 25
-      uses: actions/setup-java@v4
-      with:
-        java-version: '25'
-        distribution: 'microsoft'
+      - uses: actions/checkout@v7
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
 
-    - name: Generate and submit dependency graph
-      uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v6

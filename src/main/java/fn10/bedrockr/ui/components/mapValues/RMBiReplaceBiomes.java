@@ -6,19 +6,20 @@ import fn10.bedrockr.ui.base.validValues.RElementValue;
 import fn10.bedrockr.ui.base.validValues.RMapValue;
 import fn10.bedrockr.ui.components.elementValues.REListValue;
 import fn10.bedrockr.utils.RAnnotation;
+import fn10.bedrockr.utils.RLogUtils;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
 
+//TODO: fix ui layout
 public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, JPanel> {
-    private JPanel replacementPercentPanel;
     private JSpinner replacementVal;
-    private JPanel noisePanel;
     private JSpinner noiseVal;
-    private  REListValue<String> targetsVal = null;
+    private REListValue<String> targetsVal;
 
     public RMBiReplaceBiomes(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
         super(Ancestor, RME, onRemove);
@@ -27,13 +28,13 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
 
     @Override
     protected @NonNull JPanel createInput() {
-        replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel replacementPercentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         replacementVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
-        noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel noisePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         noiseVal = new JSpinner(new SpinnerNumberModel(0.25f, 0f, 1f, 0.01f));
         
         var input = new JPanel();
-        input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
+        //input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
 
         replacementPercentPanel.add(new JLabel("Replacement %"));
         replacementPercentPanel.add(replacementVal);
@@ -43,8 +44,13 @@ public class RMBiReplaceBiomes extends RMapValue<BiomeComponents.ReplaceBiomes, 
         noisePanel.add(noiseVal);
         input.add(noisePanel);
         try {
-            targetsVal = new REListValue<>(null, (Class<List<String>>)(Class<?>)List.class, String.class, null,null,BiomeComponents.ReplaceBiomes.Replacement.class.getField("targets").getAnnotation(RAnnotation.FieldDetails.class));
+            Field field = BiomeComponents.ReplaceBiomes.Replacement.class.getField("targets");
+            targetsVal = new REListValue<>(field, (Class<List<String>>)(Class<?>)List.class, String.class, null,null, field.getAnnotation(RAnnotation.FieldDetails.class));
+            targetsVal.setPreferredSize(new Dimension(400, 150));
+            targetsVal.Name.setText("Targets");
+            
         } catch (NoSuchFieldException e) {
+            RLogUtils.exception(e);
             throw new RuntimeException(e);
         }
 

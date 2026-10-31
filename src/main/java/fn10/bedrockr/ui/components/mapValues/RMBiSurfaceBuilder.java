@@ -22,7 +22,7 @@ public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder
     private RItemValue foundationMaterialVal;
     private RItemValue midMaterialVal;
 
-    public RMBiSurfaceBuilder(Window Ancestor, RMapElement RME, Consumer<RMapValue<?,?>> onRemove) {
+    public RMBiSurfaceBuilder(Window Ancestor, RMapElement RME, Consumer<RMapValue<?, ?>> onRemove) {
         super(Ancestor, RME, onRemove);
         Size.setSize(400, 500);
     }
@@ -30,22 +30,24 @@ public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder
     @Override
     protected @NonNull JPanel createInput() {
         JPanel surfaceMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        surfaceMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                RItemValue.TYPE_SINGLE_BLOCK);
         JPanel seaFloorDepthPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        seaDepthVal = new JSpinner(new SpinnerNumberModel(1, 0, 127, 1));
         JPanel seaMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        seaMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                RItemValue.TYPE_SINGLE);
         JPanel seaFloorMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        seaFloorMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                RItemValue.TYPE_SINGLE);
         JPanel foundationMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        foundationMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                RItemValue.TYPE_SINGLE_BLOCK);
         JPanel midMaterialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        seaDepthVal = new JSpinner(new SpinnerNumberModel(1, 0, 127, 1));
+
+        surfaceMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                RItemValue.TYPE_SINGLE_BLOCK, true);
+        seaMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                RItemValue.TYPE_SINGLE, true);
+        seaFloorMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                RItemValue.TYPE_SINGLE, true);
+        foundationMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
+                RItemValue.TYPE_SINGLE_BLOCK, true);
         midMaterialVal = new RItemValue(RFileOperations.getCurrentWorkspace().WorkspaceName,
-                RItemValue.TYPE_SINGLE_BLOCK);
+                RItemValue.TYPE_SINGLE_BLOCK, true);
 
         var input = new JPanel();
         input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
@@ -86,16 +88,16 @@ public class RMBiSurfaceBuilder extends RMapValue<BiomeComponents.SurfaceBuilder
 
             builder.sea_floor_depth = ((Number) seaDepthVal.getValue())
                     .intValue();
-            builder.mid_material = midMaterialVal.getItem().item;
+            builder.mid_material = midMaterialVal.getItemAsString();
 
             builder.foundation_material = foundationMaterialVal
-                    .getItem().item;
+                    .getItemAsString();
 
-            builder.sea_material = seaMaterialVal.getItem().item;
+            builder.sea_material = seaMaterialVal.getItemAsString();
 
-            builder.sea_floor_material = seaFloorMaterialVal.getItem().item;
+            builder.sea_floor_material = seaFloorMaterialVal.getItemAsString();
 
-            builder.top_material = surfaceMaterialVal.getItem().item;
+            builder.top_material = surfaceMaterialVal.getItemAsString();
 
             val.builder = builder;
             return val;

@@ -37,6 +37,7 @@ public abstract class RENumberScrollValue<N extends Number> extends RElementValu
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
+        if (!strict && !important()) return true;
         N v = getValueInternal(false);
         return problem(v.floatValue() <= max.floatValue() && v.floatValue() >= min.floatValue(), "Number is out of range: " + min + " to " + max);
     }

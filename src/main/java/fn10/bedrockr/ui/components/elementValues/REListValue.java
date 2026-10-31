@@ -15,14 +15,18 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
-    protected JPanel InnerPane = new JPanel();
-    protected JButton AddButton = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
+    protected JPanel InnerPane;
+    protected JButton AddButton;
     private final Class<L> listType;
+    private final ArrayList<RElementValue<L, ?>> innerList = new ArrayList<>();
 
     public REListValue(@Nullable Field TargetField, Class<List<L>> type, @Nonnull Class<L> listType, @Nullable SourcelessElementFile TargetFile, @Nullable String WorkspaceName, RAnnotation.FieldDetails details) {
+        InnerPane = new JPanel();
+        AddButton = new JButton(ImageUtilities.toScaled(RFileOperations.readAllOfResource("/addons/workspace/New.png")));
         super(TargetField, type, TargetFile, WorkspaceName, details);
         this.listType = listType;
     }
@@ -34,7 +38,7 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
          * list view.
          */
         JScrollPane input = new JScrollPane(InnerPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         input.getVerticalScrollBar().setUnitIncrement(18);
 
         /*
@@ -67,8 +71,8 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
 //                        newInput.setSelectedIndex(0);
 //                    }
 //                }
-
-                addInnerValue(RElementValue.ofClass(listType));
+                RElementValue<L, ?> toAad = RElementValue.ofField(Target, listType, TargetFile, WorkspaceName, null);
+                addInnerValue(toAad);
 
             } catch (Exception e1) {
                 RLogUtils.exception("Exception thrown",
@@ -83,8 +87,11 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
         return input;
     }
 
-    private void addInnerValue(RElementValue<?, ?> toAdd) {
+    private void addInnerValue(RElementValue<L, ?> toAdd) {
         JButton removeButton = new JButton("-");
+        innerList.add(toAdd);
+        toAdd.Name.setText("");
+        //toAdd.setMaximumSize(new Dimension(getSize().width - 20,toAdd.getMaximumSize().height));
 
         toAdd.Lay.putConstraint(SpringLayout.VERTICAL_CENTER, removeButton, 0,
                 SpringLayout.VERTICAL_CENTER, toAdd);
@@ -93,6 +100,7 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
         toAdd.add(removeButton);
         removeButton.addActionListener(_ -> {
             InnerPane.remove(toAdd);
+            innerList.remove(toAdd);
             InnerPane.repaint();
             InnerPane.revalidate();
         });
@@ -109,17 +117,24 @@ public class REListValue<L> extends RElementValue<List<L>, JScrollPane> {
     @Override
     public void setValueInternal(List<L> value) {
         for (L l : value) {
-            addInnerValue(RElementValue.ofClass(l.getClass()));
+            RElementValue<L, ?> toAad = RElementValue.ofField(Target, listType, TargetFile, WorkspaceName, null);
+            toAad.setValue(l);
+            addInnerValue(toAad);
         }
+        InnerPane.revalidate();
+        InnerPane.repaint();
     }
 
     @Override
     protected List<L> getValueInternal(boolean shouldLog) {
-        return List.of();
+        return innerList.stream().map(RElementValue::getValue).toList();
     }
 
     @Override
     public boolean valid(boolean strict, boolean log0) {
-        return false;
+        for (RElementValue<L, ?> lrElementValue : innerList) {
+            if (!lrElementValue.valid(strict)) return false; 
+        }
+        return true;
     }
 }
