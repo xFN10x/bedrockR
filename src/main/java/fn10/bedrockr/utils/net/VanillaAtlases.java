@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -38,7 +39,7 @@ public class VanillaAtlases {
             CompoundTag nbt = (CompoundTag) NBTUtil.read(path.toFile(), true).getTag();
             int format = nbt.getInt("format");
             if (format != 1) {
-                throw new UnsupportedFormatException("Invaild atlas format", format, 1);
+                throw new UnsupportedFormatException("Invalid atlas format", format, 1);
             }
             CompoundTag posMappingTag = nbt.getCompoundTag("posMappings");
             HashMap<String, Pair<Integer, Integer>> posMapping = new HashMap<>();
@@ -65,8 +66,7 @@ public class VanillaAtlases {
         
     }
     
-    public static void downloadAtlas(String name) {
-        try {
+    public static void downloadAtlas(String name) throws Exception {
             URI uri = new URI("https://api.xplate.dev/bedrockr/v1/textures/" + name);
             Pair<Integer, byte[]> req = RFileOperations.getCurrentNetHandler().getBytes(uri);
             if (req.getLeft() == 200) {
@@ -74,9 +74,6 @@ public class VanillaAtlases {
                 FileUtils.createParentDirectories(path.toFile());
                 Files.write(path, req.getRight(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
     
 }

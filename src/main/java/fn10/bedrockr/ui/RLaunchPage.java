@@ -5,12 +5,14 @@ import com.formdev.flatlaf.util.ScaledImageIcon;
 import fn10.bedrockr.Launcher;
 import fn10.bedrockr.ui.base.RFrame;
 import fn10.bedrockr.ui.components.RAddon;
+import fn10.bedrockr.ui.util.ErrorShower;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.ui.util.RFonts;
 import fn10.bedrockr.ui.util.WrapLayout;
 import fn10.bedrockr.utils.Greetings;
 import fn10.bedrockr.utils.Greetings.Greeting;
 import fn10.bedrockr.utils.RFileOperations;
+import fn10.bedrockr.utils.net.VanillaAtlases;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
@@ -123,6 +125,20 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         fileMenu.add("Restart").addActionListener(_ -> {
             dispose();
             Launcher.main(new String[0]);
+        });
+        fileMenu.add("Download Block textures").addActionListener(_ -> {
+            RLoadingScreen loading = new RLoadingScreen(this);
+            SwingUtilities.invokeLater(() -> loading.setVisible((true)));
+            new Thread(() -> {
+                try {
+                    VanillaAtlases.downloadAtlas("block");
+                } catch (Exception e) {
+                    ErrorShower.exception(loading,e);
+                    throw new RuntimeException(e);
+                } finally {
+                    SwingUtilities.invokeLater(() -> loading.setVisible((false)));
+                }
+            }).start();
         });
 
         menuBar.add(fileMenu);
