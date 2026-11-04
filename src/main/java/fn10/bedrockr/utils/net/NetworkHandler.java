@@ -125,7 +125,7 @@ public abstract class NetworkHandler {
             return Triple.of(false, "This version is TOO out of date. Please update bedrockR!", json.get("currentStringVersion").getAsString());
         else {
             Format1Latest serialized = gson.fromJson(json, Format1Latest.class);
-            return Triple.of((serialized.LatestVersion > RFileOperations.NUM_VERSION && serialized.ShouldUse), serialized.Message, serialized.CurrentStringVersion);
+            return Triple.of((serialized.LatestVersion < RFileOperations.NUM_VERSION && serialized.ShouldUse), serialized.Message, serialized.CurrentStringVersion);
         }
     }
 }
