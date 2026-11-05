@@ -15,11 +15,14 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 
 import static fn10.bedrockr.ui.util.ImageUtilities.toBuffered;
 
 public class RenderHandler {
+
+    private static Path renderDir = RFileOperations.getBaseDirectory("cache", "renders").toPath();
 
     public static BufferedImage makeSolidTest(Color color) {
         final BufferedImage bufferedImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
@@ -176,9 +179,14 @@ public class RenderHandler {
         maing.drawImage(side3, null, 0, 0);
 
 
-        File imageFile = RFileOperations.getBaseDirectory("cache", "renders", name + ".png");
+        File imageFile = renderDir.resolve(name + ".png").toFile();
         ImageIO.write(main, "png", imageFile);
 
         return main;
     }
+    
+    public static BufferedImage getRendered(String name) throws IOException {
+        File imageFile = renderDir.resolve(name + ".png").toFile();
+        return ImageIO.read(imageFile);
+    } 
 }

@@ -35,9 +35,9 @@ public abstract class NetworkHandler {
         return prisItems;
     }
 
-    protected ArrayList<PrismarineBlockInfo> prisBlocks;
-    protected ArrayList<PrismarineBiomeInfo> prisBiomes;
-    protected ArrayList<PrismarineItemInfo> prisItems;
+    protected ArrayList<PrismarineBlockInfo> prisBlocks = new ArrayList<>();
+    protected ArrayList<PrismarineBiomeInfo> prisBiomes = new ArrayList<>();
+    protected ArrayList<PrismarineItemInfo> prisItems = new ArrayList<>();
 
     public void setup() {
     }
