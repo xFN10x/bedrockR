@@ -189,8 +189,9 @@ public class Launcher {
         } catch (Exception e) {
             // this throws if javafx is already started. idk how to check if it is
         }*/
-        if (NETWORK_HANDLER.isOnline()) {        // try to see if this version is out of date
-            // Check for updates
+        // region Network init
+        if (NETWORK_HANDLER.isOnline()) {
+            //region Check for updates
             loading.ProgressText.setText("Checking for updates...");
             try {
                 Triple<Boolean, String, String> upToDateInfo = NETWORK_HANDLER.upToDate();
@@ -207,6 +208,7 @@ public class Launcher {
             } catch (Exception e) {
                 RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
             }
+            // endregion
             // region Download Block Textures
             loading.ProgressText.setText("Downloading Block textures...");
             try {
@@ -222,8 +224,13 @@ public class Launcher {
                 ErrorShower.exception(loading, "Block texture download error.", e);
             }
             // endregion
+            // region Download Block Textures
+            loading.ProgressText.setText("Downloading Vanilla info...");
+            NETWORK_HANDLER.downloadVanillaInfo(RFileOperations.PICKABLE_VERSIONS[0]);
+            // endregion
         }
-
+        // endregion
+        
         loading.ProgressText.setText("Checking if opening workspace...");
         if (args.length >= 1) {
             File file;
@@ -240,7 +247,7 @@ public class Launcher {
             }
         }
 
-        // open app
+        // open app, don't do anything after this because if you are opening a workspace file directly, it wont get called
         loading.ProgressText.setText("Launching...");
         RLaunchPage launch = new RLaunchPage(LAUNCH_WINDOW_SIZE);
         SwingUtilities.invokeLater(() -> {

@@ -1,5 +1,6 @@
 package fn10.bedrockr.utils.net;
 
+import com.google.gson.JsonElement;
 import fn10.bedrockr.addons.element.supporting.item.ItemInfo;
 
 import java.util.Map;
@@ -20,7 +21,7 @@ public class PrismarineBlockInfo implements Comparable<PrismarineBlockInfo> {
     public int minStateId;
     public int maxStateId;
     public Map<String, Boolean> harvestTools;
-    public int[] drops;
+    public JsonElement drops;
     public String boundingBox;
 
     public ItemInfo toItemInfo() {

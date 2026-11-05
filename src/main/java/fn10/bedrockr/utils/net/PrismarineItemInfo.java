@@ -9,8 +9,7 @@ public class PrismarineItemInfo implements Comparable<PrismarineItemInfo> {
     public String displayName;
 
     public ItemInfo toItemInfo() {
-        String[] splitId = name.split(":");
-        return new ItemInfo(splitId[1], displayName, splitId[0]);
+        return new ItemInfo(name, displayName, "minecraft");
     }
 
     @Override

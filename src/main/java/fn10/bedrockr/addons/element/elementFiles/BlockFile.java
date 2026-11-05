@@ -14,6 +14,7 @@ import fn10.bedrockr.addons.resource.WorkspaceResources;
 import fn10.bedrockr.utils.ImageHandler;
 import fn10.bedrockr.utils.RAnnotation;
 import fn10.bedrockr.utils.RAnnotation.*;
+import fn10.bedrockr.utils.RFileOperations;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -175,7 +176,8 @@ public class BlockFile extends ElementFile<SourceBlockElement> implements ItemLi
     }
 
     public <T> byte[] getTexture(WorkspaceResources res, ImageHandler<T> handler) throws IOException {
-        throw new UnsupportedOperationException("use block atlas");
+        T renderedBlock = handler.getRenderedBlock(ID, Textures, res, true);
+        return handler.getBytesFromImage(renderedBlock);
     }
 
     @Override
