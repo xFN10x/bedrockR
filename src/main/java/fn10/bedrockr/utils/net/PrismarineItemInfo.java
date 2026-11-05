@@ -11,7 +11,7 @@ public class PrismarineItemInfo implements Comparable<PrismarineItemInfo> {
     public ItemInfo toItemInfo() {
         return new ItemInfo(name, displayName, "minecraft");
     }
-
+    
     @Override
     public int compareTo(PrismarineItemInfo o) {
         return displayName.compareToIgnoreCase(o.displayName);

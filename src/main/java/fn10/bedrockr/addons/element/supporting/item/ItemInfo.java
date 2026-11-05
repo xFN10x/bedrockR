@@ -65,12 +65,12 @@ public class ItemInfo {
 
         if (fullID.startsWith("minecraft")) {
             for (PrismarineItemInfo item : RFileOperations.getCurrentNetHandler().getVanillaItems()) {
-                if (item.name.equals(fullID)) {
+                if (fullID.equals("minecraft:"+item.name)) {
                     return item.toItemInfo();
                 }
             }
             for (PrismarineBlockInfo block : RFileOperations.getCurrentNetHandler().getVanillaBlocks()) {
-                if (block.name.equals(fullID)) {
+                if (fullID.equals("minecraft:"+block.name)) {
                     return block.toItemInfo();
                 }
             }

@@ -2,8 +2,10 @@ package fn10.bedrockr.utils.net;
 
 import fn10.bedrockr.utils.RLogUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
@@ -12,6 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static fn10.bedrockr.utils.RFileOperations.LOG;
@@ -68,5 +71,16 @@ public class JavaHTTPNetworkHandler extends NetworkHandler {
     @Override
     public CompletableFuture<Pair<Integer, byte[]>> getBytesAsync(URI url) throws Exception {
         return getAsync(url, HttpResponse.BodyHandlers.ofByteArray());
+    }
+
+    @Override
+    public Triple<Integer, Integer, InputStream> getStream(URI url) throws Exception {
+        HttpRequest req = makeGet(url);
+        HttpResponse<InputStream> resp = client.send(req, HttpResponse.BodyHandlers.ofInputStream());
+        Optional<String> lengthStr = resp.headers().firstValue("Content-Length");
+        int length;
+        if (lengthStr.isEmpty()) length = 0;
+        else length = Integer.valueOf(lengthStr.get());
+        return Triple.of(resp.statusCode(), length, resp.body());
     }
 }

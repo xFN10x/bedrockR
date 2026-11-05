@@ -128,10 +128,17 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
         });
         fileMenu.add("Download Block textures").addActionListener(_ -> {
             RLoadingScreen loading = new RLoadingScreen(this);
-            SwingUtilities.invokeLater(() -> loading.setVisible((true)));
+            SwingUtilities.invokeLater(() -> {
+                loading.setVisible(true);
+            });
             new Thread(() -> {
                 try {
-                    VanillaAtlases.downloadAtlas("block");
+                    VanillaAtlases.downloadAtlas("block", v-> {
+                        SwingUtilities.invokeLater(() -> {
+                            loading.changeText("Downloading... (" + v.getLeft() + " / " + v.getRight() + ")");
+                        });
+                        
+                    });
                 } catch (Exception e) {
                     ErrorShower.exception(loading,e);
                     throw new RuntimeException(e);

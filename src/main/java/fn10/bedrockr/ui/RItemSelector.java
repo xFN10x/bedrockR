@@ -58,7 +58,7 @@ public class RItemSelector extends RDialog implements ActionListener {
                     if (!info.Name.toLowerCase().contains(searchTerm))
                         continue;
 
-                    InnerPanel.add(new RItemButton(info, this, this));
+                    InnerPanel.add(new RItemButton(info, this, this, bf instanceof BlockFile));
                 }
             } catch (Exception e) {
                 RLogUtils.warnException(e);
@@ -71,7 +71,7 @@ public class RItemSelector extends RDialog implements ActionListener {
                             item.displayName.toLowerCase().contains(searchTerm)
                                     || item.name.toLowerCase().contains(searchTerm)
                     )
-                        InnerPanel.add(new RItemButton(item.toItemInfo(), this, this));
+                        InnerPanel.add(new RItemButton(item.toItemInfo(), this, this, true));
 
                 } catch (Exception e1) {
                     RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
@@ -134,7 +134,7 @@ public class RItemSelector extends RDialog implements ActionListener {
 
         });
 
-        InnerPanel.setLayout(new GridLayout(0, 4, 3, 3));
+        InnerPanel.setLayout(new GridLayout(0, 8, 3, 3));
         selector.getVerticalScrollBar().setUnitIncrement(18);
 
         showItemsWithTerm("", parent, Workspace);

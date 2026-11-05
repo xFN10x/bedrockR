@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import fn10.bedrockr.addons.element.elementSources.SourceWorkspaceFile;
 import fn10.bedrockr.addons.element.elementFiles.WorkspaceFile;
 import fn10.bedrockr.addons.element.interfaces.ElementSource;
+import fn10.bedrockr.ui.RLoadingScreen;
 import fn10.bedrockr.ui.util.ImageUtilities;
 import fn10.bedrockr.utils.LoggingOutputStream;
 import fn10.bedrockr.utils.RFileOperations;
@@ -218,7 +219,9 @@ public class Launcher {
                 }
                 if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
                         || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
-                    VanillaAtlases.downloadAtlas("block");
+                    VanillaAtlases.downloadAtlas("block", v -> {
+                        loading.ProgressText.setText("Downloading Block textures... (" + v.getLeft() + " / " + v.getRight() + ")");
+                    });
                 }
             } catch (Exception e) {
                 ErrorShower.exception(loading, "Block texture download error.", e);

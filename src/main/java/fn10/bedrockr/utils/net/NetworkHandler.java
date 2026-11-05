@@ -13,6 +13,7 @@ import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -77,6 +78,14 @@ public abstract class NetworkHandler {
 
     /// Perform an HTTP GET request and return the body as raw data.
     public abstract CompletableFuture<Pair<Integer, byte[]>> getBytesAsync(URI url) throws Exception;
+
+    /**
+     * Perform an HTTP GET request and return the body as a stream.
+     * @param url The url to get the stream from.
+     * @return a Triple, with the status, max size, and then the stream itself.
+     * @throws Exception
+     */
+    public abstract Triple<Integer, Integer, InputStream> getStream(URI url) throws Exception;
 
     /// (Executed in {@link RFileOperations#init(ImageHandler, NetworkHandler)})
     /// <br/>
