@@ -17,6 +17,7 @@ public class ImageUtilities {
     public final static AWTImageHandler ImgHandler = new AWTImageHandler();
 
     public static ScaledImageIcon toScaled(Image img) {
+        if (img == null) return null;
         return new ScaledImageIcon(new ImageIcon(img));
     }
 
