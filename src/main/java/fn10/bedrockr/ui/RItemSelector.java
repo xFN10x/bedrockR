@@ -19,6 +19,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RItemSelector extends RDialog implements ActionListener {
@@ -32,6 +34,7 @@ public class RItemSelector extends RDialog implements ActionListener {
 
     public static final int CANCEL_CHOICE = 0;
     public static final int OK_CHOICE = 1;
+    private static final Dimension size = new Dimension(800, 500);
 
     protected final JPanel InnerPanel = new JPanel();
     protected final JScrollPane selector = new JScrollPane(InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -50,11 +53,17 @@ public class RItemSelector extends RDialog implements ActionListener {
 
     public void showItemsWithTerm(String searchTerm, Frame parent, String Workspace) {
         InnerPanel.removeAll();
+        WorkspaceResources res = null;
+        try {
+            res = WorkspaceResources.load(Workspace);
+        } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
+            throw new RuntimeException(e);
+        }
         for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(Workspace)) {
             try {
                 if (element instanceof ItemLikeElement bf && !element.getDraft()) {
-                    if (hasBit(filter, FILTER_BLOCKS_BIT) && bf instanceof BlockFile) continue;
-                    ItemInfo info = bf.getItemInfo(Workspace, WorkspaceResources.load(Workspace), ImageUtilities.ImgHandler);
+                    if (hasBit(filter, FILTER_BLOCKS_BIT) && !(bf instanceof BlockFile)) continue;
+                    ItemInfo info = bf.getItemInfo(Workspace, res, ImageUtilities.ImgHandler);
                     if (!info.Name.toLowerCase().contains(searchTerm))
                         continue;
 
@@ -64,19 +73,23 @@ public class RItemSelector extends RDialog implements ActionListener {
                 RLogUtils.warnException(e);
             }
         }
-        if (!hasBit(filter, FILTER_WP_ONLY_BIT))
-            for (PrismarineItemInfo item : RFileOperations.getCurrentNetHandler().getVanillaItems()) {
+        if (!hasBit(filter, FILTER_WP_ONLY_BIT)) {
+            ArrayList<PrismarineItemInfo> items = RFileOperations.getCurrentNetHandler().getVanillaItems();
+            items.sort((v1,v2) -> v1.name.compareToIgnoreCase(v2.name));
+            for (PrismarineItemInfo item : items) {
                 try {
+                    RFileOperations.LOG.info(item.name);
                     if (
                             item.displayName.toLowerCase().contains(searchTerm)
                                     || item.name.toLowerCase().contains(searchTerm)
-                    )
+                    ) {
                         InnerPanel.add(new RItemButton(item.toItemInfo(), this, this, true));
-
+                    }
                 } catch (Exception e1) {
                     RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
                 }
             }
+        }
         InnerPanel.revalidate();
         InnerPanel.repaint();
     }
@@ -94,7 +107,7 @@ public class RItemSelector extends RDialog implements ActionListener {
                 parent,
                 JDialog.DISPOSE_ON_CLOSE,
                 (hasBit(filter, FILTER_BLOCKS_BIT) ? "Block" : "Item") + " Selection",
-                new Dimension(500, 400));
+                size);
         this.filter = filter;
 
         cancelButton.addActionListener(e -> {
