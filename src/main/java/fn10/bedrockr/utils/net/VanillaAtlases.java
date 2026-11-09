@@ -24,6 +24,11 @@ import static fn10.bedrockr.utils.RFileOperations.LOG;
 public class VanillaAtlases {
     public static Path ATLAS_FOLDER = RFileOperations.getBaseDirectory("atlas").toPath();
 
+    public static boolean exists(String name) {
+        Path path = ATLAS_FOLDER.resolve(name + "-atlas.nbt");
+        return path.toFile().exists();
+    }
+
     public record Atlas(HashMap<String, Pair<Integer, Integer>> posMappings,
                         HashMap<String, Pair<Integer, Integer>> sizeMappings, BufferedImage img) {
 private final static HashMap<String, Atlas> cache = new HashMap<>();

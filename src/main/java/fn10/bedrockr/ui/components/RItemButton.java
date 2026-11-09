@@ -30,14 +30,15 @@ public class RItemButton extends JButton {
         setFont(getFont().deriveFont(8f));
         if (isBlock) {
             VanillaAtlases.Atlas blockAtlas = VanillaAtlases.Atlas.of("block");
-            if (!blockAtlas.sizeMappings().containsKey(info.Id)) return;
+            if (blockAtlas.sizeMappings().containsKey(info.Id))
             textureExecutor.execute(() -> {
                 SwingUtilities.invokeLater(() -> {
-                    ScaledImageIcon icon = ImageUtilities.toScaled(blockAtlas.slice(info.Id));
+                    ScaledImageIcon icon = ImageUtilities.toScaled(blockAtlas.slice(info.Id), 32, 32);
                     setIcon(icon);
                 });
             });
         }
+        if (info.Name == null || info.Name.isBlank()) info.Name = info.Id;
         setText(info.Name);
         setToolTipText(info.Name + " (" + info.Id +
                 ")");

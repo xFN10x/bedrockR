@@ -217,11 +217,13 @@ public class Launcher {
                 if (latestJson == null) {
                     throw new IOException("Failed to get PrismarineJS release.");
                 }
-                if (settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID == null
+                if (!VanillaAtlases.exists("block")
                         || settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID != latestJson.get("id").getAsLong()) {
                     VanillaAtlases.downloadAtlas("block", v -> {
-                        loading.ProgressText.setText("Downloading Block textures... (" + v.getLeft() + " / " + v.getRight() + ")");
+                        loading.ProgressText.setText("Downloading Block textures... ( " + (v.getLeft() / v.getRight() * 100) + "% )");
                     });
+                    settings.LastTimeBlockTexturesCachedPrismarineJSMCDataVersionID = latestJson.get("id").getAsLong();
+                    settings.save();
                 }
             } catch (Exception e) {
                 ErrorShower.exception(loading, "Block texture download error.", e);
