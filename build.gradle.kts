@@ -20,7 +20,7 @@ dependencies {
     implementation("com.google.guava:guava:33.7.1-jre")
 
     api("com.google.code.gson:gson:2.15.0")
-    implementation("com.formdev:flatlaf:3.7.2")
+    implementation("com.formdev:flatlaf:3.8")
 
     implementation("commons-io:commons-io:2.22.0")
     api("org.apache.commons:commons-lang3:3.21.0")
