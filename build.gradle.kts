@@ -6,11 +6,17 @@ plugins {
     
     id("com.gradleup.shadow") version "9.6.1"
     id("org.panteleyev.jpackageplugin") version "2.1.0"
+    id("org.graalvm.buildtools.native") version "1.1.18"
 }
+
 
 repositories {
     mavenCentral()
     maven { url = uri("https://jitpack.io") }
+}
+
+graalvmNative {
+    //toolchainDetection.set(true)
 }
 
 val strVersion = "a3.0PRE2"
