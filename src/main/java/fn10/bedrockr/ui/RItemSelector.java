@@ -28,7 +28,7 @@ public class RItemSelector extends RDialog implements ActionListener {
     public static final int FILTER_ITEMS = 0b0100;
     public static final int FILTER_BLOCKS_WP = 0b1110;
     public static final int FILTER_ITEMS_WP = 0b0110;
-    
+
     private static final int FILTER_WP_ONLY_BIT = 0b0010;
     private static final int FILTER_BLOCKS_BIT = 0b1000;
 
@@ -49,49 +49,55 @@ public class RItemSelector extends RDialog implements ActionListener {
     private final int filter;
 
     public final SpringLayout Lay = new SpringLayout();
+    private volatile Thread loadingThread = null;
 
 
     public void showItemsWithTerm(String searchTerm, Frame parent, String Workspace) {
-        InnerPanel.removeAll();
-        WorkspaceResources res = null;
-        try {
-            res = WorkspaceResources.load(Workspace);
-        } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
-            throw new RuntimeException(e);
-        }
-        for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(Workspace)) {
+        if (loadingThread != null) loadingThread.interrupt();
+        loadingThread = new Thread(() -> {
+            InnerPanel.removeAll();
+            WorkspaceResources res = null;
             try {
-                if (element instanceof ItemLikeElement bf && !element.getDraft()) {
-                    if (hasBit(filter, FILTER_BLOCKS_BIT) && !(bf instanceof BlockFile)) continue;
-                    ItemInfo info = bf.getItemInfo(Workspace, res, ImageUtilities.ImgHandler);
-                    if (!info.Name.toLowerCase().contains(searchTerm))
-                        continue;
-
-                    InnerPanel.add(new RItemButton(info, this, this, bf instanceof BlockFile));
-                }
-            } catch (Exception e) {
-                RLogUtils.warnException(e);
+                res = WorkspaceResources.load(Workspace);
+            } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {
+                throw new RuntimeException(e);
             }
-        }
-        if (!hasBit(filter, FILTER_WP_ONLY_BIT)) {
-            ArrayList<PrismarineItemInfo> items = RFileOperations.getCurrentNetHandler().getVanillaItems();
-            items.sort((v1,v2) -> v1.name.compareToIgnoreCase(v2.name));
-            for (PrismarineItemInfo item : items) {
+            for (ElementFile<?> element : RFileOperations.getElementsFromWorkspace(Workspace)) {
                 try {
-                    RFileOperations.LOG.info(item.name);
-                    if (
-                            item.displayName.toLowerCase().contains(searchTerm)
-                                    || item.name.toLowerCase().contains(searchTerm)
-                    ) {
-                        InnerPanel.add(new RItemButton(item.toItemInfo(), this, this, true));
+                    if (element instanceof ItemLikeElement bf && !element.getDraft()) {
+                        if (hasBit(filter, FILTER_BLOCKS_BIT) && !(bf instanceof BlockFile)) continue;
+                        ItemInfo info = bf.getItemInfo(Workspace, res, ImageUtilities.ImgHandler);
+                        if (!info.Name.toLowerCase().contains(searchTerm))
+                            continue;
+                        if (Thread.interrupted()) return;
+                        InnerPanel.add(new RItemButton(info, this, this, bf instanceof BlockFile));
                     }
-                } catch (Exception e1) {
-                    RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                } catch (Exception e) {
+                    RLogUtils.warnException(e);
                 }
             }
-        }
-        InnerPanel.revalidate();
-        InnerPanel.repaint();
+            if (!hasBit(filter, FILTER_WP_ONLY_BIT)) {
+                ArrayList<PrismarineItemInfo> items = RFileOperations.getCurrentNetHandler().getVanillaItems();
+                items.sort((v1, v2) -> v1.name.compareToIgnoreCase(v2.name));
+                for (PrismarineItemInfo item : items) {
+                    try {
+                        RFileOperations.LOG.info(item.name);
+                        if (
+                                item.displayName.toLowerCase().contains(searchTerm)
+                                        || item.name.toLowerCase().contains(searchTerm)
+                        ) {
+                            if (Thread.interrupted()) return;
+                            InnerPanel.add(new RItemButton(item.toItemInfo(), this, this, true));
+                        }
+                    } catch (Exception e1) {
+                        RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e1);
+                    }
+                }
+            }
+            InnerPanel.revalidate();
+            InnerPanel.repaint();
+        });
+        loadingThread.start();
     }
 
     public static boolean hasBit(int subject, int bit) {

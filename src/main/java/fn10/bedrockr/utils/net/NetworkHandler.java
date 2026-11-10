@@ -107,19 +107,19 @@ public abstract class NetworkHandler {
                    "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
                            + itemPath
                            + "/items.json", PrismarineItemInfo[].class);
-           prisItems.addAll(List.of(itemEntrys));
+           prisItems = new ArrayList<>(List.of(itemEntrys));
 
            PrismarineBlockInfo[] blockEntrys = getJSON(
                    "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
                            + blockPath
                            + "/blocks.json", PrismarineBlockInfo[].class);
-           prisBlocks.addAll(List.of(blockEntrys));
+           prisBlocks = new ArrayList<>(List.of(blockEntrys));
 
            PrismarineBiomeInfo[] biomeEntrys = getJSON(
                    "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/refs/heads/master/data/"
                            + biomePath
                            + "/biomes.json", PrismarineBiomeInfo[].class);
-           prisBiomes.addAll(List.of(biomeEntrys));
+           prisBiomes = new ArrayList<>(List.of(biomeEntrys));
        } catch (Exception e) {
            RLogUtils.exception("Failed to download vanilla info!", e);
        }
