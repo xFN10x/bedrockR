@@ -1,3 +1,5 @@
+import org.panteleyev.jpackage.ImageType
+
 plugins {
     application
     java
@@ -14,11 +16,6 @@ repositories {
     mavenCentral()
     maven { url = uri("https://jitpack.io") }
 }
-
-graalvmNative {
-    //toolchainDetection.set(true)
-}
-
 val strVersion = "a3.0PRE2"
 val winver = "0.9.3"
 
@@ -49,6 +46,35 @@ java {
 application {
     mainClass = "fn10.bedrockr.Launcher"
 }
+
+graalvmNative {
+    //toolchainDetection.set(true)
+    binaries {
+        named("main") {
+            imageName.set("bedrockR")
+            mainClass.set("fn10.bedrockr.Launcher")
+            verbose.set(true)
+            sharedLibrary.set(false)
+            quickBuild.set(false)
+
+            /*systemProperties.putAll(mapOf("name1" to "value1", "name2" to "value2"))
+            configurationFileDirectories.from(file("src/my-config"))
+            excludeConfig.put("org.example.test:artifact:version", listOf("^/META-INF/native-image/.*", "^/config/.*"))
+            excludeConfig.put(file("path/to/artifact.jar"), listOf("^/META-INF/native-image/.*", "^/config/.*"))
+
+            // Advanced options
+            buildArgs.add("--link-at-build-time")
+            jvmArgs.add("flag")
+
+            // Runtime options
+            runtimeArgs.add("--help")*/
+
+            useFatJar.set(true)
+            sharedLibrary.set(false)
+        }
+    }
+}
+
 
 tasks.jpackage {
     dependsOn("shadowJar")
