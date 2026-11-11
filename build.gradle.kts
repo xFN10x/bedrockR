@@ -1,4 +1,5 @@
-import org.panteleyev.jpackage.ImageType
+import org.gradle.internal.FileUtils
+import java.nio.file.Files
 
 plugins {
     application
@@ -16,8 +17,16 @@ repositories {
     mavenCentral()
     maven { url = uri("https://jitpack.io") }
 }
+
 val strVersion = "a3.0PRE2"
 val winver = "0.9.3"
+val updaterName = "brupdater"
+
+sourceSets {
+    create("updater")
+    create("bootstrap")
+    create("installer")
+}
 
 dependencies {
     implementation("com.google.guava:guava:33.8.0-jre")
@@ -44,42 +53,72 @@ java {
 }
 
 application {
-    mainClass = "fn10.bedrockr.Launcher"
+    sourceSets {
+        main {
+            mainClass = "fn10.bedrockr.Launcher"
+        }
+        named("updater") {
+            mainClass = "fn10.bedrockr.updater.Updater"
+        }
+        named("bootstrap") {
+            mainClass = "fn10.bedrockr.bootstrap.Bootstrap"
+        }
+        named("installer") {
+            mainClass = "fn10.bedrockr.installer.Installer"
+        }
+        
+    }
 }
 
 graalvmNative {
     //toolchainDetection.set(true)
     binaries {
-        named("main") {
-            imageName.set("bedrockR")
-            mainClass.set("fn10.bedrockr.Launcher")
+        create("updaterDev") {
+            imageName.set(updaterName)
+            mainClass.set("fn10.bedrockr.updater.Main")
             verbose.set(true)
             sharedLibrary.set(false)
-            quickBuild.set(false)
+            quickBuild.set(true)
+            buildArgs.add("--emit build-report")
 
-            /*systemProperties.putAll(mapOf("name1" to "value1", "name2" to "value2"))
-            configurationFileDirectories.from(file("src/my-config"))
-            excludeConfig.put("org.example.test:artifact:version", listOf("^/META-INF/native-image/.*", "^/config/.*"))
-            excludeConfig.put(file("path/to/artifact.jar"), listOf("^/META-INF/native-image/.*", "^/config/.*"))
-
-            // Advanced options
-            buildArgs.add("--link-at-build-time")
-            jvmArgs.add("flag")
-
-            // Runtime options
-            runtimeArgs.add("--help")*/
-
-            useFatJar.set(true)
+            // Combine the compile and runtime classpaths/classes for this source set
+            classpath.from(
+                sourceSets.named("updater").get().output
+            )
+        }
+        create("updaterRelease") {
+            imageName.set(updaterName)
+            mainClass.set("fn10.bedrockr.updater.Main")
+            verbose.set(true)
             sharedLibrary.set(false)
+            buildArgs.addAll("--emit build-report", "-Os")
+
+            // Combine the compile and runtime classpaths/classes for this source set
+            classpath.from(
+                sourceSets.named("updater").get().output
+            )
         }
     }
 }
 
+tasks.register<Sync>("JpackagePrepare") {
+    description = "Prepares the input for JPackage. (not portable)"
+    dependsOn("shadowJar", "nativeUpdaterReleaseCompile")
+
+    into(layout.buildDirectory.dir("jpackageInclude"))
+    from(layout.buildDirectory.file("native/nativeUpdaterReleaseCompile/${updaterName}.exe"))
+    from(tasks.named("shadowJar"))
+}
+
 
 tasks.jpackage {
-    dependsOn("shadowJar")
-    input.set(project.layout.buildDirectory.dir("builtJars"))
-    destination.set(project.layout.buildDirectory.dir("builtDist"))
+    dependsOn("JpackagePrepare")
+    
+    //Add updater to path with jar for input.
+    val buildDir = project.layout.buildDirectory
+    val inputDir = buildDir.dir("jpackageInclude");
+    input.set(inputDir)
+    destination.set(buildDir.dir("builtDist"))
     appVersion.set(winver)
 
     appName.set("bedrockR")
