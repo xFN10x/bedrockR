@@ -35,7 +35,7 @@ public class Greetings { // no, the class is not welcoming you, it is for those 
 
     
 
-    public static Greeting GetGreeting() {
+    public static Greeting getGreeting() {
         var mx = GREETINGS.length;
         var rnd = new Random();
 

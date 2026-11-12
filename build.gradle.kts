@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.internal.FileUtils
 import java.nio.file.Files
 
@@ -8,7 +9,6 @@ plugins {
     `maven-publish`
     
     id("com.gradleup.shadow") version "9.6.1"
-    id("org.panteleyev.jpackageplugin") version "2.1.0"
     id("org.graalvm.buildtools.native") version "1.1.18"
 }
 
@@ -41,7 +41,11 @@ dependencies {
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jetbrains:annotations:26.1.0")
 
-    implementation("com.github.Querz:NBT:6.1")
+    sourceSets {
+        main {
+            implementation("com.github.Querz:NBT:6.1")
+        }
+    }
 }
 
 java {
@@ -101,6 +105,19 @@ graalvmNative {
     }
 }
 
+tasks.register<ShadowJar>("makeInstaller") {
+
+    description = "Create a jar for the installer"
+
+    archiveBaseName = "bedrockR-Installer"
+    archiveVersion = strVersion
+    destinationDirectory = layout.buildDirectory.dir("installerJars")
+    archiveClassifier = ""
+    
+    from(sourceSets.named("installer").get().output)
+}
+
+/*
 tasks.register<Sync>("JpackagePrepare") {
     description = "Prepares the input for JPackage. (not portable)"
     dependsOn("shadowJar", "nativeUpdaterReleaseCompile")
@@ -109,7 +126,6 @@ tasks.register<Sync>("JpackagePrepare") {
     from(layout.buildDirectory.file("native/nativeUpdaterReleaseCompile/${updaterName}.exe"))
     from(tasks.named("shadowJar"))
 }
-
 
 tasks.jpackage {
     dependsOn("JpackagePrepare")
@@ -174,7 +190,7 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
 
     type = org.panteleyev.jpackage.ImageType.APP_IMAGE
 }
-
+*/
 
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
   archiveBaseName = "bedrockR"
