@@ -22,7 +22,6 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class RLaunchPage extends RFrame implements ActionListener, ItemListener 
     private final JScrollPane ProjectsScrollPart = new JScrollPane(ProjectsPart, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    private final Greeting greeting = Greetings.GetGreeting();
+    private final Greeting greeting = Greetings.getGreeting();
     private final JLabel greetingText = new JLabel(greeting.Text()) {
         @Override
         protected void paintComponent(Graphics g) {
