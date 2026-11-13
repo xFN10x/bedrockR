@@ -1,6 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.internal.FileUtils
+import org.apache.commons.io.FileUtils
+import org.codehaus.plexus.archiver.util.DefaultFileSet
+import org.codehaus.plexus.archiver.zip.ZipArchiver
 import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.zip.DeflaterOutputStream
+import java.util.zip.ZipOutputStream
 
 plugins {
     application
@@ -20,12 +25,24 @@ repositories {
 
 val strVersion = "a3.0PRE2"
 val winver = "0.9.3"
+
+val installerVer = "1.0"
 val updaterName = "brupdater"
 
 sourceSets {
     create("updater")
     create("bootstrap")
     create("installer")
+}
+
+buildscript { 
+    repositories { 
+        mavenCentral()
+    }
+    
+    dependencies {
+        classpath("org.codehaus.plexus:plexus-archiver:4.14.0")
+    }
 }
 
 dependencies {
@@ -41,6 +58,7 @@ dependencies {
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jetbrains:annotations:26.1.0")
 
+    implementation("org.codehaus.plexus:plexus-archiver:4.14.0")
     sourceSets {
         main {
             implementation("com.github.Querz:NBT:6.1")
@@ -105,8 +123,36 @@ graalvmNative {
     }
 }
 
-tasks.register<ShadowJar>("makeInstaller") {
+tasks.register<DefaultTask>("makeInstallerResources") {
+    dependsOn("shadowJar")
+    doLast {
+        val jdkLoc = System.getProperty("java.home");
+        logger.quiet("Creating installer resources, with jdk at: ${jdkLoc}")
+        val json = """
+        {
+            "version": "$version",
+            "winVer": "$winver",
+            "jdkVer": "${System.getProperty("java.version")}",
+            "installerVer": "$installerVer"
+        }
+        """.trimIndent()
 
+        FileUtils.write(File("${layout.buildDirectory.get()}/resources/installer/data.json"),json,
+            Charsets.UTF_8)
+
+        // Now zip the jdk.
+        val jdkArchiver = ZipArchiver()
+        jdkArchiver.destFile = File("${layout.buildDirectory.get()}/resources/installer/jdk.zip")
+        jdkArchiver.addFileSet(DefaultFileSet.fileSet(File(jdkLoc)))
+        jdkArchiver.createArchive()
+
+        val bedrockRJarOutput = DeflaterOutputStream(FileUtils.newOutputStream(File("${layout.buildDirectory.get()}/resources/installer/bedrockRZiped.dat"), false))
+        val bedrockRInput = Files.newInputStream(Paths.get("${layout.buildDirectory.get()}/builtJars/bedrockR-$strVersion.jar"))
+        bedrockRJarOutput.write(bedrockRInput.readAllBytes())
+    }
+}
+tasks.register<ShadowJar>("makeInstallerJar") {
+    dependsOn("makeInstallerResources")
     description = "Create a jar for the installer"
 
     archiveBaseName = "bedrockR-Installer"
@@ -192,7 +238,7 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
 }
 */
 
-tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+tasks.named<ShadowJar>("shadowJar") {
   archiveBaseName = "bedrockR"
   archiveVersion = strVersion
   destinationDirectory = layout.buildDirectory.dir("builtJars")
