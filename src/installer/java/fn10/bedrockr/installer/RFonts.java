@@ -1,0 +1,40 @@
+package fn10.bedrockr.installer;
+
+import fn10.bedrockr.ui.util.ErrorShower;
+import fn10.bedrockr.utils.RFileOperations;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+
+
+public class RFonts {
+
+    public static Font RegMinecraftFont = SetupFont("/ui/newFont.otf", 16);
+
+    public static void init() {}
+    
+    protected static Font SetupFont(String Path, int Size) {
+        InputStream font_file;
+        try {
+            font_file = RFonts.class.getResourceAsStream(Path);
+        } catch (Exception e) {
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            ErrorShower.showError(null, "Failed to open font file", "Font Error", e);
+            return new Font(Font.SANS_SERIF, Font.PLAIN,Size);
+        }
+
+        Font font;
+        try { // try setting font
+            font = Font.createFont(Font.TRUETYPE_FONT, font_file).deriveFont(Font.PLAIN, Size);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font); // reg font if not null
+        } catch (IOException | FontFormatException e) {
+            RFileOperations.LOG.log(java.util.logging.Level.SEVERE, "Exception thrown", e);
+            ErrorShower.showError(null, "Failed to load font.", "Font Error", e);
+            return new Font(Font.SANS_SERIF, Font.PLAIN,Size);
+        }
+
+        return font;
+    }
+
+}

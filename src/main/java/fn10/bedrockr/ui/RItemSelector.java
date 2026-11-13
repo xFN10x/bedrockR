@@ -56,7 +56,7 @@ public class RItemSelector extends RDialog implements ActionListener {
         if (loadingThread != null) loadingThread.interrupt();
         loadingThread = new Thread(() -> {
             InnerPanel.removeAll();
-            WorkspaceResources res = null;
+            WorkspaceResources res;
             try {
                 res = WorkspaceResources.load(Workspace);
             } catch (WorkspaceResources.WorkspaceUnsupportedException | IOException e) {

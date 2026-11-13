@@ -48,7 +48,7 @@ public class Launcher {
     public final static JavaHTTPNetworkHandler NETWORK_HANDLER = new JavaHTTPNetworkHandler();
 
     public static void main(String[] args) {
-        RFileOperations.LOG.info("Initalizing bedrockR...");
+        RFileOperations.LOG.info("Initializing bedrockR...");
         try (final InputStream stream = Launcher.class.getResourceAsStream("/ui/Icon_huge.png")) {
             if (stream != null)
                 ICON = ImageIO.read(stream);
