@@ -44,13 +44,12 @@ public class RFileOperations {
     public static final String VERSION = "a3.0PRE2";
     private static final String USER_DIR = System.getProperty("user.home");
     public static Logger LOG = Logger.getLogger("bedrockR");
-    private static String BASE_PATH = USER_DIR + File.separator + ".bedrockR" + File.separator;
-    private static File BASE_DIRECTORY = new File(BASE_PATH);
+    private static File BASE_DIRECTORY = new File(USER_DIR, ".bedrockR");
     private static WorkspaceFile CURRENT_WORKSPACE = null;
     private static ImageHandler<?> CURRENT_IMG_HANDLER;
     private static NetworkHandler CURRENT_NET_HANDLER;
     public static final Map<String, Path> MC_SYNC_OPTIONS = Map.of(
-            "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "null"), "Minecraft Bedrock", "Users", "Shared", "games", "com.mojang"),
+            "Windows", Path.of(Objects.requireNonNullElse(System.getenv("APPDATA"), "C:\\Users\\"+System.getProperty("user.home")+"\\AppData\\Roaming"), "Minecraft Bedrock", "Users", "Shared", "games", "com.mojang"),
             "Linux/ChromeOS (MC Bedrock Launcher)", Path.of(System.getProperty("user.home"), ".local", "share", "mcpelauncher", "games", "com.mojang")
     );
     private static Path COMMOJANG = null;
@@ -113,7 +112,6 @@ public class RFileOperations {
 
     public static void setBaseDir(File folder) {
         BASE_DIRECTORY = folder;
-        BASE_PATH = folder.getAbsolutePath();
     }
 
     public static void setComMojangDir(Path folder) {
@@ -307,22 +305,20 @@ public class RFileOperations {
     /**
      * Gets a directory from {@code .bedrockr}
      *
-     * @param Folders - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
-    public static File getBaseDirectory(String... Folders) {
-        return getBaseDirectory(false, Folders);
+    public static File getBaseDirectory(String folder, String... more) {
+        return getBaseDirectory(false, folder, more);
     }
 
     /**
      * Gets a directory from {@code .bedrockr}
      *
      * @param strict  - if strict, it doesn't make the directory you specify
-     * @param Folders - the path of folder to go to. e.g. Folders = "build, rp"
      * @return the file, being the directory that you specified,
      */
-    public static File getBaseDirectory(Boolean strict, String... Folders) {
-        File file = java.nio.file.Paths.get(BASE_PATH, Folders).toFile();
+    public static File getBaseDirectory(Boolean strict, String folder, String... more) {
+        File file = BASE_DIRECTORY.toPath().resolve(folder, more).toFile();
         try {
             if (!file.exists() && !strict) {
                 return Files.createDirectories(file.toPath()).toFile();

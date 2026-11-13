@@ -5,14 +5,13 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.DeflaterOutputStream
-import java.util.zip.ZipOutputStream
 
 plugins {
     application
     java
     `java-library`
     `maven-publish`
-    
+
     id("com.gradleup.shadow") version "9.6.1"
     id("org.graalvm.buildtools.native") version "1.1.18"
 }
@@ -24,7 +23,8 @@ repositories {
 }
 
 val strVersion = "a3.0PRE2"
-val winver = "0.9.3"
+val winVer = "0.9.3"
+val numVer = 10
 
 val installerVer = "1.0"
 val updaterName = "brupdater"
@@ -35,17 +35,24 @@ sourceSets {
     create("installer")
 }
 
-buildscript { 
-    repositories { 
+buildscript {
+    repositories {
         mavenCentral()
     }
-    
+
     dependencies {
         classpath("org.codehaus.plexus:plexus-archiver:4.14.0")
     }
 }
 
 dependencies {
+    implementation("org.codehaus.plexus:plexus-archiver:4.14.0")
+    "installerImplementation"("org.codehaus.plexus:plexus-archiver:4.14.0")
+    "installerImplementation"("com.google.guava:guava:33.8.0-jre")
+
+    "installerImplementation"("com.google.code.gson:gson:2.15.0")
+    "installerImplementation"("com.formdev:flatlaf:3.8")
+    
     implementation("com.google.guava:guava:33.8.0-jre")
 
     api("com.google.code.gson:gson:2.15.0")
@@ -57,13 +64,7 @@ dependencies {
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jetbrains:annotations:26.1.0")
-
-    implementation("org.codehaus.plexus:plexus-archiver:4.14.0")
-    sourceSets {
-        main {
-            implementation("com.github.Querz:NBT:6.1")
-        }
-    }
+    implementation("com.github.Querz:NBT:6.1")
 }
 
 java {
@@ -87,8 +88,9 @@ application {
         }
         named("installer") {
             mainClass = "fn10.bedrockr.installer.Installer"
+            compileClasspath += sourceSets.main.get().output
         }
-        
+
     }
 }
 
@@ -130,15 +132,18 @@ tasks.register<DefaultTask>("makeInstallerResources") {
         logger.quiet("Creating installer resources, with jdk at: ${jdkLoc}")
         val json = """
         {
-            "version": "$version",
-            "winVer": "$winver",
+            "version": "$strVersion",
+            "winVer": "$winVer",
             "jdkVer": "${System.getProperty("java.version")}",
-            "installerVer": "$installerVer"
+            "installerVer": "$installerVer",
+            "numVer": "$numVer"
         }
         """.trimIndent()
 
-        FileUtils.write(File("${layout.buildDirectory.get()}/resources/installer/data.json"),json,
-            Charsets.UTF_8)
+        FileUtils.write(
+            File("${layout.buildDirectory.get()}/resources/installer/data.json"), json,
+            Charsets.UTF_8
+        )
 
         // Now zip the jdk.
         val jdkArchiver = ZipArchiver()
@@ -146,8 +151,14 @@ tasks.register<DefaultTask>("makeInstallerResources") {
         jdkArchiver.addFileSet(DefaultFileSet.fileSet(File(jdkLoc)))
         jdkArchiver.createArchive()
 
-        val bedrockRJarOutput = DeflaterOutputStream(FileUtils.newOutputStream(File("${layout.buildDirectory.get()}/resources/installer/bedrockRZiped.dat"), false))
-        val bedrockRInput = Files.newInputStream(Paths.get("${layout.buildDirectory.get()}/builtJars/bedrockR-$strVersion.jar"))
+        val bedrockRJarOutput = DeflaterOutputStream(
+            FileUtils.newOutputStream(
+                File("${layout.buildDirectory.get()}/resources/installer/bedrockRZiped.dat"),
+                false
+            )
+        )
+        val bedrockRInput =
+            Files.newInputStream(Paths.get("${layout.buildDirectory.get()}/builtJars/bedrockR-$strVersion.jar"))
         bedrockRJarOutput.write(bedrockRInput.readAllBytes())
     }
 }
@@ -159,7 +170,7 @@ tasks.register<ShadowJar>("makeInstallerJar") {
     archiveVersion = strVersion
     destinationDirectory = layout.buildDirectory.dir("installerJars")
     archiveClassifier = ""
-    
+
     from(sourceSets.named("installer").get().output)
 }
 
@@ -239,10 +250,10 @@ tasks.register<org.panteleyev.jpackage.JPackageTask>("jpackagePORTABLE") {
 */
 
 tasks.named<ShadowJar>("shadowJar") {
-  archiveBaseName = "bedrockR"
-  archiveVersion = strVersion
-  destinationDirectory = layout.buildDirectory.dir("builtJars")
-  archiveClassifier = ""
+    archiveBaseName = "bedrockR"
+    archiveVersion = strVersion
+    destinationDirectory = layout.buildDirectory.dir("builtJars")
+    archiveClassifier = ""
 }
 
 tasks.javadoc {
