@@ -1,6 +1,7 @@
 package fn10.bedrockr.installer;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import com.formdev.flatlaf.util.SystemInfo;
 import fn10.bedrockr.installer.laf.BedrockrDark;
 
@@ -17,9 +18,9 @@ public class Installer extends JFrame {
     static void main(String[] args) throws IOException {
         List<String> argList = List.of(args);
         if (argList.contains("-dev")) {
-            
+
         }
-        
+
         RFonts.init();
         FlatLaf.registerCustomDefaultsSource("laf");
         if (SystemInfo.isLinux) {
@@ -28,19 +29,26 @@ public class Installer extends JFrame {
         }
 
         BedrockrDark.setup();
-        
+
         new Installer().setVisible(true);
     }
-    
-    
-    
+
+
     public Installer() throws IOException {
         super("Install bedrockR");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        size = new Dimension(900, 500);
+        size = new Dimension(475, 250);
         setSize(size);
         setIconImage(ImageIO.read(getClass().getResource("/ui/Icon_huge.png")));
+        SpringLayout lay = new SpringLayout();
+        setLayout(lay);
 
+        ScaledImageIcon titleIcon = new ScaledImageIcon(new ImageIcon(getClass().getResource("/title.png")));
+        JLabel titileLabel = new JLabel(titleIcon);
+
+        lay.putConstraint(SpringLayout.HORIZONTAL_CENTER, titileLabel, 0, SpringLayout.HORIZONTAL_CENTER, getContentPane());
+        lay.putConstraint(SpringLayout.NORTH, titileLabel, 5, SpringLayout.NORTH, getContentPane());
+        add(titileLabel);
         GraphicsDevice mouseScreen = MouseInfo.getPointerInfo().getDevice();
         GraphicsConfiguration config = mouseScreen.getDefaultConfiguration();
 
