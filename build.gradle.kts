@@ -60,7 +60,7 @@ dependencies {
     implementation("com.formdev:flatlaf:3.8")
 
     implementation("commons-io:commons-io:2.22.0")
-    api("org.apache.commons:commons-lang3:3.21.0")
+    api("org.apache.commons:commons-lang3:3.22.0")
 
     //update to the new nullable... for some reason (idk why it wont work when updaing guava)
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
