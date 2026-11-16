@@ -52,6 +52,7 @@ dependencies {
 
     "installerImplementation"("com.google.code.gson:gson:2.15.0")
     "installerImplementation"("com.formdev:flatlaf:3.8")
+    "installerImplementation"("net.java.dev.jna:jna-platform:5.19.1")
     
     implementation("com.google.guava:guava:33.8.0-jre")
 
