@@ -41,13 +41,13 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.codehaus.plexus:plexus-archiver:4.14.0")
+        classpath("org.codehaus.plexus:plexus-archiver:4.15.0")
     }
 }
 
 dependencies {
-    implementation("org.codehaus.plexus:plexus-archiver:4.14.0")
-    "installerImplementation"("org.codehaus.plexus:plexus-archiver:4.14.0")
+    implementation("org.codehaus.plexus:plexus-archiver:4.15.0")
+    "installerImplementation"("org.codehaus.plexus:plexus-archiver:4.15.0")
     "installerImplementation"("com.google.guava:guava:33.8.0-jre")
 
     "installerImplementation"("com.google.code.gson:gson:2.15.0")
