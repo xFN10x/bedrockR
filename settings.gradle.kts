@@ -4,3 +4,4 @@ plugins {
 
 rootProject.name = "bedrockR"
 
+include("core", "installer")
