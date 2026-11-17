@@ -1,10 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.apache.commons.io.FileUtils
-import org.codehaus.plexus.archiver.util.DefaultFileSet
-import org.codehaus.plexus.archiver.zip.ZipArchiver
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.zip.DeflaterOutputStream
 
 plugins {
     application
@@ -16,7 +10,6 @@ plugins {
     id("org.graalvm.buildtools.native") version "1.1.18"
 }
 
-
 repositories {
     mavenCentral()
     maven { url = uri("https://jitpack.io") }
@@ -26,34 +19,13 @@ val strVersion = "a3.0PRE2"
 val winVer = "0.9.3"
 val numVer = 10
 
-val installerVer = "1.0"
 val updaterName = "brupdater"
 
 sourceSets {
     create("updater")
-    create("bootstrap")
-    create("installer")
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("org.codehaus.plexus:plexus-archiver:4.14.0")
-    }
 }
 
 dependencies {
-    implementation("org.codehaus.plexus:plexus-archiver:4.14.0")
-    "installerImplementation"("org.codehaus.plexus:plexus-archiver:4.14.0")
-    "installerImplementation"("com.google.guava:guava:33.8.0-jre")
-
-    "installerImplementation"("com.google.code.gson:gson:2.15.0")
-    "installerImplementation"("com.formdev:flatlaf:3.8")
-    "installerImplementation"("net.java.dev.jna:jna-platform:5.19.1")
-    
     implementation("com.google.guava:guava:33.8.0-jre")
 
     api("com.google.code.gson:gson:2.15.0")
@@ -84,14 +56,6 @@ application {
         named("updater") {
             mainClass = "fn10.bedrockr.updater.Updater"
         }
-        named("bootstrap") {
-            mainClass = "fn10.bedrockr.bootstrap.Bootstrap"
-        }
-        named("installer") {
-            mainClass = "fn10.bedrockr.installer.Installer"
-            compileClasspath += sourceSets.main.get().output
-        }
-
     }
 }
 
@@ -100,7 +64,7 @@ graalvmNative {
     binaries {
         create("updaterDev") {
             imageName.set(updaterName)
-            mainClass.set("fn10.bedrockr.updater.Main")
+            mainClass.set("fn10.bedrockr.updater.Updater")
             verbose.set(true)
             sharedLibrary.set(false)
             quickBuild.set(true)
@@ -111,9 +75,10 @@ graalvmNative {
                 sourceSets.named("updater").get().output
             )
         }
+
         create("updaterRelease") {
             imageName.set(updaterName)
-            mainClass.set("fn10.bedrockr.updater.Main")
+            mainClass.set("fn10.bedrockr.updater.Updater")
             verbose.set(true)
             sharedLibrary.set(false)
             buildArgs.addAll("--emit build-report", "-Os")
@@ -126,54 +91,54 @@ graalvmNative {
     }
 }
 
-tasks.register<DefaultTask>("makeInstallerResources") {
-    dependsOn("shadowJar")
-    doLast {
-        val jdkLoc = System.getProperty("java.home");
-        logger.quiet("Creating installer resources, with jdk at: ${jdkLoc}")
-        val json = """
-        {
-            "version": "$strVersion",
-            "winVer": "$winVer",
-            "jdkVer": "${System.getProperty("java.version")}",
-            "installerVer": "$installerVer",
-            "numVer": "$numVer"
-        }
-        """.trimIndent()
-
-        FileUtils.write(
-            File("${layout.buildDirectory.get()}/resources/installer/data.json"), json,
-            Charsets.UTF_8
-        )
-
-        // Now zip the jdk.
-        val jdkArchiver = ZipArchiver()
-        jdkArchiver.destFile = File("${layout.buildDirectory.get()}/resources/installer/jdk.zip")
-        jdkArchiver.addFileSet(DefaultFileSet.fileSet(File(jdkLoc)))
-        jdkArchiver.createArchive()
-
-        val bedrockRJarOutput = DeflaterOutputStream(
-            FileUtils.newOutputStream(
-                File("${layout.buildDirectory.get()}/resources/installer/bedrockRZiped.dat"),
-                false
-            )
-        )
-        val bedrockRInput =
-            Files.newInputStream(Paths.get("${layout.buildDirectory.get()}/builtJars/bedrockR-$strVersion.jar"))
-        bedrockRJarOutput.write(bedrockRInput.readAllBytes())
-    }
-}
-tasks.register<ShadowJar>("makeInstallerJar") {
-    dependsOn("makeInstallerResources")
-    description = "Create a jar for the installer"
-
-    archiveBaseName = "bedrockR-Installer"
-    archiveVersion = strVersion
-    destinationDirectory = layout.buildDirectory.dir("installerJars")
-    archiveClassifier = ""
-
-    from(sourceSets.named("installer").get().output)
-}
+//tasks.register<DefaultTask>("makeInstallerResources") {
+//    dependsOn("shadowJar")
+//    doLast {
+//        val jdkLoc = System.getProperty("java.home");
+//        logger.quiet("Creating installer resources, with jdk at: $jdkLoc")
+//        val json = """
+//        {
+//            "version": "$strVersion",
+//            "winVer": "$winVer",
+//            "jdkVer": "${System.getProperty("java.version")}",
+//            "installerVer": "$installerVer",
+//            "numVer": "$numVer"
+//        }
+//        """.trimIndent()
+//
+//        FileUtils.write(
+//            File("${layout.buildDirectory.get()}/resources/installer/data.json"), json,
+//            Charsets.UTF_8
+//        )
+//
+//        // Now zip the jdk.
+//        val jdkArchiver = ZipArchiver()
+//        jdkArchiver.destFile = File("${layout.buildDirectory.get()}/resources/installer/jdk.zip")
+//        jdkArchiver.addFileSet(DefaultFileSet.fileSet(File(jdkLoc)))
+//        jdkArchiver.createArchive()
+//
+//        val bedrockRJarOutput = DeflaterOutputStream(
+//            FileUtils.newOutputStream(
+//                File("${layout.buildDirectory.get()}/resources/installer/bedrockRZiped.dat"),
+//                false
+//            )
+//        )
+//        val bedrockRInput =
+//            Files.newInputStream(Paths.get("${layout.buildDirectory.get()}/builtJars/bedrockR-$strVersion.jar"))
+//        bedrockRJarOutput.write(bedrockRInput.readAllBytes())
+//    }
+//}
+//tasks.register<ShadowJar>("makeInstallerJar") {
+//    dependsOn("makeInstallerResources")
+//    description = "Create a jar for the installer"
+//
+//    archiveBaseName = "bedrockR-Installer"
+//    archiveVersion = strVersion
+//    destinationDirectory = layout.buildDirectory.dir("installerJars")
+//    archiveClassifier = ""
+//
+//    from(sourceSets.named("installer").get().output)
+//}
 
 /*
 tasks.register<Sync>("JpackagePrepare") {
